@@ -1,5 +1,7 @@
 # Component Architecture: Enterprise Cloud Platform Program
 
+![Enterprise Cloud Platform Program visual architecture diagram](assets/component-architecture.svg)
+
 This diagram explains how the project repositories work together as one enterprise cloud platform program.
 
 ```mermaid
