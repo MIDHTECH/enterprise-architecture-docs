@@ -2,6 +2,8 @@
 
 This guide maps each repository in the enterprise cloud platform program to marketable consulting roles. Use it to explain the project, the delivery team, and your personal contribution in interviews, resumes, client discussions, and LinkedIn project summaries.
 
+For the required project training structure and interview question-bank standard, see [Consultant Training Standard](consultant-training-standard.md).
+
 ## Program Positioning
 
 Present these repositories as one enterprise platform implementation, not as disconnected labs:
