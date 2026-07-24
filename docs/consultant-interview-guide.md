@@ -8,6 +8,8 @@ Use this statement:
 
 > I built a set of enterprise reference implementation projects that replicate how consulting teams deliver cloud infrastructure, DevSecOps, Kubernetes platform engineering, observability, and governance automation for large organizations. The projects use GitLab as the system of record, Terraform for infrastructure, Ansible for configuration, Jenkins/GitLab CI for pipelines, Kubernetes/GitOps for application delivery, and monitoring/security controls for operational readiness.
 
+For role-specific positioning, team model, and contribution wording, see [Marketing Role and Consultant Contribution Guide](marketing-role-consultant-guide.md).
+
 ## Project 1: Enterprise DevSecOps Delivery Platform
 
 **Client problem:** Application teams were deploying manually with inconsistent build, test, security, and release controls.
@@ -95,4 +97,3 @@ Use this flow:
 Use this statement:
 
 > These projects replicate an enterprise cloud operating model. They are organized the way a consulting team would deliver them to a client: source-controlled in GitLab, separated by domain, automated through pipelines, secured through policy checks, documented with architecture and runbooks, and mapped to business outcomes like faster provisioning, safer deployments, stronger compliance, lower MTTR, and better cost control.
-
