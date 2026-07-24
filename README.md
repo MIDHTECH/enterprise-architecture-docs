@@ -8,6 +8,7 @@ This repository contains the architecture, use case coverage, and consultant int
 - [Consultant Interview Guide](docs/consultant-interview-guide.md)
 - [Marketing Role and Consultant Contribution Guide](docs/marketing-role-consultant-guide.md)
 - [Consultant Training Standard](docs/consultant-training-standard.md)
+- [Enterprise Branching Strategy](docs/branching-strategy.md)
 
 ## Repository Purpose
 

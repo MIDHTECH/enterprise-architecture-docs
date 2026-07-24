@@ -47,6 +47,8 @@ flowchart TB
 
 All projects and documentation should be stored in GitLab so the implementation follows a real enterprise delivery model.
 
+For the standard branch naming, merge request, protected branch, environment, and rollback model, see [Enterprise Branching Strategy](branching-strategy.md).
+
 Recommended GitLab group:
 
 ```text
