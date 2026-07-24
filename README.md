@@ -19,3 +19,7 @@ This repository is the documentation system of record for the enterprise project
 - Enterprise Kubernetes Platform with GitOps
 - Enterprise Observability and SRE Reliability Platform
 - Enterprise Cloud Governance and Operations Automation
+
+## Project Documentation
+
+- [Interview questions](docs/interview-questions.md)

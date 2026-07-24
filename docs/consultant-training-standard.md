@@ -60,21 +60,16 @@ Every project must include a project-specific interview question bank with these
 
 | Category | Required count | Purpose |
 | --- | ---: | --- |
+| Skill, tool, and project questions | 30 | Tests the consultant's practical knowledge of the tools, repo, workflow, and project contribution |
 | Architecture questions | 10 | Tests whether the consultant can explain components, flow, integrations, and enterprise fit |
 | System design questions | 10 | Tests design decisions, scalability, security, reliability, and tradeoffs |
 | Behavioral questions | 10 | Tests communication, ownership, collaboration, conflict handling, and client-facing maturity |
 | Troubleshooting questions | 10 | Tests practical debugging, incident response, logs, rollback, and root cause thinking |
 | Scenario-based questions | 10 | Tests how the consultant handles realistic client situations |
 
-This creates **50 project-specific interview questions per project**.
+This creates **80 project-specific interview questions per project**.
 
-If a shorter mock interview is needed, choose 30 questions from the full bank:
-
-- 6 architecture questions
-- 6 system design questions
-- 6 behavioral questions
-- 6 troubleshooting questions
-- 6 scenario-based questions
+The first 30 questions should be based on the project's skills, tools, implementation, and consultant contribution. The remaining 50 questions are grouped into the five interview categories.
 
 ## Standard Interview Answer Format
 
@@ -164,4 +159,4 @@ A project is training-ready only when it has:
 - Tool explanation.
 - Enterprise controls explanation.
 - Business outcome explanation.
-- 50-question interview bank, or a documented 30-question mock interview subset.
+- 80-question interview bank with 30 skill/tool/project questions and 10 questions each for architecture, system design, behavioral, troubleshooting, and scenario-based categories.
