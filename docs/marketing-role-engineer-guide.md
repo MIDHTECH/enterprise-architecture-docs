@@ -1,27 +1,27 @@
-# Marketing Role and Consultant Contribution Guide
+# Marketing Role and Engineer Contribution Guide
 
-This guide maps each repository in the enterprise cloud platform program to marketable consulting roles. Use it to explain the project, the delivery team, and your personal contribution in interviews, resumes, client discussions, and LinkedIn project summaries.
+This guide maps each repository in the enterprise cloud platform program to marketable engineering roles. Use it to explain the project, the delivery team, and your personal contribution in interviews, resumes, client discussions, and LinkedIn project summaries.
 
-For the required project training structure and interview question-bank standard, see [Consultant Training Standard](consultant-training-standard.md).
+For the required project training structure and interview question-bank standard, see [Engineer Training Standard](engineer-training-standard.md).
 
 ## Program Positioning
 
 Present these repositories as one enterprise platform implementation, not as disconnected labs:
 
-> I contributed to an enterprise cloud platform program that modernized infrastructure provisioning, CI/CD, Kubernetes delivery, observability, and governance automation. The work was split into domain repositories the way a consulting team would organize a real client implementation, with GitLab as the system of record and Jenkins, Terraform, Ansible, Kubernetes, GitOps, and monitoring/security tooling as the delivery stack.
+> I contributed to an enterprise cloud platform program that modernized infrastructure provisioning, CI/CD, Kubernetes delivery, observability, and governance automation. The work was split into domain repositories the way a senior platform engineering team would organize a real client implementation, with GitLab as the system of record and Jenkins, Terraform, Ansible, Kubernetes, GitOps, and monitoring/security tooling as the delivery stack.
 
 ## Role-to-Project Map
 
 | Project | Primary marketing roles | Supporting roles |
 | --- | --- | --- |
-| `enterprise-architecture-docs` | Cloud Architect, Enterprise Architect, Technical Consultant | Program Lead, Solution Architect |
-| `devsecops-cicd-orchestrator` | DevSecOps Engineer, CI/CD Engineer, DevOps Consultant | Release Engineer, Automation Engineer |
-| `cloud-infra-automation-platform` | Cloud Infrastructure Engineer, Terraform Engineer, Cloud Consultant | Ansible Engineer, Platform Engineer |
-| `kubernetes-platform-gitops` | Kubernetes Platform Engineer, GitOps Engineer, Platform Consultant | Cloud Native Engineer, SRE |
-| `observability-sre-platform` | SRE Engineer, Observability Engineer, Reliability Consultant | Platform Engineer, Incident Response Engineer |
-| `cloud-governance-ops-automation` | Cloud Governance Engineer, Cloud Security Engineer, Cloud Operations Consultant | IAM Engineer, Compliance Automation Engineer |
-| `jenkins_jobs` | Jenkins Platform Engineer, CI/CD Automation Engineer | DevOps Engineer, Release Engineering Consultant |
-| `jenkins-shared-library` | Jenkins Shared Library Engineer, Pipeline Automation Engineer | DevOps Consultant, AWX/Ansible Automation Engineer |
+| `enterprise-architecture-docs` | Cloud Architect, Enterprise Architect, Technical Lead | Program Lead, Solution Architect |
+| `devsecops-cicd-orchestrator` | DevSecOps Engineer, CI/CD Engineer, DevOps Engineer | Release Engineer, Automation Engineer |
+| `cloud-infra-automation-platform` | Cloud Infrastructure Engineer, Terraform Engineer, Cloud Engineer | Ansible Engineer, Platform Engineer |
+| `kubernetes-platform-gitops` | Kubernetes Platform Engineer, GitOps Engineer, Platform Engineer | Cloud Native Engineer, SRE |
+| `observability-sre-platform` | SRE Engineer, Observability Engineer, Reliability Engineer | Platform Engineer, Incident Response Engineer |
+| `cloud-governance-ops-automation` | Cloud Governance Engineer, Cloud Security Engineer, Cloud Operations Engineer | IAM Engineer, Compliance Automation Engineer |
+| `jenkins_jobs` | Jenkins Platform Engineer, CI/CD Automation Engineer | DevOps Engineer, Release Engineer |
+| `jenkins-shared-library` | Jenkins Shared Library Engineer, Pipeline Automation Engineer | DevOps Engineer, AWX/Ansible Automation Engineer |
 
 ## Project Interview Narratives
 
@@ -31,7 +31,7 @@ Present these repositories as one enterprise platform implementation, not as dis
 
 **Team:** Cloud architect, DevSecOps lead, platform lead, SRE lead, security/governance lead, and delivery manager.
 
-**My contribution:** I documented the enterprise architecture, repository model, use-case mapping, implementation roadmap, and consultant interview narratives so the program could be explained as a coherent client delivery.
+**My contribution:** I documented the enterprise architecture, repository model, use-case mapping, implementation roadmap, and engineer interview narratives so the program could be explained as a coherent client delivery.
 
 **How to explain it:**
 

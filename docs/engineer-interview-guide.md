@@ -1,4 +1,4 @@
-# Consultant Interview Guide: Enterprise Cloud and Platform Projects
+# Engineer Interview Guide: Enterprise Cloud and Platform Projects
 
 This guide explains how to present the five projects in interviews as enterprise reference implementations.
 
@@ -6,9 +6,9 @@ This guide explains how to present the five projects in interviews as enterprise
 
 Use this statement:
 
-> I built a set of enterprise reference implementation projects that replicate how consulting teams deliver cloud infrastructure, DevSecOps, Kubernetes platform engineering, observability, and governance automation for large organizations. The projects use GitLab as the system of record, Terraform for infrastructure, Ansible for configuration, Jenkins/GitLab CI for pipelines, Kubernetes/GitOps for application delivery, and monitoring/security controls for operational readiness.
+> I built a set of enterprise reference implementation projects that replicate how senior engineering teams deliver cloud infrastructure, DevSecOps, Kubernetes platform engineering, observability, and governance automation for large organizations. The projects use GitLab as the system of record, Terraform for infrastructure, Ansible for configuration, Jenkins/GitLab CI for pipelines, Kubernetes/GitOps for application delivery, and monitoring/security controls for operational readiness.
 
-For role-specific positioning, team model, and contribution wording, see [Marketing Role and Consultant Contribution Guide](marketing-role-consultant-guide.md).
+For role-specific positioning, team model, and contribution wording, see [Marketing Role and Engineer Contribution Guide](marketing-role-engineer-guide.md).
 
 ## Project 1: Enterprise DevSecOps Delivery Platform
 
@@ -18,7 +18,7 @@ For role-specific positioning, team model, and contribution wording, see [Market
 
 **Tools:** GitLab, Jenkins, Jenkins Job DSL, Jenkins shared libraries, Docker, pytest, Trivy/Gitleaks pattern, AWX, Ansible.
 
-**Consultant talk track:**
+**Engineer talk track:**
 
 > I implemented a secure delivery pipeline that standardizes how application teams build, scan, package, and deploy code. The design includes reusable Jenkins shared libraries, job-as-code with Job DSL, credentials managed centrally, image scanning, and AWX-driven deployment. This gives the client repeatable releases, audit evidence, and lower deployment risk.
 
@@ -32,7 +32,7 @@ For role-specific positioning, team model, and contribution wording, see [Market
 
 **Tools:** Terraform, Ansible, AWS, Azure, GCP, GitLab CI, Checkov/tfsec pattern, dynamic inventory.
 
-**Consultant talk track:**
+**Engineer talk track:**
 
 > I designed a multi-cloud infrastructure platform with reusable Terraform modules and separate dev, QA, stage, and production environments. Terraform provisions cloud resources, GitLab pipelines enforce validation and approval, and Ansible configures Linux hosts after provisioning. The implementation includes naming standards, tagging standards, security controls, runbooks, and deployment evidence.
 
@@ -46,7 +46,7 @@ For role-specific positioning, team model, and contribution wording, see [Market
 
 **Tools:** Kubernetes, AKS, EKS, GKE, Helm, Kustomize, Argo CD or Flux, OPA Gatekeeper or Kyverno, ingress controller, cert-manager.
 
-**Consultant talk track:**
+**Engineer talk track:**
 
 > I built an enterprise Kubernetes platform pattern that lets teams deploy applications through GitOps instead of manual kubectl commands. The platform standardizes namespaces, RBAC, ingress, policies, resource limits, trusted registries, and autoscaling. This reduces drift, improves security, and gives platform teams a repeatable onboarding model.
 
@@ -60,7 +60,7 @@ For role-specific positioning, team model, and contribution wording, see [Market
 
 **Tools:** Prometheus, Grafana, Loki or ELK/OpenSearch, OpenTelemetry, Jaeger or Tempo, Alertmanager, CloudWatch, Azure Monitor, GCP Operations.
 
-**Consultant talk track:**
+**Engineer talk track:**
 
 > I implemented an SRE observability platform that correlates application, Kubernetes, infrastructure, and cloud service telemetry. Teams can monitor latency, error rate, traffic, saturation, pod health, database health, capacity, and deployment impact. The platform supports SLOs, alert routing, incident triage, and root cause analysis.
 
@@ -74,7 +74,7 @@ For role-specific positioning, team model, and contribution wording, see [Market
 
 **Tools:** Terraform, Ansible, GitLab CI, Checkov/tfsec, Azure Key Vault, AWS Secrets Manager, GCP Secret Manager, cloud IAM/RBAC, backup services, cost tools.
 
-**Consultant talk track:**
+**Engineer talk track:**
 
 > I built a cloud governance automation project that helps enterprises move from manual cloud operations to controlled, auditable automation. It standardizes IAM, secrets, tags, policy checks, backup validation, certificate monitoring, and cost controls. It also includes runbooks and remediation automation for repeated operational issues.
 
@@ -96,4 +96,4 @@ Use this flow:
 
 Use this statement:
 
-> These projects replicate an enterprise cloud operating model. They are organized the way a consulting team would deliver them to a client: source-controlled in GitLab, separated by domain, automated through pipelines, secured through policy checks, documented with architecture and runbooks, and mapped to business outcomes like faster provisioning, safer deployments, stronger compliance, lower MTTR, and better cost control.
+> These projects replicate an enterprise cloud operating model. They are organized the way a senior platform engineering team would deliver them to a client: source-controlled in GitLab, separated by domain, automated through pipelines, secured through policy checks, documented with architecture and runbooks, and mapped to business outcomes like faster provisioning, safer deployments, stronger compliance, lower MTTR, and better cost control.

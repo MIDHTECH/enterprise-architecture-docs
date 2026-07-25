@@ -1,0 +1,7 @@
+stages:
+  - validate
+
+docs_validate:
+  stage: validate
+  script:
+    - ./scripts/local-validate.sh

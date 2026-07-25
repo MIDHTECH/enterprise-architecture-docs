@@ -2,7 +2,7 @@
 
 These questions are selected from MAAS production interview-question sources, including company interview captures, scenario packs, technology packs, and curated MAAS database entries. Wording is normalized only for readability.
 
-Source labels are kept with each question so consultants can trace preparation back to MAAS interview intelligence.
+Source labels are kept with each question so engineers can trace preparation back to MAAS interview intelligence.
 
 ## 30 MAAS Real Skill, Tool, and Project Questions
 

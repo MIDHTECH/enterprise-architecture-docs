@@ -1,6 +1,8 @@
-# Consultant Training Standard
+# Engineer Training Standard
 
-Use this standard for every enterprise platform project. A consultant should be able to explain the project clearly, defend the architecture, describe their contribution, and answer practical interview questions from multiple angles.
+Use this standard for every enterprise platform project. An engineer should be able to explain the project clearly, defend the architecture, describe their contribution, and answer practical interview questions from multiple angles.
+
+The expected voice is a senior DevOps, cloud, platform, or SRE engineer with 6-8 years of hands-on experience. Documentation should sound like the engineer has owned production delivery, made tradeoffs, worked with cross-functional teams, supported audits, handled incidents, and improved reliability, security, and automation outcomes. Avoid junior or classroom phrasing. Use language that shows practical ownership, decision-making, risk awareness, and measurable business impact.
 
 ## Required Project Training Sections
 
@@ -33,8 +35,9 @@ Every project must have these training sections:
    - Example: cloud architect, DevOps engineer, platform engineer, SRE, security engineer, QA engineer, release manager, compliance analyst.
 
 7. **My Contribution**
-   - What the consultant personally designed, built, automated, documented, tested, validated, or improved.
+   - What the engineer personally designed, built, automated, documented, tested, validated, or improved.
    - This section must be specific enough to answer interview follow-up questions.
+   - Write this in a senior engineer voice: explain the decision, the implementation, the control used, and the operational outcome.
 
 8. **Tools and Technologies**
    - Tools used.
@@ -60,22 +63,26 @@ Every project must include a project-specific interview question bank with these
 
 | Category | Required count | Purpose |
 | --- | ---: | --- |
-| Skill, tool, and project questions | 30 | Tests the consultant's practical knowledge of the tools, repo, workflow, and project contribution |
-| Architecture questions | 10 | Tests whether the consultant can explain components, flow, integrations, and enterprise fit |
+| Skill, tool, and project questions | 30 | Tests the engineer's practical knowledge of the tools, repo, workflow, and project contribution |
+| Architecture questions | 10 | Tests whether the engineer can explain components, flow, integrations, and enterprise fit |
 | System design questions | 10 | Tests design decisions, scalability, security, reliability, and tradeoffs |
 | Behavioral questions | 10 | Tests communication, ownership, collaboration, conflict handling, and client-facing maturity |
 | Troubleshooting questions | 10 | Tests practical debugging, incident response, logs, rollback, and root cause thinking |
-| Scenario-based questions | 10 | Tests how the consultant handles realistic client situations |
+| Scenario-based questions | 10 | Tests how the engineer handles realistic client situations |
 
 This creates **80 project-specific interview questions per project**.
 
-The first 30 questions should be based on the project's skills, tools, implementation, and consultant contribution. The remaining 50 questions are grouped into the five interview categories.
+The first 30 questions should be based on the project's skills, tools, implementation, and engineer contribution. The remaining 50 questions are grouped into the five interview categories.
 
 ## Standard Interview Answer Format
 
 Use this format for every answer:
 
 > The client had [problem]. Our team built [solution] using [tools]. I contributed by [specific work]. We followed enterprise controls like [GitLab, merge requests, CI/CD gates, security scans, approvals, and runbooks]. The outcome was [business value].
+
+For a senior engineer answer, add the tradeoff or operational control behind the decision:
+
+> I chose [approach] because [reason]. I considered [tradeoff/risk], controlled it with [guardrail], and validated the result through [test, metric, evidence, or runbook].
 
 ## Required Question Types
 
@@ -154,7 +161,7 @@ A project is training-ready only when it has:
 - Project-local documentation.
 - Architecture explanation.
 - Role and contribution mapping.
-- Consultant talk track.
+- Engineer talk track.
 - Team model.
 - Tool explanation.
 - Enterprise controls explanation.

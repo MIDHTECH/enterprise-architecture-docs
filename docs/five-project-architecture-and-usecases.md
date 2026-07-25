@@ -2,9 +2,9 @@
 
 This document explains how the five enterprise reference implementation projects work together and which real-world use cases each project covers from the MAAS Marketing Roles Concepts document.
 
-The goal is to replicate enterprise cloud, DevOps, DevSecOps, platform engineering, and SRE delivery patterns that consultants can explain in interviews as real client-style implementation work.
+The goal is to replicate enterprise cloud, DevOps, DevSecOps, platform engineering, and SRE delivery patterns that engineers can explain in interviews as real client-style implementation work.
 
-These projects are not positioned as classroom exercises. They are structured as enterprise consulting reference projects with GitLab repositories, CI/CD controls, environment separation, change approval, security checks, documentation, and operational runbooks.
+These projects are not positioned as classroom exercises. They are structured as enterprise engineering reference projects with GitLab repositories, CI/CD controls, environment separation, change approval, security checks, documentation, and operational runbooks.
 
 ## Enterprise Architecture
 
@@ -59,7 +59,7 @@ Recommended repositories:
 
 | GitLab repository | Purpose |
 | --- | --- |
-| `enterprise-architecture-docs` | Architecture diagrams, use case mapping, implementation roadmap, consultant interview narratives |
+| `enterprise-architecture-docs` | Architecture diagrams, use case mapping, implementation roadmap, engineer interview narratives |
 | `devsecops-cicd-orchestrator` | Jenkins/GitLab CI pipeline, security gates, Docker build, AWX/Ansible deployment |
 | `cloud-infra-automation-platform` | Terraform and Ansible automation for AWS, Azure, and GCP infrastructure |
 | `kubernetes-platform-gitops` | AKS/EKS/GKE platform, Helm, Argo CD/Flux, ingress, policy, autoscaling |

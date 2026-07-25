@@ -24,7 +24,7 @@ main
 | `main` | Stable, reviewed, protected branch | `main` |
 | `feature/*` | New project functionality | `feature/terraform-network-module` |
 | `fix/*` | Defect correction | `fix/jenkins-awx-timeout` |
-| `docs/*` | Documentation-only changes | `docs/consultant-training-standard` |
+| `docs/*` | Documentation-only changes | `docs/engineer-training-standard` |
 | `hotfix/*` | Urgent production or platform fix | `hotfix/prod-ingress-certificate` |
 | `release/*` | Optional release stabilization branch | `release/2026.07` |
 
@@ -105,7 +105,7 @@ Use release branches only when the team needs a stabilization window before prod
 | `jenkins-jobs` | Use feature branches for Job DSL changes. Seed job updates should be reviewed before applying to Jenkins. |
 | `jenkins-shared-library` | Use feature branches for shared pipeline logic. Breaking changes require versioning or coordinated updates to consuming Jenkinsfiles. |
 
-## Consultant Talk Track
+## Engineer Talk Track
 
 Use this explanation in interviews:
 
@@ -124,7 +124,7 @@ If a bad change is merged:
 
 ## Training Standard
 
-Consultants should be able to answer:
+Engineers should be able to answer:
 
 - Why `main` is protected.
 - Why feature branches are short-lived.
