@@ -1,10 +1,10 @@
 # Enterprise Project Architecture and Use Case Coverage
 
-This document explains how the five enterprise reference implementation projects work together and which real-world use cases each project covers from the MAAS Marketing Roles Concepts document.
+This document explains how the five training projects fit together and which role-based use cases each one supports.
 
-The goal is to replicate enterprise cloud, DevOps, DevSecOps, platform engineering, and SRE delivery patterns that engineers can explain in interviews as real client-style implementation work.
+The goal is to show cloud, DevOps, DevSecOps, platform engineering, and SRE work in a way that feels close to real client or internal platform delivery.
 
-These projects are not positioned as classroom exercises. They are structured as enterprise engineering reference projects with GitLab repositories, CI/CD controls, environment separation, change approval, security checks, documentation, and operational runbooks.
+These are not meant to read like classroom exercises. They are structured as working engineering repos with GitLab, CI/CD controls, environment separation, review gates, security checks, docs, and operational runbooks.
 
 ## Enterprise Architecture
 
@@ -45,7 +45,7 @@ flowchart TB
 
 ## GitLab Repository Model
 
-All projects and documentation should be stored in GitLab so the implementation follows a real enterprise delivery model.
+All projects and documentation should live in GitLab so code, review, approvals, and evidence are tied together.
 
 For the standard branch naming, merge request, protected branch, environment, and rollback model, see [Enterprise Branching Strategy](branching-strategy.md).
 
@@ -80,11 +80,11 @@ flowchart LR
     main --> deploy[Deploy or Apply Pipeline]
 ```
 
-This makes GitLab the source of truth for code, infrastructure, documentation, merge requests, approvals, and CI/CD evidence.
+That makes GitLab the source of truth for code, infrastructure, documentation, merge requests, approvals, and CI/CD evidence.
 
-## Enterprise Delivery Standards
+## Delivery Standards
 
-Each project should include these enterprise controls:
+Each project should include these controls:
 
 | Standard | Expected implementation |
 | --- | --- |
@@ -144,7 +144,7 @@ flowchart LR
     ansible --> env[Target Environment]
 ```
 
-**Use cases covered:**
+**What this covers:**
 
 | Use case | Coverage |
 | --- | --- |
@@ -184,7 +184,7 @@ flowchart TB
     ansible --> baseline[Patch, Packages, Docker, Linux Baseline]
 ```
 
-**Use cases covered:**
+**What this covers:**
 
 | Use case | Coverage |
 | --- | --- |
@@ -221,7 +221,7 @@ flowchart TB
     policies --> workloads
 ```
 
-**Use cases covered:**
+**What this covers:**
 
 | Use case | Coverage |
 | --- | --- |
@@ -262,7 +262,7 @@ flowchart LR
     alerts --> rca[RCA and Incident Review]
 ```
 
-**Use cases covered:**
+**What this covers:**
 
 | Use case | Coverage |
 | --- | --- |
@@ -303,7 +303,7 @@ flowchart TB
     remediation[Runbooks and Ansible Automation] --> incidents[Incident Remediation]
 ```
 
-**Use cases covered:**
+**What this covers:**
 
 | Use case | Coverage |
 | --- | --- |
@@ -349,4 +349,4 @@ flowchart TB
 4. Build Project 4 to observe, alert, troubleshoot, and validate reliability.
 5. Build Project 5 to add governance, compliance, secrets, backup, cost, and remediation controls.
 
-This order tells a strong interview story: first provision the platform, then deliver applications, then standardize Kubernetes, then monitor reliability, then mature the platform with security and governance.
+That order gives the story a natural shape: build the platform foundation, deliver applications, standardize Kubernetes, add reliability signals, then mature the environment with governance and operations controls.

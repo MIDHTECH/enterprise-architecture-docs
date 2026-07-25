@@ -161,7 +161,7 @@ A project is training-ready only when it has:
 - Project-local documentation.
 - Architecture explanation.
 - Role and contribution mapping.
-- Engineer talk track.
+- Plain-spoken interview explanation.
 - Team model.
 - Tool explanation.
 - Enterprise controls explanation.

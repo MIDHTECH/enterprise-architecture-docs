@@ -8,7 +8,7 @@ For the required project training structure and interview question-bank standard
 
 Present these repositories as one enterprise platform implementation, not as disconnected labs:
 
-> I contributed to an enterprise cloud platform program that modernized infrastructure provisioning, CI/CD, Kubernetes delivery, observability, and governance automation. The work was split into domain repositories the way a senior platform engineering team would organize a real client implementation, with GitLab as the system of record and Jenkins, Terraform, Ansible, Kubernetes, GitOps, and monitoring/security tooling as the delivery stack.
+> I contributed to a cloud platform program that brought infrastructure, CI/CD, Kubernetes delivery, observability, and governance automation into one organized model. The work was split into domain repos the way a senior platform team would run it, with GitLab for review and history, Jenkins for delivery, Terraform for infrastructure, Ansible for configuration, GitOps for Kubernetes, and monitoring and security tooling around the stack.
 
 ## Role-to-Project Map
 

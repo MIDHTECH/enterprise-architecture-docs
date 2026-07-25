@@ -105,11 +105,11 @@ Use release branches only when the team needs a stabilization window before prod
 | `jenkins-jobs` | Use feature branches for Job DSL changes. Seed job updates should be reviewed before applying to Jenkins. |
 | `jenkins-shared-library` | Use feature branches for shared pipeline logic. Breaking changes require versioning or coordinated updates to consuming Jenkinsfiles. |
 
-## Engineer Talk Track
+## How I Explain It
 
 Use this explanation in interviews:
 
-> We used a trunk-based GitLab flow. `main` was protected and treated as the stable source of truth. Engineers created short-lived feature, fix, docs, or hotfix branches and merged through reviewed merge requests. Pipelines validated every change, and production-impacting updates required approvals, evidence, and rollback notes. Environment separation was handled through folders, variables, protected environments, and GitOps overlays rather than long-lived environment branches.
+> I used a trunk-based GitLab flow with protected `main` as the stable source of truth. Engineers worked in short-lived feature, fix, docs, or hotfix branches and merged through reviewed merge requests. Pipelines validated the work, and production-impacting changes needed approval, evidence, and rollback notes. Environments stayed in folders, variables, protected environments, and GitOps overlays instead of long-lived environment branches.
 
 ## Troubleshooting and Rollback
 

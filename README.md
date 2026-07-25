@@ -1,6 +1,6 @@
 # Enterprise Architecture Documentation
 
-This repository contains the architecture, use case coverage, and engineer interview narratives for the enterprise cloud platform reference implementation.
+This repo is the written map for the training platform. It explains how the infrastructure, CI/CD, Kubernetes, observability, and governance projects fit together, and gives you language for talking about the work in interviews.
 
 ## Documents
 
@@ -13,7 +13,7 @@ This repository contains the architecture, use case coverage, and engineer inter
 
 ## Repository Purpose
 
-This repository is the documentation system of record for the enterprise project set:
+This is the documentation home for the project set:
 
 - Enterprise DevSecOps Delivery Platform
 - Enterprise Multi-Cloud Infrastructure Platform
@@ -21,6 +21,6 @@ This repository is the documentation system of record for the enterprise project
 - Enterprise Observability and SRE Reliability Platform
 - Enterprise Cloud Governance and Operations Automation
 
-## Project Documentation
+## Extra Docs
 
 - [Interview questions](docs/interview-questions.md)
