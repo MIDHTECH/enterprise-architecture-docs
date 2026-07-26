@@ -48,8 +48,9 @@ facts; they do not erase the original observation.
 | INC-2026-014 | 2026-07-25 | SEV-3 | Resolved | Copper9100 client DNS | Router-advertised IPv6 DNS bypassed the authoritative lab resolver |
 | INC-2026-015 | 2026-07-25 | SEV-4 | Resolved | GitLab bootstrap | Initial read-only Rails inventory used an incompatible database-column query |
 | INC-2026-016 | 2026-07-25 | SEV-3 | Resolved | Git repository import | Pre-publish scan found a hard-coded PostgreSQL password in current code and history |
-| INC-2026-017 | 2026-07-26 | SEV-3 | Open | Hypervisor access | Both infra01 and infra02 are unreachable from the administration workstation |
+| INC-2026-017 | 2026-07-26 | SEV-3 | Resolved | Hypervisor access | Both infra01 and infra02 were temporarily unreachable from the administration workstation |
 | INC-2026-018 | 2026-07-26 | SEV-4 | Resolved | IP inventory | Prometheus DNS and Ansible records incorrectly used occupied address `.109` instead of canonical `.115` |
+| INC-2026-019 | 2026-07-26 | SEV-4 | Resolved | NGINX design | HA proxy tier was implemented despite the lab's explicit non-HA scope |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -370,7 +371,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-07-25
 - Severity: SEV-3
-- Status: Open
+- Status: Resolved
 - Component: Copper9100 DNS advertisement and macOS Wi-Fi
 - Detection/symptom: `nslookup gitlab.example.com` selected router IPv6
   resolver `2603:300c:571:c280:ea9f:80ff:feec:54af` and returned no answer.
@@ -483,20 +484,17 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   This narrows the fault toward both hosts being powered off or disconnected,
   or a shared hypervisor switch/uplink path, rather than loss of the
   workstation-to-router connection.
-- Resolution: Pending.
-- Validation required:
-  - verify both physical hosts are powered on
-  - confirm `br0` still owns `.38` and `.169` at the local consoles
-  - confirm each host can ping `192.168.1.1`
-  - confirm `ssh` and `libvirtd` are active and TCP/22 is listening
-  - confirm the workstation and hosts are on the same Copper9100 LAN without
-    client isolation
-  - retest ARP, ping, and SSH before provisioning
+- Resolution: Connectivity returned without a configuration change from this
+  workflow.
+- Validation: TCP/22 succeeded to `.38` and `.169`; GitLab HTTP and DNS TCP/53
+  succeeded; both bridges held their expected addresses and default routes;
+  libvirt and `lab-bridge` were active; both hosts reported approximately
+  2.6 TiB free in the VM image filesystem.
 - Prevention/follow-up: Add hypervisor reachability and bridge-state
   monitoring after Prometheus is available. Do not interpret FQDN resolution
   as host availability.
 - Evidence/related runbook:
-  [NGINX Reverse-Proxy Cluster Installation](product-installation-nginx.md)
+  [Standalone NGINX Reverse-Proxy Installation](product-installation-nginx.md)
 
 ## INC-2026-018: Prometheus Address Drift Could Have Targeted Non-Lab Device
 
@@ -524,6 +522,37 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   `cloud-infra-automation-platform/ansible/roles/bind_dns`
 - Evidence/related runbook:
   [Canonical VM Inventory](vm-inventory.md)
+
+## INC-2026-019: HA Proxy Design Exceeded Lab Scope
+
+- Date: 2026-07-26
+- Severity: SEV-4
+- Status: Resolved
+- Component: NGINX architecture, libvirt inventory, Ansible, and documentation
+- Detection/symptom: The initial implementation created
+  `nginx01.example.com` and `nginx02.example.com` with a proposed Keepalived
+  VIP even though the lab explicitly does not define HA.
+- Impact: Two empty VMs were briefly created and the first automation revision
+  contained unnecessary Keepalived, VRRP, VIP, and cluster complexity. No
+  application DNS records were published and no user traffic was affected.
+- Cause: The phrase "additional VMs" was interpreted as requiring a
+  multi-hypervisor proxy pair instead of applying the existing non-HA
+  architecture decision.
+- Resolution: Stopped and undefined only the two new empty domains, removed
+  their OS, data, and cloud-init volumes, and replaced the design with the
+  standalone `nginx.example.com` VM at `192.168.1.114`. Removed Keepalived,
+  VRRP, `.132`, and `.140` from active configuration.
+- Validation: `virsh dominfo` confirms both numbered domains are absent.
+  Machine-readable inventory, Ansible, DNS, version history, and staff
+  documentation now define only the standalone VM. `.132` and `.140` remain
+  expansion addresses.
+- Prevention/follow-up: Treat the lab-wide "no HA" decision as an architecture
+  constraint. Numeric `01/02` names require an explicitly approved cluster;
+  do not infer a cluster from plural wording.
+- Corrective automation:
+  `cloud-infra-automation-platform/ansible/roles/nginx_reverse_proxy`
+- Evidence/related runbook:
+  [Standalone NGINX Reverse-Proxy Installation](product-installation-nginx.md)
 
 ## New Incident Template
 

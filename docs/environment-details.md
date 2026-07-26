@@ -29,8 +29,8 @@ for every environment:
 
 ## Core Endpoints
 
-Application endpoints use the `apps.example.com` service namespace through the
-NGINX/Keepalived VIP at `192.168.1.140`. VM management names remain direct
+Application endpoints use the `apps.example.com` service namespace through
+the standalone `nginx.example.com` VM at `192.168.1.114`. VM management names remain direct
 `<node>.example.com` records. HTTP is permitted only during bootstrap; the
 target state uses TLS from the internal certificate authority:
 
@@ -92,7 +92,7 @@ HTTP reverse-proxy tier.
 2. Install KVM/libvirt, networking, storage, and Ansible on `infra02`.
 3. Reinstall and validate `infra01`.
 4. Install KVM/libvirt, networking, storage, and Ansible on `infra01`.
-5. Build DNS and the NGINX/Keepalived reverse-proxy cluster.
+5. Build DNS and the standalone NGINX reverse proxy.
 6. Build PostgreSQL, Vault/OpenBao, MinIO, and backup services.
 7. Build GitLab, Jenkins, AWX, AWX execution, Harbor, Artifactory, and
    SonarQube.

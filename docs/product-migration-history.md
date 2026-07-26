@@ -56,7 +56,6 @@ Every product migration follows this sequence:
 | Velero | 0.x | 1.2 | 1.5 | 1.7 | 1.10 | 1.12 | 1.14 | 1.16 | 1.17.z |
 | Longhorn | Not released | Preview | 1.0 | 1.2 | 1.3 | 1.5 | 1.7 | 1.8 | 1.9.z |
 | NGINX | 1.14 | 1.16 | 1.18 | 1.20 | 1.22 | 1.24 | 1.26 | 1.26 | 1.26.3 |
-| Keepalived | 1.3 | 2.0 | 2.0 | 2.2 | 2.2 | 2.2 | 2.2 | 2.2 | 2.2.8 |
 
 ## Product-Specific Migration Routes
 
@@ -80,24 +79,21 @@ platforms. Do not perform an in-place major migration into Rocky 9 product VMs.
 Create a fresh Rocky 9 VM, install the target product, migrate application
 data, switch DNS, and retain the source VM for rollback.
 
-### NGINX and Keepalived Edge Tier
+### NGINX Reverse Proxy
 
-The edge tier moves from a single-host reverse proxy to two Rocky Linux nodes
-with a floating Keepalived VIP:
+The lab uses one standalone Rocky Linux NGINX VM because HA is outside scope:
 
 ```text
-single NGINX endpoint → versioned proxy configuration → dual NGINX nodes
-→ unicast VRRP VIP → trusted internal TLS
+direct host:port access → versioned NGINX virtual hosts
+→ *.apps.example.com service URLs → trusted internal TLS
 ```
 
-For annual upgrades, drain one node by lowering its Keepalived priority or
-stopping Keepalived, upgrade and validate NGINX configuration with `nginx -t`,
-restore it, then repeat on the peer. Never upgrade both nodes in the same step.
-Keepalived configuration changes require a controlled failover test. Before
-crossing NGINX release lines, review removed directives, module ABI
-compatibility, TLS defaults, HTTP/2 behavior, header parsing, and upstream
-retry semantics. Preserve the previous RPMs and proxy configuration until both
-nodes pass application and failover acceptance tests.
+For annual upgrades, snapshot the VM and configuration, validate the candidate
+configuration with `nginx -t`, schedule a maintenance window, upgrade NGINX,
+then test every proxied product. Before crossing release lines, review removed
+directives, module ABI compatibility, TLS defaults, HTTP/2 behavior, header
+parsing, and upstream retry semantics. Preserve the previous RPM and
+configuration until application acceptance tests pass.
 
 ### GitLab
 

@@ -21,7 +21,6 @@ and tested before deployment.
 | Docker Engine | 29.x, latest approved patch | Docker CE repository | Pin major/minor and review daemon changes |
 | Docker Compose plugin | 5.x, latest approved patch | Docker CE repository | Pin Compose file compatibility |
 | NGINX | 1.26.3 Rocky module stream | Rocky Linux 9 AppStream | Stay on the 1.26 stream; apply supported security errata |
-| Keepalived | 2.2.8 Rocky package line | Rocky Linux 9 AppStream | Apply Rocky-supported security and bug-fix updates |
 
 ## Delivery, Identity, and Artifact Services
 

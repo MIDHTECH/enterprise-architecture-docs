@@ -588,3 +588,5 @@ VM-specific product automation owns all directories below `/data`.
 | 2026-07-26 | NGINX proxy tier | Approved clustered edge design | Allocated `nginx01` at `.114`, `nginx02` at `.132`, and floating proxy VIP `.140`; application service names use `*.apps.example.com` |
 | 2026-07-26 | Hypervisor access | NGINX VM build preflight blocked | infra01 and infra02 unreachable by FQDN and direct IP; no live mutation attempted; see INC-2026-017 |
 | 2026-07-26 | Prometheus addressing | Corrected configuration drift | BIND and Ansible changed from occupied `.109` to canonical `.115`; see INC-2026-018 |
+| 2026-07-26 | Hypervisor access | Restored and revalidated | Both hosts, bridges, libvirt networks, GitLab, and DNS reachable; INC-2026-017 resolved |
+| 2026-07-26 | NGINX proxy tier | Corrected HA scope violation | Removed the two newly created empty numbered VMs and all Keepalived/VRRP/VIP design; approved standalone `nginx.example.com` at `.114`; see INC-2026-019 |

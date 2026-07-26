@@ -87,8 +87,7 @@ change record.
 Build in this order:
 
 1. `dns.example.com`
-2. `nginx01.example.com` and `nginx02.example.com`, with
-   `proxy.example.com` at `192.168.1.140`
+2. `nginx.example.com` at `192.168.1.114`
 3. `vault.example.com`
 4. `keycloak.example.com`
 5. `minio.example.com`
@@ -97,8 +96,7 @@ Build in this order:
 
 Validate DNS forward and reverse records, PostgreSQL connectivity, certificate
 trust, secret retrieval, object storage, and a sample restore before proceeding.
-Follow `product-installation-nginx.md` for proxy health, DNS publication, and
-controlled Keepalived failover testing.
+Follow `product-installation-nginx.md` for proxy health and DNS publication.
 
 Where the inventory selects Docker Compose, install Docker Engine and the
 Compose plugin only on that product VM. Store the project at

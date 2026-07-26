@@ -1,27 +1,21 @@
-# NGINX Reverse-Proxy Cluster Installation
+# Standalone NGINX Reverse-Proxy Installation
 
-## Purpose
+## Scope
 
-This runbook builds the shared HTTP application entry tier. Users access
-product URLs without remembering backend ports, while VM management names
-continue to resolve directly to each VM.
-
-## Architecture
+The lab does not implement high availability. One standalone Rocky Linux VM
+provides friendly HTTP application URLs:
 
 | Identity | Address | Placement | Purpose |
 | --- | --- | --- | --- |
-| `nginx01.example.com` | `192.168.1.114` | infra01 | Preferred NGINX/Keepalived member |
-| `nginx02.example.com` | `192.168.1.132` | infra02 | Standby NGINX/Keepalived member |
-| `proxy.example.com` | `192.168.1.140` | Floating | Unicast VRRP virtual IP |
-| `*.apps.example.com` | `192.168.1.140` | DNS service records | User-facing application namespace |
+| `nginx.example.com` | `192.168.1.114` | infra01 | NGINX reverse proxy |
+| `*.apps.example.com` | `192.168.1.114` | DNS service records | User-facing application URLs |
 
-The numbered names are permitted because the two NGINX VMs form a cluster.
-The VIP has no VM, virtual disk, or dedicated NIC. Keepalived owns it on one
-node at a time. NGINX configuration is identical on both nodes.
+There is no second NGINX VM, Keepalived, VRRP, or floating VIP. Address
+`.132` and `.140` remain available for future expansion.
 
 ## URL and Backend Map
 
-| User URL during HTTP bootstrap | Backend |
+| HTTP bootstrap URL | Backend |
 | --- | --- |
 | `http://gitlab.apps.example.com` | `192.168.1.101:80` |
 | `http://jenkins.apps.example.com` | `192.168.1.102:8080` |
@@ -39,29 +33,17 @@ node at a time. NGINX configuration is identical on both nodes.
 | `http://tempo.apps.example.com` | `192.168.1.130:3200` |
 | `http://otel.apps.example.com` | `192.168.1.131:4318` |
 
-An endpoint may return `502 Bad Gateway` until its backend product is
-installed. That is not an NGINX failure if `proxy.example.com/nginx-health`
-passes and the backend port is closed.
+An endpoint may return `502 Bad Gateway` until its backend is installed. That
+does not indicate an NGINX installation failure if `/nginx-health` passes and
+the backend port is closed.
 
 PostgreSQL, DNS, SSH, Kubernetes API, OpenTelemetry gRPC, and other non-HTTP
-protocols retain their native DNS names and ports. Do not put them through the
-HTTP proxy merely to hide a port number.
+protocols keep their native names and ports.
 
-## Prerequisites
+## Provision the VM
 
-1. Restore SSH reachability to both hypervisors.
-2. Confirm `br0`, `lab-bridge`, `lab-images`, and the Rocky 9.8 base image are
-   healthy on both hosts.
-3. Confirm `.114`, `.132`, and `.140` are unused. Do not rely on ping alone;
-   inspect router reservations, ARP, DNS, and libvirt inventories.
-4. Confirm the Mac public key is available without copying its private key to
-   either hypervisor.
-5. Keep existing product DNS unchanged until the VIP and both proxy nodes pass.
-
-## Provision the VMs
-
-Copy the shared provisioner, the correct inventory, and the administrator
-public key to each hypervisor:
+Confirm `.114` is unused in router reservations, ARP, DNS, and libvirt. Copy
+the approved inventory, provisioner, and administrator public key:
 
 ```bash
 scp workspace.training/scripts/provision-libvirt-vms.sh \
@@ -69,108 +51,74 @@ scp workspace.training/scripts/provision-libvirt-vms.sh \
   midhtechadmin@infra01.example.com:/tmp/
 scp ~/.ssh/id_rsa.pub \
   midhtechadmin@infra01.example.com:/tmp/midhtechadmin.pub
-
-scp workspace.training/scripts/provision-libvirt-vms.sh \
-  workspace.training/libvirt/inventory/infra02-vms.csv \
-  midhtechadmin@infra02.example.com:/tmp/
-scp ~/.ssh/id_rsa.pub \
-  midhtechadmin@infra02.example.com:/tmp/midhtechadmin.pub
 ```
 
-Review the plans and create only the two approved domains:
+Review and create only the standalone NGINX domain:
 
 ```bash
 ssh midhtechadmin@infra01.example.com \
   'INVENTORY=/tmp/infra01-vms.csv /tmp/provision-libvirt-vms.sh plan'
 ssh midhtechadmin@infra01.example.com \
-  'INVENTORY=/tmp/infra01-vms.csv /tmp/provision-libvirt-vms.sh create nginx01.example.com'
-
-ssh midhtechadmin@infra02.example.com \
-  'INVENTORY=/tmp/infra02-vms.csv /tmp/provision-libvirt-vms.sh plan'
-ssh midhtechadmin@infra02.example.com \
-  'INVENTORY=/tmp/infra02-vms.csv /tmp/provision-libvirt-vms.sh create nginx02.example.com'
+  'INVENTORY=/tmp/infra01-vms.csv /tmp/provision-libvirt-vms.sh create nginx.example.com'
 ```
 
-The provisioner is idempotent at the libvirt-domain level and leaves an
-existing domain unchanged.
+The provisioner leaves an existing domain unchanged.
 
 ## Apply the Rocky Baseline
 
-Wait for cloud-init, then validate the FQDN, IP, guest agent, Chrony,
-firewalld, SELinux enforcing mode, and `/data` disk on each VM. Apply the
-existing Rocky baseline to one node at a time:
+Wait for cloud-init and validate the FQDN, `.114` address, guest agent,
+Chrony, firewalld, SELinux enforcing mode, and disks:
 
 ```bash
+ssh midhtechadmin@192.168.1.114 \
+  'sudo cloud-init status --wait; hostname -f; ip -4 -br address show eth0'
 workspace.training/scripts/apply-rocky9-baseline.sh 192.168.1.114
-workspace.training/scripts/apply-rocky9-baseline.sh 192.168.1.132
 ```
 
-## Configure NGINX and Keepalived
+## Configure NGINX
 
-The authoritative automation is:
+Authoritative automation:
 
 ```text
-cloud-infra-automation-platform/ansible/playbooks/nginx-load-balancers.yml
-cloud-infra-automation-platform/ansible/roles/nginx_load_balancer/
+cloud-infra-automation-platform/ansible/playbooks/nginx-reverse-proxy.yml
+cloud-infra-automation-platform/ansible/roles/nginx_reverse_proxy/
 ```
 
-AWX is the normal controller after it is available. During the current
-bootstrap, direct Ansible is permitted only as a recorded break-glass change
-from infra02 using the forwarded Mac SSH agent:
+AWX is the normal controller after it is available. During bootstrap, direct
+Ansible from infra02 through the forwarded Mac SSH agent is a recorded
+break-glass action:
 
 ```bash
 cd cloud-infra-automation-platform/ansible
 ansible-inventory -i inventory/onprem.yml --graph
 ansible-playbook -i inventory/onprem.yml \
-  playbooks/nginx-load-balancers.yml --syntax-check
+  playbooks/nginx-reverse-proxy.yml --syntax-check
 ansible-playbook -i inventory/onprem.yml \
-  playbooks/nginx-load-balancers.yml --check --diff
+  playbooks/nginx-reverse-proxy.yml --check --diff
 ansible-playbook -i inventory/onprem.yml \
-  playbooks/nginx-load-balancers.yml
+  playbooks/nginx-reverse-proxy.yml
 ```
 
-The role:
+The role installs the Rocky NGINX 1.26 package stream, configures application
+virtual hosts and forwarding headers, permits HTTP/HTTPS in firewalld, enables
+the SELinux backend-connect boolean, records the installed package version,
+and exposes `/nginx-health`.
 
-- enables the Rocky Linux NGINX 1.26 module stream
-- installs NGINX 1.26.3 and Keepalived 2.2.8 package lines
-- configures unicast VRRP across the two hypervisors
-- opens HTTP, HTTPS, and VRRP in firewalld
-- enables the required SELinux backend-connect boolean
-- installs common WebSocket and forwarding headers
-- exposes `/nginx-health`
-- validates NGINX and Keepalived configuration before service acceptance
-
-## Validate Before DNS Publication
-
-Validate each node directly while supplying the future service host header:
+## Validate Before Publishing DNS
 
 ```bash
-curl --fail --header 'Host: proxy.example.com' \
+curl --fail --header 'Host: nginx.example.com' \
   http://192.168.1.114/nginx-health
-curl --fail --header 'Host: proxy.example.com' \
-  http://192.168.1.132/nginx-health
-```
 
-Confirm only one node owns the VIP:
-
-```bash
-ssh midhtechadmin@192.168.1.114 'ip -4 address show dev eth0'
-ssh midhtechadmin@192.168.1.132 'ip -4 address show dev eth0'
-curl --fail --header 'Host: proxy.example.com' \
-  http://192.168.1.140/nginx-health
-```
-
-Test a configured backend without publishing DNS:
-
-```bash
-curl --fail --resolve gitlab.apps.example.com:80:192.168.1.140 \
+curl --fail --resolve gitlab.apps.example.com:80:192.168.1.114 \
   http://gitlab.apps.example.com/
 ```
 
+Do not publish the application records unless both checks pass.
+
 ## Publish DNS
 
-Only after both nodes, the VIP, and the GitLab test pass, apply the updated
-BIND role:
+Apply the version-controlled DNS role only after NGINX validation:
 
 ```bash
 cd cloud-infra-automation-platform/ansible
@@ -178,60 +126,37 @@ ansible-playbook -i inventory/onprem.yml playbooks/dns.yml --check --diff
 ansible-playbook -i inventory/onprem.yml playbooks/dns.yml
 ```
 
-The DNS change publishes:
+The change publishes:
 
-- `nginx01.example.com = 192.168.1.114`
-- `nginx02.example.com = 192.168.1.132`
-- `proxy.example.com = 192.168.1.140`
-- approved `*.apps.example.com` application records at `192.168.1.140`
+- `nginx.example.com = 192.168.1.114`
+- approved `*.apps.example.com = 192.168.1.114`
 
-It does not replace VM management records such as
-`gitlab.example.com = 192.168.1.101`.
+VM management records such as `gitlab.example.com = 192.168.1.101` remain
+unchanged.
 
-## Failover Acceptance Test
+## Product Follow-up
 
-Run this only in an approved maintenance window:
-
-1. Identify the current VIP owner.
-2. Start a continuous request to
-   `http://proxy.example.com/nginx-health`.
-3. Stop Keepalived on the current owner.
-4. Confirm `.140` moves to the peer and requests recover within the VRRP
-   convergence interval.
-5. Start Keepalived on the original owner.
-6. Confirm both services are active and exactly one node owns the VIP.
-7. Record timings and any failed requests in the SRE evidence.
-
-Do not stop NGINX on both nodes. Do not test failover while GitLab imports,
-artifact uploads, or product upgrades are running.
-
-## Product-Specific Follow-up
-
-Each backend must be configured with its public `*.apps.example.com` base URL
-and trusted-proxy settings. GitLab, Jenkins, AWX, Keycloak, Harbor,
-Artifactory, SonarQube, Grafana, and MinIO generate redirects or cookies from
-that public URL; validate login, logout, WebSockets, uploads, callbacks, clone
-URLs, registry pushes, and API clients after each product is enabled.
+Configure each backend with its `*.apps.example.com` public base URL and
+trusted-proxy settings. Validate redirects, cookies, login/logout, WebSockets,
+uploads, callback URLs, Git clone URLs, registry operations, and API clients
+when each product becomes available.
 
 ## TLS Phase
 
 HTTP removes backend port numbers but is not the final security state. After
 the internal CA is available:
 
-1. Issue a certificate containing `*.apps.example.com` and
-   `proxy.example.com`, or approved individual SANs.
-2. Store the private key outside Git and deploy it through Vault/AWX.
-3. Configure TLS 1.2/1.3 on both nodes.
-4. Trust the CA on staff workstations and automation runners.
+1. Issue an approved certificate for `*.apps.example.com`.
+2. Store its private key outside Git and deploy it through Vault/AWX.
+3. Configure TLS 1.2/1.3 in NGINX.
+4. Trust the CA on clients and runners.
 5. Validate every product over HTTPS.
-6. Enable the HTTP-to-HTTPS redirect only after validation.
+6. Enable HTTP-to-HTTPS redirection only after acceptance.
 
-Do not use a wildcard certificate from a public CA for the internal
-`example.com` training zone.
+## Backup and Recovery
 
-## Rollback
-
-If proxy publication fails, restore the previous BIND zone from version
-control and apply the DNS role. VM management records never change, so staff
-can reach backends directly by `<product>.example.com:<port>` during rollback.
-Stop Keepalived only if the VIP itself is producing network conflicts.
+Because the lab intentionally has no HA, `nginx.example.com` is a single point
+of access. Store its configuration in Git, back up certificates separately,
+and retain the VM definition in the canonical inventory. If it fails, users
+can temporarily reach backends through their direct management names and
+ports while the NGINX VM is rebuilt from automation.
