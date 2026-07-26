@@ -13,9 +13,12 @@ product and AWX the second.
 
 ## Current Status
 
-As of 2026-07-25, BIND is installed, enabled, and active. Forward, reverse,
+As of 2026-07-26, BIND is installed, enabled, and active. Forward, reverse,
 UDP, TCP, and recursive lookups pass, and the Ansible role has converged with
 `changed=0`, `failed=0`, and `unreachable=0`.
+
+The current zone includes `nginx.example.com = 192.168.1.114`, its reverse
+record, and the approved `*.apps.example.com` service names at `.114`.
 
 The Linksys router now contains 42 verified DHCP reservations: infra01,
 infra02, and every address from `.101` through `.140`. Automatic client DNS
@@ -27,10 +30,9 @@ Clients may also receive router IPv6 resolver
 `2603:300c:571:c280:ea9f:80ff:feec:54af`. macOS prefers that resolver and will
 return no answer for the internal zone. This is tracked as INC-2026-014.
 
-The Mac administration workstation currently has the temporary Wi-Fi-service
-override `192.168.1.106`. GitLab, AWX, and public recursive lookups are
-validated. This override is not scoped to the Copper9100 SSID: it applies on
-every Wi-Fi network until removed.
+The Mac administration workstation uses `/etc/resolver/example.com` for
+domain-scoped split DNS through `192.168.1.106`. GitLab, AWX, NGINX,
+application service names, and public recursive lookups are validated.
 
 ## Addressing
 
@@ -199,6 +201,8 @@ is reachable. Validate through the macOS system resolver:
 ```bash
 dscacheutil -q host -a name gitlab.example.com
 dscacheutil -q host -a name awx.example.com
+dscacheutil -q host -a name nginx.example.com
+dscacheutil -q host -a name gitlab.apps.example.com
 ```
 
 Command-line tools such as `dig` and `nslookup` may query the default resolver
@@ -237,7 +241,9 @@ nslookup www.redhat.com
 ```
 
 Expected results include `192.168.1.101` for GitLab and `192.168.1.103` for
-AWX. Confirm the client received `192.168.1.106` as its DNS server.
+AWX. `nginx.example.com` and the application service names return
+`192.168.1.114`. Confirm the client received `192.168.1.106` as its DNS
+server.
 
 ## Change Control
 

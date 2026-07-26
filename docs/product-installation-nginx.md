@@ -5,6 +5,8 @@
 The lab does not implement high availability. One standalone Rocky Linux VM
 provides friendly HTTP application URLs:
 
+Implementation status as of 2026-07-26: installed and validated.
+
 | Identity | Address | Placement | Purpose |
 | --- | --- | --- | --- |
 | `nginx.example.com` | `192.168.1.114` | infra01 | NGINX reverse proxy |
@@ -72,7 +74,8 @@ Chrony, firewalld, SELinux enforcing mode, and disks:
 ```bash
 ssh midhtechadmin@192.168.1.114 \
   'sudo cloud-init status --wait; hostname -f; ip -4 -br address show eth0'
-workspace.training/scripts/apply-rocky9-baseline.sh 192.168.1.114
+INVENTORY=workspace.training/libvirt/inventory/infra01-vms.csv \
+  workspace.training/scripts/apply-rocky9-baseline.sh nginx.example.com
 ```
 
 ## Configure NGINX
@@ -104,6 +107,12 @@ virtual hosts and forwarding headers, permits HTTP/HTTPS in firewalld, enables
 the SELinux backend-connect boolean, records the installed package version,
 and exposes `/nginx-health`.
 
+Installed package lock:
+
+```text
+nginx=1.26.3-9.module+el9.8.0+40235+8be1317a.2
+```
+
 ## Validate Before Publishing DNS
 
 ```bash
@@ -115,6 +124,18 @@ curl --fail --resolve gitlab.apps.example.com:80:192.168.1.114 \
 ```
 
 Do not publish the application records unless both checks pass.
+
+Initial acceptance evidence:
+
+- first Ansible run: `ok=17`, `changed=9`, `failed=0`, `unreachable=0`
+- second Ansible run: `ok=12`, `changed=0`, `failed=0`, `unreachable=0`
+- `nginx -t`: successful
+- NGINX service: enabled and active
+- firewalld: HTTP and HTTPS enabled
+- SELinux: enforcing with `httpd_can_network_connect --> on`
+- `/data`: XFS mounted from `/dev/vdb`
+- direct NGINX health: HTTP 200 with body `ok`
+- GitLab proxy: HTTP 302 to the expected sign-in URL
 
 ## Publish DNS
 
@@ -133,6 +154,16 @@ The change publishes:
 
 VM management records such as `gitlab.example.com = 192.168.1.101` remain
 unchanged.
+
+The first and second BIND runs completed with `failed=0`; the second run
+reported `changed=0`. Authoritative forward records for all approved
+application names return `.114`, reverse lookup for `.114` returns
+`nginx.example.com`, and the Mac supplemental resolver resolves both the VM and
+application names.
+
+At initial publication, GitLab returned its expected redirect. The remaining
+application URLs returned `502` because their backend products were not yet
+listening. Those are pending product installations, not NGINX failures.
 
 ## Product Follow-up
 

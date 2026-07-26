@@ -590,3 +590,7 @@ VM-specific product automation owns all directories below `/data`.
 | 2026-07-26 | Prometheus addressing | Corrected configuration drift | BIND and Ansible changed from occupied `.109` to canonical `.115`; see INC-2026-018 |
 | 2026-07-26 | Hypervisor access | Restored and revalidated | Both hosts, bridges, libvirt networks, GitLab, and DNS reachable; INC-2026-017 resolved |
 | 2026-07-26 | NGINX proxy tier | Corrected HA scope violation | Removed the two newly created empty numbered VMs and all Keepalived/VRRP/VIP design; approved standalone `nginx.example.com` at `.114`; see INC-2026-019 |
+| 2026-07-26 | `nginx.example.com` | Provisioned standalone reverse-proxy VM | Rocky Linux 9.8 VM created on infra01 with 2 vCPU, 2 GiB RAM, 30 GiB OS disk, 20 GiB data disk, and autostart |
+| 2026-07-26 | `nginx.example.com` | Applied common baseline | Cloud-init complete; SELinux enforcing; SSH hardened; XFS `/data` mounted; core services active |
+| 2026-07-26 | `nginx.example.com` | Installed NGINX through Ansible | NGINX 1.26.3 enabled and active; firewall, SELinux, configuration, health, GitLab routing, and zero-change second convergence validated |
+| 2026-07-26 | Lab DNS | Published application service URLs | `nginx.example.com` and approved `*.apps.example.com` records resolve to `.114`; reverse lookup and zero-change second BIND convergence validated |

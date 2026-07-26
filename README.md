@@ -11,7 +11,7 @@ This repo is the written map for the training platform. It explains how the infr
 - [GitLab Repository Onboarding](docs/gitlab-repository-onboarding.md)
 - [PostgreSQL 18 Installation](docs/product-installation-postgresql.md)
 - [Lab DNS and Copper9100 Configuration](docs/product-installation-dns.md)
-- [NGINX Reverse-Proxy Cluster Installation](docs/product-installation-nginx.md)
+- [Standalone NGINX Reverse-Proxy Installation](docs/product-installation-nginx.md)
 - [VM Inventory and Placement](docs/vm-inventory.md)
 - [Environment Details](docs/environment-details.md)
 - [Platform Installation Runbook](docs/platform-installation-runbook.md)
