@@ -55,6 +55,8 @@ Every product migration follows this sequence:
 | OpenTelemetry Collector | Not released | Early project | 0.x | 0.x | 0.x | 0.x | 0.x | 0.x | 0.137.z |
 | Velero | 0.x | 1.2 | 1.5 | 1.7 | 1.10 | 1.12 | 1.14 | 1.16 | 1.17.z |
 | Longhorn | Not released | Preview | 1.0 | 1.2 | 1.3 | 1.5 | 1.7 | 1.8 | 1.9.z |
+| NGINX | 1.14 | 1.16 | 1.18 | 1.20 | 1.22 | 1.24 | 1.26 | 1.26 | 1.26.3 |
+| Keepalived | 1.3 | 2.0 | 2.0 | 2.2 | 2.2 | 2.2 | 2.2 | 2.2 | 2.2.8 |
 
 ## Product-Specific Migration Routes
 
@@ -77,6 +79,25 @@ Rocky Linux did not exist in 2018. Treat CentOS/RHEL 7 and 8 as predecessor
 platforms. Do not perform an in-place major migration into Rocky 9 product VMs.
 Create a fresh Rocky 9 VM, install the target product, migrate application
 data, switch DNS, and retain the source VM for rollback.
+
+### NGINX and Keepalived Edge Tier
+
+The edge tier moves from a single-host reverse proxy to two Rocky Linux nodes
+with a floating Keepalived VIP:
+
+```text
+single NGINX endpoint → versioned proxy configuration → dual NGINX nodes
+→ unicast VRRP VIP → trusted internal TLS
+```
+
+For annual upgrades, drain one node by lowering its Keepalived priority or
+stopping Keepalived, upgrade and validate NGINX configuration with `nginx -t`,
+restore it, then repeat on the peer. Never upgrade both nodes in the same step.
+Keepalived configuration changes require a controlled failover test. Before
+crossing NGINX release lines, review removed directives, module ABI
+compatibility, TLS defaults, HTTP/2 behavior, header parsing, and upstream
+retry semantics. Preserve the previous RPMs and proxy configuration until both
+nodes pass application and failover acceptance tests.
 
 ### GitLab
 

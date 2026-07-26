@@ -585,3 +585,6 @@ VM-specific product automation owns all directories below `/data`.
 | 2026-07-25 | Mac administration workstation | Applied temporary lab DNS override | Wi-Fi DNS set to `192.168.1.106`; GitLab, AWX, and public recursion validated; permanent Linksys DNS advertisement remains pending |
 | 2026-07-25 | `gitlab.example.com` | Created local source-control namespace | Private `maas-enterprise-cloud-platform` group and eight private projects created; all repository origins restricted to local GitLab |
 | 2026-07-25 | GitLab repository fleet | Imported workspace source repositories | Eight clean `main` branches pushed and hash-verified; hard-coded database password removed from current code and reachable history before publication |
+| 2026-07-26 | NGINX proxy tier | Approved clustered edge design | Allocated `nginx01` at `.114`, `nginx02` at `.132`, and floating proxy VIP `.140`; application service names use `*.apps.example.com` |
+| 2026-07-26 | Hypervisor access | NGINX VM build preflight blocked | infra01 and infra02 unreachable by FQDN and direct IP; no live mutation attempted; see INC-2026-017 |
+| 2026-07-26 | Prometheus addressing | Corrected configuration drift | BIND and Ansible changed from occupied `.109` to canonical `.115`; see INC-2026-018 |

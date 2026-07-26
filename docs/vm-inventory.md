@@ -9,6 +9,10 @@ GNOME, KVM/QEMU, libvirt, cloud-init tooling, and Ansible.
 - A standalone product uses its product name: `gitlab.example.com`.
 - Numeric suffixes are used only for members of a cluster:
   `k8s-worker01.example.com`.
+- Clustered edge services use numbered node names and a non-numbered service
+  identity. The reverse-proxy nodes are `nginx01.example.com` and
+  `nginx02.example.com`; clients use `*.apps.example.com` through the
+  `proxy.example.com` virtual IP.
 - The libvirt domain name, operating-system hostname, DNS record, monitoring
   target, and configuration-management inventory name must match.
 - `example.com` is an internal split-DNS training zone. Public certificates
@@ -18,20 +22,22 @@ GNOME, KVM/QEMU, libvirt, cloud-init tooling, and Ansible.
 
 | Host | Management address | Operating system | Role |
 | --- | --- | --- | --- |
-| `infra01.midhtech.local` | `192.168.1.149/24` | Ubuntu 26.04 LTS Desktop | KVM compute host A |
+| `infra01.example.com` | `192.168.1.38/24` | Ubuntu 26.04 LTS Desktop | KVM compute host A |
 | `infra02.example.com` | `192.168.1.169/24` | Ubuntu 26.04 LTS Desktop | KVM compute host B |
 
-The default gateway is `192.168.1.1`. DNS resolvers are `192.168.1.1` and
-`8.8.8.8`. VM addresses use the approved static range
+The default gateway is `192.168.1.1`. The authoritative lab resolver is
+`192.168.1.106`; router DNS advertisement remains a documented follow-up. VM
+addresses use the approved static range
 `192.168.1.101–192.168.1.140`, which must remain excluded from general DHCP
 allocation. Do not assign an address merely because it does not answer a ping.
 
 ## Address and MAC Allocation
 
-Addresses `.101–.113` and `.115` are allocated to infra01 and `.121–.131`
-to infra02. Address `.109` remains occupied by a non-lab LAN device and is
-not assigned to a VM.
-Addresses `.114–.120` and `.132–.140` remain reserved for expansion. MAC
+Addresses `.101–.115` except `.109` are allocated to infra01 and
+`.121–.132` to infra02. Address `.109` remains occupied by a non-lab LAN
+device and is not assigned to a VM. Address `.140` is the floating
+reverse-proxy VIP and is not assigned to a VM NIC.
+Addresses `.116–.120` and `.133–.139` remain reserved for expansion. MAC
 addresses are persistent configuration and must not be regenerated during a VM
 rebuild.
 
@@ -50,6 +56,7 @@ rebuild.
 | `governance.example.com` | infra01 | `192.168.1.111` | `52:54:00:01:01:11` |
 | `minio.example.com` | infra01 | `192.168.1.112` | `52:54:00:01:01:12` |
 | `backup.example.com` | infra01 | `192.168.1.113` | `52:54:00:01:01:13` |
+| `nginx01.example.com` | infra01 | `192.168.1.114` | `52:54:00:01:01:14` |
 | `awx-execution.example.com` | infra02 | `192.168.1.121` | `52:54:00:02:01:21` |
 | `harbor.example.com` | infra02 | `192.168.1.122` | `52:54:00:02:01:22` |
 | `artifactory.example.com` | infra02 | `192.168.1.123` | `52:54:00:02:01:23` |
@@ -61,6 +68,11 @@ rebuild.
 | `loki.example.com` | infra02 | `192.168.1.129` | `52:54:00:02:01:29` |
 | `tempo.example.com` | infra02 | `192.168.1.130` | `52:54:00:02:01:30` |
 | `otel.example.com` | infra02 | `192.168.1.131` | `52:54:00:02:01:31` |
+| `nginx02.example.com` | infra02 | `192.168.1.132` | `52:54:00:02:01:32` |
+
+The shared service address `proxy.example.com` is `192.168.1.140/24`.
+Keepalived moves it between the two NGINX nodes; it has no dedicated virtual
+machine or static NIC MAC address.
 
 ## infra01 Placement
 
@@ -79,8 +91,9 @@ rebuild.
 | `governance.example.com` | Policy, evidence, and remediation runner | 2 | 4 GB | 40 GB | 50 GB |
 | `minio.example.com` | S3-compatible backup/object storage | 4 | 8 GB | 40 GB | 500 GB |
 | `backup.example.com` | Restic/Borg and database backup automation | 4 | 8 GB | 40 GB | 500 GB |
+| `nginx01.example.com` | NGINX/Keepalived cluster member | 2 | 2 GB | 30 GB | 20 GB |
 
-Planned memory allocation: approximately 94 GB. The remaining memory is
+Planned memory allocation: approximately 96 GB. The remaining memory is
 reserved for Ubuntu, libvirt, filesystem cache, and temporary operations.
 
 ## infra02 Placement
@@ -98,8 +111,9 @@ reserved for Ubuntu, libvirt, filesystem cache, and temporary operations.
 | `loki.example.com` | Loki log storage | 4 | 8 GB | 40 GB | 250 GB |
 | `tempo.example.com` | Tempo trace storage | 4 | 8 GB | 40 GB | 250 GB |
 | `otel.example.com` | OpenTelemetry gateway | 2 | 4 GB | 40 GB | 50 GB |
+| `nginx02.example.com` | NGINX/Keepalived cluster member | 2 | 2 GB | 30 GB | 20 GB |
 
-Planned memory allocation: approximately 88 GB. The remaining memory is
+Planned memory allocation: approximately 90 GB. The remaining memory is
 reserved for Ubuntu, libvirt, filesystem cache, image builds, and recovery
 operations.
 
@@ -158,6 +172,7 @@ inventory.
 | `governance.example.com` | Python virtual environment and systemd timers, or a versioned runner container |
 | `minio.example.com` | Docker Compose with a dedicated data disk |
 | `backup.example.com` | Native systemd timers and backup tooling |
+| `nginx01.example.com`, `nginx02.example.com` | Native NGINX and Keepalived packages managed by Ansible |
 | Kubernetes nodes | Native containerd, kubelet, kubeadm, and kubectl |
 
 Each Compose project must live under `/opt/midhtech/<product>/`, use an

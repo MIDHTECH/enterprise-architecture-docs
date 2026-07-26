@@ -62,11 +62,14 @@ respectively. They can be created only after `infra01.example.com` is rebuilt
 and its libvirt bridge, storage, Rocky image, and common VM baseline pass
 validation.
 
-Current readiness as of 2026-07-25: `infra01.example.com` now has libvirt,
-`br0`, `lab-bridge`, `lab-images`, and all 13 planned VM domains. GitLab, AWX,
+Readiness recorded on 2026-07-25: `infra01.example.com` had libvirt,
+`br0`, `lab-bridge`, `lab-images`, and its original 13 planned VM domains. GitLab, AWX,
 and DNS domains are running, but a concurrent lifecycle workflow has repeatedly
 cycled the entire infra01 fleet. Do not start product configuration until that
 workflow has ended and the guests remain reachable and baseline-valid.
+
+On 2026-07-26 both hypervisors became unreachable from the administration
+workstation. Resolve INC-2026-017 before creating additional domains.
 
 Use narrowly scoped bootstrap automation to install GitLab first. Push the
 platform repositories into GitLab, protect the main branches, and validate
@@ -84,14 +87,18 @@ change record.
 Build in this order:
 
 1. `dns.example.com`
-2. `vault.example.com`
-3. `keycloak.example.com`
-4. `minio.example.com`
-5. `backup.example.com`
-6. complete the gated configuration of `postgres.example.com`
+2. `nginx01.example.com` and `nginx02.example.com`, with
+   `proxy.example.com` at `192.168.1.140`
+3. `vault.example.com`
+4. `keycloak.example.com`
+5. `minio.example.com`
+6. `backup.example.com`
+7. complete the gated configuration of `postgres.example.com`
 
 Validate DNS forward and reverse records, PostgreSQL connectivity, certificate
 trust, secret retrieval, object storage, and a sample restore before proceeding.
+Follow `product-installation-nginx.md` for proxy health, DNS publication, and
+controlled Keepalived failover testing.
 
 Where the inventory selects Docker Compose, install Docker Engine and the
 Compose plugin only on that product VM. Store the project at

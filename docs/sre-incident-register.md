@@ -48,6 +48,8 @@ facts; they do not erase the original observation.
 | INC-2026-014 | 2026-07-25 | SEV-3 | Resolved | Copper9100 client DNS | Router-advertised IPv6 DNS bypassed the authoritative lab resolver |
 | INC-2026-015 | 2026-07-25 | SEV-4 | Resolved | GitLab bootstrap | Initial read-only Rails inventory used an incompatible database-column query |
 | INC-2026-016 | 2026-07-25 | SEV-3 | Resolved | Git repository import | Pre-publish scan found a hard-coded PostgreSQL password in current code and history |
+| INC-2026-017 | 2026-07-26 | SEV-3 | Open | Hypervisor access | Both infra01 and infra02 are unreachable from the administration workstation |
+| INC-2026-018 | 2026-07-26 | SEV-4 | Resolved | IP inventory | Prometheus DNS and Ansible records incorrectly used occupied address `.109` instead of canonical `.115` |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -459,6 +461,69 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   `cloud-infra-automation-platform/terraform/modules/database`
 - Evidence/related runbook:
   [GitLab Repository Onboarding](gitlab-repository-onboarding.md)
+
+## INC-2026-017: Both Hypervisors Unreachable During Proxy-Tier Build
+
+- Date: 2026-07-26
+- Severity: SEV-3
+- Status: Open
+- Component: `infra01.example.com`, `infra02.example.com`, and administration
+  workstation network path
+- Detection/symptom: SSH to both FQDNs and direct addresses
+  `192.168.1.38` and `192.168.1.169` timed out. Ping returned 100% loss, TCP
+  port 22 reported the hosts down, and ARP entries for both hypervisors,
+  GitLab, and DNS remained incomplete.
+- Impact: Live libvirt capacity could not be verified and the new NGINX VMs
+  could not be provisioned. No VM or DNS mutation was attempted.
+- Timeline: Detected while starting the NGINX reverse-proxy implementation on
+  2026-07-26.
+- Cause: Undetermined. The Mac retained `192.168.1.72/24`, reached the Linksys
+  gateway at `192.168.1.1:80`, and learned the gateway MAC, but Layer-2
+  neighbor discovery did not reach either hypervisor or their GitLab/DNS VMs.
+  This narrows the fault toward both hosts being powered off or disconnected,
+  or a shared hypervisor switch/uplink path, rather than loss of the
+  workstation-to-router connection.
+- Resolution: Pending.
+- Validation required:
+  - verify both physical hosts are powered on
+  - confirm `br0` still owns `.38` and `.169` at the local consoles
+  - confirm each host can ping `192.168.1.1`
+  - confirm `ssh` and `libvirtd` are active and TCP/22 is listening
+  - confirm the workstation and hosts are on the same Copper9100 LAN without
+    client isolation
+  - retest ARP, ping, and SSH before provisioning
+- Prevention/follow-up: Add hypervisor reachability and bridge-state
+  monitoring after Prometheus is available. Do not interpret FQDN resolution
+  as host availability.
+- Evidence/related runbook:
+  [NGINX Reverse-Proxy Cluster Installation](product-installation-nginx.md)
+
+## INC-2026-018: Prometheus Address Drift Could Have Targeted Non-Lab Device
+
+- Date: 2026-07-26
+- Severity: SEV-4
+- Status: Resolved
+- Component: BIND and Ansible inventory
+- Detection/symptom: The canonical VM inventory and libvirt CSV assigned
+  `prometheus.example.com` to `192.168.1.115`, while BIND defaults and the
+  Ansible host inventory still assigned it to `192.168.1.109`.
+- Impact: `.109` is documented as occupied by a non-lab LAN device. Applying
+  the stale configuration could have sent automation or monitoring traffic to
+  the wrong system. No such apply occurred during this change.
+- Cause: Prometheus was moved from `.109` to `.115` after the address conflict,
+  but not every machine-readable inventory was updated.
+- Resolution: Corrected BIND and Ansible to `.115` and advanced the DNS zone
+  serial. The canonical VM inventory and libvirt CSV already contained `.115`.
+- Validation: Repository-wide address checks now identify `.115` for the
+  Prometheus VM and proxy backend. Live DNS validation is pending resolution
+  of INC-2026-017.
+- Prevention/follow-up: Generate DNS, Ansible, router reservations, and
+  provisioning inventory from one structured source of truth. Add CI checks
+  that reject duplicate or inconsistent IP assignments.
+- Corrective automation:
+  `cloud-infra-automation-platform/ansible/roles/bind_dns`
+- Evidence/related runbook:
+  [Canonical VM Inventory](vm-inventory.md)
 
 ## New Incident Template
 

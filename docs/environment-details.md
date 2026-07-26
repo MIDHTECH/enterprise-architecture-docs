@@ -29,22 +29,30 @@ for every environment:
 
 ## Core Endpoints
 
-All endpoints use internal DNS and TLS from the internal certificate authority:
+Application endpoints use the `apps.example.com` service namespace through the
+NGINX/Keepalived VIP at `192.168.1.140`. VM management names remain direct
+`<node>.example.com` records. HTTP is permitted only during bootstrap; the
+target state uses TLS from the internal certificate authority:
 
 | Endpoint | Function |
 | --- | --- |
-| `https://gitlab.example.com` | Source control and merge requests |
-| `https://jenkins.example.com` | CI pipelines |
-| `https://awx.example.com` | Automation controller |
-| `https://argocd.example.com` | Kubernetes GitOps |
-| `https://harbor.example.com` | OCI images and Helm OCI |
-| `https://artifactory.example.com` | Build artifacts |
-| `https://sonarqube.example.com` | Code quality |
-| `https://vault.example.com` | Secrets |
-| `https://grafana.example.com` | Dashboards |
-| `https://prometheus.example.com` | Metrics |
-| `https://alertmanager.example.com` | Alerts |
-| `https://keycloak.example.com` | SSO/OIDC |
+| `https://gitlab.apps.example.com` | Source control and merge requests |
+| `https://jenkins.apps.example.com` | CI pipelines |
+| `https://awx.apps.example.com` | Automation controller |
+| `https://harbor.apps.example.com` | OCI images and Helm OCI |
+| `https://artifactory.apps.example.com` | Build artifacts |
+| `https://sonarqube.apps.example.com` | Code quality |
+| `https://vault.apps.example.com` | Secrets |
+| `https://grafana.apps.example.com` | Dashboards |
+| `https://prometheus.apps.example.com` | Metrics |
+| `https://alertmanager.apps.example.com` | Alerts |
+| `https://keycloak.apps.example.com` | SSO/OIDC |
+| `https://minio.apps.example.com` | Object-storage console |
+
+Argo CD is added to the proxy only after the Kubernetes ingress endpoint is
+known and validated. PostgreSQL, DNS, SSH, Kubernetes control-plane ports,
+OpenTelemetry gRPC, and other non-HTTP protocols are not forced through this
+HTTP reverse-proxy tier.
 
 ## Credentials and Trust
 
@@ -84,12 +92,13 @@ All endpoints use internal DNS and TLS from the internal certificate authority:
 2. Install KVM/libvirt, networking, storage, and Ansible on `infra02`.
 3. Reinstall and validate `infra01`.
 4. Install KVM/libvirt, networking, storage, and Ansible on `infra01`.
-5. Build DNS, PostgreSQL, Vault/OpenBao, MinIO, and backup services.
-6. Build GitLab, Jenkins, AWX, AWX execution, Harbor, Artifactory, and
+5. Build DNS and the NGINX/Keepalived reverse-proxy cluster.
+6. Build PostgreSQL, Vault/OpenBao, MinIO, and backup services.
+7. Build GitLab, Jenkins, AWX, AWX execution, Harbor, Artifactory, and
    SonarQube.
-7. Build the Kubernetes control plane and three workers.
-8. Bootstrap Argo CD and platform add-ons.
-9. Build the observability services and connect all targets.
-10. Enable governance evidence collection.
-11. Complete on-premises acceptance testing. IAM Roles Anywhere and the AWX
+8. Build the Kubernetes control plane and three workers.
+9. Bootstrap Argo CD and platform add-ons.
+10. Build the observability services and connect all targets.
+11. Enable governance evidence collection.
+12. Complete on-premises acceptance testing. IAM Roles Anywhere and the AWX
     EKS/ECR workflow are deferred until a later phase.
