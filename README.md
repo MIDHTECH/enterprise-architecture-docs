@@ -5,6 +5,19 @@ This repo is the written map for the training platform. It explains how the infr
 ## Documents
 
 - [Enterprise Project Architecture and Use Case Coverage](docs/five-project-architecture-and-usecases.md)
+- [On-Premises Platform Build Runbook](docs/on-prem-platform-build-runbook.md)
+- [Staff Documentation Standard](docs/documentation-standard.md)
+- [SRE Incident Register](docs/sre-incident-register.md)
+- [GitLab Repository Onboarding](docs/gitlab-repository-onboarding.md)
+- [PostgreSQL 18 Installation](docs/product-installation-postgresql.md)
+- [Lab DNS and Copper9100 Configuration](docs/product-installation-dns.md)
+- [VM Inventory and Placement](docs/vm-inventory.md)
+- [Environment Details](docs/environment-details.md)
+- [Platform Installation Runbook](docs/platform-installation-runbook.md)
+- [Product Version Catalog](docs/product-versions.md)
+- [Product Migration History](docs/product-migration-history.md)
+- [Architecture Evolution, 2023–2026](docs/architecture-evolution-2023-2026.md)
+- [MAAS Monolith-to-Microservices Roadmap](docs/maas-monolith-to-microservices.md)
 - [Engineer Interview Guide](docs/engineer-interview-guide.md)
 - [Marketing Role and Engineer Contribution Guide](docs/marketing-role-engineer-guide.md)
 - [Engineer Training Standard](docs/engineer-training-standard.md)
@@ -20,6 +33,10 @@ This is the documentation home for the project set:
 - Enterprise Kubernetes Platform with GitOps
 - Enterprise Observability and SRE Reliability Platform
 - Enterprise Cloud Governance and Operations Automation
+
+It is also the authoritative operations record for rebuilding `infra01` and
+`infra02`, provisioning their Rocky Linux virtual machines, installing platform
+products, and rehearsing the MAAS modernization path on premises.
 
 ## Extra Docs
 
