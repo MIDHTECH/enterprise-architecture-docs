@@ -82,6 +82,25 @@ git -C workspace.training/<repository> \
 The hashes must match. Also verify that `git remote -v` contains no destination
 outside `gitlab.example.com`.
 
+### Initial Import Evidence
+
+The initial import completed on 2026-07-25. All eight repositories had clean
+worktrees, exactly one remote, and matching local/remote `main` hashes:
+
+| Repository | Verified `main` commit |
+| --- | --- |
+| `cloud-governance-ops-automation` | `046e1ffe9a` |
+| `cloud-infra-automation-platform` | `becc8c8468` |
+| `devsecops-cicd-orchestrator` | `be86002829` |
+| `enterprise-architecture-docs` | `d0b323ac73` |
+| `jenkins-shared-library` | `5f03003ca7` |
+| `jenkins-jobs` | `567d9f63e5` |
+| `kubernetes-platform-gitops` | `b9df940577` |
+| `observability-sre-platform` | `d31eaac9fe` |
+
+The documentation repository receives a subsequent documentation-only commit
+for this evidence and the associated SRE near-miss record.
+
 ## Follow-up Hardening
 
 1. Configure TLS for `gitlab.example.com`.

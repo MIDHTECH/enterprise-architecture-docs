@@ -47,6 +47,7 @@ facts; they do not erase the original observation.
 | INC-2026-013 | 2026-07-25 | SEV-4 | Open | Linksys administration | Authenticated desktop dashboard remains on `Waiting...`, blocking DNS configuration |
 | INC-2026-014 | 2026-07-25 | SEV-3 | Resolved | Copper9100 client DNS | Router-advertised IPv6 DNS bypassed the authoritative lab resolver |
 | INC-2026-015 | 2026-07-25 | SEV-4 | Resolved | GitLab bootstrap | Initial read-only Rails inventory used an incompatible database-column query |
+| INC-2026-016 | 2026-07-25 | SEV-3 | Resolved | Git repository import | Pre-publish scan found a hard-coded PostgreSQL password in current code and history |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -423,6 +424,39 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Prevention/follow-up: Prefer documented APIs for routine inventory. When
   Rails runner is necessary, validate computed model attributes against the
   installed GitLab version and perform a read-only preflight first.
+- Evidence/related runbook:
+  [GitLab Repository Onboarding](gitlab-repository-onboarding.md)
+
+## INC-2026-016: Hard-Coded Database Password Found Before GitLab Import
+
+- Date: 2026-07-25
+- Severity: SEV-3
+- Status: Resolved
+- Component: `cloud-infra-automation-platform` Git history
+- Detection/symptom: The pre-publish repository scan found a literal
+  PostgreSQL application password in
+  `terraform/modules/database/main.tf`. The value was also reachable from an
+  earlier commit on `main`.
+- Impact: No GitLab project contained the value because all remote projects
+  were still empty and the push was stopped. Publishing without remediation
+  would have exposed a reusable credential pattern in the private source
+  repository and its history.
+- Cause: The training implementation embedded a local bootstrap password
+  directly in a Kubernetes Secret resource.
+- Resolution: Replaced the literal with a required sensitive Terraform input,
+  wired all four environments to that input, and rewrote the affected local
+  `main` history before the initial push. A recovery ref was retained locally
+  during import; it was not pushed.
+- Validation: Current-tree search found no literal value. A history search
+  found it unreachable from the rewritten `main`. The GitLab project was
+  confirmed empty before push, and its remote `main` now matches the sanitized
+  local commit.
+- Prevention/follow-up: Supply `TF_VAR_postgres_password` from the approved
+  secret store, add automated secret scanning to GitLab CI, and never use
+  repository examples as a credential store. Rotate the value anywhere it may
+  have been reused despite being labeled for local use.
+- Corrective automation:
+  `cloud-infra-automation-platform/terraform/modules/database`
 - Evidence/related runbook:
   [GitLab Repository Onboarding](gitlab-repository-onboarding.md)
 
