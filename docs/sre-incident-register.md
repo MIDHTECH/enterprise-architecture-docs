@@ -543,12 +543,15 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   standalone `nginx.example.com` VM at `192.168.1.114`. Removed Keepalived,
   VRRP, `.132`, and `.140` from active configuration. Replaced the stale
   `.114` SSH host key left by the intentionally deleted VM; macOS retained a
-  recovery copy as `~/.ssh/known_hosts.old`.
+  recovery copy as `~/.ssh/known_hosts.old`. Removed the exact orphaned
+  `nginx01`/`nginx02` image and cloud-init directories after inspection.
 - Validation: `virsh dominfo` confirms both numbered domains are absent.
   Machine-readable inventory, Ansible, DNS, version history, and staff
   documentation now define only the standalone VM. `.132` and `.140` remain
   expansion addresses. The new ED25519 host-key fingerprint is
-  `SHA256:yFx7AwITKQNcN6F+ETaLCKFyEREvujUowM9SQPWeK2U`.
+  `SHA256:yFx7AwITKQNcN6F+ETaLCKFyEREvujUowM9SQPWeK2U`. Final path checks
+  confirmed the numbered-domain directories and temporary Ansible bootstrap
+  copy are absent.
 - Prevention/follow-up: Treat the lab-wide "no HA" decision as an architecture
   constraint. Numeric `01/02` names require an explicitly approved cluster;
   do not infer a cluster from plural wording.
