@@ -12,12 +12,14 @@ flowchart TB
         sre[SRE / Operations]
     end
 
-    subgraph gitlab[GitLab Group: MAAS Enterprise Cloud Platform]
+    subgraph gitlab[GitLab Group: maas-enterprise-cloud-platform]
         arch[enterprise-architecture-docs]
         cicd[devsecops-cicd-orchestrator]
         infra[cloud-infra-automation-platform]
         k8s[kubernetes-platform-gitops]
         obs[observability-sre-platform]
+        ansobs[ansible-observability]
+        ansprom[ansible-prometheus]
         gov[cloud-governance-ops-automation]
         jobs[jenkins-jobs]
         lib[jenkins-shared-library]
@@ -44,6 +46,8 @@ flowchart TB
     infra --> mr
     k8s --> mr
     obs --> mr
+    ansobs --> mr
+    ansprom --> mr
     gov --> mr
     jobs --> jenkins
     lib --> jenkins

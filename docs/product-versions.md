@@ -61,15 +61,15 @@ and tested before deployment.
 
 | Product | Target version | Deployment | Upgrade authority |
 | --- | --- | --- | --- |
-| Prometheus | 3.13.1 LTS | Container on `prometheus.example.com` | [Prometheus downloads](https://prometheus.io/download/) |
-| Alertmanager | 0.33.1 | Container on `alertmanager.example.com` | [Prometheus downloads](https://prometheus.io/download/) |
-| Blackbox Exporter | 0.28.0 | Prometheus VM auxiliary container | [Prometheus downloads](https://prometheus.io/download/) |
-| Node Exporter | 1.12.1 | All hosts and VMs | [Prometheus downloads](https://prometheus.io/download/) |
-| Grafana | 13.1, latest patch | Container on `grafana.example.com` | [Grafana upgrade guide](https://grafana.com/docs/grafana/latest/upgrade-guide/) |
-| Loki | 3.7, latest patch | Container on `loki.example.com` | [Loki upgrade guide](https://grafana.com/docs/loki/latest/setup/upgrade/) |
-| Tempo | 3.0, latest patch | Container on `tempo.example.com` | [Tempo upgrade guide](https://grafana.com/docs/tempo/latest/set-up-for-tracing/setup-tempo/upgrade/) |
-| OpenTelemetry Collector Contrib | 0.137, latest patch | Container on `otel.example.com` | Pin receivers, processors, exporters, and extensions |
-| MinIO Community | `RELEASE.2025-04-22T22-12-26Z` pending community-support review | Container on `minio.example.com` | Do not change tags without testing data-format compatibility |
+| Prometheus | 3.13.1 | Native systemd on `prometheus.example.com` | `ansible-prometheus` |
+| Alertmanager | 0.33.1 | Native systemd on `alertmanager.example.com` | `ansible-observability` |
+| Blackbox Exporter | 0.25.0 | Native systemd on `prometheus.example.com` | `ansible-observability` |
+| Node Exporter | 1.11.1 | Native systemd on all managed hosts | `ansible-prometheus` |
+| Grafana | 13.1.1 | Native RPM and systemd on `grafana.example.com` | `ansible-prometheus` |
+| Loki | 3.7.4 | Native systemd on `loki.example.com` | `ansible-observability` |
+| Tempo | 3.0.2 | Native RPM and systemd on `tempo.example.com` | `ansible-observability` |
+| OpenTelemetry Collector Contrib | 0.137.0 | Native RPM and systemd on `otel.example.com` | `ansible-observability` |
+| MinIO Community | `RELEASE.2025-04-22T22-12-26Z` | Native systemd on `minio.example.com` | `ansible-observability` |
 | Restic | 0.18, latest patch | Native on `backup.example.com` | Verify repository format and run `restic check` |
 
 ## Supporting Platform Packages

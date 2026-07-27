@@ -31,6 +31,8 @@ account credentials after TLS and the permanent identity model are configured.
 | `jenkins_jobs` | `maas-enterprise-cloud-platform/jenkins-jobs` |
 | `kubernetes-platform-gitops` | `maas-enterprise-cloud-platform/kubernetes-platform-gitops` |
 | `observability-sre-platform` | `maas-enterprise-cloud-platform/observability-sre-platform` |
+| `ansible-observability` | `maas-enterprise-cloud-platform/ansible-observability` |
+| `ansible-prometheus` | `maas-enterprise-cloud-platform/ansible-prometheus` |
 
 The local directory `jenkins_jobs` intentionally maps to the hyphenated GitLab
 path `jenkins-jobs`.
@@ -100,6 +102,17 @@ worktrees, exactly one remote, and matching local/remote `main` hashes:
 
 The documentation repository receives a subsequent documentation-only commit
 for this evidence and the associated SRE near-miss record.
+
+### 2026-07-27 Repository Organization Update
+
+- Created `maas-enterprise-cloud-platform/ansible-observability` for native
+  observability-tool installation and operations.
+- Transferred project ID 10 from `cloud-team/ansible-prometheus` to
+  `maas-enterprise-cloud-platform/ansible-prometheus`.
+- Preserved the transferred project's branches, history, artifacts, and
+  settings.
+- Standardized the group display name and path as
+  `maas-enterprise-cloud-platform`.
 
 ## Follow-up Hardening
 

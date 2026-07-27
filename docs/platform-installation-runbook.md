@@ -147,17 +147,29 @@ Bootstrap Argo CD once, then let Argo CD install:
 
 ## 7. Build Observability
 
-Build and connect:
+Use the dedicated automation repositories:
 
-1. `prometheus.example.com`
-2. `alertmanager.example.com`
-3. `grafana.example.com`
-4. `loki.example.com`
-5. `tempo.example.com`
-6. `otel.example.com`
+1. Run `maas-enterprise-cloud-platform/ansible-prometheus` for Prometheus,
+   Grafana, and Node Exporter.
+2. Run syntax validation, lint, and check mode in
+   `maas-enterprise-cloud-platform/ansible-observability`.
+3. Run `playbooks/install-observability.yml`.
+4. Run `playbooks/verify-observability.yml`.
+
+The resulting service placement is:
+
+1. Prometheus and Blackbox Exporter on `prometheus.example.com`.
+2. Alertmanager on `alertmanager.example.com`.
+3. MinIO on `minio.example.com`.
+4. Grafana on `grafana.example.com`.
+5. Loki on `loki.example.com`.
+6. Tempo on `tempo.example.com`.
+7. OpenTelemetry Collector on `otel.example.com`.
 
 Every service and VM must expose or forward health and telemetry data. Test at
 least one metric alert, one centralized log query, and one distributed trace.
+The current deployment uses native systemd services; Docker is not part of the
+observability VM runtime.
 
 ## 8. Enable Governance
 

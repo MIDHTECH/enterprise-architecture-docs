@@ -186,14 +186,14 @@ inventory.
 | `artifactory.example.com` | Official Artifactory OSS Docker Compose package |
 | `sonarqube.example.com` | Docker Compose connected to `postgres.example.com` |
 | `postgres.example.com` | Native systemd service or Docker Compose with a dedicated data disk |
-| `prometheus.example.com` | Single-product Docker Compose |
-| `alertmanager.example.com` | Single-product Docker Compose |
-| `grafana.example.com` | Docker Compose connected to `postgres.example.com` when configured |
-| `loki.example.com` | Single-product Docker Compose with MinIO object storage |
-| `tempo.example.com` | Single-product Docker Compose with MinIO object storage |
-| `otel.example.com` | Single-product Docker Compose |
+| `prometheus.example.com` | Native Prometheus and Blackbox Exporter systemd units managed by Ansible |
+| `alertmanager.example.com` | Native Alertmanager systemd unit managed by Ansible |
+| `grafana.example.com` | Native Grafana RPM and systemd unit managed by Ansible |
+| `loki.example.com` | Native Loki systemd unit with local storage under `/data/loki` |
+| `tempo.example.com` | Native Tempo RPM and systemd unit with local storage under `/data/tempo` |
+| `otel.example.com` | Native OpenTelemetry Collector Contrib RPM and systemd unit |
 | `governance.example.com` | Python virtual environment and systemd timers, or a versioned runner container |
-| `minio.example.com` | Docker Compose with a dedicated data disk |
+| `minio.example.com` | Native MinIO systemd unit using `/data/minio` |
 | `backup.example.com` | Native systemd timers and backup tooling |
 | `nginx.example.com` | Native NGINX package managed by Ansible |
 | `elasticsearch01.example.com` | Native package or single-product Compose as Elasticsearch cluster node 1 |
