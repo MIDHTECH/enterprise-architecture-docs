@@ -1,6 +1,11 @@
 # Enterprise Branching Strategy
 
-This standard applies to every repository in the MAAS Enterprise Cloud Platform program. The goal is to keep delivery simple, auditable, and enterprise-ready while still supporting different project types such as application delivery, infrastructure, GitOps, observability, governance, Jenkins jobs, and shared libraries.
+This standard applies to every active or future repository in the enterprise
+platform portfolio. The goal is to keep delivery simple, auditable, and
+enterprise-ready while supporting CI/CD, infrastructure, GitOps,
+observability, governance, Linux systems, database reliability, service
+operations, data engineering, network engineering, Jenkins jobs, and shared
+libraries.
 
 ## Branching Model
 

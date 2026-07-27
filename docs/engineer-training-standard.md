@@ -5,7 +5,16 @@ the three-node Elastic Stack, and the standalone Splunk exercise. Learners
 must distinguish VM provisioning from product installation and use the
 incident register whenever source-of-truth drift is discovered.
 
-Use this standard for every enterprise platform project. An engineer should be able to explain the project clearly, defend the architecture, describe their contribution, and answer practical interview questions from multiple angles.
+Use this standard for every enterprise platform project. The portfolio contains
+ten capability projects: five active implementations and five planned
+additions for Linux systems, database reliability, resilience/service
+operations, data engineering, and network engineering. An engineer should be
+able to explain the project clearly, defend the architecture, describe their
+contribution, and answer practical interview questions from multiple angles.
+
+Never present a planned project as implemented. Planned training material must
+use target-state language, identify prerequisites, and distinguish architecture
+work from repository, VM, product, and operational acceptance.
 
 The expected voice is a senior DevOps, cloud, platform, or SRE engineer with 6-8 years of hands-on experience. Documentation should sound like the engineer has owned production delivery, made tradeoffs, worked with cross-functional teams, supported audits, handled incidents, and improved reliability, security, and automation outcomes. Avoid junior or classroom phrasing. Use language that shows practical ownership, decision-making, risk awareness, and measurable business impact.
 
@@ -16,7 +25,7 @@ Every project must have these training sections:
 1. **Project Summary**
    - What the project does.
    - Which enterprise problem it solves.
-   - Where it fits in the larger MAAS Enterprise Cloud Platform program.
+   - Where it fits in the larger enterprise platform portfolio.
 
 2. **Client Problem**
    - What was manual, slow, risky, inconsistent, insecure, or hard to operate before the project.
@@ -37,7 +46,10 @@ Every project must have these training sections:
 
 6. **Team Model**
    - Roles involved in delivery.
-   - Example: cloud architect, DevOps engineer, platform engineer, SRE, security engineer, QA engineer, release manager, compliance analyst.
+   - Example: cloud architect, DevOps engineer, platform engineer, SRE,
+     database reliability engineer, Linux systems engineer, data engineer,
+     network engineer, security engineer, QA engineer, release manager, and
+     compliance analyst.
 
 7. **My Contribution**
    - What the engineer personally designed, built, automated, documented, tested, validated, or improved.
@@ -172,3 +184,7 @@ A project is training-ready only when it has:
 - Enterprise controls explanation.
 - Business outcome explanation.
 - 80-question interview bank with 30 skill/tool/project questions and 10 questions each for architecture, system design, behavioral, troubleshooting, and scenario-based categories.
+
+For a planned project, “training-ready” means its architecture and question
+bank are ready for design review. It does not mean the implementation is
+complete.

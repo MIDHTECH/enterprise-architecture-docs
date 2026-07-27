@@ -400,8 +400,11 @@ After both hypervisors pass validation:
 12. Build the single-control-plane Kubernetes cluster and three workers.
 13. Install GitOps, ingress, certificates, policy, storage and backup operators.
 14. Install the dedicated observability services.
-15. Deploy the reference workload and validate the five end-to-end projects.
-16. Begin the on-premises MAAS monolith-to-microservices rehearsal.
+15. Validate Projects 1–5 as the active end-to-end implementation.
+16. Review capacity and prerequisites for planned Projects 6–10; do not create
+    their repositories, VMs, or products from this build step.
+17. Optionally deploy a reference workload and begin the on-premises MAAS
+    monolith-to-microservices rehearsal.
 
 Exact VM placement and product sequencing are maintained in the linked VM
 inventory and platform installation documents.

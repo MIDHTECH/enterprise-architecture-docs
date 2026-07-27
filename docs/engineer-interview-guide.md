@@ -1,12 +1,15 @@
 # Engineer Interview Guide: Enterprise Cloud and Platform Projects
 
-This guide gives you a natural way to talk about the five training projects in interviews.
+This guide gives you a natural way to talk about the ten-project enterprise
+portfolio in interviews. Projects 1–5 describe active implementation
+repositories. Projects 6–10 describe the approved target architecture and must
+be presented as planned work, not completed experience.
 
 ## Positioning Statement
 
 Use this version when you need a short overview:
 
-> I built a connected set of platform engineering projects that covers infrastructure, CI/CD, Kubernetes, observability, and cloud governance. The point was to make the repos feel like real delivery work: GitLab for source control and review, Terraform for infrastructure, Ansible for configuration, Jenkins and GitLab CI for delivery, GitOps for Kubernetes, and monitoring and security controls around the whole stack.
+> I built the first five implementation domains of a ten-project enterprise platform portfolio covering CI/CD, infrastructure, Kubernetes, observability, and governance. I also designed the next capability domains for Linux systems, database reliability, service operations, data engineering, and network engineering. GitLab provides source control and review, Terraform and Ansible provide automation, Jenkins and GitLab CI provide delivery, and GitOps and operational controls connect the platform.
 
 For role-specific positioning, team model, and contribution wording, see [Marketing Role and Engineer Contribution Guide](marketing-role-engineer-guide.md).
 
@@ -80,6 +83,68 @@ For role-specific positioning, team model, and contribution wording, see [Market
 
 **Use cases covered:** Secrets management, IAM/RBAC standardization, compliance scanning, infrastructure hardening, private endpoints, DNS/certificate management, backup and DR, cost optimization, incident remediation, toil reduction.
 
+## Project 6: Enterprise Linux Systems Platform (Planned)
+
+**Target problem:** Linux lifecycle, KVM, patching, storage, DNS, identity, and
+system services need consistent automation and operational evidence.
+
+**Target design:** Reusable Ansible roles and AWX workflows manage Rocky Linux
+hosts, hypervisor services, baselines, patch windows, storage, recovery, and
+validation.
+
+**Interview boundary:** Explain the architecture and planned delivery sequence.
+Do not claim that this repository or all workflows have been implemented.
+
+## Project 7: Enterprise Database Reliability Platform (Planned)
+
+**Target problem:** Database provisioning, access, performance, upgrades,
+backup, and recovery need one reliability model rather than product-by-product
+manual procedures.
+
+**Target design:** AWX and database-native tooling automate lifecycle and
+recovery exercises while observability supplies health and performance
+evidence.
+
+**Interview boundary:** Describe the approved capability design and its
+dependencies on systems, secrets, backup, and observability.
+
+## Project 8: Enterprise Resilience and Service Operations (Planned)
+
+**Target problem:** Alerts, incidents, SLOs, capacity decisions, DR tests, and
+corrective automation need an integrated service-operations workflow.
+
+**Target design:** Service catalogs, SLOs, runbooks, incident records,
+performance tests, controlled failure experiments, and AWX remediation form a
+closed reliability loop.
+
+**Interview boundary:** Present this as the planned operational layer that
+consumes the active observability platform.
+
+## Project 9: Enterprise Data Engineering Platform (Planned)
+
+**Target problem:** Batch and streaming data movement needs repeatable
+orchestration, quality controls, lineage, security, and operational ownership.
+
+**Target design:** Source-controlled pipelines cover ingestion,
+transformation, quality gates, metadata, lineage, storage layers, and
+monitoring without prematurely selecting products before capacity review.
+
+**Interview boundary:** Discuss the architecture and tradeoffs, not a completed
+data platform deployment.
+
+## Project 10: Enterprise Network Engineering Platform (Planned)
+
+**Target problem:** IP allocation, DNS/DHCP, routing, switching, firewall
+policy, VPN, cloud networking, load balancing, and Kubernetes networking need
+automation and a source of truth.
+
+**Target design:** An IPAM/source-of-truth layer drives reviewed network
+changes, validation, configuration backup, drift detection, and observability.
+
+**Interview boundary:** Present this as an approved roadmap capability. The
+current BIND DNS and NGINX services are active foundations, not proof that the
+complete project exists.
+
 ## How to Explain the Overall Architecture
 
 Use this flow:
@@ -91,9 +156,16 @@ Use this flow:
 5. Kubernetes/GitOps standardizes platform deployment.
 6. Observability detects issues and supports incident response.
 7. Governance automation enforces security, compliance, cost, secrets, and operational standards.
+8. Planned systems, database, network, data, and service-operations domains
+   reuse those controls and add specialist engineering workflows.
 
 ## Interview Closing Statement
 
 Use this version:
 
-> Together, these projects show a full cloud operating model: source-controlled work, reviewed changes, automated infrastructure and delivery, Kubernetes desired state, observability, governance, runbooks, and evidence. That maps back to outcomes interviewers care about: faster provisioning, safer releases, stronger compliance, lower MTTR, and better cost control.
+> Together, the active projects and approved roadmap show an enterprise
+> operating model: source-controlled work, reviewed changes, automated
+> infrastructure and delivery, Kubernetes desired state, observability,
+> governance, and planned specialist domains for systems, databases,
+> resilience, data, and networking. I clearly separate what I implemented from
+> what I designed so the discussion remains accurate and defensible.

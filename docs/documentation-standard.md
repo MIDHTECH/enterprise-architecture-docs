@@ -60,6 +60,8 @@ Each operational runbook should contain:
   state in the same change.
 - Record an incident whenever live infrastructure is created outside the
   version-controlled source of truth, even if service is not interrupted.
+- Mark portfolio projects as `active implementation` or `planned`. A planned
+  project must not imply that its repository, VM, product or service exists.
 
 ## Source of Truth
 

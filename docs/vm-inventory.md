@@ -1,7 +1,7 @@
 # Canonical VM Inventory
 
 This document is the source of truth for Rocky Linux 9 virtual machines in the
-five-project training lab. The physical hypervisors run Ubuntu 26.04 LTS with
+ten-project enterprise training portfolio. The physical hypervisors run Ubuntu 26.04 LTS with
 GNOME, KVM/QEMU, libvirt, cloud-init tooling, and Ansible.
 
 ## Naming Standard
@@ -225,6 +225,12 @@ the central observability platform.
 6. Back up configuration, databases, and persistent data before upgrades.
 7. Do not create additional VMs without updating this inventory and the
    capacity totals.
+
+Projects 6–10 are logical architecture additions only. They receive no VM,
+address or MAC allocation from this document until a capacity review is
+approved. Prefer existing services and Kubernetes workloads where practical;
+infra01 and infra02 currently lack safe headroom for an unreviewed product
+fleet.
 
 ## Current Implementation State
 

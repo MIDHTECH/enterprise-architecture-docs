@@ -2,6 +2,17 @@
 
 Last verified: 2026-07-27
 
+## Enterprise project portfolio
+
+The architecture contains ten projects. Projects 1–5 have active
+implementation repositories. Projects 6–10—Linux systems, database
+reliability, resilience/service operations, data engineering, and network
+engineering—are approved planned capabilities. No repository, VM, IP address,
+or product installation is implied by their inclusion in the architecture.
+
+The authoritative scope and all 187 use cases are maintained in
+[Enterprise Project Portfolio and Use Case Coverage](enterprise-project-portfolio-and-usecases.md).
+
 ## GitLab organization
 
 - Group display name: `maas-enterprise-cloud-platform`

@@ -4,7 +4,7 @@ This repo is the written map for the training platform. It explains how the infr
 
 ## Documents
 
-- [Enterprise Project Architecture and Use Case Coverage](docs/five-project-architecture-and-usecases.md)
+- [Enterprise Project Portfolio and Use Case Coverage](docs/enterprise-project-portfolio-and-usecases.md)
 - [On-Premises Platform Build Runbook](docs/on-prem-platform-build-runbook.md)
 - [Staff Documentation Standard](docs/documentation-standard.md)
 - [SRE Incident Register](docs/sre-incident-register.md)
@@ -30,13 +30,20 @@ This repo is the written map for the training platform. It explains how the infr
 
 ## Repository Purpose
 
-This is the documentation home for the project set:
+This is the documentation home for the ten-project enterprise portfolio.
+Projects 1–5 are active implementations; Projects 6–10 are approved planned
+capabilities:
 
 - Enterprise DevSecOps Delivery Platform
 - Enterprise Multi-Cloud Infrastructure Platform
 - Enterprise Kubernetes Platform with GitOps
 - Enterprise Observability and SRE Reliability Platform
 - Enterprise Cloud Governance and Operations Automation
+- Enterprise Linux Systems Engineering
+- Enterprise Database Engineering and Reliability
+- Enterprise Resilience and Service Operations
+- Enterprise Data Engineering and Integration
+- Enterprise Network Engineering and Automation
 
 It is also the authoritative operations record for rebuilding `infra01` and
 `infra02`, provisioning their Rocky Linux virtual machines, installing platform

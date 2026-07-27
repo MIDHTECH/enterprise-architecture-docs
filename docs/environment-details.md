@@ -2,6 +2,13 @@
 
 ## Environment Model
 
+The physical environment supports the ten-project logical portfolio, but it
+currently hosts the first five implementation domains and shared platform
+services. Projects 6–10 are planned and have no dedicated VM or IP allocation.
+Their initial automation should reuse existing GitLab, Jenkins, AWX, KVM,
+Kubernetes, observability, DNS, and proxy capacity where safe. A capacity
+review is required before any new VM or product is authorized.
+
 The lab supports two deployment targets:
 
 | Target | Purpose | Provisioning path | Delivery path |
@@ -125,6 +132,7 @@ endpoints are not NGINX virtual hosts.
 | Elastic/Splunk six-VM topology | VM and DNS provisioning complete; baseline, `/data`, and products pending |
 | PostgreSQL | Product installation deliberately frozen until AWX |
 | Remaining platform products | Provisioned or planned; verify each runbook before reporting installed |
+| Portfolio projects 6–10 | Logical architecture approved; repositories and runtime implementation not started |
 
 The VM count is not a product-completion count. Acceptance requires the
 product service, version lock, security controls, data disk, and tests.

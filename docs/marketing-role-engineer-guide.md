@@ -6,9 +6,21 @@ For the required project training structure and interview question-bank standard
 
 ## Program Positioning
 
-Present these repositories as one enterprise platform implementation, not as disconnected labs:
+Present the active repositories and planned capability roadmap as one
+enterprise platform program, not as disconnected labs:
 
-> I contributed to a cloud platform program that brought infrastructure, CI/CD, Kubernetes delivery, observability, and governance automation into one organized model. The work was split into domain repos the way a senior platform team would run it, with GitLab for review and history, Jenkins for delivery, Terraform for infrastructure, Ansible for configuration, GitOps for Kubernetes, and monitoring and security tooling around the stack.
+> I contributed to the first five implementation domains of a ten-project
+> enterprise platform program: infrastructure, CI/CD, Kubernetes delivery,
+> observability, and governance automation. I also helped define the planned
+> capability architecture for Linux systems, database reliability, service
+> operations, data engineering, and network engineering. The domains use
+> GitLab review, Jenkins delivery, Terraform infrastructure, Ansible
+> configuration, GitOps, monitoring, and security controls as shared
+> foundations.
+
+Only claim implementation contributions for work supported by repositories,
+commits, tests, or operational evidence. Projects marked planned are valid
+architecture and roadmap experience, but not completed implementations.
 
 ## Role-to-Project Map
 
@@ -20,6 +32,11 @@ Present these repositories as one enterprise platform implementation, not as dis
 | `kubernetes-platform-gitops` | Kubernetes Platform Engineer, GitOps Engineer, Platform Engineer | Cloud Native Engineer, SRE |
 | `observability-sre-platform` | SRE Engineer, Observability Engineer, Reliability Engineer | Platform Engineer, Incident Response Engineer |
 | `cloud-governance-ops-automation` | Cloud Governance Engineer, Cloud Security Engineer, Cloud Operations Engineer | IAM Engineer, Compliance Automation Engineer |
+| `enterprise-linux-systems-platform` (planned) | Linux Systems Engineer, Infrastructure Engineer, Systems Automation Engineer | Virtualization Engineer, SRE |
+| `enterprise-database-reliability-platform` (planned) | Database Reliability Engineer, Database Engineer, Database Administrator | SRE, Security Engineer |
+| `enterprise-resilience-service-operations` (planned) | SRE, Service Operations Engineer, Resilience Engineer | Incident Manager, Performance Engineer |
+| `enterprise-data-engineering-platform` (planned) | Data Engineer, Data Platform Engineer, Analytics Engineer | DataOps Engineer, Database Engineer |
+| `enterprise-network-engineering-platform` (planned) | Network Engineer, Network Automation Engineer, Cloud Network Engineer | Kubernetes Network Engineer, Security Engineer |
 | `jenkins_jobs` | Jenkins Platform Engineer, CI/CD Automation Engineer | DevOps Engineer, Release Engineer |
 | `jenkins-shared-library` | Jenkins Shared Library Engineer, Pipeline Automation Engineer | DevOps Engineer, AWX/Ansible Automation Engineer |
 
@@ -97,6 +114,100 @@ Present these repositories as one enterprise platform implementation, not as dis
 
 > I contributed to a cloud governance automation project that helped standardize IAM, secrets, compliance checks, backup validation, certificate monitoring, cost controls, and remediation. The result was a more auditable and repeatable cloud operations model.
 
+### Enterprise Linux Systems Platform (Planned)
+
+**Project:** Target operating model for Linux lifecycle, KVM, patching,
+storage, DNS, identity, and core system services.
+
+**Team:** Linux systems engineer, virtualization engineer, Ansible/AWX
+engineer, network engineer, security engineer, and SRE.
+
+**Architecture contribution:** Defined how source-controlled roles, inventories,
+maintenance workflows, validation, and evidence should standardize host
+operations.
+
+**How to explain it:**
+
+> I designed the planned Linux systems capability around reusable Ansible roles
+> and AWX workflows. The architecture connects host baseline, patching,
+> storage, DNS, virtualization, recovery, and compliance evidence without
+> claiming that the dedicated repository is already implemented.
+
+### Enterprise Database Reliability Platform (Planned)
+
+**Project:** Target database lifecycle, performance, security, backup,
+recovery, and upgrade automation.
+
+**Team:** Database reliability engineer, DBA, platform engineer, SRE, security
+engineer, and application owner.
+
+**Architecture contribution:** Defined dependencies, reliability controls,
+recovery evidence, and the boundary between database-native tooling and
+platform automation.
+
+**How to explain it:**
+
+> I contributed the target architecture for a database reliability platform
+> that uses approved provisioning, secrets, monitoring, backup verification,
+> recovery testing, and controlled upgrades. This is roadmap design pending
+> implementation and capacity approval.
+
+### Enterprise Resilience and Service Operations (Planned)
+
+**Project:** Target operating model for SLOs, incidents, performance,
+capacity, controlled failure testing, DR, and remediation.
+
+**Team:** SRE, service owner, incident manager, performance engineer, platform
+engineer, and business stakeholder.
+
+**Architecture contribution:** Connected observability signals to service
+ownership, incident workflows, reliability decisions, and AWX automation.
+
+**How to explain it:**
+
+> I designed the next service-operations layer so telemetry can drive SLO
+> reviews, incident response, capacity decisions, recovery exercises, and
+> approved remediation. It extends the active observability work and remains a
+> planned project.
+
+### Enterprise Data Engineering Platform (Planned)
+
+**Project:** Target batch and streaming data platform covering ingestion,
+orchestration, transformation, quality, metadata, lineage, and operations.
+
+**Team:** Data engineer, data platform engineer, analytics engineer, database
+engineer, security engineer, and SRE.
+
+**Architecture contribution:** Defined the logical pipeline, ownership,
+quality, lineage, security, and observability requirements while leaving
+product selection subject to capacity and design review.
+
+**How to explain it:**
+
+> I developed the planned data-platform architecture around source-controlled
+> pipelines, data contracts, quality gates, metadata, lineage, and operational
+> monitoring. I describe this as target-state engineering, not as an installed
+> data stack.
+
+### Enterprise Network Engineering Platform (Planned)
+
+**Project:** Target source-of-truth and automation platform for IPAM,
+DNS/DHCP, routing, switching, firewall policy, VPN, cloud, load balancing, and
+Kubernetes networking.
+
+**Team:** Network engineer, network automation engineer, cloud network
+engineer, security engineer, Kubernetes platform engineer, and SRE.
+
+**Architecture contribution:** Defined reviewed network-change workflows,
+validation, backups, drift detection, dependency mapping, and telemetry.
+
+**How to explain it:**
+
+> I designed the planned network engineering capability so an authoritative
+> inventory can drive reviewed, tested, and recoverable configuration changes.
+> The existing DNS and NGINX services are foundations; they are not presented
+> as completion of the broader project.
+
 ### Jenkins Jobs
 
 **Project:** Jenkins job-as-code repository for managed pipeline jobs.
@@ -129,6 +240,9 @@ Present these repositories as one enterprise platform implementation, not as dis
 - Created Kubernetes GitOps operating model covering namespaces, RBAC, ingress, policy-as-code, autoscaling, and backup patterns.
 - Developed observability and SRE documentation for metrics, logs, traces, alerts, SLOs, deployment validation, and incident triage.
 - Documented governance automation for IAM, secrets, compliance evidence, tagging, backup validation, cost controls, certificates, and remediation.
+- Designed a role-centered roadmap extending the active platform into Linux
+  systems, database reliability, service operations, data engineering, and
+  network engineering, with explicit capacity and implementation gates.
 
 ## Interview Answer Structure
 

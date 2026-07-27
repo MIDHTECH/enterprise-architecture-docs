@@ -7,7 +7,7 @@ cd "$ROOT_DIR"
 required_docs=(
   ".gitlab-ci.yml"
   "README.md"
-  "docs/five-project-architecture-and-usecases.md"
+  "docs/enterprise-project-portfolio-and-usecases.md"
   "docs/component-architecture.md"
   "docs/environment-details.md"
   "docs/vm-inventory.md"
@@ -25,11 +25,27 @@ for path in "${required_docs[@]}"; do
   test -f "$path"
 done
 
-grep -q "cloud-infra-automation-platform" docs/five-project-architecture-and-usecases.md
-grep -q "devsecops-cicd-orchestrator" docs/five-project-architecture-and-usecases.md
-grep -q "kubernetes-platform-gitops" docs/five-project-architecture-and-usecases.md
-grep -q "observability-sre-platform" docs/five-project-architecture-and-usecases.md
-grep -q "cloud-governance-ops-automation" docs/five-project-architecture-and-usecases.md
+portfolio="docs/enterprise-project-portfolio-and-usecases.md"
+grep -q "cloud-infra-automation-platform" "$portfolio"
+grep -q "devsecops-cicd-orchestrator" "$portfolio"
+grep -q "kubernetes-platform-gitops" "$portfolio"
+grep -q "observability-sre-platform" "$portfolio"
+grep -q "cloud-governance-ops-automation" "$portfolio"
+grep -q "enterprise-linux-systems-platform" "$portfolio"
+grep -q "enterprise-database-reliability-platform" "$portfolio"
+grep -q "enterprise-resilience-service-operations" "$portfolio"
+grep -q "enterprise-data-engineering-platform" "$portfolio"
+grep -q "enterprise-network-engineering-platform" "$portfolio"
+grep -Fq '| **Total** | **187** |' "$portfolio"
+use_case_count="$(
+  awk '
+    /^## Project [0-9]+:/ { in_project=1; next }
+    /^## / { in_project=0 }
+    in_project && /^\| [^|-]/ && $0 !~ /^\| Use case / { count++ }
+    END { print count+0 }
+  ' "$portfolio"
+)"
+test "$use_case_count" -eq 187
 grep -q "elasticsearch01.example.com" docs/vm-inventory.md
 grep -q "elasticsearch03.example.com" docs/vm-inventory.md
 grep -q "splunk.example.com" docs/vm-inventory.md

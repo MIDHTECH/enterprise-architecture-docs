@@ -1,8 +1,11 @@
-# Component Architecture: Enterprise Cloud Platform Program
+# Component Architecture: Ten-Project Enterprise Platform Program
 
-![Enterprise Cloud Platform Program visual architecture diagram](assets/component-architecture.svg)
+![Ten-project enterprise platform visual architecture diagram](assets/component-architecture.svg)
 
-This diagram explains how the project repositories work together as one enterprise cloud platform program.
+This diagram explains how the five active implementation repositories and five
+planned role-centered projects work together as one enterprise platform
+program. Planned projects are logical capabilities only; they do not represent
+created repositories, installed products, or allocated VMs.
 
 ```mermaid
 flowchart TB
@@ -21,6 +24,11 @@ flowchart TB
         ansobs[ansible-observability]
         ansprom[ansible-prometheus]
         gov[cloud-governance-ops-automation]
+        systems[enterprise-linux-systems-platform / planned]
+        database[enterprise-database-reliability-platform / planned]
+        resilience[enterprise-resilience-service-operations / planned]
+        dataeng[enterprise-data-engineering-platform / planned]
+        network[enterprise-network-engineering-platform / planned]
         jobs[jenkins-jobs]
         lib[jenkins-shared-library]
     end
@@ -52,6 +60,11 @@ flowchart TB
     ansobs --> mr
     ansprom --> mr
     gov --> mr
+    systems -. planned .-> mr
+    database -. planned .-> mr
+    resilience -. planned .-> mr
+    dataeng -. planned .-> mr
+    network -. planned .-> mr
     jobs --> jenkins
     lib --> jenkins
     mr --> protected
@@ -73,6 +86,13 @@ flowchart TB
     gov --> cloud
     gov --> clusters
     obs --> sre
+    infra -. foundation .-> systems
+    systems -. host services .-> database
+    database -. governed data .-> dataeng
+    network -. connectivity .-> kvm
+    network -. connectivity .-> clusters
+    obs -. reliability signals .-> resilience
+    resilience -. corrective automation .-> awx
 ```
 
 ## Component Explanation
@@ -89,6 +109,11 @@ flowchart TB
 | Kubernetes GitOps | Manages cluster desired state, policies, namespaces, ingress, and application manifests |
 | Observability/SRE | Provides dashboards, alerts, SLOs, incident runbooks, and RCA evidence |
 | Governance Automation | Enforces IAM, secrets, compliance, backups, cost, certificates, and remediation |
+| Linux Systems Platform (planned) | Standardizes Linux lifecycle, KVM, patching, storage, DNS, and core system services |
+| Database Reliability Platform (planned) | Automates database lifecycle, security, performance, backup, recovery, and upgrades |
+| Resilience and Service Operations (planned) | Connects SLOs, incident response, capacity, performance, chaos, and disaster recovery |
+| Data Engineering Platform (planned) | Governs ingestion, orchestration, transformation, quality, lineage, and lakehouse patterns |
+| Network Engineering Platform (planned) | Automates IPAM, DNS/DHCP, routing, switching, firewalls, VPN, cloud, and Kubernetes networking |
 | Jenkins Jobs | Creates Jenkins pipeline jobs from source-controlled Job DSL |
 | Jenkins Shared Library | Provides reusable AWX launch logic to pipelines |
 | Delivery Control Plane | GitLab, protected branches, Jenkins, AWX, and Ansible working together |
@@ -104,7 +129,11 @@ flowchart TB
 4. Terraform and Ansible provision and configure cloud resources.
 5. GitOps syncs approved Kubernetes desired state to clusters.
 6. Observability and governance continuously validate reliability, security, and compliance.
+7. The five planned projects extend those controls into systems, database,
+   service operations, data, and network engineering after capacity and
+   implementation approval.
 
 The current lab has no infrastructure HA. Numeric suffixes identify only true
 cluster members. The Elastic/Splunk VMs are provisioned but their products are
-not installed as of 2026-07-27.
+not installed as of 2026-07-27. Projects 6–10 have no dedicated runtime
+allocation and must not be shown as deployed.

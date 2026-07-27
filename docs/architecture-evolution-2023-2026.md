@@ -1,8 +1,10 @@
 # Architecture Evolution: 2023–2026
 
-The main purpose of this lab is to demonstrate how the MAAS architecture moved
-over the last three to four years. The 2018 product history provides context,
-but the primary engineering narrative is the 2023–2026 modernization.
+The main purpose of this lab is to demonstrate how an enterprise hybrid-cloud
+operating model evolved over the last three to four years. MAAS is retained as
+one optional application-modernization reference workload; it is not the
+program boundary. The 2018 product history provides context, while the primary
+engineering narrative is the 2023–2026 platform modernization.
 
 ## Executive View
 
@@ -119,6 +121,11 @@ For each annual architecture checkpoint, retain:
 
 The exercise is complete when a reviewer can explain not only the target
 architecture, but why each transition was introduced and which risk it reduced.
+
+The 2026 portfolio adds planned first-class capability domains for Linux
+systems, database reliability, service resilience, data engineering and
+network engineering. These extend the existing five implementation projects
+to ten enterprise projects without authorizing new infrastructure.
 
 The 2026 lab deliberately avoids infrastructure HA. Numeric suffixes are used
 only for true cluster members such as Kubernetes workers and the three
