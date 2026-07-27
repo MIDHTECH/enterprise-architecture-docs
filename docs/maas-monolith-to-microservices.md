@@ -187,6 +187,14 @@ Every MAAS service must provide:
 
 ## On-Premises Validation
 
+Use OpenTelemetry as the application instrumentation contract.
+Prometheus/Grafana/Loki/Tempo are the default cloud-native SRE path; Elastic
+Stack and standalone Splunk provide comparative enterprise log ingestion and
+search. Applications must not embed a vendor-specific logging SDK when the
+same signal can be emitted through structured logs or OpenTelemetry. The
+Elastic/Splunk products remain pending until their AWX workflows pass
+acceptance.
+
 The on-prem lab must demonstrate:
 
 - monolith and extracted service running simultaneously

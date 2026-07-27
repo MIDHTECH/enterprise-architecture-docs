@@ -14,8 +14,8 @@ later phase.
 
 | Host | Role | Operating system | Address |
 | --- | --- | --- | --- |
-| `infra01.example.com` | Primary KVM hypervisor | Ubuntu 26.04 LTS Desktop with GNOME | DHCP reservation required |
-| `infra02.example.com` | Secondary KVM hypervisor | Ubuntu 26.04 LTS Desktop with GNOME | `192.168.1.73` at rebuild time |
+| `infra01.example.com` | Primary KVM hypervisor | Ubuntu 26.04 LTS Desktop with GNOME | `192.168.1.38` |
+| `infra02.example.com` | Secondary KVM hypervisor | Ubuntu 26.04 LTS Desktop with GNOME | `192.168.1.169` (`.73` was the rebuild-time lease) |
 
 The management account on both hosts is `midhtechadmin`.
 
@@ -63,7 +63,7 @@ sudo hostnamectl set-hostname infra02.example.com
 On infra01:
 
 ```bash
-sudo hostnamectl set-hostname infra01.midhtech.local
+sudo hostnamectl set-hostname infra01.example.com
 ```
 
 Verify:
@@ -215,7 +215,7 @@ received `192.168.1.73/24` through the NetworkManager profile
 Do not convert the physical interface to a bridge over an SSH-only session
 until:
 
-1. `192.168.1.73` is reserved for infra02 in DHCP.
+1. `192.168.1.169` is reserved for infra02 in DHCP; `.73` is historical only.
 2. Console access through GNOME is available.
 3. The current NetworkManager profile is backed up.
 4. The desired VM address range and gateway are documented.
@@ -587,10 +587,11 @@ VM-specific product automation owns all directories below `/data`.
 | 2026-07-25 | GitLab repository fleet | Imported workspace source repositories | Eight clean `main` branches pushed and hash-verified; hard-coded database password removed from current code and reachable history before publication |
 | 2026-07-26 | NGINX proxy tier | Approved clustered edge design | Allocated `nginx01` at `.114`, `nginx02` at `.132`, and floating proxy VIP `.140`; application service names use `*.apps.example.com` |
 | 2026-07-26 | Hypervisor access | NGINX VM build preflight blocked | infra01 and infra02 unreachable by FQDN and direct IP; no live mutation attempted; see INC-2026-017 |
-| 2026-07-26 | Prometheus addressing | Corrected configuration drift | BIND and Ansible changed from occupied `.109` to canonical `.115`; see INC-2026-018 |
+| 2026-07-26 | Prometheus addressing | Partially corrected configuration drift | BIND changed from occupied `.109` to canonical `.115`; Ansible was mistakenly reported corrected and was actually fixed during the 2026-07-27 audit; see INC-2026-018 |
 | 2026-07-26 | Hypervisor access | Restored and revalidated | Both hosts, bridges, libvirt networks, GitLab, and DNS reachable; INC-2026-017 resolved |
 | 2026-07-26 | NGINX proxy tier | Corrected HA scope violation | Removed the two newly created empty numbered VMs and all Keepalived/VRRP/VIP design; approved standalone `nginx.example.com` at `.114`; see INC-2026-019 |
 | 2026-07-26 | `nginx.example.com` | Provisioned standalone reverse-proxy VM | Rocky Linux 9.8 VM created on infra01 with 2 vCPU, 2 GiB RAM, 30 GiB OS disk, 20 GiB data disk, and autostart |
 | 2026-07-26 | `nginx.example.com` | Applied common baseline | Cloud-init complete; SELinux enforcing; SSH hardened; XFS `/data` mounted; core services active |
 | 2026-07-26 | `nginx.example.com` | Installed NGINX through Ansible | NGINX 1.26.3 enabled and active; firewall, SELinux, configuration, health, GitLab routing, and zero-change second convergence validated |
 | 2026-07-26 | Lab DNS | Published application service URLs | `nginx.example.com` and approved `*.apps.example.com` records resolve to `.114`; reverse lookup and zero-change second BIND convergence validated |
+| 2026-07-27 | Enterprise VM topology | Reconciled live Elastic/Splunk VMs with source control | Recorded six provisioned-only VMs, DNS/proxy definitions, capacity constraints, product targets, migration paths, and INC-2026-020; corrected Prometheus Ansible address |

@@ -72,11 +72,15 @@ Architecture changes:
 
 - run the complete platform on two Ubuntu/KVM hypervisors
 - use Rocky Linux product VMs and a kubeadm Kubernetes cluster
+- place user-facing HTTP services behind one non-HA
+  `nginx.example.com` reverse proxy and `*.apps.example.com` URLs
 - deploy independently versioned MAAS services through Argo CD
 - give each service explicit API, event, data, SLO, and ownership contracts
 - apply zero-trust service identity, external secrets, policy enforcement, and
   software-supply-chain controls
 - use Prometheus, Loki, Tempo, and OpenTelemetry for service-level operations
+- compare that cloud-native path with a three-node Elastic Stack and a
+  standalone Splunk Enterprise deployment
 - exercise migration, failure, rollback, backup, and disaster recovery
 - defer EKS/ECR validation until the on-prem platform is accepted
 
@@ -115,3 +119,9 @@ For each annual architecture checkpoint, retain:
 
 The exercise is complete when a reviewer can explain not only the target
 architecture, but why each transition was introduced and which risk it reduced.
+
+The 2026 lab deliberately avoids infrastructure HA. Numeric suffixes are used
+only for true cluster members such as Kubernetes workers and the three
+Elasticsearch nodes. NGINX, GitLab, AWX, Kibana, Logstash, and Splunk remain
+standalone services so the exercise emphasizes automation, migration, and
+recovery instead of quorum design.

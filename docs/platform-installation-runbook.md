@@ -11,7 +11,7 @@ On each freshly installed Ubuntu 26.04 LTS host:
 sudo apt update
 sudo apt full-upgrade -y
 sudo apt install -y \
-  qemu-kvm libvirt-daemon-system libvirt-clients virtinst \
+  qemu-system-x86 libvirt-daemon-system libvirt-clients virtinst \
   cloud-image-utils bridge-utils ansible git jq
 sudo usermod -aG libvirt,kvm midhtechadmin
 sudo systemctl enable --now libvirtd
@@ -155,6 +155,8 @@ Use the dedicated automation repositories:
    `maas-enterprise-cloud-platform/ansible-observability`.
 3. Run `playbooks/install-observability.yml`.
 4. Run `playbooks/verify-observability.yml`.
+5. Apply the common baseline to the provisioned Elastic/Splunk VMs.
+6. Run the approved Elastic Stack and Splunk AWX workflows.
 
 The resulting service placement is:
 
@@ -165,11 +167,19 @@ The resulting service placement is:
 5. Loki on `loki.example.com`.
 6. Tempo on `tempo.example.com`.
 7. OpenTelemetry Collector on `otel.example.com`.
+8. Elasticsearch on `elasticsearch01.example.com`–`elasticsearch03.example.com`.
+9. Kibana on `kibana.example.com`.
+10. Logstash on `logstash.example.com`.
+11. Splunk Enterprise on `splunk.example.com`.
 
 Every service and VM must expose or forward health and telemetry data. Test at
 least one metric alert, one centralized log query, and one distributed trace.
 The current deployment uses native systemd services; Docker is not part of the
 observability VM runtime.
+
+The six Elastic/Splunk VMs are provisioned-only as of 2026-07-27. Apply the
+common Rocky baseline and `/data` mount before following their product
+runbooks. Do not start PostgreSQL installation until AWX is available.
 
 ## 8. Enable Governance
 

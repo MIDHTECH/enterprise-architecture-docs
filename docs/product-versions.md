@@ -1,6 +1,6 @@
 # Product Version Catalog
 
-This catalog pins the on-premises platform baseline as of 25 July 2026.
+This catalog pins the on-premises platform baseline as of 27 July 2026.
 Container images must use the full version shown here or a later approved patch
 within the same release line. Never deploy `latest`.
 
@@ -70,6 +70,8 @@ and tested before deployment.
 | Tempo | 3.0.2 | Native RPM and systemd on `tempo.example.com` | `ansible-observability` |
 | OpenTelemetry Collector Contrib | 0.137.0 | Native RPM and systemd on `otel.example.com` | `ansible-observability` |
 | MinIO Community | `RELEASE.2025-04-22T22-12-26Z` | Native systemd on `minio.example.com` | `ansible-observability` |
+| Elastic Stack | 9.4.2 | Native packages on three Elasticsearch nodes plus Kibana and Logstash | [Elastic release notes](https://www.elastic.co/docs/release-notes) |
+| Splunk Enterprise | 10.4.1 | Native standalone installation on `splunk.example.com` | [Splunk Enterprise download](https://www.splunk.com/en_us/download/splunk-enterprise.html) |
 | Restic | 0.18, latest patch | Native on `backup.example.com` | Verify repository format and run `restic check` |
 
 ## Supporting Platform Packages
@@ -89,3 +91,7 @@ supported patch within the selected major/minor family.
 6. Update this catalog after every approved product migration.
 7. If the vendor's target version is unavailable for the selected edition,
    stop and revise the catalog rather than substituting an unreviewed tag.
+
+Elastic Stack 9.4.2 and Splunk Enterprise 10.4.1 are approved targets, not
+proof of installation. Their VMs were provisioned on 2026-07-27; product
+installation remains pending AWX automation and baseline completion.

@@ -13,12 +13,14 @@ product and AWX the second.
 
 ## Current Status
 
-As of 2026-07-26, BIND is installed, enabled, and active. Forward, reverse,
+As of 2026-07-27, BIND is installed, enabled, and active. Forward, reverse,
 UDP, TCP, and recursive lookups pass, and the Ansible role has converged with
 `changed=0`, `failed=0`, and `unreachable=0`.
 
-The current zone includes `nginx.example.com = 192.168.1.114`, its reverse
-record, and the approved `*.apps.example.com` service names at `.114`.
+Zone serial `2026072701` includes the physical hosts, all 31 VMs, reverse
+records, and approved `*.apps.example.com` service names at `.114`. The latest
+records add Elasticsearch nodes `.116`, `.133`, and `.134`; Kibana `.117`;
+Splunk `.118`; Logstash `.135`; and the Kibana/Splunk application aliases.
 
 The Linksys router now contains 42 verified DHCP reservations: infra01,
 infra02, and every address from `.101` through `.140`. Automatic client DNS

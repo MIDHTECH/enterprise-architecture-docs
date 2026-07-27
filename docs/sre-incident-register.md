@@ -51,6 +51,8 @@ facts; they do not erase the original observation.
 | INC-2026-017 | 2026-07-26 | SEV-3 | Resolved | Hypervisor access | Both infra01 and infra02 were temporarily unreachable from the administration workstation |
 | INC-2026-018 | 2026-07-26 | SEV-4 | Resolved | IP inventory | Prometheus DNS and Ansible records incorrectly used occupied address `.109` instead of canonical `.115` |
 | INC-2026-019 | 2026-07-26 | SEV-4 | Resolved | NGINX design | HA proxy tier was implemented despite the lab's explicit non-HA scope |
+| INC-2026-020 | 2026-07-27 | SEV-4 | Resolved | Architecture source of truth | Six Elastic/Splunk VMs and DNS records existed outside checked-in inventory and documentation |
+| INC-2026-021 | 2026-07-27 | SEV-4 | Resolved | Documentation Git workflow | Concurrent observability documentation update caused a non-fast-forward push and three rebase conflicts |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -467,7 +469,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-07-26
 - Severity: SEV-3
-- Status: Open
+- Status: Resolved
 - Component: `infra01.example.com`, `infra02.example.com`, and administration
   workstation network path
 - Detection/symptom: SSH to both FQDNs and direct addresses
@@ -510,11 +512,14 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   the wrong system. No such apply occurred during this change.
 - Cause: Prometheus was moved from `.109` to `.115` after the address conflict,
   but not every machine-readable inventory was updated.
-- Resolution: Corrected BIND and Ansible to `.115` and advanced the DNS zone
-  serial. The canonical VM inventory and libvirt CSV already contained `.115`.
+- Resolution: The 2026-07-26 assessment incorrectly claimed both BIND and
+  Ansible were corrected. BIND was corrected, but the checked-in Ansible
+  inventory still contained `.109`. The 2026-07-27 full audit corrected
+  Ansible to `.115` and retained the advanced DNS serial. The canonical VM
+  inventory and libvirt CSV already contained `.115`.
 - Validation: Repository-wide address checks now identify `.115` for the
-  Prometheus VM and proxy backend. Live DNS validation is pending resolution
-  of INC-2026-017.
+  Prometheus VM, Ansible host, DNS record, and proxy backend. Live DNS also
+  returns `.115`.
 - Prevention/follow-up: Generate DNS, Ansible, router reservations, and
   provisioning inventory from one structured source of truth. Add CI checks
   that reject duplicate or inconsistent IP assignments.
@@ -559,6 +564,79 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   `cloud-infra-automation-platform/ansible/roles/nginx_reverse_proxy`
 - Evidence/related runbook:
   [Standalone NGINX Reverse-Proxy Installation](product-installation-nginx.md)
+
+## INC-2026-020: Elastic/Splunk Topology Was Outside Source Control
+
+- Date: 2026-07-27
+- Severity: SEV-4
+- Status: Resolved
+- Component: libvirt inventory, Ansible inventory, BIND, NGINX, product
+  catalog, capacity plan, and staff documentation
+- Detection/symptom: A full architecture review found six running/autostart
+  domains and corresponding live DNS records that were absent from the
+  workspace VM CSVs, checked-in Ansible inventory, and enterprise
+  documentation:
+  `elasticsearch01`–`elasticsearch03`, `kibana`, `logstash`, and `splunk`.
+- Impact: Staff could not reliably rebuild the topology; capacity totals were
+  understated; automation did not target the hosts; and a running VM could
+  have been mistaken for a completed product installation.
+- Timeline: The drift was discovered on 2026-07-27 while reconciling all
+  architecture documents with live infra01/infra02 state.
+- Cause: The VMs and DNS entries were created before their source-of-truth
+  inventory and documentation changes were completed.
+- Contributing factors: Documentation validation checked only that a small set
+  of files existed and did not compare VM names/addresses across CSV, Ansible,
+  DNS, proxy, and documentation.
+- Resolution: Added all six VMs to canonical and machine-readable inventories,
+  synchronized DNS and Kibana/Splunk proxy definitions, added version and
+  annual migration records, documented placement and capacity, and created
+  product-specific installation runbooks. Corrected the unrelated Prometheus
+  Ansible drift found in the same audit.
+- Validation: Cross-source checks confirm the six FQDNs and addresses are
+  represented consistently. Documentation explicitly reports them as
+  provisioned-only: the common baseline, `/data` mounts, and product packages
+  remain pending.
+- Prevention/follow-up: CI now requires the new runbooks and rejects the known
+  stale Prometheus mapping and legacy host name. Future provisioning changes
+  must update CSV, Ansible, DNS, proxy, capacity, status, and incident records
+  in the same merge request.
+- Corrective automation:
+  `cloud-infra-automation-platform/ansible/inventory/onprem.yml`,
+  `cloud-infra-automation-platform/ansible/roles/bind_dns`, and
+  `cloud-infra-automation-platform/ansible/roles/nginx_reverse_proxy`
+- Evidence/related runbooks:
+  [Canonical VM Inventory](vm-inventory.md),
+  [Elastic Stack Installation](product-installation-elastic-stack.md), and
+  [Splunk Enterprise Installation](product-installation-splunk.md)
+
+## INC-2026-021: Concurrent Documentation Update Caused Rebase Conflicts
+
+- Date: 2026-07-27
+- Severity: SEV-4
+- Status: Resolved
+- Component: `enterprise-architecture-docs` Git workflow
+- Detection/symptom: GitLab rejected the reviewed documentation push as
+  non-fast-forward because remote `main` had advanced to `e273121`. Rebasing
+  produced content conflicts in the platform runbook, product catalog, and VM
+  inventory.
+- Impact: Publication was delayed; forcing the push or selecting one side
+  would have lost either the newly recorded native observability deployment or
+  the Elastic/Splunk architecture reconciliation.
+- Cause: Two documentation workflows updated overlapping architecture files
+  from the same earlier `main`.
+- Resolution: Fetched and rebased without force. Merged the remote exact
+  installed versions, native-systemd deployment facts, automation repository
+  instructions, and logging-VM build evidence with the new product runbooks,
+  capacity controls, and migration history.
+- Validation: No conflict markers remain; document validation, local-link
+  checks, XML validation, and cross-source inventory checks pass after the
+  merge.
+- Prevention/follow-up: Fetch/rebase immediately before broad documentation
+  commits and keep `docs/current-environment-state.md` linked from the README.
+  Never use force-push on protected `main`.
+- Evidence/related runbooks:
+  [Current Environment State](current-environment-state.md) and
+  [Enterprise Branching Strategy](branching-strategy.md)
 
 ## New Incident Template
 

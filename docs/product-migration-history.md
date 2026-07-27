@@ -53,6 +53,8 @@ Every product migration follows this sequence:
 | Loki | Not released | 1.x | 2.0 | 2.4 | 2.7 | 2.9 | 3.2 | 3.6 | 3.7.z |
 | Tempo | Not released | Not released | Preview | 1.x | 1.5 | 2.3 | 2.6 | 2.8 | 3.0.z |
 | OpenTelemetry Collector | Not released | Early project | 0.x | 0.x | 0.x | 0.x | 0.x | 0.x | 0.137.z |
+| Elastic Stack | 6.x | 7.x | 7.x | 7.17 | 8.x | 8.x | 8.17 | 9.x | 9.4.2 |
+| Splunk Enterprise | 7.x | 7.x | 8.0 | 8.2 | 9.0 | 9.1 | 9.3 | 10.0 | 10.4.1 |
 | Velero | 0.x | 1.2 | 1.5 | 1.7 | 1.10 | 1.12 | 1.14 | 1.16 | 1.17.z |
 | Longhorn | Not released | Preview | 1.0 | 1.2 | 1.3 | 1.5 | 1.7 | 1.8 | 1.9.z |
 | NGINX | 1.14 | 1.16 | 1.18 | 1.20 | 1.22 | 1.24 | 1.26 | 1.26 | 1.26.3 |
@@ -295,6 +297,37 @@ upgrade at least annually, preferably quarterly. Run
 review component stability, renamed processors, removed exporters, and
 telemetry-schema changes.
 
+### Elastic Stack
+
+The annual checkpoints show the transition from a legacy 6.x estate through
+the 7.x compatibility bridge, security-on-by-default 8.x, and the current 9.x
+target:
+
+```text
+6.x → 7.17 → 8.19 → 9.4.2
+```
+
+Use the Upgrade Assistant, resolve all deprecations, reindex incompatible
+indices, and take a verified snapshot before every major. Upgrade
+Elasticsearch nodes in the vendor-prescribed order, then Kibana; validate
+Logstash plugins and pipeline syntax at every stop. Never mix arbitrary major
+versions or bypass the 7.17 and 8.19 bridge releases. See the
+[official Elastic upgrade guidance](https://www.elastic.co/docs/deploy-manage/upgrade/deployment-or-cluster/upgrade-717).
+
+### Splunk Enterprise
+
+Representative annual route:
+
+```text
+7.x → 8.x → 9.x → 10.4.1
+```
+
+Calculate exact supported hops from the installed maintenance release. Back
+up `$SPLUNK_HOME/etc`, indexed data, apps, add-ons, and licenses; restore into
+an isolated VM; then validate OS, Python, app, forwarder, index, and license
+compatibility at each major. The lab target remains a standalone instance, so
+a migration must not silently introduce clustered topology.
+
 ### MinIO and Restic
 
 MinIO uses date-based release tags. Upgrade through tested release snapshots
@@ -318,7 +351,7 @@ clean client.
 | Q1 | Identity, secrets, certificates, and database migration rehearsal |
 | Q2 | Kubernetes, CNI, ingress, storage, and GitOps controllers |
 | Q3 | GitLab, Jenkins, AWX, Harbor, Artifactory, and SonarQube |
-| Q4 | Prometheus, Grafana, Loki, Tempo, OpenTelemetry, backup restore test, and next-year roadmap |
+| Q4 | Prometheus, Grafana, Loki, Tempo, OpenTelemetry, Elastic Stack, Splunk, backup restore test, and next-year roadmap |
 
 Emergency security patches can occur outside this calendar. Major upgrades
 must remain separate changes with their own rollback and evidence.

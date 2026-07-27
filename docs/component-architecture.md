@@ -33,10 +33,13 @@ flowchart TB
     end
 
     subgraph runtime[Runtime Platforms]
+        proxy[nginx.example.com / apps URLs]
+        kvm[infra01 and infra02 / Rocky VMs]
         cloud[AWS / Azure / GCP]
         clusters[AKS / EKS / GKE]
         apps[Containerized Applications]
         telemetry[Metrics / Logs / Traces]
+        enterpriseobs[Elastic cluster / Kibana / Logstash / Splunk]
     end
 
     users --> mr
@@ -54,6 +57,10 @@ flowchart TB
     mr --> protected
     protected --> jenkins
     jenkins --> awx
+    awx --> kvm
+    proxy --> apps
+    kvm --> clusters
+    kvm --> enterpriseobs
     infra --> cloud
     awx --> cloud
     cloud --> clusters
@@ -62,6 +69,7 @@ flowchart TB
     clusters --> apps
     apps --> telemetry
     telemetry --> obs
+    telemetry --> enterpriseobs
     gov --> cloud
     gov --> clusters
     obs --> sre
@@ -85,6 +93,8 @@ flowchart TB
 | Jenkins Shared Library | Provides reusable AWX launch logic to pipelines |
 | Delivery Control Plane | GitLab, protected branches, Jenkins, AWX, and Ansible working together |
 | Runtime Platforms | Cloud resources, Kubernetes clusters, applications, and telemetry |
+| On-premises access and compute | One standalone NGINX proxy fronts user HTTP URLs; infra01/infra02 host dedicated Rocky Linux product VMs |
+| Enterprise observability comparison | Three Elasticsearch nodes plus standalone Kibana, Logstash, and Splunk complement the Prometheus/Grafana path |
 
 ## Numbered Flow
 
@@ -94,3 +104,7 @@ flowchart TB
 4. Terraform and Ansible provision and configure cloud resources.
 5. GitOps syncs approved Kubernetes desired state to clusters.
 6. Observability and governance continuously validate reliability, security, and compliance.
+
+The current lab has no infrastructure HA. Numeric suffixes identify only true
+cluster members. The Elastic/Splunk VMs are provisioned but their products are
+not installed as of 2026-07-27.

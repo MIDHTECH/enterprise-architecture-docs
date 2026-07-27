@@ -94,9 +94,10 @@ rebuild.
 | `kibana.example.com` | Kibana log analysis and visualization | 2 | 4 GB | 40 GB | 40 GB |
 | `splunk.example.com` | Standalone Splunk Enterprise training platform | 4 | 8 GB | 50 GB | 150 GB |
 
-Planned memory allocation: approximately 112 GB. This is a training-lab
-allocation with limited host reserve; do not run high-ingestion exercises on
-all logging platforms simultaneously.
+Allocated memory is approximately 112 GB. With about 121 GiB physical memory,
+infra01 has little operational headroom. Do not add or enlarge a VM without
+checking resident memory, swap, and peak workloads. Do not run high-ingestion
+exercises on all logging platforms simultaneously.
 
 ## infra02 Placement
 
@@ -117,8 +118,10 @@ all logging platforms simultaneously.
 | `elasticsearch03.example.com` | Elasticsearch cluster node 3 | 4 | 4 GB | 40 GB | 150 GB |
 | `logstash.example.com` | Elastic ingestion and enrichment pipeline | 2 | 4 GB | 40 GB | 40 GB |
 
-Planned memory allocation: approximately 100 GB. This is a training-lab
-allocation with limited host reserve; monitor memory and disk latency during
+Allocated memory is approximately 100 GB. With about 107 GiB physical memory,
+infra02 is capacity constrained. Preserve memory for Ubuntu, libvirt,
+filesystem cache, image builds, and recovery operations. No additional VM is
+approved without a capacity review. Monitor memory and disk latency during
 indexing exercises.
 
 ## Logging Platform VM Build Status
@@ -196,12 +199,10 @@ inventory.
 | `minio.example.com` | Native MinIO systemd unit using `/data/minio` |
 | `backup.example.com` | Native systemd timers and backup tooling |
 | `nginx.example.com` | Native NGINX package managed by Ansible |
-| `elasticsearch01.example.com` | Native package or single-product Compose as Elasticsearch cluster node 1 |
-| `elasticsearch02.example.com` | Native package or single-product Compose as Elasticsearch cluster node 2 |
-| `elasticsearch03.example.com` | Native package or single-product Compose as Elasticsearch cluster node 3 |
-| `kibana.example.com` | Native package or single-product Compose connected to the Elasticsearch cluster |
-| `logstash.example.com` | Native package or single-product Compose with versioned pipelines |
-| `splunk.example.com` | Native Splunk Enterprise installation with curated training ingestion |
+| `elasticsearch01.example.com`–`elasticsearch03.example.com` | Native Elastic packages configured as one secured three-node cluster |
+| `kibana.example.com` | Native Elastic package managed by Ansible |
+| `logstash.example.com` | Native Elastic package managed by Ansible |
+| `splunk.example.com` | Native Splunk Enterprise package managed by Ansible |
 | Kubernetes nodes | Native containerd, kubelet, kubeadm, and kubectl |
 
 Each Compose project must live under `/opt/midhtech/<product>/`, use an
@@ -224,3 +225,12 @@ the central observability platform.
 6. Back up configuration, databases, and persistent data before upgrades.
 7. Do not create additional VMs without updating this inventory and the
    capacity totals.
+
+## Current Implementation State
+
+As of 2026-07-27, both hypervisors and all 31 listed VM domains are running
+with autostart. GitLab, DNS, and NGINX have completed product installation.
+The six Elastic/Splunk VMs are **provisioned only**: Rocky Linux 9.8,
+cloud-init, qemu-guest-agent, chrony, and firewalld are present, but the common
+baseline, `/data` mount, and product packages have not been applied. A running
+VM must never be reported as an installed product.

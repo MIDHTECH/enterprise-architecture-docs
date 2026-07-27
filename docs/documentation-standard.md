@@ -52,6 +52,14 @@ Each operational runbook should contain:
 - Assign each incident an immutable incident ID.
 - Cross-reference the affected runbook and any corrective automation change.
 - Record uncertainty explicitly; do not present an assumption as root cause.
+- Distinguish `planned`, `VM provisioned`, `baseline complete`, `product
+  installed`, and `accepted`; a running domain is not proof of product
+  installation.
+- Reconcile the canonical VM document, libvirt CSV, Ansible inventory, DNS
+  records, reverse-proxy routes, product catalog, capacity totals, and live
+  state in the same change.
+- Record an incident whenever live infrastructure is created outside the
+  version-controlled source of truth, even if service is not interrupted.
 
 ## Source of Truth
 

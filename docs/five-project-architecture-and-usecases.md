@@ -243,24 +243,36 @@ flowchart TB
 
 **Purpose:** Monitor applications, infrastructure, and Kubernetes platforms so incidents can be detected and resolved faster.
 
-**Main tools:** Prometheus, Grafana, Loki or ELK/OpenSearch, OpenTelemetry, Jaeger or Tempo, Alertmanager, cloud monitoring services.
+**Main tools:** Prometheus, Grafana, Loki, Tempo, OpenTelemetry, Alertmanager,
+a three-node Elastic Stack, standalone Splunk Enterprise, and cloud monitoring
+services.
 
 **Architecture:**
 
 ```mermaid
 flowchart LR
     apps[Applications] --> metrics[Prometheus Metrics]
-    apps --> logs[Loki/ELK Logs]
+    apps --> logs[Loki Logs]
+    apps --> elastic[Logstash to Elasticsearch]
+    apps --> splunk[Splunk Enterprise]
     apps --> traces[OpenTelemetry Traces]
     k8s[Kubernetes] --> metrics
     cloud[Cloud Services] --> cloudmon[CloudWatch/Azure Monitor/GCP Operations]
     metrics --> grafana[Grafana Dashboards]
     logs --> grafana
+    elastic --> kibana[Kibana]
     traces --> grafana
     cloudmon --> grafana
     grafana --> alerts[Alertmanager or PagerDuty]
     alerts --> rca[RCA and Incident Review]
+    kibana --> rca
+    splunk --> rca
 ```
+
+The three observability paths are intentional: the Grafana stack demonstrates
+cloud-native open-source operations, Elastic demonstrates clustered log
+search, and Splunk demonstrates a licensed enterprise platform. The Elastic
+and Splunk VMs are provisioned-only until their AWX runbooks complete.
 
 **What this covers:**
 

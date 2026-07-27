@@ -5,7 +5,7 @@
 The lab does not implement high availability. One standalone Rocky Linux VM
 provides friendly HTTP application URLs:
 
-Implementation status as of 2026-07-26: installed and validated.
+Implementation status as of 2026-07-27: installed and validated.
 
 | Identity | Address | Placement | Purpose |
 | --- | --- | --- | --- |
@@ -34,13 +34,17 @@ There is no second NGINX VM, Keepalived, VRRP, or floating VIP. Address
 | `http://loki.apps.example.com` | `192.168.1.129:3100` |
 | `http://tempo.apps.example.com` | `192.168.1.130:3200` |
 | `http://otel.apps.example.com` | `192.168.1.131:4318` |
+| `http://kibana.apps.example.com` | `192.168.1.117:5601` |
+| `http://splunk.apps.example.com` | `192.168.1.118:8000` |
 
 An endpoint may return `502 Bad Gateway` until its backend is installed. That
 does not indicate an NGINX installation failure if `/nginx-health` passes and
 the backend port is closed.
 
 PostgreSQL, DNS, SSH, Kubernetes API, OpenTelemetry gRPC, and other non-HTTP
-protocols keep their native names and ports.
+protocols keep their native names and ports. Elasticsearch ports 9200/9300,
+Logstash 5044, and Splunk management/ingest ports 8089/8088/9997 remain
+restricted native endpoints. Only Kibana and the Splunk web UI are proxied.
 
 ## Provision the VM
 
