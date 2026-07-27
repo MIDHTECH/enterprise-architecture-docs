@@ -52,7 +52,7 @@ facts; they do not erase the original observation.
 | INC-2026-018 | 2026-07-26 | SEV-4 | Resolved | IP inventory | Prometheus DNS and Ansible records incorrectly used occupied address `.109` instead of canonical `.115` |
 | INC-2026-019 | 2026-07-26 | SEV-4 | Resolved | NGINX design | HA proxy tier was implemented despite the lab's explicit non-HA scope |
 | INC-2026-020 | 2026-07-27 | SEV-4 | Resolved | Architecture source of truth | Six Elastic/Splunk VMs and DNS records existed outside checked-in inventory and documentation |
-| INC-2026-021 | 2026-07-27 | SEV-4 | Resolved | Documentation Git workflow | Concurrent observability documentation update caused a non-fast-forward push and three rebase conflicts |
+| INC-2026-021 | 2026-07-27 | SEV-4 | Resolved | Git workflow | Concurrent observability updates caused non-fast-forward pushes and overlapping rebase conflicts |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -609,25 +609,28 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   [Elastic Stack Installation](product-installation-elastic-stack.md), and
   [Splunk Enterprise Installation](product-installation-splunk.md)
 
-## INC-2026-021: Concurrent Documentation Update Caused Rebase Conflicts
+## INC-2026-021: Concurrent Observability Updates Caused Rebase Conflicts
 
 - Date: 2026-07-27
 - Severity: SEV-4
 - Status: Resolved
-- Component: `enterprise-architecture-docs` Git workflow
+- Component: `enterprise-architecture-docs` and
+  `cloud-infra-automation-platform` Git workflows
 - Detection/symptom: GitLab rejected the reviewed documentation push as
   non-fast-forward because remote `main` had advanced to `e273121`. Rebasing
   produced content conflicts in the platform runbook, product catalog, and VM
-  inventory.
+  inventory. The infrastructure repository had also advanced to `1438f0e`;
+  its rebase overlapped the Ansible inventory.
 - Impact: Publication was delayed; forcing the push or selecting one side
   would have lost either the newly recorded native observability deployment or
   the Elastic/Splunk architecture reconciliation.
 - Cause: Two documentation workflows updated overlapping architecture files
   from the same earlier `main`.
-- Resolution: Fetched and rebased without force. Merged the remote exact
+- Resolution: Fetched and rebased both repositories without force. Merged the remote exact
   installed versions, native-systemd deployment facts, automation repository
   instructions, and logging-VM build evidence with the new product runbooks,
-  capacity controls, and migration history.
+  capacity controls, and migration history. Retained the remote Ansible service
+  groups and added only the missing Kibana/Splunk NGINX routes.
 - Validation: No conflict markers remain; document validation, local-link
   checks, XML validation, and cross-source inventory checks pass after the
   merge.
