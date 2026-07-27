@@ -53,6 +53,7 @@ facts; they do not erase the original observation.
 | INC-2026-019 | 2026-07-26 | SEV-4 | Resolved | NGINX design | HA proxy tier was implemented despite the lab's explicit non-HA scope |
 | INC-2026-020 | 2026-07-27 | SEV-4 | Resolved | Architecture source of truth | Six Elastic/Splunk VMs and DNS records existed outside checked-in inventory and documentation |
 | INC-2026-021 | 2026-07-27 | SEV-4 | Resolved | Git workflow | Concurrent observability updates caused non-fast-forward pushes and overlapping rebase conflicts |
+| INC-2026-022 | 2026-07-27 | SEV-4 | Resolved | Five-project architecture | Obsolete HA proxy code and stale project-local architecture remained after the enterprise documentation update |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -640,6 +641,50 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Evidence/related runbooks:
   [Current Environment State](current-environment-state.md) and
   [Enterprise Branching Strategy](branching-strategy.md)
+
+## INC-2026-022: Five Project Repositories Retained Previous Architecture
+
+- Date: 2026-07-27
+- Severity: SEV-4
+- Status: Resolved
+- Component: DevSecOps, infrastructure, Kubernetes GitOps, observability, and
+  governance repositories
+- Detection/symptom: The enterprise documentation was current, but the five
+  implementation projects still contained direct management URLs, Compose as
+  the canonical observability method, a legacy infra01 hostname, no on-prem
+  Argo CD root, incomplete Elastic/Splunk assets, and an unused
+  Keepalived/VRRP NGINX role and playbook.
+- Impact: Staff following project-local instructions could rebuild the
+  previous architecture or report incorrect product status. The dormant HA
+  playbook could recreate an explicitly rejected proxy topology.
+- Cause: Architecture decisions were updated centrally before every consuming
+  repository was reconciled.
+- Contributing factors: Project validators checked file presence but did not
+  reject retired hostnames/topologies. Initial validation also exposed a
+  macOS Python bytecode-cache permission failure and a `find` expression that
+  treated empty deleted directories as HA artifacts. The governance evidence
+  generator also required an authorized write outside the workspace sandbox
+  when validation ran against the live checkout. A concurrent
+  `observability-sre-platform` installation-guide commit then produced two
+  rebase conflicts.
+- Resolution: Updated all five projects, removed the obsolete HA proxy
+  implementation, added validation guards, introduced the on-prem Argo CD
+  application and telemetry routing contract, expanded governance assets, and
+  corrected validation scripts to use a writable temporary Python cache and
+  file-only obsolete-artifact search. Governance validation was rerun with the
+  required scoped write authorization and produced zero findings. The
+  observability rebase preserved its exact Ansible ownership/version facts and
+  merged the new Elastic/Splunk routing and provisioned-only state without a
+  force push.
+- Validation: All five local validation suites pass. YAML/JSON parsing,
+  shell syntax, stale-architecture scans, and Git diff checks also pass.
+- Prevention/follow-up: Every enterprise architecture change must identify and
+  update all consuming repositories in the same workflow. CI must reject
+  `infra01.midhtech.local`, active HA proxy artifacts, direct AWX application
+  URLs, and missing current topology assets.
+- Evidence/related runbooks:
+  [Component Architecture](component-architecture.md) and
+  [Current Environment State](current-environment-state.md)
 
 ## New Incident Template
 
