@@ -31,10 +31,10 @@ allocation. Do not assign an address merely because it does not answer a ping.
 
 ## Address and MAC Allocation
 
-Addresses `.101–.115` except `.109` are allocated to infra01 and
-`.121–.131` to infra02. Address `.109` remains occupied by a non-lab LAN
-device and is not assigned to a VM.
-Addresses `.116–.120` and `.132–.140` remain reserved for expansion. MAC
+Addresses `.101–.118` except `.109` are allocated to infra01 and
+`.121–.135` except `.132` to infra02. Address `.109` remains occupied by a
+non-lab LAN device and is not assigned to a VM.
+Addresses `.119–.120`, `.132`, and `.136–.140` remain reserved for expansion. MAC
 addresses are persistent configuration and must not be regenerated during a VM
 rebuild.
 
@@ -54,6 +54,9 @@ rebuild.
 | `minio.example.com` | infra01 | `192.168.1.112` | `52:54:00:01:01:12` |
 | `backup.example.com` | infra01 | `192.168.1.113` | `52:54:00:01:01:13` |
 | `nginx.example.com` | infra01 | `192.168.1.114` | `52:54:00:01:01:14` |
+| `elasticsearch01.example.com` | infra01 | `192.168.1.116` | `52:54:00:01:01:16` |
+| `kibana.example.com` | infra01 | `192.168.1.117` | `52:54:00:01:01:17` |
+| `splunk.example.com` | infra01 | `192.168.1.118` | `52:54:00:01:01:18` |
 | `awx-execution.example.com` | infra02 | `192.168.1.121` | `52:54:00:02:01:21` |
 | `harbor.example.com` | infra02 | `192.168.1.122` | `52:54:00:02:01:22` |
 | `artifactory.example.com` | infra02 | `192.168.1.123` | `52:54:00:02:01:23` |
@@ -65,6 +68,9 @@ rebuild.
 | `loki.example.com` | infra02 | `192.168.1.129` | `52:54:00:02:01:29` |
 | `tempo.example.com` | infra02 | `192.168.1.130` | `52:54:00:02:01:30` |
 | `otel.example.com` | infra02 | `192.168.1.131` | `52:54:00:02:01:31` |
+| `elasticsearch02.example.com` | infra02 | `192.168.1.133` | `52:54:00:02:01:33` |
+| `elasticsearch03.example.com` | infra02 | `192.168.1.134` | `52:54:00:02:01:34` |
+| `logstash.example.com` | infra02 | `192.168.1.135` | `52:54:00:02:01:35` |
 
 ## infra01 Placement
 
@@ -84,9 +90,13 @@ rebuild.
 | `minio.example.com` | S3-compatible backup/object storage | 4 | 8 GB | 40 GB | 500 GB |
 | `backup.example.com` | Restic/Borg and database backup automation | 4 | 8 GB | 40 GB | 500 GB |
 | `nginx.example.com` | Standalone NGINX reverse proxy | 2 | 2 GB | 30 GB | 20 GB |
+| `elasticsearch01.example.com` | Elasticsearch cluster node 1 | 4 | 4 GB | 40 GB | 150 GB |
+| `kibana.example.com` | Kibana log analysis and visualization | 2 | 4 GB | 40 GB | 40 GB |
+| `splunk.example.com` | Standalone Splunk Enterprise training platform | 4 | 8 GB | 50 GB | 150 GB |
 
-Planned memory allocation: approximately 96 GB. The remaining memory is
-reserved for Ubuntu, libvirt, filesystem cache, and temporary operations.
+Planned memory allocation: approximately 112 GB. This is a training-lab
+allocation with limited host reserve; do not run high-ingestion exercises on
+all logging platforms simultaneously.
 
 ## infra02 Placement
 
@@ -103,9 +113,32 @@ reserved for Ubuntu, libvirt, filesystem cache, and temporary operations.
 | `loki.example.com` | Loki log storage | 4 | 8 GB | 40 GB | 250 GB |
 | `tempo.example.com` | Tempo trace storage | 4 | 8 GB | 40 GB | 250 GB |
 | `otel.example.com` | OpenTelemetry gateway | 2 | 4 GB | 40 GB | 50 GB |
-Planned memory allocation: approximately 88 GB. The remaining memory is
-reserved for Ubuntu, libvirt, filesystem cache, image builds, and recovery
-operations.
+| `elasticsearch02.example.com` | Elasticsearch cluster node 2 | 4 | 4 GB | 40 GB | 150 GB |
+| `elasticsearch03.example.com` | Elasticsearch cluster node 3 | 4 | 4 GB | 40 GB | 150 GB |
+| `logstash.example.com` | Elastic ingestion and enrichment pipeline | 2 | 4 GB | 40 GB | 40 GB |
+
+Planned memory allocation: approximately 100 GB. This is a training-lab
+allocation with limited host reserve; monitor memory and disk latency during
+indexing exercises.
+
+## Logging Platform VM Build Status
+
+The additional logging-platform VMs were provisioned on 2026-07-27:
+
+- `elasticsearch01.example.com`, `kibana.example.com`, and
+  `splunk.example.com` on infra01;
+- `elasticsearch02.example.com`, `elasticsearch03.example.com`, and
+  `logstash.example.com` on infra02.
+
+All six libvirt domains are running and enabled for autostart. Forward and
+reverse DNS, SSH by canonical name, cloud-init completion, qemu-guest-agent,
+chronyd, firewalld, CPU, memory, and virtual-disk sizes were validated.
+
+This status records VM and operating-system provisioning only. Elasticsearch,
+Kibana, Logstash, and Splunk are not installed or configured yet. Each
+secondary data disk is intentionally unformatted until its product role defines
+the filesystem, mount point, ownership, and backup policy. Prometheus
+configuration was not changed as part of this build.
 
 ## Kubernetes Services That Are Not VMs
 
@@ -163,6 +196,12 @@ inventory.
 | `minio.example.com` | Docker Compose with a dedicated data disk |
 | `backup.example.com` | Native systemd timers and backup tooling |
 | `nginx.example.com` | Native NGINX package managed by Ansible |
+| `elasticsearch01.example.com` | Native package or single-product Compose as Elasticsearch cluster node 1 |
+| `elasticsearch02.example.com` | Native package or single-product Compose as Elasticsearch cluster node 2 |
+| `elasticsearch03.example.com` | Native package or single-product Compose as Elasticsearch cluster node 3 |
+| `kibana.example.com` | Native package or single-product Compose connected to the Elasticsearch cluster |
+| `logstash.example.com` | Native package or single-product Compose with versioned pipelines |
+| `splunk.example.com` | Native Splunk Enterprise installation with curated training ingestion |
 | Kubernetes nodes | Native containerd, kubelet, kubeadm, and kubectl |
 
 Each Compose project must live under `/opt/midhtech/<product>/`, use an
@@ -178,7 +217,9 @@ the central observability platform.
 3. Store persistent application data on a separate virtual disk.
 4. Enable SELinux enforcing, firewalld, chrony, qemu-guest-agent, and automatic
    security updates on every Rocky Linux VM.
-5. Send logs to Loki, metrics to Prometheus, and traces through the
+5. Route Kubernetes and container operational logs to Loki, structured
+   application and platform logs to Elasticsearch, security/audit/network
+   events to Splunk, metrics to Prometheus, and traces through the
    OpenTelemetry gateway.
 6. Back up configuration, databases, and persistent data before upgrades.
 7. Do not create additional VMs without updating this inventory and the
