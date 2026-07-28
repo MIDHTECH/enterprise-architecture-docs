@@ -1,30 +1,29 @@
 # Enterprise Project Portfolio and Use Case Coverage
 
-This document explains how the twelve enterprise projects fit together for
-**MidhHealth Integrated Care**, a care delivery and health insurance
-organization. The platform supports both provider operations and payer
-operations: hospital systems, digital care, claims, eligibility,
-authorizations, member services, analytics, security, and hybrid infrastructure.
-Projects 1–10 have implementation repositories. Projects 6–10 currently use
-active first slices against existing VMs and do not imply new product installs
-or production capacity. The capacity direction now adds a planned third Linux
-server with 256 GB RAM and a Mac Studio M1 named `midh-ai-edge-01` for AI/ML
-development and edge inference. Projects 11–12 add AI and ML platform domains
-based on current healthcare technology requirements.
+**MidhHealth Integrated Care** is modeled as an integrated provider-payer
+healthcare organization. Its platform supports hospital operations, digital
+care, claims, eligibility, authorizations, member services, analytics,
+security, and the hybrid infrastructure those services depend on.
 
-Read the projects as one organization-wide hybrid platform program. The repos
-represent platform domains owned by different engineering teams inside
-MidhHealth, but they share one top-level GitLab organization, one review and
-delivery model, one Jenkins/AWX automation control plane, shared governance
-controls, and common on-prem/cloud operating standards.
+The twelve repositories are not separate demos. They are platform domains owned
+by engineering teams inside one organization: delivery, infrastructure,
+Kubernetes, observability, governance, Linux systems, databases, resilience,
+data engineering, network engineering, healthcare AI, and MLOps. They share the
+same GitLab organization, review model, Jenkins/AWX automation control plane,
+governance controls, environment standards, and on-prem/cloud operating model.
 
-The portfolio is organized around engineering domains: DevOps, SRE, Database,
-Linux/System, Data, Network, AI, and MLOps. MAAS is one possible reference
-workload, not the program's organizing principle.
+Projects 1-10 have implementation repositories. Projects 6-10 are active first
+slices that work against the existing VM fleet; they do not approve new product
+installs, new VMs, or production capacity by themselves. Projects 11-12 add the
+AI and ML platform domains needed for current healthcare engineering work. The
+capacity plan includes `midh-ai-edge-01`, a Mac Studio M1 for AI/ML development
+and edge inference, plus a planned third Linux server with 256 GB RAM for
+heavier platform workloads.
 
-The repositories are working engineering domains with GitLab, CI/CD controls,
-environment separation, review gates, security checks, docs, and operational
-runbooks.
+MAAS can be used as a reference workload, but it is no longer the organizing
+principle. The organizing principle is a healthcare enterprise platform where
+every repository produces something reviewable: code, pipelines, playbooks,
+GitOps state, policy checks, dashboards, evidence, or operational runbooks.
 
 ## Healthcare Platform Requirements
 
