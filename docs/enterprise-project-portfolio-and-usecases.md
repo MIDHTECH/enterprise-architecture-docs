@@ -404,6 +404,11 @@ virtualization, storage, network services, and system software.
 **Candidate tools:** Ubuntu, Rocky Linux, KVM/libvirt, cloud-init, Ansible,
 AWX, systemd, SELinux, firewalld, BIND, NGINX, LVM and XFS.
 
+**Operational launcher:** Jenkins job `projects/run-ansible-playbook` invokes
+the `jenkins-shared-library` `ansibleAwxPipeline` step, which reconciles AWX
+project, inventory, inventory source, and job template objects before launching
+the selected playbook. `playbooks/site.yml` requires `CONFIRM_APPLY=true`.
+
 ```mermaid
 flowchart LR
     inventory[System Inventory] --> awx[AWX / Ansible]
@@ -664,6 +669,7 @@ flowchart LR
 | 2026-07-27 | Expand the architecture from five active projects to a ten-project enterprise portfolio | Give DevOps, SRE, database, systems, data and network engineers complete specialist capability domains rather than organizing the program around the MAAS workload | Projects 6–10 are approved target architecture only. No VM, IP, product, capacity commitment or implementation-completion claim is created by this decision. |
 | 2026-07-27 | Create repository scaffolds for Projects 6–10 | Establish GitLab source-control homes for the approved planned capability domains | Repository creation only. Implementation, product installation, VM placement, and capacity expansion remain separately approved work. |
 | 2026-07-27 | Start Project 6 implementation against the existing VM fleet | Implement Linux operations use cases without creating new infrastructure | Adds Ansible inventory, playbooks, roles, evidence reports, and runbooks for Linux lifecycle, baseline, patching, access, storage, network/time, capacity, drift, compliance, and break-glass recovery. |
+| 2026-07-27 | Add Jenkins/AWX launcher guardrails for Linux systems operations | Let operators select project, branch, inventory, playbook, and extra vars while preserving review and safety controls | Adds `projects/run-ansible-playbook`, shared-library allowlists, `CONFIRM_APPLY` for state-changing playbooks, and AWX/Jenkins integration documentation. |
 
 ## Recommended Implementation Order
 

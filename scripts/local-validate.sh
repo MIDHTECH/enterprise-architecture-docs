@@ -16,6 +16,7 @@ required_docs=(
   "docs/product-installation-elastic-stack.md"
   "docs/product-installation-splunk.md"
   "docs/sre-incident-register.md"
+  "docs/jenkins-awx-ansible-operations.md"
   "docs/engineer-interview-guide.md"
   "docs/engineer-training-standard.md"
   "docs/marketing-role-engineer-guide.md"
@@ -52,6 +53,9 @@ grep -q "splunk.example.com" docs/vm-inventory.md
 grep -q "Elastic Stack | 9.4.2" docs/product-versions.md
 grep -q "Splunk Enterprise | 10.4.1" docs/product-versions.md
 grep -q "INC-2026-020" docs/sre-incident-register.md
+grep -q "projects/run-ansible-playbook" docs/jenkins-awx-ansible-operations.md
+grep -q "CONFIRM_APPLY" docs/jenkins-awx-ansible-operations.md
+grep -q "AWX_SCM_CREDENTIAL_ID" docs/jenkins-awx-ansible-operations.md
 
 if grep -R --line-number --exclude='sre-incident-register.md' \
   'infra01\.midhtech\.local' docs; then

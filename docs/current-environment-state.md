@@ -28,6 +28,10 @@ The authoritative scope and all 187 use cases are maintained in
   `maas-enterprise-cloud-platform/ansible-prometheus`
 - Linux systems implementation:
   `maas-enterprise-cloud-platform/linux-systems-platform`
+- Jenkins/AWX Ansible launcher:
+  `projects/run-ansible-playbook` generated from
+  `maas-enterprise-cloud-platform/jenkins-jobs` and backed by
+  `maas-enterprise-cloud-platform/jenkins-shared-library`
 - Planned enterprise repository scaffolds:
   `maas-enterprise-cloud-platform/database-reliability-platform`,
   `maas-enterprise-cloud-platform/resilience-service-operations`,
@@ -70,9 +74,14 @@ troubleshooting steps are maintained in
 
 ## Remaining integration work
 
-1. Provision Grafana data sources for Prometheus, Loki, and Tempo.
-2. Connect Prometheus alert delivery to Alertmanager and validate a test alert.
-3. Apply dashboards, alert rules, and SLOs from `observability-sre-platform`.
-4. Configure production alert receivers.
-5. Decide whether Loki and Tempo should move from local storage to MinIO.
-6. Add TLS, SSO, and restricted network access.
+1. Run the Jenkins seed job so `projects/run-ansible-playbook` is created or
+   refreshed from `jenkins-jobs`.
+2. Configure AWX GitLab SSH host trust for `gitlab.example.com:2222`.
+3. Confirm AWX SCM and machine credential IDs for the Linux VM fleet.
+4. Run the `linux-systems-platform` preflight smoke test through Jenkins/AWX.
+5. Provision Grafana data sources for Prometheus, Loki, and Tempo.
+6. Connect Prometheus alert delivery to Alertmanager and validate a test alert.
+7. Apply dashboards, alert rules, and SLOs from `observability-sre-platform`.
+8. Configure production alert receivers.
+9. Decide whether Loki and Tempo should move from local storage to MinIO.
+10. Add TLS, SSO, and restricted network access.

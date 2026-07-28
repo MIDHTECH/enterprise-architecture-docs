@@ -9,6 +9,7 @@ This repo is the written map for the training platform. It explains how the infr
 - [Staff Documentation Standard](docs/documentation-standard.md)
 - [SRE Incident Register](docs/sre-incident-register.md)
 - [GitLab Repository Onboarding](docs/gitlab-repository-onboarding.md)
+- [Jenkins AWX Ansible Operations](docs/jenkins-awx-ansible-operations.md)
 - [PostgreSQL 18 Installation](docs/product-installation-postgresql.md)
 - [Lab DNS and Copper9100 Configuration](docs/product-installation-dns.md)
 - [Standalone NGINX Reverse-Proxy Installation](docs/product-installation-nginx.md)
@@ -31,7 +32,7 @@ This repo is the written map for the training platform. It explains how the infr
 ## Repository Purpose
 
 This is the documentation home for the ten-project enterprise portfolio.
-Projects 1–5 are active implementations; Projects 6–10 are approved planned
+Projects 1–6 are active implementations; Projects 7–10 are approved planned
 capabilities:
 
 - Enterprise DevSecOps Delivery Platform

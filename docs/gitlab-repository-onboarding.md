@@ -132,6 +132,16 @@ for this evidence and the associated SRE near-miss record.
 - Kept implementation status as planned. Repository creation does not approve
   new VMs, products, IP addresses, or capacity expansion.
 
+### 2026-07-27 Linux Systems Jenkins/AWX Update
+
+- Promoted `linux-systems-platform` from scaffold to active first
+  implementation slice against the existing VM fleet.
+- Added GitLab CI jobs for structure, Ansible syntax, and Ansible lint
+  validation.
+- Added Jenkins job-as-code for `projects/run-ansible-playbook`.
+- Added shared-library guardrails for approved playbooks, allowed extra vars,
+  and `CONFIRM_APPLY` on state-changing playbooks.
+
 ## Follow-up Hardening
 
 1. Configure TLS for `gitlab.example.com`.

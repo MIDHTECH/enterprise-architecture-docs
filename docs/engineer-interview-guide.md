@@ -93,8 +93,14 @@ system services need consistent automation and operational evidence.
 hosts, hypervisor services, baselines, patch windows, storage, recovery, and
 validation.
 
-**Interview boundary:** Explain the architecture and planned delivery sequence.
-Do not claim that this repository or all workflows have been implemented.
+**Current implementation:** `linux-systems-platform` has Ansible inventory,
+roles, playbooks, runbooks, GitLab CI validation, and a Jenkins/AWX launcher
+path through `projects/run-ansible-playbook`. The launcher requires
+`CONFIRM_APPLY` before running `playbooks/site.yml`.
+
+**Interview boundary:** Explain that this is an active first implementation
+slice against the existing VM fleet. Do not claim new VM capacity or unrelated
+product installation.
 
 ## Project 7: Enterprise Database Reliability Platform (Planned)
 

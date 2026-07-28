@@ -114,24 +114,31 @@ architecture and roadmap experience, but not completed implementations.
 
 > I contributed to a cloud governance automation project that helped standardize IAM, secrets, compliance checks, backup validation, certificate monitoring, cost controls, and remediation. The result was a more auditable and repeatable cloud operations model.
 
-### Enterprise Linux Systems Platform (Planned)
+### Enterprise Linux Systems Platform
 
-**Project:** Target operating model for Linux lifecycle, KVM, patching,
-storage, DNS, identity, and core system services.
+**Project:** Active first implementation slice for Linux lifecycle, KVM,
+patching, storage, DNS, identity, and core system services against the existing
+VM fleet.
 
 **Team:** Linux systems engineer, virtualization engineer, Ansible/AWX
 engineer, network engineer, security engineer, and SRE.
 
-**Architecture contribution:** Defined how source-controlled roles, inventories,
-maintenance workflows, validation, and evidence should standardize host
+**Architecture contribution:** Defined and implemented source-controlled
+roles, inventories, maintenance workflows, validation, and evidence for host
 operations.
 
 **How to explain it:**
 
-> I designed the planned Linux systems capability around reusable Ansible roles
-> and AWX workflows. The architecture connects host baseline, patching,
-> storage, DNS, virtualization, recovery, and compliance evidence without
-> claiming that the dedicated repository is already implemented.
+> I implemented the first Linux systems slice around reusable Ansible roles and
+> AWX workflows. The architecture connects host baseline, patching, storage,
+> DNS, virtualization, recovery, and compliance evidence without adding new VM
+> capacity.
+
+**Jenkins/AWX workflow:** The project is launched through
+`projects/run-ansible-playbook`, which lets operators select the project,
+branch, inventory, playbook, and approved extra vars. The shared Jenkins
+library reconciles AWX objects and requires `CONFIRM_APPLY` before running
+state-changing playbooks.
 
 ### Enterprise Database Reliability Platform (Planned)
 

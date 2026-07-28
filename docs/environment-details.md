@@ -3,11 +3,12 @@
 ## Environment Model
 
 The physical environment supports the ten-project logical portfolio, but it
-currently hosts the first five implementation domains and shared platform
-services. Projects 6–10 are planned and have no dedicated VM or IP allocation.
-Their initial automation should reuse existing GitLab, Jenkins, AWX, KVM,
-Kubernetes, observability, DNS, and proxy capacity where safe. A capacity
-review is required before any new VM or product is authorized.
+currently hosts the first six implementation domains and shared platform
+services. Project 6 uses the existing VM fleet for Linux operations automation
+and has no dedicated VM or IP allocation. Projects 7–10 remain planned. Their
+initial automation should reuse existing GitLab, Jenkins, AWX, KVM, Kubernetes,
+observability, DNS, and proxy capacity where safe. A capacity review is
+required before any new VM or product is authorized.
 
 The lab supports two deployment targets:
 
