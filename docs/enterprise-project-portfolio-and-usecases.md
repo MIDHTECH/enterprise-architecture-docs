@@ -1,9 +1,9 @@
 # Enterprise Project Portfolio and Use Case Coverage
 
 This document explains how the ten enterprise projects fit together and which
-role-based use cases each one supports. Projects 1–5 have implementation
-repositories. Projects 6–10 are approved logical architecture additions and
-remain planned until their repositories, products, capacity, and VM placement
+role-based use cases each one supports. Projects 1–5 have active
+implementation repositories. Projects 6–10 now have repository scaffolds and
+remain planned until implementation scope, products, capacity, and VM placement
 are separately approved.
 
 The portfolio is role-centered for DevOps, SRE, Database, Linux/System, Data,
@@ -79,16 +79,16 @@ flowchart TB
 | 3 | `kubernetes-platform-gitops` | Active implementation |
 | 4 | `observability-sre-platform` | Active implementation |
 | 5 | `cloud-governance-ops-automation` | Active implementation |
-| 6 | `enterprise-linux-systems-platform` | Planned; repository not created |
-| 7 | `enterprise-database-reliability-platform` | Planned; repository not created |
-| 8 | `enterprise-resilience-service-operations` | Planned; repository not created |
-| 9 | `enterprise-data-engineering-platform` | Planned; repository not created |
-| 10 | `enterprise-network-engineering-platform` | Planned; repository not created |
+| 6 | `enterprise-linux-systems-platform` | Repository scaffold created; implementation planned |
+| 7 | `enterprise-database-reliability-platform` | Repository scaffold created; implementation planned |
+| 8 | `enterprise-resilience-service-operations` | Repository scaffold created; implementation planned |
+| 9 | `enterprise-data-engineering-platform` | Repository scaffold created; implementation planned |
+| 10 | `enterprise-network-engineering-platform` | Repository scaffold created; implementation planned |
 
-Approval of a logical project does not authorize VM creation or product
-installation. The current hypervisors are capacity constrained, so Projects
-6–10 must first reuse existing automation and Kubernetes capacity or complete
-a documented capacity expansion.
+Repository creation for a planned project does not authorize VM creation or
+product installation. The current hypervisors are capacity constrained, so
+Projects 6–10 must first reuse existing automation and Kubernetes capacity or
+complete a documented capacity expansion.
 
 ## GitLab Repository Model
 
@@ -658,7 +658,8 @@ flowchart LR
 
 | Date | Decision | Rationale | Operational effect |
 | --- | --- | --- | --- |
-| 2026-07-27 | Expand the architecture from five active projects to a ten-project enterprise portfolio | Give DevOps, SRE, database, systems, data and network engineers complete specialist capability domains rather than organizing the program around the MAAS workload | Projects 6–10 are approved target architecture only. No repository, VM, IP, product, capacity commitment or implementation-completion claim is created by this decision. |
+| 2026-07-27 | Expand the architecture from five active projects to a ten-project enterprise portfolio | Give DevOps, SRE, database, systems, data and network engineers complete specialist capability domains rather than organizing the program around the MAAS workload | Projects 6–10 are approved target architecture only. No VM, IP, product, capacity commitment or implementation-completion claim is created by this decision. |
+| 2026-07-27 | Create repository scaffolds for Projects 6–10 | Establish GitLab source-control homes for the approved planned capability domains | Repository creation only. Implementation, product installation, VM placement, and capacity expansion remain separately approved work. |
 
 ## Recommended Implementation Order
 

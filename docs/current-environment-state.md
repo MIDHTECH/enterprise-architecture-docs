@@ -7,8 +7,9 @@ Last verified: 2026-07-27
 The architecture contains ten projects. Projects 1–5 have active
 implementation repositories. Projects 6–10—Linux systems, database
 reliability, resilience/service operations, data engineering, and network
-engineering—are approved planned capabilities. No repository, VM, IP address,
-or product installation is implied by their inclusion in the architecture.
+engineering—have repository scaffolds and remain approved planned
+capabilities. No VM, IP address, product installation, or capacity expansion is
+implied by their inclusion in the architecture.
 
 The authoritative scope and all 187 use cases are maintained in
 [Enterprise Project Portfolio and Use Case Coverage](enterprise-project-portfolio-and-usecases.md).
@@ -24,6 +25,12 @@ The authoritative scope and all 187 use cases are maintained in
   `maas-enterprise-cloud-platform/ansible-observability`
 - Prometheus, Grafana, and Node Exporter installation:
   `maas-enterprise-cloud-platform/ansible-prometheus`
+- Planned enterprise repository scaffolds:
+  `maas-enterprise-cloud-platform/enterprise-linux-systems-platform`,
+  `maas-enterprise-cloud-platform/enterprise-database-reliability-platform`,
+  `maas-enterprise-cloud-platform/enterprise-resilience-service-operations`,
+  `maas-enterprise-cloud-platform/enterprise-data-engineering-platform`,
+  `maas-enterprise-cloud-platform/enterprise-network-engineering-platform`
 
 ## Observability hosts
 
