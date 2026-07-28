@@ -9,6 +9,13 @@ hybrid on-premises and cloud platform program.
 Projects 6–10 are active first implementation slices and do not represent new
 installed products or allocated VMs.
 
+The architecture is organized around executable work, not presentation-only
+capability boxes. A project is useful when it can produce something concrete:
+a Jenkins run, AWX job, GitLab pipeline, Ansible evidence report, Kubernetes
+sync result, dashboard, alert, incident note, data-quality report, model card,
+or controlled AI evaluation. That is the standard used to decide what belongs
+in the repos.
+
 ```mermaid
 flowchart TB
     subgraph org[MidhHealth Integrated Care]
@@ -171,6 +178,20 @@ flowchart TB
 9. Projects 11–12 extend the same controls into healthcare AI and ML model
    operations after data, security, Kubernetes and governance foundations are
    accepted.
+
+## Executable Work Pattern
+
+```mermaid
+flowchart LR
+    request[MR / Jenkins Parameter / Alert / Schedule] --> guardrail[Allowlist, Review, Dry Run, CONFIRM_APPLY]
+    guardrail --> action[Pipeline, AWX Playbook, GitOps Sync, Data Check, AI Eval]
+    action --> evidence[Job ID, Report, Dashboard, Alert State, Model Card, RCA Note]
+    evidence --> decision[Promote, Remediate, Roll Back, Open Follow-Up]
+```
+
+This pattern keeps the program honest. The enterprise architecture can mention
+many tools, but the implementation repos should prioritize work that can be
+run, observed, reviewed, and repeated.
 
 The current lab has no infrastructure HA. Numeric suffixes identify only true
 cluster members. The Elastic/Splunk VMs are provisioned but their products are

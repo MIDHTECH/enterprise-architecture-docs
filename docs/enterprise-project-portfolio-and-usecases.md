@@ -49,6 +49,53 @@ each repo tell a believable story about the kind of work a healthcare platform
 engineer, SRE, data engineer, AI engineer, or MLOps engineer would actually be
 asked to do.
 
+## Executable Use-Case Standard
+
+A use case is ready for implementation only when an engineer can turn it into a
+pipeline job, playbook, script, dashboard, alert, API endpoint, policy check, or
+runbook drill. Broad statements such as "improve reliability" or "modernize
+data" are not enough. The repo should say what starts the work, what system is
+touched, what the automation does, what evidence is produced, and what the safe
+rollback or manual stop point is.
+
+Every executable use case should answer these questions:
+
+| Question | What good looks like |
+| --- | --- |
+| What starts it? | A merge request, Jenkins parameter, AWX template, GitLab schedule, alert, data-feed event, or manual incident command |
+| What does it touch? | A known repo, inventory group, Kubernetes namespace, database, data feed, model artifact, dashboard, or service endpoint |
+| What does it do? | Validate, deploy, scan, reconcile, collect evidence, compare drift, run a smoke test, enrich an incident, or generate a controlled report |
+| How do we know it worked? | Pipeline result, AWX job ID, artifact, report, dashboard panel, alert state, SLO measurement, audit log, or runbook evidence |
+| How do we keep it safe? | Protected branch, allowlist, dry-run mode, `CONFIRM_APPLY`, scoped credentials, no protected data by default, and documented rollback |
+
+## Executable Backlog
+
+This is the first cross-project backlog that should be converted into real
+automation. It deliberately favors work we can prove in the lab over vague
+enterprise ambitions.
+
+| Backlog item | Primary repo | Executable form | Evidence produced |
+| --- | --- | --- | --- |
+| Run an approved Ansible playbook by selecting project, branch, inventory, playbook, and extra vars | `jenkins-jobs`, `jenkins-shared-library` | Jenkins parameterized job calls AWX after allowlist checks | Jenkins build log, AWX project sync, AWX job ID, playbook result |
+| Check Linux fleet patch and baseline posture without changing hosts | `linux-systems-platform` | AWX evidence playbook in check/read-only mode | Host report for package, service, firewall, SELinux, disk, time, and access posture |
+| Detect Linux configuration drift before a maintenance window | `linux-systems-platform` | Scheduled playbook compares desired controls with live state | Drift report, failed-control list, remediation candidate list |
+| Validate database backup readiness and restore evidence | `database-reliability-platform` | AWX playbook checks backup jobs, last successful run, storage, and restore notes | Backup readiness report and restore-test evidence |
+| Capture database performance and connection pressure | `database-reliability-platform` | Read-only SQL and host checks gathered through AWX | Query latency, connection, storage, and saturation report |
+| Build a service readiness view for a care or payer workflow | `resilience-service-operations` | Service catalog plus SLO and dependency checks | Service owner, dependency, SLO, incident, and readiness record |
+| Enrich an incident with recent deployments and runbook links | `observability-sre-platform`, `resilience-service-operations` | Alert rule or script joins alert labels, GitLab changes, service catalog, and runbook metadata | Incident context bundle and RCA starter note |
+| Watch freshness for an EHR, claims, eligibility, or provider feed | `data-engineering-platform` | Scheduled data-quality check validates arrival time, schema, and row-count thresholds | Feed freshness report, schema result, downstream-consumer impact |
+| Track data lineage from source feed to dashboard or model | `data-engineering-platform` | Metadata inventory and validation script | Source owner, transform path, consumers, and stale-link findings |
+| Validate DNS, DHCP, proxy, and Kubernetes network paths before change | `network-engineering-platform` | Pre/post network check playbook | Resolver, route, port, ingress, and rollback evidence |
+| Run a safe healthcare RAG prototype over approved documents | `healthcare-ai-platform` | Local Mac Studio or CI job indexes approved docs and runs evaluation prompts | Citation quality, answer quality, latency, and prompt/version report |
+| Summarize an incident or runbook with citations | `healthcare-ai-platform`, `observability-sre-platform` | Controlled AI workflow uses approved incident notes and runbooks | Summary, cited sources, confidence notes, and human-review marker |
+| Register and validate a small model artifact | `mlops-model-platform` | CI job records run metadata, validation metrics, and promotion decision | Model card, metric report, approval status, rollback reference |
+| Detect model or data drift for a lab inference endpoint | `mlops-model-platform`, `data-engineering-platform` | Scheduled evaluation compares current sample distribution and output metrics | Drift report, SLO status, retraining recommendation |
+| Confirm a release is observable before promotion | `devsecops-cicd-orchestrator`, `observability-sre-platform` | Pipeline gate checks health endpoint, metrics, logs, traces, and rollback metadata | Release evidence bundle and promotion decision |
+
+These backlog items are the bridge between job-derived requirements and code.
+Each one can become a GitLab issue, Jenkins job, AWX template, playbook, CI
+stage, dashboard, or runbook without inventing a new product installation.
+
 ## Enterprise Architecture
 
 ```mermaid

@@ -47,6 +47,12 @@ control plane, one governance model, common environment standards, and a hybrid
 target footprint across on-prem KVM/Kubernetes and future AWS/Azure/GCP
 validation.
 
+The documentation is expected to drive executable work. A good use case should
+be convertible into a Jenkins job, AWX playbook, GitLab CI stage, GitOps sync,
+dashboard, alert, data-quality check, model-validation step, or runbook drill.
+The portfolio avoids saving job-posting details; it uses job-market patterns to
+shape practical backlog items that can produce evidence in the lab.
+
 Projects 1–10 now have implementation repositories. Projects 6–10 are active
 first slices that reuse existing VMs and do not imply new product installs or
 production capacity. Projects 11–12 are approved AI/ML platform additions based
