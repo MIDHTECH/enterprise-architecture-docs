@@ -357,18 +357,9 @@ sequenceDiagram
 
 **Architecture:**
 
-```mermaid
-flowchart LR
-    repo[Application Repository] --> jenkins[Jenkins Pipeline]
-    jenkins --> build[Build and Unit Tests]
-    build --> quality[Code Quality Gate]
-    quality --> security[Secrets, Dependency, and Image Scans]
-    security --> image[Docker Image Build]
-    image --> registry[Container Registry]
-    registry --> awx[AWX Job Template]
-    awx --> ansible[Ansible Deployment]
-    ansible --> env[Target Environment]
-```
+![DevSecOps delivery architecture](assets/project-1-delivery-architecture.svg)
+
+This diagram shows the project architecture, control boundaries, runtime targets, evidence flow, and operational feedback loop.
 
 **What this covers:**
 
@@ -431,17 +422,9 @@ recoverable.
 
 **Architecture:**
 
-```mermaid
-flowchart TB
-    infra[Terraform Cluster Provisioning] --> cluster[AKS/EKS/GKE Cluster]
-    gitops[GitOps Repository] --> argo[Argo CD or Flux]
-    argo --> namespaces[Namespaces and RBAC]
-    argo --> helm[Helm Releases]
-    argo --> policies[Policy as Code]
-    helm --> workloads[Application Workloads]
-    ingress[Ingress Controller] --> workloads
-    policies --> workloads
-```
+![Kubernetes GitOps architecture](assets/project-3-kubernetes-gitops-architecture.svg)
+
+This diagram shows the project architecture, control boundaries, runtime targets, evidence flow, and operational feedback loop.
 
 **What this covers:**
 
@@ -471,25 +454,9 @@ services.
 
 **Architecture:**
 
-```mermaid
-flowchart LR
-    apps[Applications] --> metrics[Prometheus Metrics]
-    apps --> logs[Loki Logs]
-    apps --> elastic[Logstash to Elasticsearch]
-    apps --> splunk[Splunk Enterprise]
-    apps --> traces[OpenTelemetry Traces]
-    k8s[Kubernetes] --> metrics
-    cloud[Cloud Services] --> cloudmon[CloudWatch/Azure Monitor/GCP Operations]
-    metrics --> grafana[Grafana Dashboards]
-    logs --> grafana
-    elastic --> kibana[Kibana]
-    traces --> grafana
-    cloudmon --> grafana
-    grafana --> alerts[Alertmanager or PagerDuty]
-    alerts --> rca[RCA and Incident Review]
-    kibana --> rca
-    splunk --> rca
-```
+![Observability and SRE architecture](assets/project-4-sre-observability-architecture.svg)
+
+This diagram shows the project architecture, control boundaries, runtime targets, evidence flow, and operational feedback loop.
 
 The three observability paths are intentional: the Grafana stack demonstrates
 cloud-native open-source operations, Elastic demonstrates clustered log
@@ -525,17 +492,9 @@ and Splunk VMs are provisioned-only until their AWX runbooks complete.
 
 **Architecture:**
 
-```mermaid
-flowchart TB
-    policy[Policy as Code] --> ci[CI/CD Quality Gates]
-    scanner[IaC and Security Scanners] --> ci
-    secrets[Secrets Manager or Key Vault] --> apps[Applications and Pipelines]
-    iam[IAM and RBAC Standards] --> cloud[Cloud Accounts and Subscriptions]
-    tags[Tagging and Cost Rules] --> cloud
-    backup[Backup and DR Automation] --> cloud
-    certs[Certificate Monitoring] --> ingress[Ingress and DNS]
-    remediation[Runbooks and Ansible Automation] --> incidents[Incident Remediation]
-```
+![Governance automation architecture](assets/project-5-governance-automation-architecture.svg)
+
+This diagram shows the project architecture, control boundaries, runtime targets, evidence flow, and operational feedback loop.
 
 **What this covers:**
 
@@ -578,15 +537,12 @@ the `jenkins-shared-library` `ansibleAwxPipeline` step, which reconciles AWX
 project, inventory, inventory source, and job template objects before launching
 the selected playbook. `playbooks/site.yml` requires `CONFIRM_APPLY=true`.
 
-```mermaid
-flowchart LR
-    inventory[System Inventory] --> awx[AWX / Ansible]
-    awx --> build[Provision and Baseline]
-    awx --> patch[Patch and Upgrade]
-    awx --> config[Configuration and Drift]
-    build --> linux[Linux and KVM Fleet]
-    linux --> evidence[Health and Compliance Evidence]
-```
+**Architecture:**
+
+![Linux systems platform architecture](assets/project-6-linux-systems-architecture.svg)
+
+This diagram shows the Linux systems architecture, control boundaries, existing
+fleet targets, evidence flow, and operational feedback loop.
 
 | Use case | Coverage target |
 | --- | --- |
@@ -618,15 +574,12 @@ performance-managed enterprise services.
 **Candidate tools:** PostgreSQL, PgBouncer, Ansible/AWX, pgBackRest, SQL
 migration tools, Prometheus exporters, Grafana and Vault.
 
-```mermaid
-flowchart LR
-    request[Database Service Request] --> automation[AWX Database Automation]
-    automation --> database[Managed Database]
-    database --> backup[Backup / PITR]
-    database --> monitor[Performance / Capacity]
-    database --> audit[Security / Audit]
-    backup --> restore[Restore and DR Validation]
-```
+**Architecture:**
+
+![Database reliability architecture](assets/project-7-database-reliability-architecture.svg)
+
+This diagram shows the database reliability architecture, control boundaries,
+runtime targets, evidence flow, and operational feedback loop.
 
 | Use case | Coverage target |
 | --- | --- |
@@ -660,15 +613,12 @@ incident response, performance engineering and tested recovery.
 **Candidate tools:** Prometheus, Alertmanager, Grafana, Loki, Tempo,
 OpenTelemetry, Elastic, Splunk, AWX, k6, JMeter, Litmus or Chaos Mesh.
 
-```mermaid
-flowchart LR
-    catalog[Service Catalog] --> slo[SLIs / SLOs]
-    telemetry[Operational Telemetry] --> detect[Detection]
-    detect --> incident[Incident and Problem Management]
-    incident --> remediate[AWX Remediation]
-    test[Load / Chaos / DR Exercises] --> evidence[Resilience Evidence]
-    evidence --> improve[Capacity and Reliability Improvements]
-```
+**Architecture:**
+
+![Resilience operations architecture](assets/project-8-resilience-operations-architecture.svg)
+
+This diagram shows the service operations architecture, control boundaries,
+runtime targets, evidence flow, and operational feedback loop.
 
 | Use case | Coverage target |
 | --- | --- |
@@ -703,16 +653,12 @@ lineage and data-serving capabilities for enterprise data products.
 **Candidate tools:** Airflow, Kafka, Debezium, Apicurio or Schema Registry,
 dbt, Spark or Flink, MinIO/S3, Iceberg, Trino, OpenMetadata or DataHub.
 
-```mermaid
-flowchart LR
-    sources[Databases / APIs / Files / Events] --> ingest[Batch / CDC / Streaming]
-    ingest --> process[Transform and Process]
-    process --> lake[Lakehouse / Warehouse]
-    catalog[Catalog / Lineage / Quality] --> ingest
-    catalog --> process
-    catalog --> lake
-    lake --> consumers[Analytics / Applications / Data Products]
-```
+**Architecture:**
+
+![Data engineering architecture](assets/project-9-data-engineering-architecture.svg)
+
+This diagram shows the data engineering architecture, source and consumer
+boundaries, evidence flow, and operational feedback loop.
 
 | Use case | Coverage target |
 | --- | --- |
@@ -753,17 +699,12 @@ connectivity, observability and safe change across on-prem and cloud.
 Kea, FRRouting or VyOS, containerlab/EVE-NG, Cilium/Hubble, MetalLB, WireGuard,
 Prometheus, Blackbox Exporter, SNMP Exporter, Elastic and Splunk.
 
-```mermaid
-flowchart LR
-    source[IPAM / Network Source of Truth] --> automation[Network Automation]
-    automation --> campus[LAN / Routing / DNS / DHCP]
-    automation --> cloud[Cloud VPC / VNet]
-    automation --> k8snet[Kubernetes Network]
-    campus --> telemetry[Availability / Flow / Packet Evidence]
-    cloud --> telemetry
-    k8snet --> telemetry
-    telemetry --> operations[Network Operations and Incidents]
-```
+**Architecture:**
+
+![Network engineering architecture](assets/project-10-network-engineering-architecture.svg)
+
+This diagram shows the network engineering architecture, source-of-truth
+boundary, connectivity domains, evidence flow, and operational feedback loop.
 
 | Use case | Coverage target |
 | --- | --- |
@@ -818,14 +759,12 @@ production data host. Backend vector search, API services, telemetry, and
 larger batch workloads should target Kubernetes or the planned 256 GB Linux
 server when capacity is available.
 
-```mermaid
-flowchart LR
-    source[EHR / Claims / Policies / Knowledge] --> retrieve[RAG and Retrieval]
-    retrieve --> agents[AI Agents and Assistants]
-    agents --> workflows[Care / Payer Workflows]
-    workflows --> guardrails[Responsible AI Guardrails]
-    guardrails --> telemetry[AI Observability and Feedback]
-```
+**Architecture:**
+
+![Healthcare AI platform architecture](assets/project-11-healthcare-ai-architecture.svg)
+
+This diagram shows the healthcare AI architecture, approved data boundaries,
+evaluation gates, human review, evidence flow, and operational feedback loop.
 
 | Use case | Coverage target |
 | --- | --- |
@@ -871,15 +810,12 @@ pipelines, model registry services, feature pipelines, batch scoring, and
 larger model-serving backends should target Kubernetes or the planned 256 GB
 Linux server after workload labels, storage, and governance controls are set.
 
-```mermaid
-flowchart LR
-    data[Curated Data / Features] --> train[Training and Validation]
-    train --> registry[Model Registry]
-    registry --> deploy[Batch / Real-Time Serving]
-    deploy --> monitor[Model Monitoring]
-    monitor --> retrain[Retraining and Promotion]
-    retrain --> registry
-```
+**Architecture:**
+
+![MLOps model platform architecture](assets/project-12-mlops-model-architecture.svg)
+
+This diagram shows the MLOps architecture, model lifecycle boundaries,
+validation gates, serving targets, evidence flow, and operational feedback loop.
 
 | Use case | Coverage target |
 | --- | --- |

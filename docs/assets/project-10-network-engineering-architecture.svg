@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1650" height="980" viewBox="0 0 1650 980" role="img" aria-labelledby="title desc">
+<title id="title">Project 10: Network Engineering and Automation Architecture</title>
+<desc id="desc">Source of truth, DNS/DHCP/IPAM, routing, firewall policy, cloud connectivity, Kubernetes ingress, and drift checks.</desc>
+<defs><style>
+.bg{fill:#fff}.outer{fill:#f8fafc;stroke:#2563eb;stroke-width:3}.zone{fill:#fff;stroke:#2563eb;stroke-width:2.3;stroke-dasharray:8 6;rx:10}.panel{fill:#fff;stroke:#111827;stroke-width:2.2;rx:8}.blue{fill:#eff6ff;stroke:#2563eb;stroke-width:2;rx:8}.green{fill:#ecfdf5;stroke:#15803d;stroke-width:2;rx:8}.amber{fill:#fffbeb;stroke:#b45309;stroke-width:2;rx:8}.red{fill:#fee2e2;stroke:#b91c1c;stroke-width:2;rx:8}.purple{fill:#f5f3ff;stroke:#6d28d9;stroke-width:2;rx:8}.title{font:700 30px Arial,sans-serif;fill:#0f172a}.h1{font:700 20px Arial,sans-serif;fill:#0f172a}.h2{font:700 15px Arial,sans-serif;fill:#111827}.txt{font:13px Arial,sans-serif;fill:#334155}.small{font:12px Arial,sans-serif;fill:#475569}.flow{stroke:#334155;stroke-width:2.2;fill:none;marker-end:url(#arrow)}.ctrl{stroke:#6d28d9;stroke-width:3;fill:none;marker-end:url(#arrowP)}.data{stroke:#0284c7;stroke-width:3;fill:none;marker-end:url(#arrowB)}.evidence{stroke:#15803d;stroke-width:2.5;fill:none;stroke-dasharray:8 5;marker-end:url(#arrowG)}
+</style>
+<marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#334155"/></marker>
+<marker id="arrowP" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#6d28d9"/></marker>
+<marker id="arrowB" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#0284c7"/></marker>
+<marker id="arrowG" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#15803d"/></marker>
+</defs>
+<rect class="bg" width="1650" height="980"/>
+<text class="title" x="38" y="50">Project 10: Network Engineering and Automation Architecture</text>
+<text class="txt" x="40" y="80">Source of truth, DNS/DHCP/IPAM, routing, firewall policy, cloud connectivity, Kubernetes ingress, and drift checks.</text>
+<rect class="outer" x="28" y="120" width="1594" height="620"/>
+<rect class="zone" x="34" y="160" width="360" height="535"/>
+<text class="h1" x="52" y="195">Network Domains</text>
+<rect class="zone" x="467" y="160" width="560" height="535"/>
+<text class="h1" x="485" y="195">Network Automation Plane</text>
+<rect class="zone" x="1100" y="160" width="460" height="535"/>
+<text class="h1" x="1118" y="195">Network Evidence</text>
+<rect class="blue" x="52" y="205" width="295" height="64"/>
+<text class="h2" x="70" y="233">Data Center</text>
+<text class="small" x="70" y="255">edge, core, KVM networks</text>
+<rect class="green" x="52" y="291" width="295" height="64"/>
+<text class="h2" x="70" y="319">Cloud Networks</text>
+<text class="small" x="70" y="341">Azure, AWS, GCP landing zones</text>
+<rect class="amber" x="52" y="377" width="295" height="64"/>
+<text class="h2" x="70" y="405">Kubernetes</text>
+<text class="small" x="70" y="427">ingress, services, network policy</text>
+<rect class="purple" x="52" y="463" width="295" height="64"/>
+<text class="h2" x="70" y="491">Remote Access</text>
+<text class="small" x="70" y="513">VPN and admin paths</text>
+<rect class="amber" x="485" y="205" width="220" height="64"/>
+<text class="h2" x="503" y="233">Source of Truth</text>
+<text class="small" x="503" y="255">IPAM, prefixes, owners</text>
+<rect class="purple" x="740" y="205" width="220" height="64"/>
+<text class="h2" x="758" y="233">DNS / DHCP</text>
+<text class="small" x="758" y="255">zones, leases, records</text>
+<rect class="red" x="485" y="317" width="220" height="64"/>
+<text class="h2" x="503" y="345">Route Validation</text>
+<text class="small" x="503" y="367">BGP and gateway checks</text>
+<rect class="blue" x="740" y="317" width="220" height="64"/>
+<text class="h2" x="758" y="345">Firewall Policy</text>
+<text class="small" x="758" y="367">rules, exposure, change review</text>
+<rect class="blue" x="485" y="429" width="220" height="64"/>
+<text class="h2" x="503" y="457">Config Backup</text>
+<text class="small" x="503" y="479">device and service snapshots</text>
+<rect class="green" x="740" y="429" width="220" height="64"/>
+<text class="h2" x="758" y="457">Drift Monitor</text>
+<text class="small" x="758" y="479">intended vs live network state</text>
+<rect class="green" x="1118" y="205" width="370" height="64"/>
+<text class="h2" x="1136" y="233">Precheck Report</text>
+<text class="small" x="1136" y="255">routes, resolver, ports</text>
+<rect class="amber" x="1118" y="291" width="370" height="64"/>
+<text class="h2" x="1136" y="319">Change Plan</text>
+<text class="small" x="1136" y="341">impact and rollback</text>
+<rect class="purple" x="1118" y="377" width="370" height="64"/>
+<text class="h2" x="1136" y="405">Connectivity Test</text>
+<text class="small" x="1136" y="427">apps and platform endpoints</text>
+<rect class="red" x="1118" y="463" width="370" height="64"/>
+<text class="h2" x="1136" y="491">Exposure Report</text>
+<text class="small" x="1136" y="513">public/private boundary</text>
+<path class="data" d="M347 237 C410 237 430 237 485 237"/>
+<path class="data" d="M347 409 C410 409 430 349 485 349"/>
+<path class="ctrl" d="M960 237 C1028 237 1050 237 1118 237"/>
+<path class="ctrl" d="M960 461 C1028 461 1050 409 1118 409"/>
+<path class="evidence" d="M1303 549 C1303 765 260 765 260 549"/>
+<rect class="panel" x="240" y="790" width="1165" height="126"/>
+<text class="h1" x="270" y="827">Operational Control Loop</text>
+<rect class="blue" x="280" y="852" width="145" height="42"/>
+<text class="small" x="298" y="878">source of truth</text>
+<path class="flow" d="M425 873 L455 873"/>
+<rect class="green" x="455" y="852" width="145" height="42"/>
+<text class="small" x="473" y="878">plan</text>
+<path class="flow" d="M600 873 L630 873"/>
+<rect class="amber" x="630" y="852" width="145" height="42"/>
+<text class="small" x="648" y="878">precheck</text>
+<path class="flow" d="M775 873 L805 873"/>
+<rect class="purple" x="805" y="852" width="145" height="42"/>
+<text class="small" x="823" y="878">change</text>
+<path class="flow" d="M950 873 L980 873"/>
+<rect class="red" x="980" y="852" width="145" height="42"/>
+<text class="small" x="998" y="878">postcheck</text>
+<path class="flow" d="M1125 873 L1155 873"/>
+<rect class="blue" x="1155" y="852" width="145" height="42"/>
+<text class="small" x="1173" y="878">drift</text>
+<text class="small" x="40" y="954">Dashed green line represents evidence and feedback returning into inventory, policy, runbooks, and backlog.</text>
+</svg>
