@@ -92,6 +92,7 @@ supported patch within the selected major/minor family.
 7. If the vendor's target version is unavailable for the selected edition,
    stop and revise the catalog rather than substituting an unreviewed tag.
 
-Elastic Stack 9.4.2 and Splunk Enterprise 10.4.1 are approved targets, not
-proof of installation. Their VMs were provisioned on 2026-07-27; product
-installation remains pending AWX automation and baseline completion.
+Elastic Stack 9.4.2 was reconciled through AWX job `311` and independently
+verified through AWX job `316` on 2026-07-28. Splunk Enterprise 10.4.1 remains
+an approved target; its VM is provisioned, but product installation is still
+pending.

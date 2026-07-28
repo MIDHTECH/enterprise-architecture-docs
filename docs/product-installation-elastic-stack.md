@@ -2,18 +2,17 @@
 
 ## Scope and Current State
 
-The lab uses a secured three-node Elasticsearch cluster with dedicated Kibana
-and Logstash VMs. Numeric suffixes are valid here because Elasticsearch is a
-cluster. This stack is independent of the Prometheus/Grafana/Loki/Tempo path
-and exists for enterprise architecture and migration comparison.
+MidhHealth uses a secured three-node Elasticsearch cluster with dedicated
+Kibana and Logstash VMs. Numeric suffixes are valid here because Elasticsearch
+is a cluster. Elastic provides indexed operational log search and investigation
+alongside the shared Prometheus, Grafana, Loki, Tempo, and OpenTelemetry
+observability services.
 
-As of 2026-07-27, the VMs and DNS records exist. Ansible automation for Elastic
-Stack installation now exists in
-`midhhealth/reliability-operations/ansible-observability`, but live
-installation is pending the standard Rocky SSH/baseline handoff on the five
-Elastic VMs. Do not report Elastic as installed until
-`playbooks/install-elastic-stack.yml` and `playbooks/verify-elastic-stack.yml`
-complete successfully.
+Elastic Stack 9.4.2 is installed. AWX deployment job `311` completed
+`playbooks/deploy-elastic-stack.yml`, and independent AWX job `316` completed
+`playbooks/verify-elastic-stack.yml` on 2026-07-28. The verified path covers
+three-node cluster membership, Kibana, the named Logstash pipeline, the managed
+index template, and end-to-end ingestion of an approved structured event.
 
 | Role | VM | Address | Resources |
 | --- | --- | --- | --- |
@@ -23,21 +22,18 @@ complete successfully.
 | Kibana | `kibana.example.com` | `192.168.1.117` | 2 vCPU, 4 GB RAM, 40/40 GB disks |
 | Logstash | `logstash.example.com` | `192.168.1.135` | 2 vCPU, 4 GB RAM, 40/40 GB disks |
 
-Target all components at Elastic Stack 9.4.2. Pin exact repository packages in
-the generated lock file; never mix stack versions during initial deployment.
+All components run Elastic Stack 9.4.2. Pin exact repository packages in the
+generated lock file and never mix stack versions during an upgrade.
 
 ## Network and Access
 
 - Elasticsearch transport `9300/tcp`: cluster nodes only.
 - Elasticsearch HTTPS `9200/tcp`: Kibana, Logstash, AWX, and approved
   administrators only.
-- Kibana `5601/tcp`: NGINX only; users browse
+- Kibana `5601/tcp`: NGINX and the approved management network; users browse
   `https://kibana.apps.example.com`.
 - Logstash Beats input `5044/tcp`: approved senders only.
 - Do not publish Elasticsearch or Logstash through the HTTP reverse proxy.
-
-Until Kibana is installed, its friendly URL returning `502 Bad Gateway` is
-expected.
 
 ## AWX Implementation Sequence
 
@@ -85,8 +81,11 @@ debug streams must not be sent to Elastic.
 
 ## Acceptance and Operations
 
-Capture evidence for cluster health, shard allocation, TLS certificate chain,
-Kibana login, a test Logstash event, disk watermarks, and service enablement.
+AWX jobs `311` and `316` provide installation and verification evidence for
+cluster health, node membership, TLS-protected Elasticsearch, Kibana, Logstash,
+the index template, and a test Logstash event. Continue to capture shard
+allocation, certificate expiry, disk watermarks, and service enablement in
+scheduled operational evidence.
 Configure snapshot repositories before production-like data is admitted.
 Back up configuration and snapshot indices before upgrades.
 

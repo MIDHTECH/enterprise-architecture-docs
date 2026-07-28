@@ -1,6 +1,6 @@
 # Current Environment State
 
-Last verified: 2026-07-27
+Last verified: 2026-07-28
 
 ## Enterprise project portfolio
 
@@ -87,11 +87,11 @@ Engine and Compose packages were removed through Ansible.
 | `loki.example.com` | Loki | 3.7.4 | healthy |
 | `tempo.example.com` | Tempo | 3.0.2 | healthy |
 | `otel.example.com` | OpenTelemetry Collector Contrib | 0.137.0 | healthy |
-| `elasticsearch01.example.com` | Elasticsearch target | 9.4.2 | automation ready; SSH baseline pending |
-| `elasticsearch02.example.com` | Elasticsearch target | 9.4.2 | automation ready; SSH baseline pending |
-| `elasticsearch03.example.com` | Elasticsearch target | 9.4.2 | automation ready; SSH baseline pending |
-| `kibana.example.com` | Kibana target | 9.4.2 | automation ready; SSH baseline pending |
-| `logstash.example.com` | Logstash target | 9.4.2 | automation ready; SSH baseline pending |
+| `elasticsearch01.example.com` | Elasticsearch | 9.4.2 | healthy |
+| `elasticsearch02.example.com` | Elasticsearch | 9.4.2 | healthy |
+| `elasticsearch03.example.com` | Elasticsearch | 9.4.2 | healthy |
+| `kibana.example.com` | Kibana | 9.4.2 | healthy |
+| `logstash.example.com` | Logstash | 9.4.2 | healthy |
 
 Node Exporter 1.11.1 is installed on managed platform hosts.
 
@@ -112,9 +112,11 @@ troubleshooting steps are maintained in
 
 Elastic Stack automation is implemented in `ansible-observability`, including
 Elasticsearch, Kibana, Logstash, the `midhhealth-*` index template and the
-approved Logstash ingestion boundary. Live installation is blocked until the
-Elastic VMs accept the standard `midhtechadmin` public key and pass the common
-Rocky baseline.
+approved Logstash ingestion boundary. AWX deployment job `311` reconciled the
+installed stack. Independent AWX verification job `316` reloaded the
+persistent root-only credentials, confirmed three-node membership and service
+health, sent an approved structured event through Logstash, and found it in
+the managed Elasticsearch index.
 
 ## Remaining integration work
 
@@ -129,10 +131,11 @@ Rocky baseline.
 7. Apply dashboards, alert rules, and SLOs from `observability-sre-platform`.
 8. Configure production alert receivers.
 9. Decide whether Loki and Tempo should move from local storage to MinIO.
-10. Apply the common Rocky baseline and authorized key handoff to the five
-    Elastic Stack VMs.
-11. Run `ansible-observability` Elastic install and verification playbooks.
-12. Add TLS, SSO, and restricted network access.
+10. Back up `/etc/midhhealth/elastic-stack` through the restricted platform
+    secret-backup process.
+11. Configure reverse-proxy TLS and SSO for Kibana.
+12. Enroll approved Linux, Jenkins, AWX, Kubernetes, PostgreSQL, application,
+    AI, and MLOps log senders through the Logstash ingestion boundary.
 13. Register `midh-ai-edge-01` as the Mac Studio AI/ML development endpoint.
 14. Plan `infra03` hardware installation, network identity, storage layout,
     Kubernetes labels, and workload placement guardrails.

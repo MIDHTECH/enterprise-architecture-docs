@@ -137,11 +137,12 @@ All six libvirt domains are running and enabled for autostart. Forward and
 reverse DNS, SSH by canonical name, cloud-init completion, qemu-guest-agent,
 chronyd, firewalld, CPU, memory, and virtual-disk sizes were validated.
 
-This status records VM and operating-system provisioning only. Elasticsearch,
-Kibana, Logstash, and Splunk are not installed or configured yet. Each
-secondary data disk is intentionally unformatted until its product role defines
-the filesystem, mount point, ownership, and backup policy. Prometheus
-configuration was not changed as part of this build.
+Elastic Stack 9.4.2 is installed on the five Elastic VMs and verified through
+AWX jobs `311` and `316`. Elasticsearch and Logstash use their approved
+`/data` paths and service ownership. Splunk is not installed or configured yet;
+its secondary disk remains unformatted until that product role defines the
+filesystem, mount point, ownership, and backup policy. Prometheus configuration
+was not changed as part of the Elastic deployment.
 
 ## Kubernetes Services That Are Not VMs
 
