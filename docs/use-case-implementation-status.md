@@ -42,7 +42,7 @@ and no complete acceptance ledger supported that earlier count.
 | Change-to-incident correlation | `observability-sre-platform` | Change evidence attached to incident context |
 | Cloud cost anomaly detection | `cloud-governance-ops-automation` | Advisor output |
 | Resource right-sizing recommendations | `cloud-governance-ops-automation` | Recommendation-only slice |
-| Centralized Rocky Linux fleet logging | `ansible-observability` | Runtime verified on 30/31 VMs through encrypted Filebeat and Logstash; AWX enrollment blocks acceptance |
+| Centralized Rocky Linux fleet logging | `ansible-observability` | Accepted on 31/31 VMs through encrypted Filebeat, Logstash, and inventory-based Elasticsearch verification |
 
 Linux systems, database reliability, resilience, data engineering, and network
 engineering contain executable first-slice playbooks. They remain

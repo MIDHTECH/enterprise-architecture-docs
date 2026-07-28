@@ -265,7 +265,6 @@ provisioned-only product VMs are `vault`, `keycloak`, `governance`, `backup`,
 `awx-execution`, `harbor`, `artifactory`, `sonarqube`, and `splunk`.
 
 Elastic Stack 9.4.2 is active on its five VMs. Filebeat 9.4.2 sends encrypted
-Linux authentication and system logs from 30 of the 31 Rocky Linux VMs.
-`awx.example.com` remains the only unenrolled sender because canonical SSH
-access is unavailable. PostgreSQL 18 is active. A running VM must never be
-reported as an installed product.
+Linux authentication and system logs from all 31 Rocky Linux VMs, and the
+inventory verifier confirms 31/31 hostname coverage. PostgreSQL 18 is active.
+A running VM must never be reported as an installed product.

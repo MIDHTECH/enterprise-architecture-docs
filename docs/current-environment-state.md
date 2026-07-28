@@ -133,6 +133,32 @@ Engine and Compose packages were removed through Ansible.
 
 Node Exporter 1.11.1 is installed on managed platform hosts.
 
+## Application and telemetry readiness audit
+
+The following readiness evidence was collected directly on 2026-07-28:
+
+| Capability | Live evidence | Readiness |
+| --- | --- | --- |
+| Hypervisor capacity | 31/31 VMs running across infra01 and infra02; approximately 58/121 GiB and 34/107 GiB RAM in use; both root filesystems below 3% utilization | Ready |
+| Kubernetes base | 4/4 nodes Ready; CoreDNS, Flannel, control-plane components, and Headlamp healthy; 22 allocatable CPUs and approximately 41.1 GiB allocatable memory | Ready for stateless test workloads |
+| Persistent Kubernetes applications | No StorageClass and no PVCs | Blocked until storage is installed and tested |
+| Kubernetes application ingress | No IngressClass or ingress controller; Headlamp is exposed by NodePort | Blocked for standard application URLs |
+| Elastic host logging | Filebeat active and encrypted-output validation passed on 31/31 Rocky Linux VMs; Logstash queue empty; all 31 inventory hostnames present in Elasticsearch | Accepted |
+| Prometheus metrics | 28/28 configured targets Up: Prometheus plus 27 Node Exporters | Partial; the four Kubernetes nodes do not have Node Exporter |
+| Grafana visualization | Grafana service healthy, but zero provisioned data-source files and zero dashboard-provider files | Not integrated |
+| Loki log pipeline | Loki service healthy, but the last-hour query returned zero streams and no labels | Standby; no live workload logs |
+| Tempo trace pipeline | Tempo and the OpenTelemetry Collector are healthy, but Tempo returned zero traces | Standby; no end-to-end trace proof |
+| Management applications | GitLab, AWX, Prometheus, Grafana, Kibana, and the Headlamp NGINX route returned HTTP responses; Jenkins returned the expected authenticated HTTP 403 | Available |
+| Headlamp name resolution | Direct NGINX routing returned HTTP 200, but `headlamp.apps.example.com` did not resolve and is absent from the authoritative zone | Degraded; tracked by INC-2026-030 |
+
+The platform can deploy and exercise stateless test applications through
+ClusterIP or NodePort today. It is not yet ready for enterprise-style stateful
+application deployment or accepted logs-metrics-traces monitoring. The minimum
+acceptance path is to install and test Kubernetes storage and ingress, close
+the four-node metrics gap, provision Grafana data sources and dashboards, and
+run an OpenTelemetry-instrumented smoke application that proves logs, metrics,
+and traces from workload to query and dashboard.
+
 ## Step-by-step verification
 
 1. Clone `ansible-observability`.
@@ -163,15 +189,13 @@ Fleet enrollment was added on 2026-07-28 with Filebeat 9.4.2 and the
 `logstash.example.com:5044`. The Logstash input validates the managed Elastic
 CA and routes only approved classes to `midhhealth-*` indices.
 
-All 30 SSH-reachable Rocky Linux VMs passed configuration validation, active
-service checks, and the encrypted output test. A direct Elasticsearch
-aggregation found recent documents for the same 30 distinct inventory
-hostnames. `awx.example.com` is the only missing sender because ownership or
-mode drift on its existing `.ssh` path blocks the canonical `midhtechadmin`
-credential and QEMU Guest Agent's additive key repair. Centralized Linux
-logging is therefore runtime verified at 30/31, but not accepted;
-INC-2026-024 remains in Monitoring until AWX enrollment produces 31/31
-coverage. The access defect is tracked separately as INC-2026-027.
+All 31 Rocky Linux VMs passed configuration validation, active-service checks,
+and encrypted output tests. The final inventory verifier found at least 10,000
+recent events and the same 31 distinct hostnames in Elasticsearch, with an
+empty missing-host list. Centralized Linux fleet logging is accepted at 31/31.
+Logstash reported 571,057 input events, 571,057 output events, and zero queued
+events after final enrollment. INC-2026-024 and the AWX access incident
+INC-2026-027 are resolved.
 
 ## Remaining integration work
 
@@ -182,20 +206,24 @@ coverage. The access defect is tracked separately as INC-2026-027.
 4. Run preflight smoke tests for the systems, database, resilience, data, and
    network automation slices through Jenkins/AWX.
 5. Provision Grafana data sources for Prometheus, Loki, and Tempo.
-6. Connect Prometheus alert delivery to Alertmanager and validate a test alert.
-7. Apply dashboards, alert rules, and SLOs from `observability-sre-platform`.
-8. Configure production alert receivers.
-9. Decide whether Loki and Tempo should move from local storage to MinIO.
-10. Back up `/etc/midhhealth/elastic-stack` through the restricted platform
+6. Install Node Exporter on all four Kubernetes nodes and add them to
+   Prometheus, then require 31/31 Rocky Linux host-metrics coverage.
+7. Deploy one OpenTelemetry-instrumented smoke application and require
+   non-zero, correlated logs, metrics, and traces before declaring telemetry
+   ready.
+8. Install and validate a Kubernetes StorageClass and ingress controller.
+9. Connect Prometheus alert delivery to Alertmanager and validate a test alert.
+10. Apply dashboards, alert rules, and SLOs from `observability-sre-platform`.
+11. Configure production alert receivers.
+12. Decide whether Loki and Tempo should move from local storage to MinIO.
+13. Back up `/etc/midhhealth/elastic-stack` through the restricted platform
     secret-backup process.
-11. Configure reverse-proxy TLS and SSO for Kibana.
-12. Restore canonical SSH access to `awx.example.com`, deploy Filebeat, and
-    prove 31/31 Rocky Linux hostname coverage.
-13. Enroll structured Jenkins, AWX job, Kubernetes ingress, PostgreSQL,
+14. Configure reverse-proxy TLS and SSO for Kibana.
+15. Enroll structured Jenkins, AWX job, Kubernetes ingress, PostgreSQL,
     application, AI, and MLOps log classes through the Logstash boundary.
-14. Register `midh-ai-edge-01` as the Mac Studio AI/ML development endpoint.
-15. Define `infra03` Kubernetes labels and workload placement guardrails before
+16. Register `midh-ai-edge-01` as the Mac Studio AI/ML development endpoint.
+17. Define `infra03` Kubernetes labels and workload placement guardrails before
     assigning VMs from its reserved `.141–.160` block.
-15. Migrate Elasticsearch01–03 and the Kubernetes control plane/workers to the
+18. Migrate Elasticsearch01–03 and the Kubernetes control plane/workers to the
     `infra03-images` pool, validate application and cluster health, then retire
     the confirmed source domains to free infra01/02 capacity.

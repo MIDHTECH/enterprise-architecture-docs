@@ -14,13 +14,11 @@ Elastic Stack 9.4.2 is installed. AWX deployment job `311` completed
 three-node cluster membership, Kibana, the named Logstash pipeline, the managed
 index template, and end-to-end ingestion of an approved structured event.
 
-Filebeat 9.4.2 fleet enrollment was deployed later on 2026-07-28. Thirty of
-31 Rocky Linux VMs now send encrypted `linux_auth` and `linux_system` events
-through Logstash, and an Elasticsearch aggregation verified the same 30 source
-hostnames. `awx.example.com` remains unenrolled because incorrect ownership or
-modes on its existing `.ssh` path block canonical access. INC-2026-024 is in
-Monitoring until the acceptance result is 31/31; the access repair is
-INC-2026-027.
+Filebeat 9.4.2 fleet enrollment was deployed later on 2026-07-28. All 31 Rocky
+Linux VMs now send encrypted `linux_auth` and `linux_system` events through
+Logstash. The final verifier confirmed 31 active services, 31 encrypted output
+tests, at least 10,000 recent events, 31 source hostnames, and no missing
+hosts. INC-2026-024 and INC-2026-027 are resolved.
 
 | Role | VM | Address | Resources |
 | --- | --- | --- | --- |
@@ -89,17 +87,30 @@ inventory group. Missing hosts are failures, not exclusions.
 
 ### Manual AWX access repair
 
-INC-2026-027 requires one local AWX console or desktop session. From an
-interactive terminal, connect to infra01 and open the configured serial console:
+INC-2026-027 was resolved with one local AWX console session. Retain this
+procedure for recurrence. From an interactive terminal, connect to infra01 and
+open the configured serial console:
 
 ```bash
 ssh midhtechadmin@infra01.example.com
 virsh --connect qemu:///system console awx.example.com
 ```
 
+If libvirt reports an active console session, first check for a stale viewer
+with `ps -ef | grep '[v]irsh.*console.*awx.example.com'`. Exit an active
+operator session normally with `Ctrl+]`; do not stop or reboot the VM merely to
+clear a console-viewer lock.
+
 Log in with the existing local AWX account. Use `Ctrl+]` to leave the serial
-console. Run these commands inside `awx.example.com`; they preserve the
-existing file:
+console. Before using sudo, require the guest identity:
+
+```bash
+hostname --fqdn
+# Required output: awx.example.com
+```
+
+Run these commands only after the prompt and hostname identify AWX; they
+preserve the existing file:
 
 ```bash
 sudo install -d -o midhtechadmin -g midhtechadmin -m 0700 \
@@ -155,9 +166,9 @@ debug streams must not be sent to Elastic.
 AWX jobs `311` and `316` provide installation and verification evidence for
 cluster health, node membership, TLS-protected Elasticsearch, Kibana, Logstash,
 the index template, and a test Logstash event. The 2026-07-28 fleet rollout
-additionally proved 30 active Filebeat services, 30 encrypted output tests,
-30 recent Elasticsearch source hostnames, a green three-node cluster, and a
-drained Logstash persistent queue. Continue to capture shard
+and final AWX enrollment additionally proved 31 active Filebeat services, 31
+encrypted output tests, 31 recent Elasticsearch source hostnames, a green
+three-node cluster, and a drained Logstash persistent queue. Continue to capture shard
 allocation, certificate expiry, disk watermarks, and service enablement in
 scheduled operational evidence.
 Configure snapshot repositories before production-like data is admitted.

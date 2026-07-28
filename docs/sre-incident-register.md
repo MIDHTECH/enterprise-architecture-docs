@@ -55,10 +55,13 @@ facts; they do not erase the original observation.
 | INC-2026-021 | 2026-07-27 | SEV-4 | Resolved | Git workflow | Concurrent observability updates caused non-fast-forward pushes and overlapping rebase conflicts |
 | INC-2026-022 | 2026-07-27 | SEV-4 | Resolved | Five-project architecture | Obsolete HA proxy code and stale project-local architecture remained after the enterprise documentation update |
 | INC-2026-023 | 2026-07-28 | SEV-4 | Resolved | NGINX and DNS | Proxy routes targeted stale ports and uninstalled products |
-| INC-2026-024 | 2026-07-28 | SEV-3 | Monitoring | Central logging | Fleet logging restored on 30/31 VMs; AWX enrollment remains blocked by SSH access |
+| INC-2026-024 | 2026-07-28 | SEV-3 | Resolved | Central logging | Encrypted fleet logging accepted with complete 31/31 hostname coverage |
 | INC-2026-025 | 2026-07-28 | SEV-4 | Resolved | Filebeat enrollment | First enrollment imported active-file history despite the intended new-event baseline |
 | INC-2026-026 | 2026-07-28 | SEV-4 | Resolved | Fleet verification | Elasticsearch01 SSH disconnected during protected-material verification |
-| INC-2026-027 | 2026-07-28 | SEV-3 | Open | AWX SSH access | Incorrect `.ssh` permissions block canonical access and fleet-log enrollment |
+| INC-2026-027 | 2026-07-28 | SEV-3 | Resolved | AWX SSH access | Canonical key restored, Filebeat enrolled, and 31/31 coverage accepted |
+| INC-2026-028 | 2026-07-28 | SEV-4 | Resolved | Recovery target context | AWX permission-repair commands were initially run on infra01 instead of inside the AWX console |
+| INC-2026-029 | 2026-07-28 | SEV-4 | Resolved | AWX serial console | A stale virsh client held the AWX console lock and blocked operator login |
+| INC-2026-030 | 2026-07-28 | SEV-4 | Open | Headlamp DNS | Headlamp NGINX route is healthy, but its application FQDN is absent from authoritative DNS |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -729,7 +732,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-07-28
 - Severity: SEV-3
-- Status: Monitoring
+- Status: Resolved
 - Component: Rocky Linux VM fleet, Logstash ingestion, and Elasticsearch
 - Detection/symptom: An authenticated read-only index audit found one
   `midhhealth-application_json-2026.07.28` index containing exactly three
@@ -737,25 +740,20 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   none contained a Rocky Linux source hostname.
 - Impact: Initially, incident investigation could not rely on Elasticsearch
   for fleet coverage. Linux authentication and system logging is now available
-  for 30 VMs; the AWX controller remains a visibility gap.
+  for all 31 VMs.
 - Cause: Elastic Stack deployment validated the Logstash-to-Elasticsearch path,
   but no approved fleet log shipper was installed or enrolled.
-- Resolution: Filebeat 9.4.2 was deployed through Ansible to all 30
-  SSH-reachable Rocky Linux VMs. Senders classify `/var/log/secure` as
+- Resolution: Filebeat 9.4.2 was deployed through Ansible to all 31 Rocky Linux
+  VMs. Senders classify `/var/log/secure` as
   `linux_auth` and `/var/log/messages` as `linux_system`, use a 1 GB disk queue,
-  and verify the managed Logstash TLS certificate. All 30 passed active-service
-  and encrypted-output checks. A direct Elasticsearch aggregation found recent
-  documents from the same 30 hostnames.
-- Validation required for closure: Confirm recent events from every approved
-  Rocky Linux VM, compare unique indexed hostnames with canonical inventory,
-  validate Linux authentication and system log searches, confirm rejected-log
-  handling, and record a repeatable coverage report.
+  and verify the managed Logstash TLS certificate.
+- Validation: The inventory verifier reported 31 expected hosts, 31 observed
+  hosts, no missing hosts, and at least 10,000 recent events. All 31
+  active-service and encrypted-output tests passed. Logstash reported 571,057
+  input events, 571,057 output events, and zero queued events.
 - Prevention/follow-up: Elastic deployment acceptance must distinguish
   pipeline verification from source enrollment and require an inventory-based
   host coverage check.
-- Remaining action: Restore canonical `midhtechadmin` access on
-  `awx.example.com`, deploy the same role, and require 31/31 coverage before
-  closure.
 - Corrective automation: `ansible-observability` now contains the Filebeat
   role, `playbooks/deploy-fleet-logging.yml`, and
   `playbooks/verify-fleet-logging.yml`.
@@ -828,7 +826,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-07-28
 - Severity: SEV-3
-- Status: Open
+- Status: Resolved
 - Component: `awx.example.com`, `midhtechadmin` home directory, and QEMU Guest
   Agent SSH-key management
 - Detection/symptom: Direct SSH rejects the canonical account. The live guest
@@ -838,24 +836,106 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   denied, and additive key repair reports that the inaccessible `.ssh`
   directory already exists. A read-only root-key check also returned permission
   denied. Libvirt confirms an active serial console for the VM.
-- Impact: AWX cannot be managed by the standard Ansible credential and is the
-  only missing Filebeat sender, leaving fleet-log acceptance at 30/31.
+- Impact: AWX could not be managed by the standard Ansible credential and was
+  the only missing Filebeat sender.
 - Cause: Ownership or mode drift on the account's `.ssh` path. Exact file
   metadata requires one privileged repair inside the guest.
-- Resolution: Pending operator console or local desktop access. The supported
-  path is `virsh --connect qemu:///system console awx.example.com` from
-  infra01. Repair ownership and modes, preserve existing keys, append the
-  approved workstation public key only if absent, and then retest canonical
-  SSH.
-- Validation required for closure: `ssh midhtechadmin@awx.example.com` succeeds
-  with the standard key; Filebeat deploys; service/output checks pass; the
-  verifier reports 31 expected, 31 observed, and no missing hosts.
+- Resolution: Used the infra01 serial console to restore `.ssh` ownership,
+  modes, and SELinux labels. The existing authorized key belonged to a
+  different workstation, so the approved Mac lab public key was appended
+  without removing the existing key.
+- Validation: `ssh midhtechadmin@awx.example.com` succeeded with the standard
+  key; Filebeat 9.4.2 deployed; the service/output checks passed; and the
+  verifier reported 31 expected, 31 observed, and no missing hosts.
 - Prevention/follow-up: Add authorized-key ownership/mode assertions to the
   common Rocky baseline and validate them before product installation.
 - Corrective automation: After access is restored, encode the permission check
   in the baseline role rather than relying on manual key distribution.
 - Evidence/related runbook:
   [Elastic Stack Installation](product-installation-elastic-stack.md)
+
+## INC-2026-028: AWX Repair Commands Initially Ran on infra01
+
+- Date: 2026-07-28
+- Severity: SEV-4
+- Status: Resolved
+- Component: `infra01.example.com` administration shell and AWX recovery
+  procedure
+- Detection/symptom: The operator ran the `.ssh` ownership and mode commands
+  while the prompt still showed `midhtechadmin@infra01`. `restorecon` then
+  returned command not found because infra01 is Ubuntu, not the Rocky Linux AWX
+  guest.
+- Impact: The canonical account's existing `.ssh` ownership and modes were
+  normalized on infra01. No VM, libvirt, or application configuration was
+  changed.
+- Cause: The recovery commands were executed before entering and logging in to
+  `virsh console awx.example.com`.
+- Resolution: Stop at the infra01 shell, do not install SELinux tools there,
+  enter the AWX serial console, verify the prompt/hostname reports AWX, and only
+  then run the repair commands.
+- Validation: infra01 remained available and the commands targeted only
+  `/home/midhtechadmin/.ssh` for the same account.
+- Prevention/follow-up: Recovery runbooks must include an explicit
+  `hostname --fqdn` target check immediately before privileged commands.
+- Corrective automation: The AWX recovery procedure now separates hypervisor
+  commands from guest commands and requires target verification.
+- Evidence/related runbook:
+  [Elastic Stack Installation](product-installation-elastic-stack.md)
+
+## INC-2026-029: Stale virsh Client Held the AWX Console Lock
+
+- Date: 2026-07-28
+- Severity: SEV-4
+- Status: Resolved
+- Component: infra01 libvirt serial-console client for `awx.example.com`
+- Detection/symptom: `virsh console awx.example.com` returned `Active console
+  session exists for this domain`.
+- Impact: The operator could not reach the AWX local login prompt to repair
+  canonical SSH access. The AWX VM remained running.
+- Cause: A stale `virsh --connect qemu:///system console awx.example.com`
+  client process from 17:59 retained the exclusive console attachment.
+- Resolution: Identified the exact viewer PID, attempted SIGTERM, then used
+  SIGKILL only after confirming the process was the console viewer rather than
+  QEMU. A new operator console attached successfully; AWX remained `running`.
+- Validation: Libvirt reported the domain running and a new console client
+  began at 18:04:58.
+- Prevention/follow-up: Exit serial consoles with `Ctrl+]`. Before using
+  `--force` or terminating a process, identify the exact client PID and confirm
+  the domain state.
+- Corrective automation: Keep console-lock diagnostics in the recovery
+  runbook; never terminate the QEMU domain process to clear a viewer lock.
+- Evidence/related runbook:
+  [Elastic Stack Installation](product-installation-elastic-stack.md)
+
+## INC-2026-030: Headlamp Application FQDN Missing from DNS
+
+- Date: 2026-07-28
+- Severity: SEV-4
+- Status: Open
+- Component: Authoritative lab DNS and
+  `headlamp.apps.example.com`
+- Detection/symptom: A normal client request failed with `Could not resolve
+  host`. The same request forced to `192.168.1.114` with `curl --resolve`
+  returned HTTP 200, and the authoritative zone did not contain a Headlamp
+  record.
+- Impact: Staff cannot open Headlamp by its documented application URL.
+  Kubernetes, Headlamp, its NodePort, and the NGINX route remain healthy.
+- Cause: The Headlamp application A record is absent from, or was not loaded
+  into, the authoritative `example.com` zone.
+- Contributing factors: Proxy-route verification can pass independently of
+  client and authoritative DNS validation.
+- Resolution: Pending. Add `headlamp.apps.example.com` pointing to
+  `192.168.1.114`, increment the zone serial, validate the zone, reload BIND,
+  and confirm authoritative lookup, client lookup, and HTTP access.
+- Validation required for closure: The authoritative resolver returns
+  `192.168.1.114`; a normal client lookup returns the same address; and
+  `http://headlamp.apps.example.com` returns HTTP 200 without `--resolve`.
+- Prevention/follow-up: Every NGINX application route acceptance test must
+  include authoritative DNS, normal client DNS, and HTTP response checks.
+- Corrective automation: Add Headlamp to the DNS inventory and the combined
+  DNS/proxy verification workflow.
+- Evidence/related runbook:
+  [Standalone NGINX Reverse-Proxy Installation](product-installation-nginx.md)
 
 ## New Incident Template
 

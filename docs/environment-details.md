@@ -155,7 +155,7 @@ endpoints are not NGINX virtual hosts.
 | GitLab CE | Installed |
 | Standalone NGINX | Installed; active routes verified; uninstalled products return intentional 503 |
 | Prometheus, Alertmanager, Grafana, Loki, Tempo, OTel, MinIO | Installed as native systemd services; integration/TLS/SSO work remains |
-| Elastic Stack | Elastic and Filebeat 9.4.2 healthy; encrypted Linux fleet logs verified from 30/31 VMs; AWX sender pending |
+| Elastic Stack | Elastic and Filebeat 9.4.2 healthy; encrypted Linux fleet logs accepted from all 31 VMs |
 | Splunk | VM provisioned; product not installed |
 | PostgreSQL | PostgreSQL 18 active |
 | Local Kubernetes | Four nodes Ready; CoreDNS, Flannel, and Headlamp present; GitOps/add-on stack absent |

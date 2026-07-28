@@ -71,7 +71,7 @@ and tested before deployment.
 | OpenTelemetry Collector Contrib | 0.137.0 | Native RPM and systemd on `otel.example.com` | `ansible-observability` |
 | MinIO Community | `RELEASE.2025-04-22T22-12-26Z` | Native systemd on `minio.example.com` | `ansible-observability` |
 | Elastic Stack | 9.4.2 | Native packages on three Elasticsearch nodes plus Kibana and Logstash | [Elastic release notes](https://www.elastic.co/docs/release-notes) |
-| Filebeat | 9.4.2 | Native systemd sender on 30/31 Rocky Linux VMs; AWX pending | [Filebeat filestream reference](https://www.elastic.co/docs/reference/beats/filebeat/filebeat-input-filestream) |
+| Filebeat | 9.4.2 | Native systemd sender on all 31 Rocky Linux VMs | [Filebeat filestream reference](https://www.elastic.co/docs/reference/beats/filebeat/filebeat-input-filestream) |
 | Splunk Enterprise | 10.4.1 | Native standalone installation on `splunk.example.com` | [Splunk Enterprise download](https://www.splunk.com/en_us/download/splunk-enterprise.html) |
 | Restic | 0.18, latest patch | Native on `backup.example.com` | Verify repository format and run `restic check` |
 
@@ -97,5 +97,4 @@ Elastic Stack 9.4.2 was reconciled through AWX job `311` and independently
 verified through AWX job `316` on 2026-07-28. Splunk Enterprise 10.4.1 remains
 an approved target; its VM is provisioned, but product installation is still
 pending. Filebeat 9.4.2 fleet deployment and encrypted output checks completed
-on 30 reachable Rocky Linux VMs on 2026-07-28; acceptance remains blocked on
-`awx.example.com`.
+on all 31 Rocky Linux VMs on 2026-07-28.
