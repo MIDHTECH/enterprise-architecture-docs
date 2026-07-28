@@ -56,8 +56,11 @@ expected.
    and restrict its listener to the proxy and management network.
 7. Install Logstash 9.4.2 with persistent queue and dead-letter paths on
    `/data`; deploy only version-controlled pipelines.
-8. Store generated credentials and certificate material in Vault/AWX, never
-   Git.
+8. Generate credentials and certificate material once on
+   `elasticsearch01.example.com` under `/etc/midhhealth/elastic-stack` with
+   root-only permissions. AWX reloads that material for later runs; Git and
+   stateless job workspaces never store it. Back up the directory through the
+   restricted platform secret-backup process.
 9. Validate ingestion, index lifecycle, dashboards, audit logging, restart,
    backup, and restore behavior.
 
