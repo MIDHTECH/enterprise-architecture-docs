@@ -161,20 +161,18 @@ was not changed as part of the Elastic deployment.
 
 ## Kubernetes Services That Are Not VMs
 
-The following are installed through Argo CD into the local Kubernetes cluster:
+The live cluster was rebuilt and verified on 2026-07-28. Kubernetes 1.34.10
+has one Ready control-plane node and three Ready workers. Only the following
+non-VM services are currently installed:
 
-- Argo CD, exposed internally as `argocd.example.com`
-- MetalLB
-- ingress-nginx
-- cert-manager
-- Kyverno
-- External Secrets Operator
-- metrics-server
-- Velero
-- Longhorn
-- OpenTelemetry Operator
-- Trivy Operator
-- Argo Rollouts when the base platform is stable
+- CoreDNS
+- Flannel
+- Headlamp, exposed through `http://headlamp.apps.example.com`
+
+Argo CD, MetalLB, ingress-nginx, cert-manager, Kyverno, External Secrets
+Operator, metrics-server, Velero, Longhorn, OpenTelemetry Operator, Trivy
+Operator, and Argo Rollouts remain planned. Their manifests or repository
+definitions do not constitute a live installation.
 
 ## AWS-Managed Resources That Are Not VMs
 
@@ -251,9 +249,13 @@ an unreviewed product fleet.
 
 ## Current Implementation State
 
-As of 2026-07-27, both hypervisors and all 31 listed VM domains are running
-with autostart. GitLab, DNS, and NGINX have completed product installation.
-The six Elastic/Splunk VMs are **provisioned only**: Rocky Linux 9.8,
-cloud-init, qemu-guest-agent, chrony, and firewalld are present, but the common
-baseline, `/data` mount, and product packages have not been applied. A running
-VM must never be reported as an installed product.
+As of 2026-07-28, both hypervisors and all 31 listed VM domains are running.
+Twenty-two VM roles have their intended service or runtime active. The nine
+provisioned-only product VMs are `vault`, `keycloak`, `governance`, `backup`,
+`awx-execution`, `harbor`, `artifactory`, `sonarqube`, and `splunk`.
+
+Elastic Stack 9.4.2 is active on its five VMs. Filebeat 9.4.2 sends encrypted
+Linux authentication and system logs from 30 of the 31 Rocky Linux VMs.
+`awx.example.com` remains the only unenrolled sender because canonical SSH
+access is unavailable. PostgreSQL 18 is active. A running VM must never be
+reported as an installed product.

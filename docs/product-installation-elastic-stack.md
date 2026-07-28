@@ -14,6 +14,14 @@ Elastic Stack 9.4.2 is installed. AWX deployment job `311` completed
 three-node cluster membership, Kibana, the named Logstash pipeline, the managed
 index template, and end-to-end ingestion of an approved structured event.
 
+Filebeat 9.4.2 fleet enrollment was deployed later on 2026-07-28. Thirty of
+31 Rocky Linux VMs now send encrypted `linux_auth` and `linux_system` events
+through Logstash, and an Elasticsearch aggregation verified the same 30 source
+hostnames. `awx.example.com` remains unenrolled because incorrect ownership or
+modes on its existing `.ssh` path block canonical access. INC-2026-024 is in
+Monitoring until the acceptance result is 31/31; the access repair is
+INC-2026-027.
+
 | Role | VM | Address | Resources |
 | --- | --- | --- | --- |
 | Elasticsearch node 1 | `elasticsearch01.example.com` | `192.168.1.116` | 4 vCPU, 4 GB RAM, 40/150 GB disks |
@@ -31,8 +39,10 @@ generated lock file and never mix stack versions during an upgrade.
 - Elasticsearch HTTPS `9200/tcp`: Kibana, Logstash, AWX, and approved
   administrators only.
 - Kibana `5601/tcp`: NGINX and the approved management network; users browse
-  `https://kibana.apps.example.com`.
+  `http://kibana.apps.example.com` until internal TLS is deployed.
 - Logstash Beats input `5044/tcp`: approved senders only.
+- Filebeat-to-Logstash traffic uses TLS with full certificate verification
+  against the managed Elastic CA.
 - Do not publish Elasticsearch or Logstash through the HTTP reverse proxy.
 
 ## AWX Implementation Sequence
@@ -60,6 +70,58 @@ generated lock file and never mix stack versions during an upgrade.
 9. Validate ingestion, index lifecycle, dashboards, audit logging, restart,
    backup, and restore behavior.
 
+## Rocky Linux Fleet Enrollment
+
+Use the version-controlled workflow; do not install or edit Filebeat manually:
+
+```bash
+ansible-playbook --syntax-check playbooks/deploy-fleet-logging.yml
+ansible-playbook --check playbooks/deploy-fleet-logging.yml
+ansible-playbook playbooks/deploy-fleet-logging.yml
+ansible-playbook playbooks/verify-fleet-logging.yml
+```
+
+The `rocky_log_senders` inventory group is the acceptance source of truth.
+Every sender must run Filebeat 9.4.2, keep a 1 GB disk queue, read
+`/var/log/secure` and `/var/log/messages`, and verify the Logstash certificate.
+The verifier compares recent Elasticsearch `host.name` values with the entire
+inventory group. Missing hosts are failures, not exclusions.
+
+### Manual AWX access repair
+
+INC-2026-027 requires one local AWX console or desktop session. Run these
+commands inside `awx.example.com`; they preserve the existing file:
+
+```bash
+sudo install -d -o midhtechadmin -g midhtechadmin -m 0700 \
+  /home/midhtechadmin/.ssh
+sudo touch /home/midhtechadmin/.ssh/authorized_keys
+sudo chown midhtechadmin:midhtechadmin \
+  /home/midhtechadmin/.ssh/authorized_keys
+sudo chmod 0600 /home/midhtechadmin/.ssh/authorized_keys
+sudo restorecon -RFv /home/midhtechadmin/.ssh
+```
+
+From the Mac, display the approved public key with
+`cat ~/.ssh/id_rsa.pub`. If that exact line is absent on AWX, append it from the
+local AWX session; do not replace the file or remove other approved keys. Then
+verify from the Mac:
+
+```bash
+ssh -o BatchMode=yes midhtechadmin@awx.example.com
+```
+
+After access succeeds, rerun the fleet deployment and verifier. Closure
+requires `expected_hosts: 31`, `observed_hosts: 31`, and an empty missing-host
+list.
+
+Initial enrollment imported existing active-file history because deployment
+activity updated both watched files during startup. Logstash's persistent queue
+drained to zero without loss. Capacity-plan first enrollment as a controlled
+backfill and watch the Logstash queue, Elasticsearch disk watermarks, and index
+growth. The configured `ignore_inactive` setting is not a guaranteed
+tail-only enrollment control for actively changing system logs.
+
 ## Approved Log Scope
 
 Logstash is the Elastic ingestion boundary. Events must be labeled with
@@ -83,7 +145,10 @@ debug streams must not be sent to Elastic.
 
 AWX jobs `311` and `316` provide installation and verification evidence for
 cluster health, node membership, TLS-protected Elasticsearch, Kibana, Logstash,
-the index template, and a test Logstash event. Continue to capture shard
+the index template, and a test Logstash event. The 2026-07-28 fleet rollout
+additionally proved 30 active Filebeat services, 30 encrypted output tests,
+30 recent Elasticsearch source hostnames, a green three-node cluster, and a
+drained Logstash persistent queue. Continue to capture shard
 allocation, certificate expiry, disk watermarks, and service enablement in
 scheduled operational evidence.
 Configure snapshot repositories before production-like data is admitted.

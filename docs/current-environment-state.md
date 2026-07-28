@@ -20,6 +20,44 @@ Mac Studio M1 AI/ML edge development node.
 
 The authoritative scope and all 217 use cases are maintained in
 [Enterprise Project Portfolio and Use Case Coverage](enterprise-project-portfolio-and-usecases.md).
+Implementation and acceptance counts are maintained separately in
+[Use-Case Implementation Status](use-case-implementation-status.md).
+
+## Live on-premises infrastructure
+
+The following state was verified directly on 2026-07-28:
+
+| Layer | Verified state |
+| --- | --- |
+| `infra01.example.com` and `infra02.example.com` | Ubuntu 26.04 LTS, KVM available, libvirt 12 active, physical `br0` active |
+| Virtual machines | 31 of 31 domains running: 17 on infra01 and 14 on infra02 |
+| Product roles | 22 active product/runtime roles; 9 VMs remain provisioned without their intended product |
+| Local Kubernetes | Kubernetes 1.34.10; one control plane and three workers Ready |
+| Git repositories | 20 local repositories clean and equal to their GitLab remote HEAD |
+
+The provisioned-only product VMs are `vault`, `keycloak`, `governance`,
+`backup`, `awx-execution`, `harbor`, `artifactory`, `sonarqube`, and `splunk`.
+PostgreSQL 18 is active on `postgres.example.com`.
+
+The local Kubernetes cluster currently contains the control-plane components,
+CoreDNS, Flannel, and Headlamp. Argo CD, MetalLB, ingress-nginx, cert-manager,
+Kyverno, External Secrets Operator, metrics-server, Velero, Longhorn,
+OpenTelemetry Operator, Trivy Operator, and Argo Rollouts are not installed in
+the current cluster and must not be reported as completed.
+
+## Application access
+
+`nginx.example.com` is the single non-HA HTTP reverse proxy. Its root URL
+returns the current active and unavailable route catalog. Active routes include
+GitLab, Jenkins, AWX, Headlamp, Prometheus, Alertmanager, Grafana, MinIO, Loki,
+Tempo, OpenTelemetry HTTP, and Kibana. AWX uses its verified NodePort `32000`;
+Headlamp uses `30080`. Source-restricted firewalld rules allow only
+`192.168.1.114` to reach the otherwise restricted observability HTTP ports.
+
+Vault, Keycloak, Harbor, Artifactory, SonarQube, and Splunk application URLs
+return an intentional HTTP 503 with `product-not-installed`. Internal TLS is
+not deployed yet, so the accepted current URLs use HTTP. See
+[Standalone NGINX Reverse-Proxy Installation](product-installation-nginx.md).
 
 ## Hybrid capacity plan
 
@@ -118,6 +156,23 @@ persistent root-only credentials, confirmed three-node membership and service
 health, sent an approved structured event through Logstash, and found it in
 the managed Elasticsearch index.
 
+Fleet enrollment was added on 2026-07-28 with Filebeat 9.4.2 and the
+`playbooks/deploy-fleet-logging.yml` workflow. Filebeat reads
+`/var/log/secure` and `/var/log/messages`, labels events as `linux_auth` or
+`linux_system`, uses a 1 GB disk queue, and sends encrypted Beats traffic to
+`logstash.example.com:5044`. The Logstash input validates the managed Elastic
+CA and routes only approved classes to `midhhealth-*` indices.
+
+All 30 SSH-reachable Rocky Linux VMs passed configuration validation, active
+service checks, and the encrypted output test. A direct Elasticsearch
+aggregation found recent documents for the same 30 distinct inventory
+hostnames. `awx.example.com` is the only missing sender because ownership or
+mode drift on its existing `.ssh` path blocks the canonical `midhtechadmin`
+credential and QEMU Guest Agent's additive key repair. Centralized Linux
+logging is therefore runtime verified at 30/31, but not accepted;
+INC-2026-024 remains in Monitoring until AWX enrollment produces 31/31
+coverage. The access defect is tracked separately as INC-2026-027.
+
 ## Remaining integration work
 
 1. Run the Jenkins seed job so `projects/run-ansible-playbook` is created or
@@ -134,8 +189,10 @@ the managed Elasticsearch index.
 10. Back up `/etc/midhhealth/elastic-stack` through the restricted platform
     secret-backup process.
 11. Configure reverse-proxy TLS and SSO for Kibana.
-12. Enroll approved Linux, Jenkins, AWX, Kubernetes, PostgreSQL, application,
-    AI, and MLOps log senders through the Logstash ingestion boundary.
-13. Register `midh-ai-edge-01` as the Mac Studio AI/ML development endpoint.
-14. Define `infra03` Kubernetes labels and workload placement guardrails before
+12. Restore canonical SSH access to `awx.example.com`, deploy Filebeat, and
+    prove 31/31 Rocky Linux hostname coverage.
+13. Enroll structured Jenkins, AWX job, Kubernetes ingress, PostgreSQL,
+    application, AI, and MLOps log classes through the Logstash boundary.
+14. Register `midh-ai-edge-01` as the Mac Studio AI/ML development endpoint.
+15. Define `infra03` Kubernetes labels and workload placement guardrails before
     assigning VMs from its reserved `.141–.160` block.

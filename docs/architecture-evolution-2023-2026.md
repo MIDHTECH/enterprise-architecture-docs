@@ -122,10 +122,12 @@ For each annual architecture checkpoint, retain:
 The exercise is complete when a reviewer can explain not only the target
 architecture, but why each transition was introduced and which risk it reduced.
 
-The 2026 portfolio adds planned first-class capability domains for Linux
-systems, database reliability, service resilience, data engineering and
-network engineering. These extend the existing five implementation projects
-to ten enterprise projects without authorizing new infrastructure.
+The 2026 portfolio adds first-class capability domains for Linux systems,
+database reliability, service resilience, data engineering, network
+engineering, healthcare AI, and MLOps. These extend the original five
+implementation projects to twelve enterprise projects without automatically
+authorizing new infrastructure. Projects 6–10 have bounded first automation
+slices; Healthcare AI and MLOps remain repository scaffolds.
 
 The 2026 lab deliberately avoids infrastructure HA. Numeric suffixes are used
 only for true cluster members such as Kubernetes workers and the three

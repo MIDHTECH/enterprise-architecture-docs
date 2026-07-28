@@ -8,6 +8,7 @@ required_docs=(
   ".gitlab-ci.yml"
   "README.md"
   "docs/enterprise-project-portfolio-and-usecases.md"
+  "docs/use-case-implementation-status.md"
   "docs/component-architecture.md"
   "docs/environment-details.md"
   "docs/vm-inventory.md"
@@ -71,13 +72,20 @@ grep -q "splunk.example.com" docs/vm-inventory.md
 grep -q "Elastic Stack | 9.4.2" docs/product-versions.md
 grep -q "Splunk Enterprise | 10.4.1" docs/product-versions.md
 grep -q "INC-2026-020" docs/sre-incident-register.md
+grep -q "INC-2026-027" docs/sre-incident-register.md
+grep -q "Filebeat | 9.4.2" docs/product-versions.md
 grep -q "projects/run-ansible-playbook" docs/jenkins-awx-ansible-operations.md
 grep -q "CONFIRM_APPLY" docs/jenkins-awx-ansible-operations.md
 grep -q "AWX_SCM_CREDENTIAL_ID" docs/jenkins-awx-ansible-operations.md
 grep -q "midhhealth/platform-delivery/jenkins-jobs" docs/jenkins-awx-ansible-operations.md
 grep -q "midhhealth/platform-engineering/linux-systems-platform" docs/gitlab-organization-model.md
+grep -q "midhhealth/platform-delivery/ansible-jenkins" docs/gitlab-organization-model.md
+grep -q "midhhealth/platform-delivery/awx-inventory" docs/gitlab-organization-model.md
+grep -q "midhhealth/platform-engineering/ansible-kubernetes" docs/gitlab-organization-model.md
 grep -q "midhhealth/ai-and-ml-platform/healthcare-ai-platform" docs/gitlab-organization-model.md
 grep -q "midhhealth/ai-and-ml-platform/mlops-model-platform" docs/gitlab-organization-model.md
+grep -q "| Defined portfolio use cases | 217 |" docs/use-case-implementation-status.md
+grep -q "| Explicitly implemented first slices | 10 |" docs/use-case-implementation-status.md
 
 if grep -R --line-number --exclude='sre-incident-register.md' \
   'infra01\.midhtech\.local' docs; then
@@ -87,6 +95,13 @@ fi
 
 if grep -q 'prometheus\.example\.com.*192\.168\.1\.109' docs/vm-inventory.md; then
   echo "Stale Prometheus address remains in canonical inventory." >&2
+  exit 1
+fi
+
+if grep -R --line-number \
+  -E 'awx(\.apps)?\.example\.com.*30080|192\.168\.1\.103:30080' \
+  README.md docs; then
+  echo "Stale AWX proxy port remains; the live AWX NodePort is 32000." >&2
   exit 1
 fi
 

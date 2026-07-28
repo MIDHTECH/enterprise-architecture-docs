@@ -196,9 +196,10 @@ Use OpenTelemetry as the application instrumentation contract.
 Prometheus/Grafana/Loki/Tempo are the default cloud-native SRE path; Elastic
 Stack and standalone Splunk provide comparative enterprise log ingestion and
 search. Applications must not embed a vendor-specific logging SDK when the
-same signal can be emitted through structured logs or OpenTelemetry. The
-Elastic/Splunk products remain pending until their AWX workflows pass
-acceptance.
+same signal can be emitted through structured logs or OpenTelemetry. Elastic
+Stack 9.4.2 is active, but only synthetic verification events are indexed;
+fleet and application sender enrollment remains pending. Splunk remains
+provisioned-only until its AWX workflow passes acceptance.
 
 The on-prem lab must demonstrate:
 

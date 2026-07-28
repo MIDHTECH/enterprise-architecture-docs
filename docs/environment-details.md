@@ -60,29 +60,32 @@ for every environment:
 ## Core Endpoints
 
 Application endpoints use the `apps.example.com` service namespace through
-the standalone `nginx.example.com` VM at `192.168.1.114`. VM management names remain direct
-`<node>.example.com` records. HTTP is permitted only during bootstrap; the
-target state uses TLS from the internal certificate authority:
+the standalone `nginx.example.com` VM at `192.168.1.114`. VM management names
+remain direct `<node>.example.com` records. Internal TLS is not installed, so
+the verified current endpoints use HTTP:
 
-| Endpoint | Function |
-| --- | --- |
-| `https://gitlab.apps.example.com` | Source control and merge requests |
-| `https://jenkins.apps.example.com` | CI pipelines |
-| `https://awx.apps.example.com` | Automation controller |
-| `https://harbor.apps.example.com` | OCI images and Helm OCI |
-| `https://artifactory.apps.example.com` | Build artifacts |
-| `https://sonarqube.apps.example.com` | Code quality |
-| `https://vault.apps.example.com` | Secrets |
-| `https://grafana.apps.example.com` | Dashboards |
-| `https://prometheus.apps.example.com` | Metrics |
-| `https://alertmanager.apps.example.com` | Alerts |
-| `https://keycloak.apps.example.com` | SSO/OIDC |
-| `https://minio.apps.example.com` | Object-storage console |
-| `https://kibana.apps.example.com` | Elastic dashboards and search |
-| `https://splunk.apps.example.com` | Splunk search and administration |
+| Endpoint | Function | Current state |
+| --- | --- | --- |
+| `http://gitlab.apps.example.com` | Source control and merge requests | Active |
+| `http://jenkins.apps.example.com` | CI pipelines | Active; anonymous root returns 403 |
+| `http://awx.apps.example.com` | Automation controller through backend port `32000` | Active |
+| `http://headlamp.apps.example.com` | Kubernetes dashboard through backend port `30080` | Active |
+| `http://grafana.apps.example.com` | Dashboards | Active |
+| `http://prometheus.apps.example.com` | Metrics | Active |
+| `http://alertmanager.apps.example.com` | Alerts | Active |
+| `http://minio.apps.example.com` | S3-compatible API | Active; console port is not configured |
+| `http://loki.apps.example.com` | Loki HTTP API | Active |
+| `http://tempo.apps.example.com` | Tempo HTTP API | Active |
+| `http://otel.apps.example.com` | OpenTelemetry HTTP receiver | Active |
+| `http://kibana.apps.example.com` | Elastic dashboards and search | Active |
+| `http://harbor.apps.example.com` | OCI images and Helm OCI | Intentional 503; product not installed |
+| `http://artifactory.apps.example.com` | Build artifacts | Intentional 503; product not installed |
+| `http://sonarqube.apps.example.com` | Code quality | Intentional 503; product not installed |
+| `http://vault.apps.example.com` | Secrets | Intentional 503; product not installed |
+| `http://keycloak.apps.example.com` | SSO/OIDC | Intentional 503; product not installed |
+| `http://splunk.apps.example.com` | Splunk search and administration | Intentional 503; product not installed |
 
-Argo CD is added to the proxy only after the Kubernetes ingress endpoint is
-known and validated. PostgreSQL, DNS, SSH, Kubernetes control-plane ports,
+PostgreSQL, DNS, SSH, Kubernetes control-plane ports,
 OpenTelemetry gRPC, and other non-HTTP protocols are not forced through this
 HTTP reverse-proxy tier.
 
@@ -130,8 +133,8 @@ endpoints are not NGINX virtual hosts.
 3. Reinstall and validate `infra01`.
 4. Install KVM/libvirt, networking, storage, and Ansible on `infra01`.
 5. Build DNS and the standalone NGINX reverse proxy.
-6. Build GitLab and AWX first; PostgreSQL bootstrap remains frozen until AWX
-   controls its installation.
+6. Build GitLab and AWX first; manage the active PostgreSQL 18 service through
+   AWX for all subsequent lifecycle changes.
 7. Build PostgreSQL, Vault/OpenBao, Jenkins, AWX execution, Harbor, Artifactory, and
    SonarQube.
 8. Build the Kubernetes control plane and three workers.
@@ -144,18 +147,21 @@ endpoints are not NGINX virtual hosts.
 
 ## Current Implementation Status
 
-| Layer | State on 2026-07-27 |
+| Layer | State on 2026-07-28 |
 | --- | --- |
 | Hypervisors, bridges, and libvirt | Operational |
 | 31 Rocky Linux VM domains | Running with autostart |
 | BIND DNS | Installed and serving the current zone |
 | GitLab CE | Installed |
-| Standalone NGINX | Installed; uninstalled backends correctly return 502 |
+| Standalone NGINX | Installed; active routes verified; uninstalled products return intentional 503 |
 | Prometheus, Alertmanager, Grafana, Loki, Tempo, OTel, MinIO | Installed as native systemd services; integration/TLS/SSO work remains |
-| Elastic/Splunk six-VM topology | VM and DNS provisioning complete; baseline, `/data`, and products pending |
-| PostgreSQL | Product installation deliberately frozen until AWX |
+| Elastic Stack | Elastic and Filebeat 9.4.2 healthy; encrypted Linux fleet logs verified from 30/31 VMs; AWX sender pending |
+| Splunk | VM provisioned; product not installed |
+| PostgreSQL | PostgreSQL 18 active |
+| Local Kubernetes | Four nodes Ready; CoreDNS, Flannel, and Headlamp present; GitOps/add-on stack absent |
 | Remaining platform products | Provisioned or planned; verify each runbook before reporting installed |
-| Portfolio projects 6–10 | Logical architecture approved; repositories and runtime implementation not started |
+| Portfolio projects 6–10 | Executable first slices exist; Jenkins/AWX runtime acceptance evidence pending |
+| Healthcare AI and MLOps | Repository scaffolds; runtime implementation planned |
 
 The VM count is not a product-completion count. Acceptance requires the
 product service, version lock, security controls, data disk, and tests.

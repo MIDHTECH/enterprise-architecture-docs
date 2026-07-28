@@ -107,6 +107,18 @@ Use release branches only when the team needs a stabilization window before prod
 | `kubernetes-platform-gitops` | Use feature branches for manifests, Helm values, policies, and cluster overlays. `main` represents approved desired state. |
 | `observability-sre-platform` | Use feature branches for dashboards, alerts, collectors, SLOs, and runbooks. Alert changes should include expected signal/noise impact. |
 | `cloud-governance-ops-automation` | Use feature branches for IAM, secrets, compliance, backup, cost, certificate, and remediation changes. Security/governance approval is required. |
+| `linux-systems-platform` | Use feature branches for inventories, roles, assessment playbooks, and evidence schemas. State-changing host work requires check-mode evidence. |
+| `database-reliability-platform` | Use feature branches for database assessment and lifecycle automation. Backup and recovery changes require restore evidence. |
+| `resilience-service-operations` | Use feature branches for SLO, incident, exercise, readiness, and recovery automation. Include expected operational impact. |
+| `data-engineering-platform` | Use feature branches for source, quality, orchestration, lineage, and access evidence. Schema or contract changes require compatibility notes. |
+| `network-engineering-platform` | Use feature branches for source-of-truth, DNS, connectivity, firewall, and Kubernetes network automation. Include pre/post validation and rollback. |
+| `healthcare-ai-platform` | Use feature branches for AI evaluation, RAG, agent, safety, and audit work. Model or prompt changes require evaluation evidence. |
+| `mlops-model-platform` | Use feature branches for model lifecycle, serving, monitoring, drift, and governance changes. Promotion requires model evidence and rollback. |
+| `ansible-jenkins` | Use feature branches for Jenkins lifecycle roles and validation. Preserve controller data and test upgrades on a canary. |
+| `ansible-kubernetes` | Use feature branches for cluster lifecycle automation. Record API compatibility, node sequencing, and recovery steps. |
+| `ansible-observability` | Use feature branches for product installation and telemetry transport. Validate health, persistence, and end-to-end signal delivery. |
+| `ansible-prometheus` | Use feature branches for metrics components, exporters, targets, and dashboards. Validate target and alert state. |
+| `awx-inventory` | Use feature branches for inventory groups and controller mappings. Validate host reachability and prevent secrets from entering inventory. |
 | `jenkins-jobs` | Use feature branches for Job DSL changes. Seed job updates should be reviewed before applying to Jenkins. |
 | `jenkins-shared-library` | Use feature branches for shared pipeline logic. Breaking changes require versioning or coordinated updates to consuming Jenkinsfiles. |
 

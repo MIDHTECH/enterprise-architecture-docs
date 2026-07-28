@@ -44,8 +44,11 @@ flowchart TB
     delivery --> cicd[devsecops-cicd-orchestrator]
     delivery --> jobs[jenkins-jobs]
     delivery --> lib[jenkins-shared-library]
+    delivery --> ansjen[ansible-jenkins]
+    delivery --> awxinv[awx-inventory]
     platform --> infra[cloud-infra-automation-platform]
     platform --> k8s[kubernetes-platform-gitops]
+    platform --> ansk8s[ansible-kubernetes]
     platform --> systems[linux-systems-platform / active first slice]
     platform --> network[network-engineering-platform / active first slice]
     reliability --> obs[observability-sre-platform]
@@ -72,7 +75,7 @@ flowchart TB
         clusters[AKS / EKS / GKE]
         apps[Containerized Applications]
         telemetry[Metrics / Logs / Traces]
-        enterpriseobs[Elastic cluster / Kibana / Logstash / Splunk]
+        enterpriseobs[Elastic cluster / Kibana / Logstash; Splunk planned]
     end
 
     users --> mr
@@ -98,6 +101,9 @@ flowchart TB
     network --> mr
     jobs --> jenkins
     lib --> jenkins
+    ansjen --> awx
+    awxinv --> awx
+    ansk8s --> awx
     mr --> protected
     protected --> jenkins
     jenkins --> awx
@@ -194,8 +200,9 @@ many tools, but the implementation repos should prioritize work that can be
 run, observed, reviewed, and repeated.
 
 The current lab has no infrastructure HA. Numeric suffixes identify only true
-cluster members. The Elastic/Splunk VMs are provisioned but their products are
-not installed as of 2026-07-27. Linux systems automation uses existing VMs;
-database reliability, resilience/service operations, data engineering, and
-network engineering have no dedicated runtime allocation and must not be shown
-as deployed products.
+cluster members. Elastic Stack 9.4.2 is installed; Splunk remains
+provisioned-only. Linux systems, database reliability, resilience/service
+operations, data engineering, and network engineering use existing VMs for
+first-slice automation and have no dedicated product allocation. The live
+Kubernetes cluster currently contains core components, Flannel, and Headlamp;
+the documented GitOps and policy add-ons remain planned.

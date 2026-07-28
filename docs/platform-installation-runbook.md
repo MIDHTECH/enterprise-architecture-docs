@@ -177,9 +177,10 @@ least one metric alert, one centralized log query, and one distributed trace.
 The current deployment uses native systemd services; Docker is not part of the
 observability VM runtime.
 
-The six Elastic/Splunk VMs are provisioned-only as of 2026-07-27. Apply the
-common Rocky baseline and `/data` mount before following their product
-runbooks. Do not start PostgreSQL installation until AWX is available.
+Elastic Stack 9.4.2 is installed and verified on its five VMs. Splunk remains
+provisioned-only. PostgreSQL 18 is active. The Elastic ingestion path contains
+only synthetic AWX verification events; enroll approved Rocky Linux log
+senders before reporting centralized fleet logging complete.
 
 ## 8. Enable Governance
 
@@ -198,7 +199,7 @@ Collect evidence for:
 - certificate validity
 - cost and resource inventory
 
-## 8. Deferred: Enable AWS EKS/ECR
+## 9. Deferred: Enable AWS EKS/ECR
 
 Do not execute this section during the on-premises build. In the later cloud
 phase, build an AWX execution-environment image containing Terraform/OpenTofu, AWS CLI,
@@ -216,7 +217,7 @@ The AWX workflow must validate, scan, plan, require approval, apply, bootstrap
 Argo CD, run smoke tests, and collect evidence. Destruction is a separate
 approved workflow.
 
-## 9. On-Premises End-to-End Acceptance Test
+## 10. On-Premises End-to-End Acceptance Test
 
 1. Commit an application change to GitLab.
 2. Jenkins runs tests, scans, and the SonarQube quality gate.

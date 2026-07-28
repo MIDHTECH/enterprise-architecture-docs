@@ -9,7 +9,7 @@ tracked as evidence automation, not completed product deployments.
 
 ## Positioning Statement
 
-MidhHealth Integrated Care runs a ten-domain enterprise platform program for
+MidhHealth Integrated Care runs a twelve-domain enterprise platform program for
 care delivery and health insurance operations. The on-premises side uses KVM,
 Rocky Linux VMs, Kubernetes, GitLab, Jenkins, AWX, DNS, NGINX, and
 observability as the active integration platform. The cloud side extends the
@@ -135,8 +135,8 @@ corrective automation need an integrated service-operations workflow.
 performance tests, controlled failure experiments, and AWX remediation form a
 closed reliability loop.
 
-**Scope boundary:** This is the planned operational layer that consumes the
-active observability platform.
+**Scope boundary:** The first evidence automation slice is implemented; live
+Jenkins/AWX acceptance and broader remediation remain pending.
 
 ## Enterprise Data Engineering Platform
 
@@ -147,8 +147,8 @@ orchestration, quality controls, lineage, security, and operational ownership.
 transformation, quality gates, metadata, lineage, storage layers, and
 monitoring without prematurely selecting products before capacity review.
 
-**Scope boundary:** This is architecture and tradeoff planning, not a completed
-data platform deployment.
+**Scope boundary:** Evidence playbooks are implemented, but no data-platform
+product stack is installed.
 
 ## Enterprise Network Engineering Platform
 
@@ -159,9 +159,34 @@ automation and a source of truth.
 **Target design:** An IPAM/source-of-truth layer drives reviewed network
 changes, validation, configuration backup, drift detection, and observability.
 
-**Scope boundary:** This is an approved roadmap capability. The current BIND
-DNS and NGINX services are active foundations, not proof that the complete
-project exists.
+**Scope boundary:** Evidence playbooks are implemented. The current BIND DNS
+and NGINX services are active foundations, not proof that the complete project
+exists.
+
+## Enterprise Healthcare AI Platform
+
+**Target problem:** Clinical, operational, financial, and payer AI workflows
+need governed retrieval, agent, evaluation, safety, privacy, and audit
+boundaries.
+
+**Target design:** Source-controlled prompts and services use approved
+de-identified data, retrieval controls, human review, evaluation gates,
+observability, and model-governance evidence.
+
+**Scope boundary:** The repository is scaffolded. Runtime implementation and
+regulated-data authorization remain planned.
+
+## Enterprise MLOps Model Platform
+
+**Target problem:** Models need reproducible training, registry, promotion,
+serving, monitoring, drift, rollback, and governance across teams.
+
+**Target design:** Versioned datasets, features, experiments, models, serving
+contracts, evaluation gates, deployment evidence, and drift response form one
+reviewed lifecycle.
+
+**Scope boundary:** The repository is scaffolded. Model runtime, registry, and
+serving infrastructure remain planned.
 
 ## Overall Architecture Flow
 
@@ -176,6 +201,8 @@ Use this flow:
 7. Governance automation enforces security, compliance, cost, secrets, and operational standards.
 8. First-slice systems, database, network, data, and service-operations domains
    reuse those controls and add specialist engineering workflows.
+9. Healthcare AI and MLOps define the governed model and application lifecycle
+   but remain scaffolded until runtime and data controls are approved.
 
 ## Scope Summary
 
@@ -184,5 +211,5 @@ operating model: source-controlled work, reviewed changes, automated
 infrastructure and delivery, Kubernetes desired state, observability,
 governance, and first-slice specialist domains for systems, databases,
 resilience, data, and networking. Implemented capabilities and planned
-capabilities are clearly separated so the documentation remains accurate and
-defensible.
+AI/MLOps capabilities are clearly separated so the documentation remains
+accurate and defensible.

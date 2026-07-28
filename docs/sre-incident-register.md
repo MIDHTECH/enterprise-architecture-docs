@@ -54,6 +54,11 @@ facts; they do not erase the original observation.
 | INC-2026-020 | 2026-07-27 | SEV-4 | Resolved | Architecture source of truth | Six Elastic/Splunk VMs and DNS records existed outside checked-in inventory and documentation |
 | INC-2026-021 | 2026-07-27 | SEV-4 | Resolved | Git workflow | Concurrent observability updates caused non-fast-forward pushes and overlapping rebase conflicts |
 | INC-2026-022 | 2026-07-27 | SEV-4 | Resolved | Five-project architecture | Obsolete HA proxy code and stale project-local architecture remained after the enterprise documentation update |
+| INC-2026-023 | 2026-07-28 | SEV-4 | Resolved | NGINX and DNS | Proxy routes targeted stale ports and uninstalled products |
+| INC-2026-024 | 2026-07-28 | SEV-3 | Monitoring | Central logging | Fleet logging restored on 30/31 VMs; AWX enrollment remains blocked by SSH access |
+| INC-2026-025 | 2026-07-28 | SEV-4 | Resolved | Filebeat enrollment | First enrollment imported active-file history despite the intended new-event baseline |
+| INC-2026-026 | 2026-07-28 | SEV-4 | Resolved | Fleet verification | Elasticsearch01 SSH disconnected during protected-material verification |
+| INC-2026-027 | 2026-07-28 | SEV-3 | Open | AWX SSH access | Incorrect `.ssh` permissions block canonical access and fleet-log enrollment |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -685,6 +690,169 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Evidence/related runbooks:
   [Component Architecture](component-architecture.md) and
   [Current Environment State](current-environment-state.md)
+
+## INC-2026-023: NGINX Routes Did Not Reflect Live Product State
+
+- Date: 2026-07-28
+- Severity: SEV-4
+- Status: Resolved
+- Component: `nginx.example.com`, BIND DNS, and source-controlled NGINX roles
+- Detection/symptom: Live validation found AWX listening on NodePort `32000`
+  while NGINX targeted stale port `30080`. MinIO targeted inactive console port
+  `9001`. Alertmanager, MinIO, Loki, Tempo, and OpenTelemetry were active but
+  rejected the proxy through firewalld. Uninstalled products produced
+  ambiguous 502 responses.
+- Impact: Staff could not reliably use application URLs and could mistake
+  proxy errors for installed-product failures.
+- Cause: The proxy backend map was not reconciled after AWX, Kubernetes, and
+  observability installation changes.
+- Resolution: Updated the source-controlled backend map, added Headlamp DNS and
+  routing, moved AWX to `32000` and MinIO to `9000`, and added source-restricted
+  firewalld rules permitting only `192.168.1.114` to reach restricted HTTP
+  backends. Uninstalled products now return an intentional 503 with
+  `product-not-installed`.
+- Validation: DNS and NGINX Ansible runs completed with zero failed and zero
+  unreachable. AWX and Headlamp returned HTTP 200. Alertmanager, MinIO, Loki,
+  and Tempo health paths returned HTTP 200. GitLab, Jenkins, Prometheus,
+  Grafana, and Kibana returned their expected status or redirect.
+- Prevention/follow-up: Treat backend address, port, product state, DNS, and
+  firewall access as one change. Validate every catalog route after product or
+  cluster changes. TLS remains a separate open platform task.
+- Corrective automation:
+  `cloud-infra-automation-platform/ansible/roles/nginx_reverse_proxy`,
+  `cloud-infra-automation-platform/ansible/roles/nginx_backend_firewall`, and
+  `cloud-infra-automation-platform/ansible/roles/bind_dns`
+- Evidence/related runbook:
+  [Standalone NGINX Reverse-Proxy Installation](product-installation-nginx.md)
+
+## INC-2026-024: Rocky Linux Fleet Logs Were Not Reaching Elasticsearch
+
+- Date: 2026-07-28
+- Severity: SEV-3
+- Status: Monitoring
+- Component: Rocky Linux VM fleet, Logstash ingestion, and Elasticsearch
+- Detection/symptom: An authenticated read-only index audit found one
+  `midhhealth-application_json-2026.07.28` index containing exactly three
+  documents. Every document was an `elastic-stack-awx-verification` event and
+  none contained a Rocky Linux source hostname.
+- Impact: Initially, incident investigation could not rely on Elasticsearch
+  for fleet coverage. Linux authentication and system logging is now available
+  for 30 VMs; the AWX controller remains a visibility gap.
+- Cause: Elastic Stack deployment validated the Logstash-to-Elasticsearch path,
+  but no approved fleet log shipper was installed or enrolled.
+- Resolution: Filebeat 9.4.2 was deployed through Ansible to all 30
+  SSH-reachable Rocky Linux VMs. Senders classify `/var/log/secure` as
+  `linux_auth` and `/var/log/messages` as `linux_system`, use a 1 GB disk queue,
+  and verify the managed Logstash TLS certificate. All 30 passed active-service
+  and encrypted-output checks. A direct Elasticsearch aggregation found recent
+  documents from the same 30 hostnames.
+- Validation required for closure: Confirm recent events from every approved
+  Rocky Linux VM, compare unique indexed hostnames with canonical inventory,
+  validate Linux authentication and system log searches, confirm rejected-log
+  handling, and record a repeatable coverage report.
+- Prevention/follow-up: Elastic deployment acceptance must distinguish
+  pipeline verification from source enrollment and require an inventory-based
+  host coverage check.
+- Remaining action: Restore canonical `midhtechadmin` access on
+  `awx.example.com`, deploy the same role, and require 31/31 coverage before
+  closure.
+- Corrective automation: `ansible-observability` now contains the Filebeat
+  role, `playbooks/deploy-fleet-logging.yml`, and
+  `playbooks/verify-fleet-logging.yml`.
+- Evidence/related runbook:
+  [Elastic Stack Installation](product-installation-elastic-stack.md) and
+  [Current Environment State](current-environment-state.md)
+
+## INC-2026-025: First Filebeat Enrollment Imported Existing Log History
+
+- Date: 2026-07-28
+- Severity: SEV-4
+- Status: Resolved
+- Component: Filebeat filestream inputs, Logstash persistent queue, and
+  Elasticsearch indexing
+- Detection/symptom: The three-node canary created a large queue, and the
+  30-node rollout produced substantially more events than a tail-only
+  enrollment. `ignore_inactive: since_last_start` did not suppress history
+  because Ansible and service startup continued updating the active files.
+- Impact: Elasticsearch and Logstash processed an unplanned historical
+  backfill. No service outage or data loss occurred.
+- Timeline: Canary deployment exposed the queue; the canary queue was allowed
+  to drain before fleet rollout; the full rollout then completed with 518,971
+  Logstash input and output events and zero queued events.
+- Cause: Filestream correctly treated actively modified `/var/log/messages`
+  and `/var/log/secure` as current files and began at their existing offsets.
+- Contributing factors: Deployment and systemd activity write to the same files
+  being enrolled. `ignore_inactive` is based on file modification activity and
+  is not a guaranteed tail-only control for active system logs.
+- Resolution: Allowed the persistent queue to drain, confirmed equal Logstash
+  input/output counts, zero queued events, green Elasticsearch health, and
+  complete coverage for the 30 reachable senders.
+- Validation: Logstash reported `events_in=518971`, `events_out=518971`, and
+  `queue_events=0`; Elasticsearch returned recent documents for 30 hostnames.
+- Prevention/follow-up: Treat first enrollment as a controlled backfill unless
+  a separately tested registry-baseline procedure is approved. Monitor queue
+  depth, disk watermarks, and index growth before adding each fleet batch.
+- Corrective automation: The runbook now describes this behavior and retains
+  the Filebeat disk queue plus Logstash persistent queue.
+- Evidence/related runbook:
+  [Elastic Stack Installation](product-installation-elastic-stack.md)
+
+## INC-2026-026: Elasticsearch Verification SSH Session Disconnected
+
+- Date: 2026-07-28
+- Severity: SEV-4
+- Status: Resolved
+- Component: `elasticsearch01.example.com` SSH and the fleet verification
+  playbook
+- Detection/symptom: After all 30 Filebeat service/output tests passed, the
+  verifier lost SSH while reading protected bootstrap material with `no_log`.
+- Impact: The automated coverage play ended before its Elasticsearch
+  aggregation. Filebeat, Logstash, and Elasticsearch data paths remained
+  operational.
+- Cause: Transient SSH transport disconnect during a long, high-concurrency
+  verification run; no persistent host or service fault was found.
+- Resolution: A direct retry connected immediately. Elasticsearch was active,
+  cluster health was green with three nodes and 100% active shards, and the
+  aggregation returned recent events for all 30 reachable inventory hosts.
+- Validation: Subsequent SSH command succeeded; the Elasticsearch API returned
+  green health; Logstash queue depth was zero.
+- Prevention/follow-up: Keep protected-material output censored, enable bounded
+  SSH retries for read-only verification tasks, and retain direct health and
+  aggregation commands in the troubleshooting path.
+- Corrective automation: Follow-up should add retry handling around bootstrap
+  material reads without weakening secret handling.
+- Evidence/related runbook:
+  [Current Environment State](current-environment-state.md)
+
+## INC-2026-027: AWX Authorized-Key Permissions Block Canonical Access
+
+- Date: 2026-07-28
+- Severity: SEV-3
+- Status: Open
+- Component: `awx.example.com`, `midhtechadmin` home directory, and QEMU Guest
+  Agent SSH-key management
+- Detection/symptom: Direct SSH rejects the canonical account. The live guest
+  agent supports `guest-ssh-get-authorized-keys` and
+  `guest-ssh-add-authorized-keys`, but both operations fail against
+  `/home/midhtechadmin/.ssh/authorized_keys`: reading returns permission
+  denied, and additive key repair reports that the inaccessible `.ssh`
+  directory already exists.
+- Impact: AWX cannot be managed by the standard Ansible credential and is the
+  only missing Filebeat sender, leaving fleet-log acceptance at 30/31.
+- Cause: Ownership or mode drift on the account's `.ssh` path. Exact file
+  metadata requires one privileged repair inside the guest.
+- Resolution: Pending operator console or local desktop access. Repair
+  ownership and modes, preserve existing keys, append the approved workstation
+  public key only if absent, and then retest canonical SSH.
+- Validation required for closure: `ssh midhtechadmin@awx.example.com` succeeds
+  with the standard key; Filebeat deploys; service/output checks pass; the
+  verifier reports 31 expected, 31 observed, and no missing hosts.
+- Prevention/follow-up: Add authorized-key ownership/mode assertions to the
+  common Rocky baseline and validate them before product installation.
+- Corrective automation: After access is restored, encode the permission check
+  in the baseline role rather than relying on manual key distribution.
+- Evidence/related runbook:
+  [Elastic Stack Installation](product-installation-elastic-stack.md)
 
 ## New Incident Template
 

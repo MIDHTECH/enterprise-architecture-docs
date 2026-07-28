@@ -519,7 +519,10 @@ fleet targets, evidence flow, and operational feedback loop.
 
 ## Enterprise Database Engineering and Reliability Platform
 
-**Status:** Planned. PostgreSQL installation remains gated behind AWX.
+**Status:** Active first implementation slice. PostgreSQL 18 is active; the
+repository provides read-only readiness, backup/restore, security, performance,
+and lifecycle evidence automation. Runtime acceptance through Jenkins/AWX is
+pending.
 
 **Purpose:** Operate database platforms as reliable, secure, recoverable and
 performance-managed enterprise services.
@@ -558,7 +561,9 @@ runtime targets, evidence flow, and operational feedback loop.
 
 ## Enterprise Resilience and Service Operations Platform
 
-**Status:** Planned.
+**Status:** Active first implementation slice. Evidence playbooks cover service
+catalog, SLO governance, incident evidence, resilience exercises, and
+operational readiness. Runtime acceptance through Jenkins/AWX is pending.
 
 **Purpose:** Turn observability signals into reliable service operations,
 incident response, performance engineering and tested recovery.
@@ -598,7 +603,9 @@ runtime targets, evidence flow, and operational feedback loop.
 
 ## Enterprise Data Engineering and Integration Platform
 
-**Status:** Planned.
+**Status:** Active first implementation slice. Evidence playbooks cover source
+inventory, data quality, orchestration, lineage/catalog, and access governance.
+No data-platform product stack is installed.
 
 **Purpose:** Provide governed batch, streaming, transformation, quality,
 lineage and data-serving capabilities for enterprise data products.
@@ -643,7 +650,10 @@ boundaries, evidence flow, and operational feedback loop.
 
 ## Enterprise Network Engineering and Automation Platform
 
-**Status:** Planned.
+**Status:** Active first implementation slice. Evidence playbooks cover network
+source of truth, DNS/DHCP, connectivity, firewall/proxy, and Kubernetes
+network review. This does not represent a deployed NetBox or network-emulation
+product.
 
 **Purpose:** Establish network source of truth, automation, segmentation,
 connectivity, observability and safe change across on-prem and cloud.

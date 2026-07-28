@@ -90,7 +90,7 @@
   <rect x="548" y="410" width="192" height="76" rx="8" class="repo"/>
   <text x="644" y="436" text-anchor="middle" class="boxTitle">Delivery Engineering</text>
   <text x="644" y="458" text-anchor="middle" class="tiny">devsecops-cicd-orchestrator</text>
-  <text x="644" y="474" text-anchor="middle" class="tiny">jenkins-jobs • shared-library</text>
+  <text x="644" y="474" text-anchor="middle" class="tiny">jobs • library • automation support</text>
   <rect x="768" y="410" width="192" height="76" rx="8" class="repo"/>
   <text x="864" y="436" text-anchor="middle" class="boxTitle">Cloud Infrastructure</text>
   <text x="864" y="458" text-anchor="middle" class="tiny">cloud-infra-automation</text>
@@ -98,7 +98,7 @@
   <rect x="988" y="410" width="192" height="76" rx="8" class="repo"/>
   <text x="1084" y="436" text-anchor="middle" class="boxTitle">Kubernetes Platform</text>
   <text x="1084" y="458" text-anchor="middle" class="tiny">kubernetes-platform-gitops</text>
-  <text x="1084" y="474" text-anchor="middle" class="tiny">GitOps • policy • rollout</text>
+  <text x="1084" y="474" text-anchor="middle" class="tiny">GitOps • ansible-kubernetes</text>
   <rect x="1208" y="410" width="144" height="76" rx="8" class="repo"/>
   <text x="1280" y="436" text-anchor="middle" class="boxTitle">Governance</text>
   <text x="1280" y="458" text-anchor="middle" class="tiny">cloud-governance</text>

@@ -36,6 +36,8 @@ within their documented scope, but they are not completed product deployments.
 | `resilience-service-operations` | SRE, Service Operations Engineer, Resilience Engineer | Incident Manager, Performance Engineer |
 | `data-engineering-platform` | Data Engineer, Data Platform Engineer, Analytics Engineer | DataOps Engineer, Database Engineer |
 | `network-engineering-platform` | Network Engineer, Network Automation Engineer, Cloud Network Engineer | Kubernetes Network Engineer, Security Engineer |
+| `healthcare-ai-platform` | Healthcare AI Engineer, Applied AI Engineer, AI Platform Engineer | Clinical Informaticist, Privacy Engineer, SRE |
+| `mlops-model-platform` | MLOps Engineer, ML Platform Engineer, Model Reliability Engineer | Data Scientist, Governance Engineer, SRE |
 | `jenkins_jobs` | Jenkins Platform Engineer, CI/CD Automation Engineer | DevOps Engineer, Release Engineer |
 | `jenkins-shared-library` | Jenkins Shared Library Engineer, Pipeline Automation Engineer | DevOps Engineer, AWX/Ansible Automation Engineer |
 
@@ -153,7 +155,7 @@ branch, inventory, playbook, and approved extra vars. The shared Jenkins
 library reconciles AWX objects and requires `CONFIRM_APPLY` before running
 state-changing playbooks.
 
-### Enterprise Database Reliability Platform (Planned)
+### Enterprise Database Reliability Platform (Active First Slice)
 
 **Project:** Target database lifecycle, performance, security, backup,
 recovery, and upgrade automation.
@@ -165,12 +167,12 @@ engineer, and application owner.
 recovery evidence, and the boundary between database-native tooling and
 platform automation.
 
-**Operating narrative:** The target database reliability platform uses approved
+**Operating narrative:** The first automation slice uses approved
 provisioning, secrets, monitoring, backup verification, recovery testing, and
-controlled upgrades. This remains roadmap design pending implementation and
-capacity approval.
+controlled upgrades against the existing PostgreSQL VM. Product expansion and
+runtime acceptance remain controlled follow-up work.
 
-### Enterprise Resilience and Service Operations (Planned)
+### Enterprise Resilience and Service Operations (Active First Slice)
 
 **Project:** Target operating model for SLOs, incidents, performance,
 capacity, controlled failure testing, DR, and remediation.
@@ -181,12 +183,11 @@ engineer, and business stakeholder.
 **Architecture contribution:** Connected observability signals to service
 ownership, incident workflows, reliability decisions, and AWX automation.
 
-**Operating narrative:** The next service-operations layer lets telemetry drive
+**Operating narrative:** The first service-operations slice lets telemetry drive
 SLO reviews, incident response, capacity decisions, recovery exercises, and
-approved remediation. It extends the active observability work and remains a
-planned project.
+approved remediation evidence. Jenkins/AWX acceptance remains pending.
 
-### Enterprise Data Engineering Platform (Planned)
+### Enterprise Data Engineering Platform (Active First Slice)
 
 **Project:** Target batch and streaming data platform covering ingestion,
 orchestration, transformation, quality, metadata, lineage, and operations.
@@ -198,12 +199,12 @@ engineer, security engineer, and SRE.
 quality, lineage, security, and observability requirements while leaving
 product selection subject to capacity and design review.
 
-**Operating narrative:** The planned data-platform architecture is built around
+**Operating narrative:** The first evidence slice is built around
 source-controlled pipelines, data contracts, quality gates, metadata, lineage,
-and operational monitoring. It is target-state engineering, not an installed
-data stack.
+and operational monitoring. It does not claim an installed Airflow, Kafka,
+Spark, or lakehouse stack.
 
-### Enterprise Network Engineering Platform (Planned)
+### Enterprise Network Engineering Platform (Active First Slice)
 
 **Project:** Target source-of-truth and automation platform for IPAM,
 DNS/DHCP, routing, switching, firewall policy, VPN, cloud, load balancing, and
@@ -215,10 +216,38 @@ engineer, security engineer, Kubernetes platform engineer, and SRE.
 **Architecture contribution:** Defined reviewed network-change workflows,
 validation, backups, drift detection, dependency mapping, and telemetry.
 
-**Operating narrative:** The planned network engineering capability uses an
+**Operating narrative:** The first network engineering slice uses an
 authoritative inventory to drive reviewed, tested, and recoverable configuration
 changes. The existing DNS and NGINX services are foundations; they are not
 presented as completion of the broader project.
+
+### Enterprise Healthcare AI Platform (Scaffolded)
+
+**Project:** Governed healthcare AI, RAG, agent, evaluation, safety, privacy,
+and audit architecture.
+
+**Team:** Healthcare AI engineer, AI platform engineer, clinical informaticist,
+privacy engineer, security engineer, data engineer, and SRE.
+
+**Architecture contribution:** Defines de-identified data boundaries, retrieval
+controls, human review, evaluation gates, observability, and audit evidence.
+
+**Operating narrative:** The repository establishes the governed engineering
+boundary but does not claim a deployed AI runtime or regulated-data approval.
+
+### Enterprise MLOps Model Platform (Scaffolded)
+
+**Project:** Reproducible model training, registry, promotion, serving,
+monitoring, drift response, rollback, and governance.
+
+**Team:** MLOps engineer, ML platform engineer, data scientist, governance
+engineer, security engineer, and SRE.
+
+**Architecture contribution:** Defines the model lifecycle and evidence
+contract from data and experiment through serving and retirement.
+
+**Operating narrative:** The repository is an approved scaffold. Model
+registry, training, serving, monitoring, and runtime capacity remain planned.
 
 ### Jenkins Jobs
 
@@ -257,8 +286,8 @@ automation easier to maintain.
 - Developed observability and SRE documentation for metrics, logs, traces, alerts, SLOs, deployment validation, and incident triage.
 - Documented governance automation for IAM, secrets, compliance evidence, tagging, backup validation, cost controls, certificates, and remediation.
 - Designed the platform roadmap across Linux systems, database reliability,
-  service operations, data engineering, and network engineering, with explicit
-  capacity and implementation gates.
+  service operations, data engineering, network engineering, healthcare AI,
+  and MLOps, with explicit capacity and implementation gates.
 
 ## Operating Review Structure
 

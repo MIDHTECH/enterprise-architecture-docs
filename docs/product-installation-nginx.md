@@ -5,7 +5,8 @@
 The lab does not implement high availability. One standalone Rocky Linux VM
 provides friendly HTTP application URLs:
 
-Implementation status as of 2026-07-27: installed and validated.
+Implementation status as of 2026-07-28: installed, reconciled with the live
+environment, and validated.
 
 | Identity | Address | Placement | Purpose |
 | --- | --- | --- | --- |
@@ -17,29 +18,30 @@ There is no second NGINX VM, Keepalived, VRRP, or floating VIP. Address
 
 ## URL and Backend Map
 
-| HTTP bootstrap URL | Backend |
-| --- | --- |
-| `http://gitlab.apps.example.com` | `192.168.1.101:80` |
-| `http://jenkins.apps.example.com` | `192.168.1.102:8080` |
-| `http://awx.apps.example.com` | `192.168.1.103:30080` |
-| `http://vault.apps.example.com` | `192.168.1.104:8200` |
-| `http://keycloak.apps.example.com` | `192.168.1.105:8080` |
-| `http://harbor.apps.example.com` | `192.168.1.122:80` |
-| `http://artifactory.apps.example.com` | `192.168.1.123:8082` |
-| `http://sonarqube.apps.example.com` | `192.168.1.124:9000` |
-| `http://prometheus.apps.example.com` | `192.168.1.115:9090` |
-| `http://alertmanager.apps.example.com` | `192.168.1.110:9093` |
-| `http://grafana.apps.example.com` | `192.168.1.128:3000` |
-| `http://minio.apps.example.com` | `192.168.1.112:9001` |
-| `http://loki.apps.example.com` | `192.168.1.129:3100` |
-| `http://tempo.apps.example.com` | `192.168.1.130:3200` |
-| `http://otel.apps.example.com` | `192.168.1.131:4318` |
-| `http://kibana.apps.example.com` | `192.168.1.117:5601` |
-| `http://splunk.apps.example.com` | `192.168.1.118:8000` |
+| HTTP URL | Backend | Current result |
+| --- | --- | --- |
+| `http://gitlab.apps.example.com` | `192.168.1.101:80` | Active |
+| `http://jenkins.apps.example.com` | `192.168.1.102:8080` | Active |
+| `http://awx.apps.example.com` | `192.168.1.103:32000` | Active |
+| `http://headlamp.apps.example.com` | `192.168.1.107:30080` | Active |
+| `http://prometheus.apps.example.com` | `192.168.1.115:9090` | Active |
+| `http://alertmanager.apps.example.com` | `192.168.1.110:9093` | Active |
+| `http://grafana.apps.example.com` | `192.168.1.128:3000` | Active |
+| `http://minio.apps.example.com` | `192.168.1.112:9000` | Active S3 API |
+| `http://loki.apps.example.com` | `192.168.1.129:3100` | Active HTTP API |
+| `http://tempo.apps.example.com` | `192.168.1.130:3200` | Active HTTP API |
+| `http://otel.apps.example.com` | `192.168.1.131:4318` | Active HTTP receiver |
+| `http://kibana.apps.example.com` | `192.168.1.117:5601` | Active |
+| `http://vault.apps.example.com` | No backend | Intentional 503 |
+| `http://keycloak.apps.example.com` | No backend | Intentional 503 |
+| `http://harbor.apps.example.com` | No backend | Intentional 503 |
+| `http://artifactory.apps.example.com` | No backend | Intentional 503 |
+| `http://sonarqube.apps.example.com` | No backend | Intentional 503 |
+| `http://splunk.apps.example.com` | No backend | Intentional 503 |
 
-An endpoint may return `502 Bad Gateway` until its backend is installed. That
-does not indicate an NGINX installation failure if `/nginx-health` passes and
-the backend port is closed.
+The proxy root returns a JSON catalog of active and unavailable routes.
+Uninstalled products deliberately return HTTP 503 with
+`product-not-installed`; they do not produce an ambiguous backend 502.
 
 PostgreSQL, DNS, SSH, Kubernetes API, OpenTelemetry gRPC, and other non-HTTP
 protocols keep their native names and ports. Elasticsearch ports 9200/9300,
@@ -89,6 +91,7 @@ Authoritative automation:
 ```text
 cloud-infra-automation-platform/ansible/playbooks/nginx-reverse-proxy.yml
 cloud-infra-automation-platform/ansible/roles/nginx_reverse_proxy/
+cloud-infra-automation-platform/ansible/roles/nginx_backend_firewall/
 ```
 
 AWX is the normal controller after it is available. During bootstrap, direct
@@ -106,10 +109,11 @@ ansible-playbook -i inventory/onprem.yml \
   playbooks/nginx-reverse-proxy.yml
 ```
 
-The role installs the Rocky NGINX 1.26 package stream, configures application
-virtual hosts and forwarding headers, permits HTTP/HTTPS in firewalld, enables
-the SELinux backend-connect boolean, records the installed package version,
-and exposes `/nginx-health`.
+The roles install the Rocky NGINX 1.26 package stream, configure application
+virtual hosts and forwarding headers, permit HTTP/HTTPS in firewalld, enable
+the SELinux backend-connect boolean, record the installed package version,
+and expose `/nginx-health`. Restricted observability backends receive
+persistent firewalld rich rules allowing only source `192.168.1.114`.
 
 Installed package lock:
 
@@ -141,6 +145,19 @@ Initial acceptance evidence:
 - direct NGINX health: HTTP 200 with body `ok`
 - GitLab proxy: HTTP 302 to the expected sign-in URL
 
+Reconciliation evidence from 2026-07-28:
+
+- DNS and NGINX Ansible runs: zero failed and zero unreachable
+- AWX route: HTTP 200 through backend port `32000`
+- Headlamp route and new DNS record: HTTP 200
+- Prometheus, Grafana, GitLab, Jenkins, and Kibana routes: expected
+  application status or redirect
+- Alertmanager `/-/healthy`: HTTP 200
+- MinIO `/minio/health/live`: HTTP 200
+- Loki `/ready`: HTTP 200
+- Tempo `/ready`: HTTP 200
+- unavailable product routes: intentional HTTP 503
+
 ## Publish DNS
 
 Apply the version-controlled DNS role only after NGINX validation:
@@ -165,9 +182,9 @@ application names return `.114`, reverse lookup for `.114` returns
 `nginx.example.com`, and the Mac supplemental resolver resolves both the VM and
 application names.
 
-At initial publication, GitLab returned its expected redirect. The remaining
-application URLs returned `502` because their backend products were not yet
-listening. Those are pending product installations, not NGINX failures.
+At the 2026-07-28 reconciliation, all active routes reached their backends.
+Unavailable product names remain published so the operator receives a clear
+503 state until the corresponding installation runbook is accepted.
 
 ## Product Follow-up
 

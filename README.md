@@ -11,6 +11,7 @@ operators and engineers a common operating record for the platform.
 
 - [Enterprise Project Portfolio and Use Case Coverage](docs/enterprise-project-portfolio-and-usecases.md)
 - [Advanced Use Case Comparison](docs/advanced-usecase-comparison.md)
+- [Use-Case Implementation Status](docs/use-case-implementation-status.md)
 - [On-Premises Platform Build Runbook](docs/on-prem-platform-build-runbook.md)
 - [Staff Documentation Standard](docs/documentation-standard.md)
 - [SRE Incident Register](docs/sre-incident-register.md)
