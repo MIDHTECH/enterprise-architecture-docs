@@ -1,6 +1,11 @@
 # Enterprise Architecture Documentation
 
-This repo is the written map for the training platform. It explains how the infrastructure, CI/CD, Kubernetes, observability, and governance projects fit together, and gives you language for talking about the work in interviews.
+This repo is the written map for **MidhHealth Integrated Care**, a fictional
+enterprise care delivery and health insurance organization with a hybrid
+on-premises and cloud platform. It explains how infrastructure, CI/CD,
+Kubernetes, observability, governance, systems, database, resilience, data, and
+network projects fit together as shared organizational capabilities, and gives
+you language for talking about the work in interviews.
 
 ## Documents
 
@@ -31,7 +36,15 @@ This repo is the written map for the training platform. It explains how the infr
 
 ## Repository Purpose
 
-This is the documentation home for the ten-project enterprise portfolio.
+This is the documentation home for the ten-project MidhHealth enterprise
+portfolio. The projects should be understood as departments or platform domains
+inside one integrated provider-payer organization, not as separate labs. They
+support hospital operations, digital care, claims, eligibility,
+authorizations, member services, analytics, security, and platform operations.
+They share one GitLab namespace, one Jenkins/AWX delivery control plane, one
+governance model, common environment standards, and a hybrid target footprint
+across on-prem KVM/Kubernetes and future AWS/Azure/GCP validation.
+
 Projects 1–10 now have implementation repositories. Projects 6–10 are active
 first slices that reuse existing VMs and do not imply new product installs,
 new VM placement, or production capacity:

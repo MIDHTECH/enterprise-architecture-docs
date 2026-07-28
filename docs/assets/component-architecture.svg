@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="860" viewBox="0 0 1400 860" role="img" aria-labelledby="title desc">
-  <title id="title">Ten-Project Enterprise Platform Portfolio</title>
-  <desc id="desc">Ten implementation projects share a GitLab delivery control plane and on-premises runtime foundations; Projects 6-10 are active first slices on existing VMs.</desc>
+  <title id="title">MidhHealth Integrated Care Enterprise Platform</title>
+  <desc id="desc">MidhHealth Integrated Care uses ten implementation projects across care delivery, insurance operations, GitLab delivery, on-premises runtime foundations, and governed cloud targets.</desc>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
       <path d="M0 0L10 5L0 10Z" fill="#334155"/>
@@ -16,8 +16,8 @@
     </style>
   </defs>
   <rect x="1" y="1" width="1398" height="858" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
-  <text x="60" y="58" class="title">Ten-Project Enterprise Platform Portfolio</text>
-  <text x="60" y="86" class="subtitle">Role-centered architecture for DevOps, SRE, database, systems, data, and network engineering</text>
+  <text x="60" y="58" class="title">MidhHealth Integrated Care Enterprise Platform</text>
+  <text x="60" y="86" class="subtitle">Hybrid care delivery and health insurance platform for DevOps, SRE, database, systems, data, and network engineering</text>
 
   <rect x="50" y="115" width="1300" height="90" rx="12" class="shared"/>
   <text x="700" y="146" text-anchor="middle" class="head">Shared GitLab Program and Delivery Control Plane</text>

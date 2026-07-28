@@ -2,19 +2,26 @@
 
 ## Environment Model
 
-The physical environment supports the ten-project logical portfolio and shared
-platform services. Projects 6–10 use the existing VM fleet for first-slice
-operations automation and evidence collection; they have no dedicated VM or IP
-allocation. Their automation reuses existing GitLab, Jenkins, AWX, KVM,
-Kubernetes, observability, DNS, and proxy capacity where safe. A capacity review
-is required before any new VM or product is authorized.
+The environment represents **MidhHealth Integrated Care**, a fictional
+integrated care delivery and health insurance organization running a hybrid
+platform. The on-premises side is the active integration and operations lab:
+KVM/libvirt, Rocky Linux VMs, Kubernetes, DNS, NGINX, GitLab, Jenkins, AWX,
+observability, and supporting product VMs. The cloud side is the governed
+extension path for AWS, Azure, and GCP, using the same repository, review,
+delivery, security, and evidence standards.
+
+Projects 6–10 use the existing VM fleet for first-slice operations automation
+and evidence collection; they have no dedicated VM or IP allocation. Their
+automation reuses existing GitLab, Jenkins, AWX, KVM, Kubernetes,
+observability, DNS, and proxy capacity where safe. A capacity review is
+required before any new VM or product is authorized.
 
 The lab supports two deployment targets:
 
 | Target | Purpose | Provisioning path | Delivery path |
 | --- | --- | --- | --- |
-| Local KVM | Persistent training and integration environment | Ansible + libvirt + cloud-init | GitLab → Jenkins → Harbor/Artifactory → Argo CD |
-| AWS (deferred) | Future cloud validation environment | AWX → Terraform/OpenTofu → EKS/ECR | GitLab → Jenkins → ECR → Argo CD |
+| Local KVM | Active on-premises integration, operations, and product environment | Ansible + libvirt + cloud-init | GitLab → Jenkins/AWX → Harbor/Artifactory → Argo CD |
+| AWS/Azure/GCP | Governed cloud validation and expansion environments | AWX → Terraform/OpenTofu → cloud services | GitLab → Jenkins/GitLab CI → cloud registry/services → GitOps |
 
 Application promotion uses Kubernetes namespaces instead of a separate cluster
 for every environment:

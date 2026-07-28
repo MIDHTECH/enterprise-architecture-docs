@@ -3,16 +3,22 @@
 ![Ten-project enterprise platform visual architecture diagram](assets/component-architecture.svg)
 
 This diagram explains how the active implementation repositories and
-role-centered projects work together as one enterprise platform program.
+role-centered projects work together for **MidhHealth Integrated Care**, a
+fictional integrated care delivery and health insurance organization with a
+hybrid on-premises and cloud platform program.
 Projects 6–10 are active first implementation slices and do not represent new
 installed products or allocated VMs.
 
 ```mermaid
 flowchart TB
-    subgraph client[Enterprise Client Platform]
+    subgraph org[MidhHealth Integrated Care]
         users[Application and Platform Teams]
+        care[Care Delivery Operations]
+        payer[Insurance / Payer Operations]
         governance[Security / Governance / Audit]
         sre[SRE / Operations]
+        dataowners[Data and Database Teams]
+        networkops[Network Engineering]
     end
 
     subgraph gitlab[GitLab Group: maas-enterprise-cloud-platform]
@@ -51,7 +57,11 @@ flowchart TB
     end
 
     users --> mr
+    care --> mr
+    payer --> mr
     governance --> mr
+    dataowners --> mr
+    networkops --> mr
     arch --> mr
     cicd --> mr
     infra --> mr
@@ -101,6 +111,9 @@ flowchart TB
 
 | Component | Purpose |
 | --- | --- |
+| MidhHealth Integrated Care | Fictional integrated care delivery and health insurance organization |
+| Care Delivery Operations | Hospital systems, clinical platforms, digital care, patient access, and care operations |
+| Insurance / Payer Operations | Claims, eligibility, authorizations, member services, payment integrity, and payer analytics |
 | Application and Platform Teams | Consumers and contributors to the enterprise platform |
 | Security / Governance / Audit | Reviews risk, compliance, evidence, and production controls |
 | SRE / Operations | Owns reliability, incidents, alerts, and operational readiness |
@@ -119,7 +132,7 @@ flowchart TB
 | Jenkins Jobs | Creates Jenkins pipeline jobs from source-controlled Job DSL, including `projects/run-ansible-playbook` |
 | Jenkins Shared Library | Provides reusable AWX launch logic to pipelines, including playbook allowlists, extra-vars allowlists, and apply confirmation guardrails |
 | Delivery Control Plane | GitLab, protected branches, Jenkins, AWX, and Ansible working together |
-| Runtime Platforms | Cloud resources, Kubernetes clusters, applications, and telemetry |
+| Runtime Platforms | On-premises VMs/Kubernetes, cloud resources, applications, and telemetry |
 | On-premises access and compute | One standalone NGINX proxy fronts user HTTP URLs; infra01/infra02 host dedicated Rocky Linux product VMs |
 | Enterprise observability comparison | Three Elasticsearch nodes plus standalone Kibana, Logstash, and Splunk complement the Prometheus/Grafana path |
 
@@ -128,7 +141,8 @@ flowchart TB
 1. Teams propose changes through GitLab merge requests.
 2. Protected `main` branches ensure review, approvals, and evidence.
 3. Jenkins and AWX automate build, deployment, and operations.
-4. Terraform and Ansible provision and configure cloud resources.
+4. Terraform and Ansible provision and configure on-premises and cloud
+   resources through the same review model.
 5. GitOps syncs approved Kubernetes desired state to clusters.
 6. Observability and governance continuously validate reliability, security, and compliance.
 7. `linux-systems-platform` uses the Jenkins/AWX Ansible launcher for approved

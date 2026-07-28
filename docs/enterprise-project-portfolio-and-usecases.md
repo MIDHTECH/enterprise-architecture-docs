@@ -1,10 +1,19 @@
 # Enterprise Project Portfolio and Use Case Coverage
 
-This document explains how the ten enterprise projects fit together and which
-role-based use cases each one supports. Projects 1–10 have implementation
-repositories. Projects 6–10 currently use active first slices against existing
-VMs and do not imply new product installs, new VM placement, or production
-capacity.
+This document explains how the ten enterprise projects fit together for
+**MidhHealth Integrated Care**, a fictional care delivery and health insurance
+organization. The platform supports both provider operations and payer
+operations: hospital systems, digital care, claims, eligibility,
+authorizations, member services, analytics, security, and hybrid infrastructure.
+Projects 1–10 have implementation repositories. Projects 6–10 currently use
+active first slices against existing VMs and do not imply new product installs,
+new VM placement, or production capacity.
+
+Read the projects as one organization-wide hybrid platform program. The repos
+represent platform domains owned by different engineering teams inside
+MidhHealth, but they share one GitLab group, one review and delivery model, one
+Jenkins/AWX automation control plane, shared governance controls, and common
+on-prem/cloud operating standards.
 
 The portfolio is role-centered for DevOps, SRE, Database, Linux/System, Data,
 and Network Engineers. MAAS is one possible reference workload, not the
@@ -16,7 +25,9 @@ These are not meant to read like classroom exercises. They are structured as wor
 
 ```mermaid
 flowchart TB
-    user[Developer or Platform User] --> git[GitLab Group]
+    org[MidhHealth Integrated Care] --> git[GitLab Group]
+    org --> teams[Platform, SRE, Security, Data, Network and App Teams]
+    teams --> git
     git --> apprepo[Application and Project Repositories]
     git --> docsrepo[Enterprise Architecture Documentation]
     git --> infrarepo[Infrastructure Repositories]
@@ -68,7 +79,26 @@ flowchart TB
     sec --> database
     sec --> data
     sec --> network
+
+    onprem[On-Prem KVM and Kubernetes] --> k8s
+    cloudtarget[Governed Cloud Targets] --> aws
+    cloudtarget --> azure
+    cloudtarget --> gcp
 ```
+
+## Organization Model
+
+| Layer | Shared organizational capability |
+| --- | --- |
+| Business model | Integrated care delivery and health insurance provider |
+| Provider operations | Hospital systems, clinical platforms, digital care, patient access, and care operations |
+| Payer operations | Claims, eligibility, authorizations, member services, payment integrity, and analytics |
+| Source control | One GitLab group, protected branches, merge requests, and audit trail |
+| Delivery | Jenkins, GitLab CI, AWX, Ansible, Terraform, GitOps, and reusable shared libraries |
+| On-premises platform | KVM/libvirt, Rocky Linux VMs, DNS, NGINX, Kubernetes, observability, and product VMs |
+| Cloud platform | AWS, Azure, and GCP foundations managed through the same Terraform, Ansible, CI, governance, and review model |
+| Governance | Security, secrets, compliance, cost, backup, certificate, and change controls across both on-prem and cloud |
+| Operations | SLOs, incident evidence, runbooks, platform telemetry, and controlled remediation |
 
 ## Portfolio Status
 

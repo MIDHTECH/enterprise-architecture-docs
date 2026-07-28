@@ -7,16 +7,15 @@ For the required project training structure and interview question-bank standard
 ## Program Positioning
 
 Present the active repositories and first-slice capability roadmap as one
-enterprise platform program, not as disconnected labs:
+enterprise organization, **MidhHealth Integrated Care**, with a hybrid platform
+program, not as disconnected labs:
 
-> I contributed to the first five implementation domains of a ten-project
-> enterprise platform program: infrastructure, CI/CD, Kubernetes delivery,
-> observability, and governance automation. I also started first-slice
-> capability automation for Linux systems, database reliability, service
-> operations, data engineering, and network engineering. The domains use
-> GitLab review, Jenkins delivery, Terraform infrastructure, Ansible
-> configuration, GitOps, monitoring, and security controls as shared
-> foundations.
+> I contributed to a ten-domain enterprise platform program for MidhHealth
+> Integrated Care, a care delivery and health insurance organization. The
+> on-premises side uses KVM, Rocky Linux, Kubernetes, GitLab, Jenkins, AWX, DNS,
+> proxying, and observability as the active integration platform, while AWS,
+> Azure, and GCP are governed cloud targets through the same Terraform,
+> Ansible, CI/CD, GitOps, security, and evidence model.
 
 Only claim implementation contributions for work supported by repositories,
 commits, tests, or operational evidence. Projects marked as first-slice

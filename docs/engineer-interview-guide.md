@@ -10,7 +10,12 @@ product deployments.
 
 Use this version when you need a short overview:
 
-> I built the first five implementation domains of a ten-project enterprise platform portfolio covering CI/CD, infrastructure, Kubernetes, observability, and governance. I then started first-slice automation for Linux systems, database reliability, service operations, data engineering, and network engineering using the existing VM fleet. GitLab provides source control and review, Terraform and Ansible provide automation, Jenkins and GitLab CI provide delivery, and GitOps and operational controls connect the platform.
+> I built a ten-domain enterprise platform program for MidhHealth Integrated
+> Care, a care delivery and health insurance organization. The on-premises side
+> uses KVM, Rocky Linux VMs, Kubernetes, GitLab, Jenkins, AWX, DNS, NGINX, and
+> observability as the active integration platform. The cloud side extends the
+> same standards to AWS, Azure, and GCP through Terraform, Ansible, CI/CD,
+> GitOps, governance, and operational evidence.
 
 For role-specific positioning, team model, and contribution wording, see [Marketing Role and Engineer Contribution Guide](marketing-role-engineer-guide.md).
 

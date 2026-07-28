@@ -4,11 +4,19 @@ Last verified: 2026-07-27
 
 ## Enterprise project portfolio
 
-The architecture contains ten projects. Projects 1–10 have implementation
-repositories. Projects 6–10 are active first slices against the existing VM
-fleet: Linux systems, database reliability, resilience/service operations, data
-engineering, and network engineering. No VM, IP address, product installation,
-or capacity expansion is implied by their inclusion in the architecture.
+The architecture represents **MidhHealth Integrated Care**, a fictional
+enterprise care delivery and health insurance organization with a hybrid
+on-premises and cloud platform. The ten projects are platform domains inside
+that organization, not separate standalone labs. They support provider
+workflows, payer workflows, analytics, security, and shared platform
+operations. They share GitLab, Jenkins, AWX, Ansible/Terraform patterns,
+governance standards, environment promotion, and operational evidence.
+
+Projects 1–10 have implementation repositories. Projects 6–10 are active first
+slices against the existing VM fleet: Linux systems, database reliability,
+resilience/service operations, data engineering, and network engineering. No
+VM, IP address, product installation, or capacity expansion is implied by their
+inclusion in the architecture.
 
 The authoritative scope and all 187 use cases are maintained in
 [Enterprise Project Portfolio and Use Case Coverage](enterprise-project-portfolio-and-usecases.md).
