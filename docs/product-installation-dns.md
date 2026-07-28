@@ -17,13 +17,13 @@ As of 2026-07-27, BIND is installed, enabled, and active. Forward, reverse,
 UDP, TCP, and recursive lookups pass, and the Ansible role has converged with
 `changed=0`, `failed=0`, and `unreachable=0`.
 
-Zone serial `2026072701` includes the physical hosts, all 31 VMs, reverse
+Zone serial `2026072801` includes the physical hosts, all 31 VMs, reverse
 records, and approved `*.apps.example.com` service names at `.114`. The latest
 records add Elasticsearch nodes `.116`, `.133`, and `.134`; Kibana `.117`;
 Splunk `.118`; Logstash `.135`; and the Kibana/Splunk application aliases.
 
-The Linksys router now contains 42 verified DHCP reservations: infra01,
-infra02, and every address from `.101` through `.140`. Automatic client DNS
+The Linksys router now contains 63 verified DHCP reservations: infra01,
+infra02, infra03, and every address from `.101` through `.160`. Automatic client DNS
 adoption is still pending the Linksys-app change below. Until that change is
 applied and leases are renewed, clients continue receiving `192.168.1.1` as
 their DNS server.
@@ -48,7 +48,7 @@ application service names, and public recursive lookups are validated.
 | Current Copper9100 gateway/DHCP server | `192.168.1.1` |
 
 The router must reserve `192.168.1.106` for the DNS VM. The complete VM range
-`192.168.1.101–192.168.1.140` must remain outside the general DHCP pool.
+`192.168.1.101–192.168.1.160` must remain outside the general DHCP pool.
 
 The authoritative zone also includes the physical hypervisors:
 
@@ -56,7 +56,7 @@ The authoritative zone also includes the physical hypervisors:
 | --- | --- | --- |
 | `infra01.example.com` | `192.168.1.38` | DHCP reservation for the infra01 `br0` MAC |
 | `infra02.example.com` | `192.168.1.169` | DHCP reservation for the infra02 `br0` MAC |
-| `infra03.example.com` | `192.168.1.186` | Pre-bridge DHCP lease; reserve the final infra03 `br0` MAC before cutover |
+| `infra03.example.com` | `192.168.1.186` | DHCP reservation for physical/bridged MAC `b8:ca:3a:95:ea:b0` |
 
 These addresses originated through DHCP. Staff must update the zone serial and
 records if either address changes, but the preferred control is a permanent
@@ -69,7 +69,9 @@ unique IP/MAC pair. The controlled reservation script therefore creates:
 
 - `192.168.1.38` for infra01 bridge MAC `ba:31:a8:bf:4b:da`;
 - `192.168.1.169` for infra02 bridge MAC `96:df:df:6e:93:36`;
-- all addresses from `192.168.1.101` through `192.168.1.140`, using the
+- `192.168.1.186` for infra03 physical and future cloned bridge MAC
+  `b8:ca:3a:95:ea:b0`;
+- all addresses from `192.168.1.101` through `192.168.1.160`, using the
   deterministic libvirt MAC convention in `vm-inventory.md`.
 
 Run a read-only plan, then apply:
@@ -81,7 +83,7 @@ workspace.training/scripts/configure-linksys-dhcp-reservations.sh verify
 ```
 
 The script prompts for the router password without echoing or storing it,
-preserves unrelated LAN/DHCP fields, and verifies all 42 reservations after the
+preserves unrelated LAN/DHCP fields, and verifies all 63 reservations after the
 write. Future VMs assigned an expansion address must use the corresponding
 reserved deterministic MAC address.
 

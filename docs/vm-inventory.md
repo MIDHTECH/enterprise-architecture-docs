@@ -41,7 +41,10 @@ infra03 yet.
 ## Address and MAC Allocation
 
 Addresses `.101–.118` except `.109` are allocated to infra01 and
-`.121–.135` except `.132` to infra02. Address `.109` remains occupied by a
+`.121–.135` except `.132` to infra02. The expansion block `.141–.160` is
+reserved for future infra03 VMs using deterministic MAC addresses
+`52:54:00:03:01:41–60`; no VM placements are assigned there yet.
+Address `.109` remains occupied by a
 non-lab LAN device and is not assigned to a VM.
 Addresses `.119–.120`, `.132`, and `.136–.140` remain reserved for expansion. MAC
 addresses are persistent configuration and must not be regenerated during a VM
