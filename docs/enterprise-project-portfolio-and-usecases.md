@@ -383,14 +383,14 @@ flowchart LR
 | Artifact Management Automation | Build outputs and Docker images can be versioned and published |
 | Docker Image Build and Registry Push | Pipeline builds container images and can push to registry |
 | Environment-Based Release Promotion | Pipeline supports environment variables and promotion gates |
-| Rollback Automation | Deployment stage can be extended with rollback/health check logic |
+| Automated Rollback Controller | Pipeline reverses deployments when health or SLO checks fail |
 | Pipeline Template Standardization | Jenkins shared library and job DSL standardize pipelines |
 | Secure CI/CD Pipeline Implementation | Security checks are embedded into delivery workflow |
 | Secrets Detection in Source Code | Pipeline can run Gitleaks/TruffleHog-style checks |
 | Container Image Vulnerability Scanning | Pipeline can scan images before deployment |
 | Dependency Vulnerability Management | Dependency scanning fits before image build/deploy |
-| Infrastructure as Code Security Scanning | Terraform scanning can be added before infrastructure apply |
-| CI/CD Pipeline Reliability | Health checks and gated stages reduce failed deployments |
+| Terraform Plan Automation | Merge requests publish reviewed Terraform plan artifacts |
+| Deployment Health Scoring | Release gates score health, SLO burn, alerts and rollback readiness |
 
 ## Project 2: Enterprise Multi-Cloud Infrastructure Platform
 
@@ -416,18 +416,18 @@ flowchart TB
 
 | Use case | Coverage |
 | --- | --- |
-| Automated Cloud Infrastructure Provisioning | Terraform provisions standard cloud infrastructure |
+| Terraform Drift Detection | Scheduled Terraform plan detects resources changed outside approved code |
 | Azure Infrastructure Provisioning Using Terraform | Azure stack covers resource group, VNet, VM, storage, database, container platform |
 | AWS VPC Landing Zone Setup | AWS stack covers VPC, subnet, security group, storage, database, compute |
-| Infrastructure Provisioning Using Terraform | Core project implementation |
+| Terraform Plan Analyzer | Plan output summarizes creates, updates, destroys and replacement risk |
 | Server Configuration Automation Using Ansible | Ansible configures Linux hosts after provisioning |
 | Linux Server Patch Automation | Ansible common role handles package baseline and can run patching |
-| Infrastructure CI/CD Pipeline | Terraform plan/apply can be wired into Jenkins or GitHub Actions |
+| Infrastructure Change Impact Analysis | Planned changes map to services, owners, SLOs, data feeds and runbooks |
 | Cloud Resource Tagging Automation | Terraform variables and common tags standardize ownership/cost metadata |
-| Environment Creation and Decommissioning Automation | Terraform creates and destroys dev/QA/prod-style environments |
+| Terraform State Integrity Monitoring | State backend, lock behavior and unexpected modifications are validated |
 | Environment Standardization Across Dev/Test/Prod | Same modules and variables can drive multiple environments |
-| Compute, Storage, Database, Network Automation | Covered across all cloud stacks |
-| Automated Infrastructure Provisioning for SRE | Provides repeatable platform foundations for SRE workflows |
+| Infrastructure Reconciliation Loop | Desired and actual infrastructure state are compared on a schedule |
+| Policy-Driven Provisioning | Terraform changes are blocked when they violate standards |
 
 ## Project 3: Enterprise Kubernetes Platform with GitOps
 
@@ -454,18 +454,18 @@ flowchart TB
 | Use case | Coverage |
 | --- | --- |
 | AKS/EKS/GKE Cluster Provisioning Automation | Terraform creates managed Kubernetes clusters |
-| Automated Kubernetes Cluster Provisioning | Standard cluster builds across providers |
+| Kubernetes Configuration Drift | Live cluster state is compared with Git-defined desired state |
 | Kubernetes Application Deployment | Helm/Kustomize deploy application workloads |
-| Automated Deployment to Kubernetes | CI/CD or GitOps handles deployment |
-| GitOps-Based Kubernetes Application Delivery | Argo CD or Flux syncs desired state from Git |
+| GitOps Reconciliation | Argo CD or Flux restores approved desired state and records sync health |
+| Continuous Verification | Rollouts check latency, errors, restarts and alert state before promotion |
 | Kubernetes Security Baseline Implementation | Policies enforce pod and namespace standards |
 | Kubernetes Security Policy Enforcement | OPA Gatekeeper/Kyverno blocks unsafe workloads |
 | Kubernetes Policy-as-Code Governance | Cluster rules are version-controlled |
 | Ingress and Traffic Management Standardization | Common ingress, TLS, DNS, and routing pattern |
-| Kubernetes Autoscaling and Cost Optimization | HPA, VPA, cluster autoscaler, and resource requests |
+| Workload Right-Sizing | CPU and memory requests are adjusted from observed utilization |
 | Container Registry and Image Supply Chain Security | Trusted registries and image scanning controls |
-| Kubernetes Backup and Disaster Recovery | Velero-style backup and restore pattern |
-| Multi-Cluster Operations and Upgrade Management | Standard lifecycle process across clusters |
+| Event-Driven Autoscaling | Workloads scale from queues, events or custom metrics |
+| Kubernetes Cost Allocation | Namespace and workload usage is attributed to teams and applications |
 
 ## Project 4: Enterprise Observability and SRE Reliability Platform
 
@@ -507,21 +507,21 @@ and Splunk VMs are provisioned-only until their AWX runbooks complete.
 | Use case | Coverage |
 | --- | --- |
 | Kubernetes Cluster Health Monitoring | Dashboards for pods, nodes, namespaces, restarts, and capacity |
-| Application Performance Monitoring | Latency, throughput, dependency, and error tracking |
+| OpenTelemetry Auto-Instrumentation | Standardized zero-touch metrics, logs and traces for supported workloads |
 | Centralized Log Management | Logs from pods, VMs, and services collected centrally |
-| Distributed Tracing for Microservices | OpenTelemetry traces show request path and bottlenecks |
+| eBPF Observability | Kernel-level telemetry captures runtime behavior where code changes are not practical |
 | Alerting and On-Call Notification | Alerts route to incident channels or PagerDuty-style tools |
-| SLO and Error Budget Monitoring | Dashboards track availability, latency, and error budget |
+| SLO as Code | Service objectives and alert thresholds are versioned in Git |
 | Production Incident Troubleshooting Dashboard | Single triage view for incidents |
-| Deployment Monitoring and Release Validation | Health checks before and after deployment |
+| Deployment Health Scoring | Release health combines latency, errors, restarts, logs, traces and synthetic checks |
 | API Error Rate Monitoring | Tracks 4xx, 5xx, timeout, and dependency failures |
 | Database Performance Monitoring | Database health and query symptoms can be dashboarded |
-| Infrastructure Capacity Monitoring | CPU, memory, disk, cluster, and VM utilization trends |
+| Telemetry Cost Optimization | Noisy metrics, high-cardinality labels, verbose logs and retention costs are controlled |
 | Synthetic Monitoring | External checks validate user-facing availability |
 | Cloud-Native Monitoring | Cloud-managed services included in dashboards |
-| Root Cause Analysis Automation | Incident data collection supports RCA |
-| Monitoring as Code | Dashboards and alerts stored as code |
-| Multi-Cloud Observability | AWS, Azure, GCP, and Kubernetes visibility in one model |
+| Change-to-Incident Correlation | Incidents link to recent commits, deployments, Terraform plans and GitOps syncs |
+| Automated Incident Triage | Triage output includes owner, dependency, dashboard, runbook and likely change source |
+| Burn-Rate Alerting | Fast and slow error-budget burn alerts replace noisy symptom-only paging |
 
 ## Project 5: Enterprise Cloud Governance and Operations Automation
 
@@ -551,21 +551,21 @@ flowchart TB
 | Secure Secrets Management for Applications | Runtime secret injection avoids hardcoded credentials |
 | Cloud IAM and RBAC Standardization | Least-privilege roles and access patterns |
 | Secrets Management with Key Vault | Azure-focused secrets implementation path |
-| Compliance Automation and Audit Readiness | Automated checks produce evidence for audit |
+| Cloud Misconfiguration Detector | Policy scans find public exposure, weak IAM, missing encryption, backup and logging gaps |
 | Automated Compliance Scanning | Checkov/tfsec/policy checks run in pipelines |
 | Infrastructure Security Hardening | Enforces baseline cloud and Linux controls |
 | Private Endpoint Implementation | Restricts service access to private networks |
 | DNS and Certificate Management | Standardizes DNS and certificate lifecycle |
 | Certificate Expiry Monitoring | Alerts before certificate expiration |
-| Backup and Disaster Recovery Implementation | Backup policies and recovery workflow |
-| Automated Backup and Recovery Validation | Restore validation verifies backup readiness |
-| Disaster Recovery Automation | Recovery steps are scripted and repeatable |
-| Disaster Recovery Validation | RTO/RPO validation becomes measurable |
-| Cloud Cost Optimization | Finds idle, oversized, and unused resources |
-| Cost Optimization Automation | Tagging, reporting, cleanup, and rightsizing workflows |
-| Cloud Cost and Resource Optimization | FinOps controls across cloud and Kubernetes |
-| Incident Remediation Automation | Automates repeated operational fixes |
-| Toil Reduction Through Automation | Reduces manual restart, cleanup, log collection, and validation work |
+| Runbook Automation | Operational procedures become executable scripts or AWX workflows |
+| Event-Driven Remediation | Alerts, cloud events or policy findings trigger guarded automation |
+| Human-in-the-Loop Remediation | High-risk remediation pauses for approval before execution |
+| Closed-Loop Automation | Detect, remediate, validate and record recovery for low-risk failures |
+| Self-Healing Infrastructure | Known safe failures are repaired and verified automatically |
+| Cloud Cost Anomaly Detection | Spend or usage spikes are detected by owner and environment |
+| Resource Right-Sizing Automation | Utilization recommends CPU, memory, storage and replica adjustments |
+| Automated Root-Cause Analysis | Telemetry, deployment and infrastructure changes are correlated for RCA |
+| Intelligent Alert Deduplication | Repeated alerts are grouped into actionable incidents |
 
 ## Project 6: Enterprise Linux Systems Engineering Platform
 
