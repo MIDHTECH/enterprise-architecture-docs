@@ -3,7 +3,7 @@
 ## Purpose
 
 This is the operator runbook for rebuilding the two physical lab hosts and
-preparing them for the enterprise training platform. It records both automated
+preparing them for the enterprise platform lab. It records both automated
 actions and the manual steps that require local console access or a sudo
 password.
 

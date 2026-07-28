@@ -4,7 +4,7 @@
 
 This diagram explains how the active and planned implementation repositories and
 role-centered projects work together for **MidhHealth Integrated Care**, a
-fictional integrated care delivery and health insurance organization with a
+care delivery and health insurance organization with a
 hybrid on-premises and cloud platform program.
 Projects 6–10 are active first implementation slices and do not represent new
 installed products or allocated VMs.

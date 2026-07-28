@@ -1,4 +1,4 @@
-# Interview Questions: Enterprise Architecture Documentation
+# Engineering Question Bank: Enterprise Architecture Documentation
 
 These questions are selected from MAAS production interview-question sources, including company interview captures, scenario packs, technology packs, and curated MAAS database entries. Wording is normalized only for readability.
 
@@ -61,7 +61,7 @@ Source labels are kept with each question so engineers can trace preparation bac
 7. Can you give an instance where you had to work with the dev team to change their design because the schema they were proposing wasn’t right? _(Source: MAAS database: WI-TRONIX)_
 8. Day one: we hire you, and we say we need a High Availability plan because we have a huge risk with our SQL Server running on a VM. What would your strategy/approach be? _(Source: MAAS database: STAGE FRONT)_
 9. How involved were you in the design of protecting those platforms versus just operating protections? _(Source: MAAS database: ALO)_
-10. What part of your background makes you the strongest fit for designing and delivering environments for multiple clients at once? _(Source: MAAS database: ATLAS TECHNICA)_
+10. What operating experience is most relevant for designing and delivering environments for multiple client groups? _(Source: role requirement catalog)_
 
 ## 10 Behavioral Questions
 
@@ -101,4 +101,3 @@ Source labels are kept with each question so engineers can trace preparation bac
 8. In your current role, do you lead problem management activities such as incident investigation and root cause analysis, or do you mainly contribute as part of a team led by someone else? _(Source: MAAS database: COMPUTERSHARE)_
 9. Tell me about a **production incident** you handled - what was your role, and how did you prevent recurrence? _(Source: MAAS database: PREPASS)_
 10. What would your plan/strategy be for migrating us to the cloud (besides consolidating the databases)? _(Source: MAAS database: STAGE FRONT)_
-

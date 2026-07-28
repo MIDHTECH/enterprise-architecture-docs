@@ -1,30 +1,29 @@
-# Marketing Role and Engineer Contribution Guide
+# Role and Contribution Guide
 
-This guide maps each repository in the enterprise cloud platform program to marketable engineering roles. Use it to explain the project, the delivery team, and your personal contribution in interviews, resumes, client discussions, and LinkedIn project summaries.
+This guide maps each repository in the enterprise platform program to operating
+roles, delivery teams, and repository responsibilities. It keeps the ownership
+model consistent across architecture, implementation, operations, and audit
+documentation.
 
-For the required project training structure and interview question-bank standard, see [Engineer Training Standard](engineer-training-standard.md).
+For the required documentation voice and question-bank standard, see
+[Engineer Training Standard](engineer-training-standard.md).
 
 ## Program Positioning
 
-Present the active repositories and first-slice capability roadmap as one
-enterprise organization, **MidhHealth Integrated Care**, with a hybrid platform
-program, not as disconnected labs:
+The active repositories and first-slice capability roadmap operate as one
+enterprise platform program for **MidhHealth Integrated Care**, not as
+disconnected labs. The on-premises side uses KVM, Rocky Linux, Kubernetes,
+GitLab, Jenkins, AWX, DNS, proxying, and observability as the active integration
+platform, while AWS, Azure, and GCP remain governed cloud targets through the
+same Terraform, Ansible, CI/CD, GitOps, security, and evidence model.
 
-> I contributed to a ten-domain enterprise platform program for MidhHealth
-> Integrated Care, a care delivery and health insurance organization. The
-> on-premises side uses KVM, Rocky Linux, Kubernetes, GitLab, Jenkins, AWX, DNS,
-> proxying, and observability as the active integration platform, while AWS,
-> Azure, and GCP are governed cloud targets through the same Terraform,
-> Ansible, CI/CD, GitOps, security, and evidence model.
-
-Only claim implementation contributions for work supported by repositories,
-commits, tests, or operational evidence. Projects marked as first-slice
-automation are valid implementation experience, but not completed product
-deployments.
+Implementation status must be supported by repositories, commits, tests, or
+operational evidence. Projects marked as first-slice automation are implemented
+within their documented scope, but they are not completed product deployments.
 
 ## Role-to-Project Map
 
-| Project | Primary marketing roles | Supporting roles |
+| Project | Primary operating roles | Supporting roles |
 | --- | --- | --- |
 | `enterprise-architecture-docs` | Cloud Architect, Enterprise Architect, Technical Lead | Program Lead, Solution Architect |
 | `devsecops-cicd-orchestrator` | DevSecOps Engineer, CI/CD Engineer, DevOps Engineer | Release Engineer, Automation Engineer |
@@ -40,7 +39,7 @@ deployments.
 | `jenkins_jobs` | Jenkins Platform Engineer, CI/CD Automation Engineer | DevOps Engineer, Release Engineer |
 | `jenkins-shared-library` | Jenkins Shared Library Engineer, Pipeline Automation Engineer | DevOps Engineer, AWX/Ansible Automation Engineer |
 
-## Project Interview Narratives
+## Project Operating Narratives
 
 ### Enterprise Architecture Documentation
 
@@ -48,11 +47,14 @@ deployments.
 
 **Team:** Cloud architect, DevSecOps lead, platform lead, SRE lead, security/governance lead, and delivery manager.
 
-**My contribution:** I documented the enterprise architecture, repository model, use-case mapping, implementation roadmap, and engineer interview narratives so the program could be explained as a coherent client delivery.
+**Repository responsibilities:** Enterprise architecture, repository model,
+use-case mapping, implementation roadmap, and operating narratives for coherent
+platform delivery.
 
-**How to explain it:**
-
-> I created the architecture documentation repository that ties all delivery domains together. It explains how CI/CD, infrastructure automation, Kubernetes GitOps, observability, and governance controls work as one enterprise cloud operating model.
+**Operating narrative:** The architecture documentation repository ties all
+delivery domains together. It explains how CI/CD, infrastructure automation,
+Kubernetes GitOps, observability, and governance controls work as one enterprise
+cloud operating model.
 
 ### DevSecOps CI/CD Orchestrator
 
@@ -60,11 +62,13 @@ deployments.
 
 **Team:** DevSecOps engineer, application developer, QA engineer, release manager, security engineer, and AWX/Ansible automation engineer.
 
-**My contribution:** I built the CI/CD pipeline structure, security gate pattern, Docker image build flow, AWX deployment trigger, and deployment evidence model.
+**Repository responsibilities:** CI/CD pipeline structure, security gate
+pattern, Docker image build flow, AWX deployment trigger, and deployment
+evidence model.
 
-**How to explain it:**
-
-> I worked on a DevSecOps delivery platform that automated build, test, scan, package, approval, and deployment. My contribution was designing the Jenkins pipeline flow, integrating security checks, and connecting Jenkins to AWX so deployments were controlled and auditable.
+**Operating narrative:** The DevSecOps delivery platform automates build, test,
+scan, package, approval, and deployment. Jenkins controls the pipeline flow,
+security checks, and AWX handoff so deployments remain controlled and auditable.
 
 ### Multi-Cloud Infrastructure Automation Platform
 
@@ -72,11 +76,14 @@ deployments.
 
 **Team:** Cloud infrastructure engineer, Terraform engineer, Ansible automation engineer, security engineer, network engineer, and cloud operations engineer.
 
-**My contribution:** I created the reusable infrastructure module structure, environment separation, Ansible baseline roles, tagging/security standards, and runbooks for provisioning and remediation.
+**Repository responsibilities:** Reusable infrastructure module structure,
+environment separation, Ansible baseline roles, tagging/security standards, and
+runbooks for provisioning and remediation.
 
-**How to explain it:**
-
-> I helped build a multi-cloud infrastructure automation platform using Terraform and Ansible. The platform standardized networks, compute, storage, databases, IAM, monitoring, and Linux configuration across environments, with GitLab-driven validation and approval controls.
+**Operating narrative:** The multi-cloud infrastructure automation platform uses
+Terraform and Ansible to standardize networks, compute, storage, databases, IAM,
+monitoring, and Linux configuration across environments, with GitLab-driven
+validation and approval controls.
 
 ### Kubernetes Platform with GitOps
 
@@ -84,11 +91,13 @@ deployments.
 
 **Team:** Kubernetes platform engineer, cloud engineer, GitOps engineer, security engineer, application team representative, and SRE.
 
-**My contribution:** I defined the cluster/environment layout, namespace onboarding model, RBAC pattern, ingress/TLS structure, policy-as-code controls, autoscaling pattern, and backup runbook.
+**Repository responsibilities:** Cluster/environment layout, namespace
+onboarding model, RBAC pattern, ingress/TLS structure, policy-as-code controls,
+autoscaling pattern, and backup runbook.
 
-**How to explain it:**
-
-> I contributed to a Kubernetes platform engineering project that let application teams deploy through GitOps instead of manual kubectl commands. My work focused on standardizing namespaces, RBAC, ingress, policies, autoscaling, and backup patterns across clusters.
+**Operating narrative:** The Kubernetes platform lets application teams deploy
+through GitOps instead of manual kubectl commands. It standardizes namespaces,
+RBAC, ingress, policies, autoscaling, and backup patterns across clusters.
 
 ### Observability and SRE Reliability Platform
 
@@ -96,11 +105,14 @@ deployments.
 
 **Team:** SRE, observability engineer, application owner, platform engineer, incident manager, and cloud operations engineer.
 
-**My contribution:** I designed the monitoring and incident-response documentation model, including dashboard coverage, alerting patterns, SLO/error budget tracking, deployment validation, and incident triage runbooks.
+**Repository responsibilities:** Monitoring and incident-response model,
+dashboard coverage, alerting patterns, SLO/error budget tracking, deployment
+validation, and incident triage runbooks.
 
-**How to explain it:**
-
-> I worked on an observability and SRE platform that unified application, Kubernetes, infrastructure, and cloud telemetry. My contribution was mapping metrics, logs, traces, alerts, SLOs, and incident runbooks into a reliability operating model that reduced troubleshooting time.
+**Operating narrative:** The observability and SRE platform unifies application,
+Kubernetes, infrastructure, and cloud telemetry. Metrics, logs, traces, alerts,
+SLOs, and incident runbooks feed a reliability operating model that reduces
+troubleshooting time.
 
 ### Cloud Governance and Operations Automation
 
@@ -108,11 +120,14 @@ deployments.
 
 **Team:** Cloud security engineer, governance engineer, IAM engineer, compliance analyst, cloud operations engineer, and platform engineer.
 
-**My contribution:** I organized the governance automation domains, documented compliance evidence collection, and mapped IAM, secrets, tagging, backup, cost optimization, certificate monitoring, and remediation workflows.
+**Repository responsibilities:** Governance automation domains, compliance
+evidence collection, IAM, secrets, tagging, backup, cost optimization,
+certificate monitoring, and remediation workflows.
 
-**How to explain it:**
-
-> I contributed to a cloud governance automation project that helped standardize IAM, secrets, compliance checks, backup validation, certificate monitoring, cost controls, and remediation. The result was a more auditable and repeatable cloud operations model.
+**Operating narrative:** The cloud governance automation project standardizes
+IAM, secrets, compliance checks, backup validation, certificate monitoring, cost
+controls, and remediation. The result is a more auditable and repeatable cloud
+operations model.
 
 ### Enterprise Linux Systems Platform
 
@@ -127,12 +142,10 @@ engineer, network engineer, security engineer, and SRE.
 roles, inventories, maintenance workflows, validation, and evidence for host
 operations.
 
-**How to explain it:**
-
-> I implemented the first Linux systems slice around reusable Ansible roles and
-> AWX workflows. The architecture connects host baseline, patching, storage,
-> DNS, virtualization, recovery, and compliance evidence without adding new VM
-> capacity.
+**Operating narrative:** The first Linux systems slice uses reusable Ansible
+roles and AWX workflows. The architecture connects host baseline, patching,
+storage, DNS, virtualization, recovery, and compliance evidence without adding
+new VM capacity.
 
 **Jenkins/AWX workflow:** The project is launched through
 `projects/run-ansible-playbook`, which lets operators select the project,
@@ -152,12 +165,10 @@ engineer, and application owner.
 recovery evidence, and the boundary between database-native tooling and
 platform automation.
 
-**How to explain it:**
-
-> I contributed the target architecture for a database reliability platform
-> that uses approved provisioning, secrets, monitoring, backup verification,
-> recovery testing, and controlled upgrades. This is roadmap design pending
-> implementation and capacity approval.
+**Operating narrative:** The target database reliability platform uses approved
+provisioning, secrets, monitoring, backup verification, recovery testing, and
+controlled upgrades. This remains roadmap design pending implementation and
+capacity approval.
 
 ### Enterprise Resilience and Service Operations (Planned)
 
@@ -170,12 +181,10 @@ engineer, and business stakeholder.
 **Architecture contribution:** Connected observability signals to service
 ownership, incident workflows, reliability decisions, and AWX automation.
 
-**How to explain it:**
-
-> I designed the next service-operations layer so telemetry can drive SLO
-> reviews, incident response, capacity decisions, recovery exercises, and
-> approved remediation. It extends the active observability work and remains a
-> planned project.
+**Operating narrative:** The next service-operations layer lets telemetry drive
+SLO reviews, incident response, capacity decisions, recovery exercises, and
+approved remediation. It extends the active observability work and remains a
+planned project.
 
 ### Enterprise Data Engineering Platform (Planned)
 
@@ -189,12 +198,10 @@ engineer, security engineer, and SRE.
 quality, lineage, security, and observability requirements while leaving
 product selection subject to capacity and design review.
 
-**How to explain it:**
-
-> I developed the planned data-platform architecture around source-controlled
-> pipelines, data contracts, quality gates, metadata, lineage, and operational
-> monitoring. I describe this as target-state engineering, not as an installed
-> data stack.
+**Operating narrative:** The planned data-platform architecture is built around
+source-controlled pipelines, data contracts, quality gates, metadata, lineage,
+and operational monitoring. It is target-state engineering, not an installed
+data stack.
 
 ### Enterprise Network Engineering Platform (Planned)
 
@@ -208,12 +215,10 @@ engineer, security engineer, Kubernetes platform engineer, and SRE.
 **Architecture contribution:** Defined reviewed network-change workflows,
 validation, backups, drift detection, dependency mapping, and telemetry.
 
-**How to explain it:**
-
-> I designed the planned network engineering capability so an authoritative
-> inventory can drive reviewed, tested, and recoverable configuration changes.
-> The existing DNS and NGINX services are foundations; they are not presented
-> as completion of the broader project.
+**Operating narrative:** The planned network engineering capability uses an
+authoritative inventory to drive reviewed, tested, and recoverable configuration
+changes. The existing DNS and NGINX services are foundations; they are not
+presented as completion of the broader project.
 
 ### Jenkins Jobs
 
@@ -221,11 +226,13 @@ validation, backups, drift detection, dependency mapping, and telemetry.
 
 **Team:** Jenkins administrator, DevOps engineer, release engineer, platform engineer, and project pipeline owners.
 
-**My contribution:** I created the seed-job model, Job DSL structure, managed job inventory, and validation workflow so project pipelines could be generated from source control.
+**Repository responsibilities:** Seed-job model, Job DSL structure, managed job
+inventory, and validation workflow for generated project pipelines.
 
-**How to explain it:**
-
-> I built the Jenkins job-as-code layer for the platform. Instead of creating jobs manually, the seed job reads version-controlled Job DSL scripts and creates standardized project pipeline jobs, which reduces drift and improves auditability.
+**Operating narrative:** The Jenkins job-as-code layer keeps pipeline job
+definitions in source control. Instead of creating jobs manually, the seed job
+reads version-controlled Job DSL scripts and creates standardized project
+pipeline jobs, which reduces drift and improves auditability.
 
 ### Jenkins Shared Library
 
@@ -233,13 +240,15 @@ validation, backups, drift detection, dependency mapping, and telemetry.
 
 **Team:** DevOps engineer, Jenkins platform engineer, Ansible/AWX engineer, release engineer, and application delivery teams.
 
-**My contribution:** I implemented the reusable AWX launch contract, credential handling pattern, polling behavior, and pipeline usage documentation.
+**Repository responsibilities:** Reusable AWX launch contract, credential
+handling pattern, polling behavior, and pipeline usage documentation.
 
-**How to explain it:**
+**Operating narrative:** The Jenkins shared library lets multiple pipelines
+launch AWX job templates using the same reusable contract. It removes
+duplicated REST API logic from project Jenkinsfiles and makes deployment
+automation easier to maintain.
 
-> I created a Jenkins shared library step that lets multiple pipelines launch AWX job templates using the same reusable contract. This removed duplicated REST API logic from project Jenkinsfiles and made deployment automation easier to maintain.
-
-## Resume Bullet Patterns
+## Delivery Evidence Patterns
 
 - Built an enterprise cloud platform reference program across CI/CD, infrastructure automation, Kubernetes GitOps, observability, and governance domains.
 - Implemented Terraform and Ansible automation patterns for repeatable multi-cloud provisioning and Linux baseline configuration.
@@ -251,11 +260,11 @@ validation, backups, drift detection, dependency mapping, and telemetry.
   systems, database reliability, service operations, data engineering, and
   network engineering, with explicit capacity and implementation gates.
 
-## Interview Answer Structure
+## Operating Review Structure
 
-Use this four-part structure when explaining any project:
+Use this four-part structure when reviewing any project:
 
 1. **Client problem:** Describe the operational pain, such as manual provisioning, inconsistent deployments, weak governance, or poor incident visibility.
-2. **Team model:** Name the roles involved so the interviewer understands this was delivered like an enterprise engagement.
-3. **My contribution:** Be specific about what you designed, implemented, automated, documented, or validated.
+2. **Team model:** Name the roles involved so ownership and review paths are clear.
+3. **Repository responsibilities:** Be specific about what is designed, implemented, automated, documented, or validated.
 4. **Business outcome:** Connect the work to speed, security, auditability, reliability, cost control, or reduced manual effort.

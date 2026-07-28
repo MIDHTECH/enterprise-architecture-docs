@@ -57,7 +57,7 @@ These are discovery candidates, not final service names:
 | Document/media processing | Clear workload and scaling boundary | Early |
 | Reporting and exports | Read-heavy, asynchronous, operationally separable | Early |
 | Search/indexing | Derived data and independent scaling | Early |
-| Interview/content catalog | Clear content ownership if dependencies permit | Middle |
+| Content catalog | Clear content ownership if dependencies permit | Middle |
 | Assessment/workflow | Business process requiring contract analysis | Middle |
 | User profile and organization | Sensitive data and broad dependencies | Late |
 | Authentication | Prefer Keycloak integration over custom extraction | Platform |

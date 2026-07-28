@@ -2,9 +2,9 @@
 
 ## Environment Model
 
-The environment represents **MidhHealth Integrated Care**, a fictional
-integrated care delivery and health insurance organization running a hybrid
-platform. The on-premises side is the active integration and operations lab:
+The environment represents **MidhHealth Integrated Care**, an integrated care
+delivery and health insurance organization running a hybrid platform. The
+on-premises side is the active integration and operations lab:
 KVM/libvirt, Rocky Linux VMs, Kubernetes, DNS, NGINX, GitLab, Jenkins, AWX,
 observability, and supporting product VMs. The cloud side is the governed
 extension path for AWS, Azure, and GCP, using the same repository, review,

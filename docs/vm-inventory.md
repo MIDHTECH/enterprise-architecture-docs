@@ -92,7 +92,7 @@ rebuild.
 | `nginx.example.com` | Standalone NGINX reverse proxy | 2 | 2 GB | 30 GB | 20 GB |
 | `elasticsearch01.example.com` | Elasticsearch cluster node 1 | 4 | 4 GB | 40 GB | 150 GB |
 | `kibana.example.com` | Kibana log analysis and visualization | 2 | 4 GB | 40 GB | 40 GB |
-| `splunk.example.com` | Standalone Splunk Enterprise training platform | 4 | 8 GB | 50 GB | 150 GB |
+| `splunk.example.com` | Standalone Splunk Enterprise platform | 4 | 8 GB | 50 GB | 150 GB |
 
 Allocated memory is approximately 112 GB. With about 121 GiB physical memory,
 infra01 has little operational headroom. Do not add or enlarge a VM without

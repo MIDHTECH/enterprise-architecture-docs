@@ -4,8 +4,8 @@ Last verified: 2026-07-27
 
 ## Enterprise project portfolio
 
-The architecture represents **MidhHealth Integrated Care**, a fictional
-enterprise care delivery and health insurance organization with a hybrid
+The architecture represents **MidhHealth Integrated Care**, an enterprise care
+delivery and health insurance organization with a hybrid
 on-premises and cloud platform. The ten projects are platform domains inside
 that organization, not separate standalone labs. They support provider
 workflows, payer workflows, analytics, security, and shared platform

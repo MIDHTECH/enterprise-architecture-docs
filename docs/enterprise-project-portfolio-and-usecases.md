@@ -1,7 +1,7 @@
 # Enterprise Project Portfolio and Use Case Coverage
 
 This document explains how the twelve enterprise projects fit together for
-**MidhHealth Integrated Care**, a fictional care delivery and health insurance
+**MidhHealth Integrated Care**, a care delivery and health insurance
 organization. The platform supports both provider operations and payer
 operations: hospital systems, digital care, claims, eligibility,
 authorizations, member services, analytics, security, and hybrid infrastructure.
@@ -10,8 +10,7 @@ active first slices against existing VMs and do not imply new product installs
 or production capacity. The capacity direction now adds a planned third Linux
 server with 256 GB RAM and a Mac Studio M1 named `midh-ai-edge-01` for AI/ML
 development and edge inference. Projects 11–12 add AI and ML platform domains
-based on aggregate healthcare technology job requirements from the last six
-months.
+based on current healthcare technology requirements.
 
 Read the projects as one organization-wide hybrid platform program. The repos
 represent platform domains owned by different engineering teams inside
@@ -19,24 +18,25 @@ MidhHealth, but they share one top-level GitLab organization, one review and
 delivery model, one Jenkins/AWX automation control plane, shared governance
 controls, and common on-prem/cloud operating standards.
 
-The portfolio is role-centered for DevOps, SRE, Database, Linux/System, Data,
-and Network Engineers. MAAS is one possible reference workload, not the
-program's organizing principle.
+The portfolio is organized around engineering domains: DevOps, SRE, Database,
+Linux/System, Data, Network, AI, and MLOps. MAAS is one possible reference
+workload, not the program's organizing principle.
 
-These are not meant to read like classroom exercises. They are structured as working engineering repos with GitLab, CI/CD controls, environment separation, review gates, security checks, docs, and operational runbooks.
+The repositories are working engineering domains with GitLab, CI/CD controls,
+environment separation, review gates, security checks, docs, and operational
+runbooks.
 
-## Recent Healthcare Hiring Signals
+## Healthcare Platform Requirements
 
-The newer use cases are shaped from current healthcare technology hiring
-patterns, but the portfolio does not store job postings or copy role language.
-The signal is clear enough without turning the docs into a scraped job board:
-healthcare teams want engineers who can keep hybrid platforms reliable while
-modernizing data movement, making AI safe enough to operate, and proving that
-changes are reviewed, observable, and recoverable.
+The newer use cases are shaped from current healthcare technology requirements,
+but the portfolio does not store job postings or copy role language. Healthcare
+platform teams need hybrid systems that stay reliable while data movement is
+modernized, AI workflows become safe enough to operate, and every change remains
+reviewed, observable, and recoverable.
 
 For MidhHealth, that translates into practical work:
 
-| Hiring signal | MidhHealth use case direction |
+| Platform requirement | MidhHealth use case direction |
 | --- | --- |
 | SRE roles now expect observability, resilience, automation, and AI-assisted operations to live together | Build alerts that carry enough context for triage, enrich incidents with runbook and dependency evidence, and measure whether automation actually reduces recovery time |
 | Healthcare data roles keep asking for EHR, FHIR, HL7/X12, cloud data platforms, lineage, quality, and real-time pipelines | Treat data feeds as governed products: inventory the source, validate the schema, track lineage, monitor freshness, and make failures visible before downstream teams make decisions from stale data |
@@ -44,10 +44,9 @@ For MidhHealth, that translates into practical work:
 | MLOps roles emphasize model registries, CI/CT/CD, serving, monitoring, drift, rollback, and governance evidence | Promote models like software: every candidate has data lineage, validation results, deployment evidence, telemetry, rollback path, and an owner |
 | Cloud/platform roles still need CI/CD, IaC, Kubernetes, security, cost controls, and operational support | Keep the platform boring in the best way: repeatable builds, protected branches, review gates, secrets out of Git, and visible deployment evidence |
 
-The goal is not to claim that every tool is installed today. The goal is to make
-each repo tell a believable story about the kind of work a healthcare platform
-engineer, SRE, data engineer, AI engineer, or MLOps engineer would actually be
-asked to do.
+The goal is not to claim that every tool is installed today. The goal is to
+define work that a healthcare platform team can operate, audit, and convert into
+controlled automation.
 
 ## Executable Use-Case Standard
 
@@ -112,10 +111,9 @@ propose a safe action, and prove the system recovered.
 | Platform engineering | Internal developer portal, service catalog, golden paths, environment templates, reusable infrastructure modules, and self-service requests | `cloud-infra-automation-platform`, `kubernetes-platform-gitops`, `jenkins-jobs`, `jenkins-shared-library` |
 | Observability and SRE | OpenTelemetry instrumentation, eBPF/zero-code visibility, observability pipelines, SLO as code, burn-rate alerting, health scoring, change correlation, and incident triage | `observability-sre-platform`, `resilience-service-operations`, `healthcare-ai-platform` |
 
-The strongest resume/project slice is not all of this at once. It is a thin
-closed loop that can be demonstrated end to end: detect drift or degraded
-health, explain the impact, require approval when the action is risky, run a
-controlled fix, and verify recovery.
+The priority implementation path is a closed-loop workflow: detect drift or
+degraded health, explain the operational impact, require approval when risk is
+high, run a controlled remediation, and verify recovery.
 
 | Focus item | Executable implementation |
 | --- | --- |
@@ -957,7 +955,7 @@ rollback path.
 | 2026-07-27 | Start Project 6 implementation against the existing VM fleet | Implement Linux operations use cases without creating new infrastructure | Adds Ansible inventory, playbooks, roles, evidence reports, and runbooks for Linux lifecycle, baseline, patching, access, storage, network/time, capacity, drift, compliance, and break-glass recovery. |
 | 2026-07-27 | Add Jenkins/AWX launcher guardrails for Linux systems operations | Let operators select project, branch, inventory, playbook, and extra vars while preserving review and safety controls | Adds `projects/run-ansible-playbook`, shared-library allowlists, `CONFIRM_APPLY` for state-changing playbooks, and AWX/Jenkins integration documentation. |
 | 2026-07-27 | Start Projects 7–10 first implementation slices | Complete the approved database, resilience, data, and network project starts without expanding infrastructure | Adds safe Ansible evidence playbooks, GitLab CI validation, runbooks, training coverage, and Jenkins/AWX catalog registration for the four remaining enterprise projects. |
-| 2026-07-27 | Add Projects 11–12 for AI and ML platform domains | Reflect healthcare job-market demand for production AI, RAG, agents, MLOps, model governance, drift monitoring and regulated AI operations | Adds approved planned domains for `healthcare-ai-platform` and `mlops-model-platform`; does not save individual job-posting details or authorize new runtime capacity. |
+| 2026-07-27 | Add Projects 11–12 for AI and ML platform domains | Reflect healthcare platform demand for production AI, RAG, agents, MLOps, model governance, drift monitoring and regulated AI operations | Adds approved planned domains for `healthcare-ai-platform` and `mlops-model-platform`; does not save individual job-posting details or authorize new runtime capacity. |
 | 2026-07-27 | Add AI/ML edge and high-memory capacity direction | Separate developer inference from heavier backend workloads | Plans `midh-ai-edge-01` as a Mac Studio M1 AI/ML development and edge-inference node, and `infra03` as a future 256 GB Linux server for data, observability, AI/ML backend, and resilience workloads. |
 
 ## Recommended Implementation Order

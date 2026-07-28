@@ -1,11 +1,11 @@
 # Enterprise Architecture Documentation
 
-This repo is the written map for **MidhHealth Integrated Care**, a fictional
+This repo is the written map for **MidhHealth Integrated Care**, an
 enterprise care delivery and health insurance organization with a hybrid
 on-premises and cloud platform. It explains how infrastructure, CI/CD,
 Kubernetes, observability, governance, systems, database, resilience, data, and
 network projects fit together as shared organizational capabilities, and gives
-you language for talking about the work in interviews.
+operators and engineers a common operating record for the platform.
 
 ## Documents
 
@@ -30,8 +30,8 @@ you language for talking about the work in interviews.
 - [Product Migration History](docs/product-migration-history.md)
 - [Architecture Evolution, 2023–2026](docs/architecture-evolution-2023-2026.md)
 - [MAAS Monolith-to-Microservices Roadmap](docs/maas-monolith-to-microservices.md)
-- [Engineer Interview Guide](docs/engineer-interview-guide.md)
-- [Marketing Role and Engineer Contribution Guide](docs/marketing-role-engineer-guide.md)
+- [Engineer Operating Narrative Guide](docs/engineer-interview-guide.md)
+- [Role and Contribution Guide](docs/marketing-role-engineer-guide.md)
 - [Engineer Training Standard](docs/engineer-training-standard.md)
 - [Enterprise Branching Strategy](docs/branching-strategy.md)
 - [Component Architecture Diagram](docs/component-architecture.md)
@@ -51,13 +51,14 @@ validation.
 The documentation is expected to drive executable work. A good use case should
 be convertible into a Jenkins job, AWX playbook, GitLab CI stage, GitOps sync,
 dashboard, alert, data-quality check, model-validation step, or runbook drill.
-The portfolio avoids saving job-posting details; it uses job-market patterns to
-shape practical backlog items that can produce evidence in the lab.
+The portfolio avoids saving job-posting details; it uses current industry
+requirements to shape practical backlog items that can produce operational
+evidence in the lab.
 
 Projects 1–10 now have implementation repositories. Projects 6–10 are active
 first slices that reuse existing VMs and do not imply new product installs or
 production capacity. Projects 11–12 are approved AI/ML platform additions based
-on aggregate healthcare job-market requirements. Their lab capacity plan now
+on current healthcare platform requirements. Their lab capacity plan now
 includes a Mac Studio M1 development/edge-inference node and a planned
 memory-optimized Linux server for heavier data, observability, and AI/ML
 workloads.
@@ -81,6 +82,6 @@ Mac Studio AI/ML edge environment, provisioning Rocky Linux virtual machines,
 installing platform products, and rehearsing healthcare platform modernization
 paths on premises.
 
-## Extra Docs
+## Reference Docs
 
-- [Interview questions](docs/interview-questions.md)
+- [Engineering question bank](docs/interview-questions.md)
