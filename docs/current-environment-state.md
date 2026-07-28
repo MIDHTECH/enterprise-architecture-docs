@@ -87,6 +87,11 @@ Engine and Compose packages were removed through Ansible.
 | `loki.example.com` | Loki | 3.7.4 | healthy |
 | `tempo.example.com` | Tempo | 3.0.2 | healthy |
 | `otel.example.com` | OpenTelemetry Collector Contrib | 0.137.0 | healthy |
+| `elasticsearch01.example.com` | Elasticsearch target | 9.4.2 | automation ready; SSH baseline pending |
+| `elasticsearch02.example.com` | Elasticsearch target | 9.4.2 | automation ready; SSH baseline pending |
+| `elasticsearch03.example.com` | Elasticsearch target | 9.4.2 | automation ready; SSH baseline pending |
+| `kibana.example.com` | Kibana target | 9.4.2 | automation ready; SSH baseline pending |
+| `logstash.example.com` | Logstash target | 9.4.2 | automation ready; SSH baseline pending |
 
 Node Exporter 1.11.1 is installed on managed platform hosts.
 
@@ -105,6 +110,12 @@ Detailed commands, credential handling, service order, health endpoints, and
 troubleshooting steps are maintained in
 `ansible-observability/docs/installation-runbook.md`.
 
+Elastic Stack automation is implemented in `ansible-observability`, including
+Elasticsearch, Kibana, Logstash, the `midhhealth-*` index template and the
+approved Logstash ingestion boundary. Live installation is blocked until the
+Elastic VMs accept the standard `midhtechadmin` public key and pass the common
+Rocky baseline.
+
 ## Remaining integration work
 
 1. Run the Jenkins seed job so `projects/run-ansible-playbook` is created or
@@ -118,7 +129,10 @@ troubleshooting steps are maintained in
 7. Apply dashboards, alert rules, and SLOs from `observability-sre-platform`.
 8. Configure production alert receivers.
 9. Decide whether Loki and Tempo should move from local storage to MinIO.
-10. Add TLS, SSO, and restricted network access.
-11. Register `midh-ai-edge-01` as the Mac Studio AI/ML development endpoint.
-12. Plan `infra03` hardware installation, network identity, storage layout,
+10. Apply the common Rocky baseline and authorized key handoff to the five
+    Elastic Stack VMs.
+11. Run `ansible-observability` Elastic install and verification playbooks.
+12. Add TLS, SSO, and restricted network access.
+13. Register `midh-ai-edge-01` as the Mac Studio AI/ML development endpoint.
+14. Plan `infra03` hardware installation, network identity, storage layout,
     Kubernetes labels, and workload placement guardrails.

@@ -7,9 +7,13 @@ and Logstash VMs. Numeric suffixes are valid here because Elasticsearch is a
 cluster. This stack is independent of the Prometheus/Grafana/Loki/Tempo path
 and exists for enterprise architecture and migration comparison.
 
-As of 2026-07-27, the VMs and DNS records exist, but Elastic products are
-**not installed**. The common Rocky baseline and `/data` mounts must be
-completed before AWX installs any package.
+As of 2026-07-27, the VMs and DNS records exist. Ansible automation for Elastic
+Stack installation now exists in
+`midhhealth/reliability-operations/ansible-observability`, but live
+installation is pending the standard Rocky SSH/baseline handoff on the five
+Elastic VMs. Do not report Elastic as installed until
+`playbooks/install-elastic-stack.yml` and `playbooks/verify-elastic-stack.yml`
+complete successfully.
 
 | Role | VM | Address | Resources |
 | --- | --- | --- | --- |
@@ -38,7 +42,8 @@ expected.
 ## AWX Implementation Sequence
 
 1. Apply the common Rocky Linux baseline to all five VMs and verify SELinux,
-   firewalld, chrony, qemu-guest-agent, and XFS `/data`.
+   firewalld, chrony, qemu-guest-agent, XFS `/data`, and `midhtechadmin`
+   public-key access.
 2. Add the official Elastic 9.x repository and import its signing key through
    a reviewed Ansible role.
 3. Install the exact 9.4.2 Elasticsearch package on all three nodes.
@@ -55,6 +60,25 @@ expected.
    Git.
 9. Validate ingestion, index lifecycle, dashboards, audit logging, restart,
    backup, and restore behavior.
+
+## Approved Log Scope
+
+Logstash is the Elastic ingestion boundary. Events must be labeled with
+`fields.midhhealth_log_type` and should use one of these approved values:
+
+| Log class | Expected source |
+| --- | --- |
+| `nginx_access`, `nginx_error` | NGINX reverse-proxy access and backend failure logs |
+| `linux_auth`, `linux_system` | SSH, sudo, systemd, kernel, storage and host-network events |
+| `jenkins_job`, `awx_job` | Delivery and automation job summaries, failures, approvals and run IDs |
+| `kubernetes_ingress` | Kubernetes ingress/controller routing events |
+| `postgres_error`, `postgres_slow` | PostgreSQL error, slow-query, backup and restore signals |
+| `application_json` | Structured care, payer and platform application logs without PHI payloads |
+| `ai_audit`, `mlops_audit` | Future AI/MLOps audit metadata without protected data payloads |
+
+Events marked `contains_phi: true` are dropped at Logstash. Raw clinical notes,
+claims payloads, member data, passwords, tokens, private keys and high-volume
+debug streams must not be sent to Elastic.
 
 ## Acceptance and Operations
 
@@ -73,4 +97,3 @@ Official references:
 
 - [Elastic release notes](https://www.elastic.co/docs/release-notes)
 - [Elastic self-managed upgrade guidance](https://www.elastic.co/docs/deploy-manage/upgrade/deployment-or-cluster/upgrade-717)
-
