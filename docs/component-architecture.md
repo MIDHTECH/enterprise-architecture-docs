@@ -1,13 +1,13 @@
-# Component Architecture: Ten-Project Enterprise Platform Program
+# Component Architecture: MidhHealth Enterprise Platform Program
 
-![Ten-project enterprise platform visual architecture diagram](assets/component-architecture.svg)
+![MidhHealth enterprise platform visual architecture diagram](assets/component-architecture.svg)
 
 This diagram explains how the active and planned implementation repositories and
-role-centered projects work together for **MidhHealth Integrated Care**, a
-care delivery and health insurance organization with a
-hybrid on-premises and cloud platform program.
-Projects 6–10 are active first implementation slices and do not represent new
-installed products or allocated VMs.
+platform teams work together for **MidhHealth Integrated Care**, a care delivery
+and health insurance organization with a hybrid on-premises and cloud platform
+program. The systems, database, resilience, data, and network first slices use
+the existing VM fleet and do not represent new installed products or allocated
+VMs.
 
 The architecture is organized around executable work, not presentation-only
 capability boxes. A project is useful when it can produce something concrete:
@@ -173,9 +173,9 @@ flowchart TB
 6. Observability and governance continuously validate reliability, security, and compliance.
 7. `linux-systems-platform` uses the Jenkins/AWX Ansible launcher for approved
    Linux operations against the existing VM fleet.
-8. Projects 7–10 extend those controls into database, service operations, data,
-   and network engineering using evidence-only first slices.
-9. Projects 11–12 extend the same controls into healthcare AI and ML model
+8. Database reliability, service operations, data engineering, and network
+   engineering extend those controls using evidence-only first slices.
+9. Healthcare AI and MLOps extend the same controls into AI and ML model
    operations after data, security, Kubernetes and governance foundations are
    accepted.
 
@@ -195,6 +195,7 @@ run, observed, reviewed, and repeated.
 
 The current lab has no infrastructure HA. Numeric suffixes identify only true
 cluster members. The Elastic/Splunk VMs are provisioned but their products are
-not installed as of 2026-07-27. Project 6 uses existing VMs for operations
-automation; Projects 7–10 have no dedicated runtime allocation and must not be
-shown as deployed products.
+not installed as of 2026-07-27. Linux systems automation uses existing VMs;
+database reliability, resilience/service operations, data engineering, and
+network engineering have no dedicated runtime allocation and must not be shown
+as deployed products.

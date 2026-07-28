@@ -1,9 +1,11 @@
 # Engineer Operating Narrative Guide: Enterprise Cloud and Platform Projects
 
 This guide defines the operating narrative for the enterprise platform
-portfolio. Projects 1–5 describe active implementation repositories. Projects
-6–10 have active first implementation slices against the existing VM fleet and
-must be tracked as evidence automation, not completed product deployments.
+portfolio. Delivery, infrastructure, Kubernetes, observability, governance, and
+Linux systems have active implementation repositories. Database reliability,
+resilience/service operations, data engineering, and network engineering have
+active first implementation slices against the existing VM fleet and must be
+tracked as evidence automation, not completed product deployments.
 
 ## Positioning Statement
 
@@ -17,7 +19,7 @@ governance, and operational evidence.
 For role ownership, team model, and repository responsibilities, see
 [Role and Contribution Guide](marketing-role-engineer-guide.md).
 
-## Project 1: Enterprise DevSecOps Delivery Platform
+## Enterprise DevSecOps Delivery Platform
 
 **Client problem:** Application teams were deploying manually with inconsistent build, test, security, and release controls.
 
@@ -32,7 +34,7 @@ DSL pieces keep the Jenkins side from becoming hand-built and hard to maintain.
 
 **Use cases covered:** CI/CD setup, automated builds, unit testing, quality gates, artifact management, Docker image scanning, release promotion, rollback, pipeline standardization, secure CI/CD.
 
-## Project 2: Enterprise Multi-Cloud Infrastructure Platform
+## Enterprise Multi-Cloud Infrastructure Platform
 
 **Client problem:** Cloud infrastructure was created manually across AWS, Azure, and GCP, causing drift, inconsistent tagging, weak security, and slow environment delivery.
 
@@ -48,7 +50,7 @@ naming, tags, security checks, runbooks, and rollback notes.
 
 **Use cases covered:** Cloud infrastructure provisioning, AWS VPC landing zone, Azure Terraform provisioning, GCP infrastructure provisioning, Ansible server configuration, Linux patching, environment standardization, infrastructure CI/CD, tagging, cost-aware design.
 
-## Project 3: Enterprise Kubernetes Platform with GitOps
+## Enterprise Kubernetes Platform with GitOps
 
 **Client problem:** Application teams deployed Kubernetes workloads differently across clusters, creating inconsistent security, ingress, autoscaling, and operational support.
 
@@ -63,7 +65,7 @@ trusted registries, autoscaling, and onboarding.
 
 **Use cases covered:** AKS/EKS/GKE provisioning, Kubernetes deployment automation, GitOps delivery, policy enforcement, ingress standardization, autoscaling, image supply chain security, backup and disaster recovery.
 
-## Project 4: Enterprise Observability and SRE Reliability Platform
+## Enterprise Observability and SRE Reliability Platform
 
 **Client problem:** Teams could not quickly detect or troubleshoot incidents because metrics, logs, traces, and cloud signals were scattered.
 
@@ -78,7 +80,7 @@ RCA templates live together so monitoring supports response, not just reporting.
 
 **Use cases covered:** Kubernetes health monitoring, APM, centralized logging, tracing, alerting, SLO/error budget monitoring, deployment validation, API error monitoring, database monitoring, capacity planning, multi-cloud observability.
 
-## Project 5: Enterprise Cloud Governance and Operations Automation
+## Enterprise Cloud Governance and Operations Automation
 
 **Client problem:** Cloud environments lacked consistent IAM, secrets, compliance checks, backup validation, cost controls, certificate management, and operational remediation.
 
@@ -93,7 +95,7 @@ that can be reviewed later.
 
 **Use cases covered:** Secrets management, IAM/RBAC standardization, compliance scanning, infrastructure hardening, private endpoints, DNS/certificate management, backup and DR, cost optimization, incident remediation, toil reduction.
 
-## Project 6: Enterprise Linux Systems Platform
+## Enterprise Linux Systems Platform
 
 **Target problem:** Linux lifecycle, KVM, patching, storage, DNS, identity, and
 system services need consistent automation and operational evidence.
@@ -111,7 +113,7 @@ path through `projects/run-ansible-playbook`. The launcher requires
 existing VM fleet. It does not claim new VM capacity or unrelated product
 installation.
 
-## Project 7: Enterprise Database Reliability Platform (Planned)
+## Enterprise Database Reliability Platform
 
 **Target problem:** Database provisioning, access, performance, upgrades,
 backup, and recovery need one reliability model rather than product-by-product
@@ -124,7 +126,7 @@ evidence.
 **Scope boundary:** This is the approved capability design and depends on
 systems, secrets, backup, and observability.
 
-## Project 8: Enterprise Resilience and Service Operations (Planned)
+## Enterprise Resilience and Service Operations
 
 **Target problem:** Alerts, incidents, SLOs, capacity decisions, DR tests, and
 corrective automation need an integrated service-operations workflow.
@@ -136,7 +138,7 @@ closed reliability loop.
 **Scope boundary:** This is the planned operational layer that consumes the
 active observability platform.
 
-## Project 9: Enterprise Data Engineering Platform (Planned)
+## Enterprise Data Engineering Platform
 
 **Target problem:** Batch and streaming data movement needs repeatable
 orchestration, quality controls, lineage, security, and operational ownership.
@@ -148,7 +150,7 @@ monitoring without prematurely selecting products before capacity review.
 **Scope boundary:** This is architecture and tradeoff planning, not a completed
 data platform deployment.
 
-## Project 10: Enterprise Network Engineering Platform (Planned)
+## Enterprise Network Engineering Platform
 
 **Target problem:** IP allocation, DNS/DHCP, routing, switching, firewall
 policy, VPN, cloud networking, load balancing, and Kubernetes networking need

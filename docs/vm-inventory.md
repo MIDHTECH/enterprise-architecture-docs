@@ -1,8 +1,8 @@
 # Canonical VM Inventory
 
 This document is the source of truth for Rocky Linux 9 virtual machines in the
-ten-project enterprise training portfolio. The physical hypervisors run Ubuntu 26.04 LTS with
-GNOME, KVM/QEMU, libvirt, cloud-init tooling, and Ansible.
+MidhHealth enterprise platform environment. The physical hypervisors run Ubuntu
+26.04 LTS with GNOME, KVM/QEMU, libvirt, cloud-init tooling, and Ansible.
 
 ## Naming Standard
 
@@ -226,8 +226,9 @@ the central observability platform.
 7. Do not create additional VMs without updating this inventory and the
    capacity totals.
 
-Projects 6–10 use the existing VM fleet for first-slice operations automation
-and evidence collection. They do not receive dedicated VM, address, or MAC
+Linux systems, database reliability, resilience, data engineering, and network
+engineering use the existing VM fleet for first-slice operations automation and
+evidence collection. They do not receive dedicated VM, address, or MAC
 allocations from this document. Prefer existing services and Kubernetes
 workloads where practical; infra01 and infra02 currently lack safe headroom for
 an unreviewed product fleet.

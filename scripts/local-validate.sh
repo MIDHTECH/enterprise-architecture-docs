@@ -43,9 +43,11 @@ grep -q "mlops-model-platform" "$portfolio"
 grep -Fq '| **Total** | **217** |' "$portfolio"
 use_case_count="$(
   awk '
-    /^## Project [0-9]+:/ { in_project=1; next }
-    /^## / { in_project=0 }
-    in_project && /^\| [^|-]/ && $0 !~ /^\| Use case / { count++ }
+    /^## Enterprise / { in_domain=1; in_table=0; next }
+    /^## / { in_domain=0; in_table=0 }
+    in_domain && /^\| Use case / { in_table=1; next }
+    in_domain && in_table && /^\| ---/ { next }
+    in_domain && in_table && /^\| [^|-]/ { count++ }
     END { print count+0 }
   ' "$portfolio"
 )"

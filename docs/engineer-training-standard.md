@@ -1,17 +1,16 @@
 # Engineering Documentation Standard
 
 Observability documentation must compare the Prometheus/Grafana/Loki/Tempo path,
-the three-node Elastic Stack, and the standalone Splunk exercise. Learners
-must distinguish VM provisioning from product installation and use the
-incident register whenever source-of-truth drift is discovered.
+the three-node Elastic Stack, and the standalone Splunk exercise. Engineers
+must distinguish VM provisioning from product installation and use the incident
+register whenever source-of-truth drift is discovered.
 
-Use this standard for every enterprise platform project. The portfolio contains
-ten capability projects. Projects 6–10 are active first implementation slices
-for Linux systems, database reliability, resilience/service operations, data
-engineering, and network engineering. An engineer should be
-able to explain the project clearly, defend the architecture, describe
-repository ownership, and answer practical operating questions from multiple
-angles.
+Use this standard for every enterprise platform domain. The portfolio covers
+delivery, infrastructure, Kubernetes, observability, governance, Linux systems,
+database reliability, resilience/service operations, data engineering, network
+engineering, healthcare AI, and MLOps. Engineers should be able to explain the
+domain clearly, defend the architecture, describe repository ownership, and
+answer practical operating questions from multiple angles.
 
 Never present a first-slice repository as a completed product deployment.
 Documentation must distinguish evidence automation from repository, VM,

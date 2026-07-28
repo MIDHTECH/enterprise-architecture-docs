@@ -6,18 +6,17 @@ Last verified: 2026-07-27
 
 The architecture represents **MidhHealth Integrated Care**, an enterprise care
 delivery and health insurance organization with a hybrid
-on-premises and cloud platform. The ten projects are platform domains inside
-that organization, not separate standalone labs. They support provider
-workflows, payer workflows, analytics, security, and shared platform
-operations. They share GitLab, Jenkins, AWX, Ansible/Terraform patterns,
-governance standards, environment promotion, and operational evidence.
+on-premises and cloud platform. The repositories map to platform teams that
+support provider workflows, payer workflows, analytics, security, and shared
+platform operations. They share GitLab, Jenkins, AWX, Ansible/Terraform
+patterns, governance standards, environment promotion, and operational
+evidence.
 
-Projects 1–10 have implementation repositories. Projects 6–10 are active first
-slices against the existing VM fleet: Linux systems, database reliability,
-resilience/service operations, data engineering, and network engineering. They
-do not imply new product installation. A separate capacity plan now tracks a
-third memory-optimized Linux server and a Mac Studio M1 AI/ML edge development
-node.
+The active first slices for Linux systems, database reliability,
+resilience/service operations, data engineering, and network engineering run
+against the existing VM fleet. They do not imply new product installation. A
+separate capacity plan now tracks a third memory-optimized Linux server and a
+Mac Studio M1 AI/ML edge development node.
 
 The authoritative scope and all 217 use cases are maintained in
 [Enterprise Project Portfolio and Use Case Coverage](enterprise-project-portfolio-and-usecases.md).
@@ -112,7 +111,8 @@ troubleshooting steps are maintained in
    refreshed from `jenkins-jobs`.
 2. Configure AWX GitLab SSH host trust for `gitlab.example.com:2222`.
 3. Confirm AWX SCM and machine credential IDs for the Linux VM fleet.
-4. Run preflight smoke tests for Projects 6–10 through Jenkins/AWX.
+4. Run preflight smoke tests for the systems, database, resilience, data, and
+   network automation slices through Jenkins/AWX.
 5. Provision Grafana data sources for Prometheus, Loki, and Tempo.
 6. Connect Prometheus alert delivery to Alertmanager and validate a test alert.
 7. Apply dashboards, alert rules, and SLOs from `observability-sre-platform`.

@@ -70,5 +70,5 @@ migration has to update these in the same change window:
 6. Update Linux systems AWX/Jenkins runbook references.
 7. Run Jenkins Job DSL validation and shared-library validation.
 8. Run the Jenkins seed job.
-9. Run AWX project syncs and Project 6-10 preflight smoke tests.
+9. Run AWX project syncs and specialist domain preflight smoke tests.
 10. Keep the old namespace only as a temporary redirect or archive.

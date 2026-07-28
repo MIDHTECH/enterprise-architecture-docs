@@ -256,9 +256,9 @@ automation easier to maintain.
 - Created Kubernetes GitOps operating model covering namespaces, RBAC, ingress, policy-as-code, autoscaling, and backup patterns.
 - Developed observability and SRE documentation for metrics, logs, traces, alerts, SLOs, deployment validation, and incident triage.
 - Documented governance automation for IAM, secrets, compliance evidence, tagging, backup validation, cost controls, certificates, and remediation.
-- Designed a role-centered roadmap extending the active platform into Linux
-  systems, database reliability, service operations, data engineering, and
-  network engineering, with explicit capacity and implementation gates.
+- Designed the platform roadmap across Linux systems, database reliability,
+  service operations, data engineering, and network engineering, with explicit
+  capacity and implementation gates.
 
 ## Operating Review Structure
 

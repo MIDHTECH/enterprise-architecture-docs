@@ -1,10 +1,9 @@
 # MAAS Monolith-to-Microservices Modernization
 
 > Portfolio boundary: MAAS is an optional reference workload used to exercise
-> the enterprise platform. It is not the organizing principle of the
-> ten-project architecture. The platform must remain useful to DevOps, SRE,
-> database, systems, data, and network engineering teams independently of this
-> application migration.
+> the enterprise platform. The platform must remain useful to DevOps, SRE,
+> database, systems, data, network, AI, and MLOps engineering teams
+> independently of this application migration.
 
 ## Goal
 

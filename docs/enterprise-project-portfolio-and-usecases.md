@@ -5,25 +5,26 @@ healthcare organization. Its platform supports hospital operations, digital
 care, claims, eligibility, authorizations, member services, analytics,
 security, and the hybrid infrastructure those services depend on.
 
-The twelve repositories are not separate demos. They are platform domains owned
-by engineering teams inside one organization: delivery, infrastructure,
-Kubernetes, observability, governance, Linux systems, databases, resilience,
-data engineering, network engineering, healthcare AI, and MLOps. They share the
-same GitLab organization, review model, Jenkins/AWX automation control plane,
-governance controls, environment standards, and on-prem/cloud operating model.
+The repositories map to the engineering teams that operate the platform:
+delivery, infrastructure, Kubernetes, observability, governance, Linux systems,
+databases, resilience, data engineering, network engineering, healthcare AI, and
+MLOps. Each team owns a different part of the platform, but the end goal is the
+same: reliable care delivery, efficient payer operations, governed data
+movement, secure automation, and recoverable hybrid infrastructure.
 
-Projects 1-10 have implementation repositories. Projects 6-10 are active first
-slices that work against the existing VM fleet; they do not approve new product
-installs, new VMs, or production capacity by themselves. Projects 11-12 add the
-AI and ML platform domains needed for current healthcare engineering work. The
-capacity plan includes `midh-ai-edge-01`, a Mac Studio M1 for AI/ML development
-and edge inference, plus a planned third Linux server with 256 GB RAM for
-heavier platform workloads.
+The current implementation uses the existing VM fleet for the active systems,
+database, resilience, data, and network slices. Those slices produce operating
+evidence and automation without approving new product installs, new VMs, or
+production capacity by themselves. The AI and ML domains add the engineering
+capabilities needed for healthcare knowledge retrieval, model lifecycle,
+evaluation, monitoring, and governance. The capacity plan includes
+`midh-ai-edge-01`, a Mac Studio M1 for AI/ML development and edge inference,
+plus a planned third Linux server with 256 GB RAM for heavier platform
+workloads.
 
-MAAS can be used as a reference workload, but it is no longer the organizing
-principle. The organizing principle is a healthcare enterprise platform where
-every repository produces something reviewable: code, pipelines, playbooks,
-GitOps state, policy checks, dashboards, evidence, or operational runbooks.
+Every repository is expected to produce something reviewable for the shared
+platform: code, pipelines, playbooks, GitOps state, policy checks, dashboards,
+evidence, or operational runbooks.
 
 ## Healthcare Platform Requirements
 
@@ -150,41 +151,41 @@ flowchart TB
     git --> apprepo[Application and Project Repositories]
     git --> docsrepo[Enterprise Architecture Documentation]
     git --> infrarepo[Infrastructure Repositories]
-    apprepo --> cicd[Project 1: DevSecOps CI/CD Orchestrator]
+    apprepo --> cicd[DevSecOps CI/CD Orchestrator]
     cicd --> scans[Security and Quality Gates]
     cicd --> artifacts[Container Image and Build Artifacts]
     cicd --> awx[AWX or Ansible Automation]
 
     engineer[Cloud or Platform Engineer] --> infrarepo
-    infrarepo --> iac[Project 2: Multi-Cloud Infrastructure Automation]
+    infrarepo --> iac[Multi-Cloud Infrastructure Automation]
     iac --> aws[AWS Infrastructure]
     iac --> azure[Azure Infrastructure]
     iac --> gcp[GCP Infrastructure]
     iac --> ansible[Ansible Host Configuration]
 
-    iac --> k8s[Project 3: Kubernetes Platform Engineering and GitOps]
+    iac --> k8s[Kubernetes Platform Engineering and GitOps]
     artifacts --> k8s
     k8s --> apps[Containerized Applications]
 
-    apps --> obs[Project 4: Observability and SRE Reliability Platform]
+    apps --> obs[Observability and SRE Reliability Platform]
     k8s --> obs
     aws --> obs
     azure --> obs
     gcp --> obs
 
-    sec[Project 5: Cloud Governance, Security, and Operations Automation]
+    sec[Cloud Governance, Security, and Operations Automation]
     sec --> iac
     sec --> k8s
     sec --> obs
     sec --> cicd
 
-    systems[Project 6: Linux Systems Engineering]
-    database[Project 7: Database Engineering and Reliability]
-    resilience[Project 8: Resilience and Service Operations]
-    data[Project 9: Data Engineering and Integration]
-    network[Project 10: Network Engineering and Automation]
-    ai[Project 11: Healthcare AI Platform]
-    ml[Project 12: MLOps Model Platform]
+    systems[Linux Systems Engineering]
+    database[Database Engineering and Reliability]
+    resilience[Resilience and Service Operations]
+    data[Data Engineering and Integration]
+    network[Network Engineering and Automation]
+    ai[Healthcare AI Platform]
+    ml[MLOps Model Platform]
 
     iac --> systems
     network --> iac
@@ -245,17 +246,18 @@ flowchart TB
 | 11 | `healthcare-ai-platform` | Approved AI platform project; implementation planned |
 | 12 | `mlops-model-platform` | Approved ML platform project; implementation planned |
 
-Active first slices for Projects 6–10 do not authorize product installation.
-They reuse existing automation, GitLab, Jenkins/AWX, and VM capacity unless a
-documented capacity expansion is approved.
+The Linux systems, database reliability, resilience/service operations, data
+engineering, and network engineering teams use existing automation, GitLab,
+Jenkins/AWX, and VM capacity unless a documented capacity expansion is approved.
+Their first implementation slices do not authorize product installation.
 
-Projects 11–12 are approved logical platform domains. The Mac Studio may be
-used for AI/ML development, local inference, embeddings, notebooks, evaluation,
-and CI smoke tests. The planned 256 GB Linux server may host heavier backend
-data, observability, AI/ML batch, and model-serving workloads after installation
-and placement controls are documented. Protected data access, production model
-deployment, external model providers, and regulated AI workflows still require
-separate approval.
+The healthcare AI and MLOps teams are approved logical platform domains. The
+Mac Studio may be used for AI/ML development, local inference, embeddings,
+notebooks, evaluation, and CI smoke tests. The planned 256 GB Linux server may
+host heavier backend data, observability, AI/ML batch, and model-serving
+workloads after installation and placement controls are documented. Protected
+data access, production model deployment, external model providers, and
+regulated AI workflows still require separate approval.
 
 ## GitLab Repository Model
 
@@ -348,7 +350,7 @@ sequenceDiagram
     Obs->>Dev: Alert, dashboard, and RCA feedback
 ```
 
-## Project 1: Enterprise DevSecOps Delivery Platform
+## Enterprise DevSecOps Delivery Platform
 
 **Purpose:** Automate application delivery from source code commit to secure deployment.
 
@@ -380,7 +382,7 @@ This diagram shows the project architecture, control boundaries, runtime targets
 | Terraform Plan Automation | Merge requests publish reviewed Terraform plan artifacts |
 | Deployment Health Scoring | Release gates score health, SLO burn, alerts and rollback readiness |
 
-## Project 2: Enterprise Multi-Cloud Infrastructure Platform
+## Enterprise Multi-Cloud Infrastructure Platform
 
 **Purpose:** Provision cloud infrastructure consistently using Terraform and configure compute with Ansible.
 
@@ -413,7 +415,7 @@ recoverable.
 | Infrastructure Reconciliation Loop | Desired and actual infrastructure state are compared on a schedule |
 | Policy-Driven Provisioning | Terraform changes are blocked when they violate standards |
 
-## Project 3: Enterprise Kubernetes Platform with GitOps
+## Enterprise Kubernetes Platform with GitOps
 
 **Purpose:** Build a standardized container platform for application teams.
 
@@ -443,7 +445,7 @@ This diagram shows the project architecture, control boundaries, runtime targets
 | Event-Driven Autoscaling | Workloads scale from queues, events or custom metrics |
 | Kubernetes Cost Allocation | Namespace and workload usage is attributed to teams and applications |
 
-## Project 4: Enterprise Observability and SRE Reliability Platform
+## Enterprise Observability and SRE Reliability Platform
 
 **Purpose:** Monitor applications, infrastructure, and Kubernetes platforms so incidents can be detected and resolved faster.
 
@@ -483,7 +485,7 @@ and Splunk VMs are provisioned-only until their AWX runbooks complete.
 | Automated Incident Triage | Triage output includes owner, dependency, dashboard, runbook and likely change source |
 | Burn-Rate Alerting | Fast and slow error-budget burn alerts replace noisy symptom-only paging |
 
-## Project 5: Enterprise Cloud Governance and Operations Automation
+## Enterprise Cloud Governance and Operations Automation
 
 **Purpose:** Enforce security, compliance, cost, backup, certificate, and operational controls across cloud and Kubernetes environments.
 
@@ -519,7 +521,7 @@ This diagram shows the project architecture, control boundaries, runtime targets
 | Automated Root-Cause Analysis | Telemetry, deployment and infrastructure changes are correlated for RCA |
 | Intelligent Alert Deduplication | Repeated alerts are grouped into actionable incidents |
 
-## Project 6: Enterprise Linux Systems Engineering Platform
+## Enterprise Linux Systems Engineering Platform
 
 **Status:** Active first implementation slice. The repository manages Linux
 operations use cases against the existing VM fleet; it does not create new VMs
@@ -563,7 +565,7 @@ fleet targets, evidence flow, and operational feedback loop.
 | Server Compliance Evidence | Auditable operating-system and service posture |
 | Break-Glass Recovery | Console, boot, filesystem and access recovery |
 
-## Project 7: Enterprise Database Engineering and Reliability Platform
+## Enterprise Database Engineering and Reliability Platform
 
 **Status:** Planned. PostgreSQL installation remains gated behind AWX.
 
@@ -602,7 +604,7 @@ runtime targets, evidence flow, and operational feedback loop.
 | Data Retention and Archival | Policy-driven lifecycle management |
 | Database Incident Runbooks | Repeatable diagnosis, escalation and recovery |
 
-## Project 8: Enterprise Resilience and Service Operations Platform
+## Enterprise Resilience and Service Operations Platform
 
 **Status:** Planned.
 
@@ -642,7 +644,7 @@ runtime targets, evidence flow, and operational feedback loop.
 | Maintenance-Window Management | Planned service-impact coordination |
 | Operational Readiness Reviews | Production-readiness scorecards and gates |
 
-## Project 9: Enterprise Data Engineering and Integration Platform
+## Enterprise Data Engineering and Integration Platform
 
 **Status:** Planned.
 
@@ -687,7 +689,7 @@ boundaries, evidence flow, and operational feedback loop.
 | Data-Pipeline Disaster Recovery | Restored orchestration, state and data |
 | Data Performance and Cost Optimization | Efficient compute, storage and retention |
 
-## Project 10: Enterprise Network Engineering and Automation Platform
+## Enterprise Network Engineering and Automation Platform
 
 **Status:** Planned.
 
@@ -739,7 +741,7 @@ boundary, connectivity domains, evidence flow, and operational feedback loop.
 | Capacity and Bandwidth Planning | Forecasted network growth |
 | Network Change Validation and Rollback | Pre/post checks and safe recovery |
 
-## Project 11: Enterprise Healthcare AI Platform
+## Enterprise Healthcare AI Platform
 
 **Status:** Approved planned project.
 
@@ -790,7 +792,7 @@ changed before a service degraded; then return cited context, confidence,
 owner, and next action. That is more valuable than a flashy assistant with no
 audit trail.
 
-## Project 12: Enterprise MLOps Model Platform
+## Enterprise MLOps Model Platform
 
 **Status:** Approved planned project.
 
@@ -841,23 +843,23 @@ record the training run, run validation gates, publish an approved artifact,
 serve it in a controlled environment, watch drift and latency, and document the
 rollback path.
 
-## How the Twelve Projects Cover the Role Families
+## How Platform Domains Cover the Role Families
 
-| Role family | Best matching projects |
+| Role family | Best matching domains |
 | --- | --- |
-| DevOps Engineer | Projects 1, 2, 3, 6 |
-| Site Reliability Engineer | Projects 3, 4, 7, 8, 11, 12 |
-| Database Engineer | Projects 7, 8, 9, 12 |
-| Linux/System Engineer | Projects 2, 4, 6, 8 |
-| Data Engineer | Projects 7, 9, 11, 12 |
-| Network Engineer | Projects 2, 3, 6, 10 |
-| DevSecOps Engineer | Projects 1, 3, 5 |
-| Cloud Infrastructure Engineer | Projects 2, 6, 10, 11, 12 |
-| Kubernetes Platform Engineer | Projects 3, 4, 10, 11, 12 |
-| Platform Engineer | Projects 1, 2, 3, 4, 6, 11, 12 |
-| Security/Governance Engineer | Projects 1, 5, 6, 7, 9, 10, 11, 12 |
-| AI Engineer | Projects 9, 11, 12 |
-| Machine Learning Engineer | Projects 9, 11, 12 |
+| DevOps Engineer | Delivery, infrastructure automation, Kubernetes, Linux systems |
+| Site Reliability Engineer | Kubernetes, observability, database reliability, resilience, healthcare AI, MLOps |
+| Database Engineer | Database reliability, resilience, data engineering, MLOps |
+| Linux/System Engineer | Infrastructure automation, observability, Linux systems, resilience |
+| Data Engineer | Database reliability, data engineering, healthcare AI, MLOps |
+| Network Engineer | Infrastructure automation, Kubernetes, Linux systems, network engineering |
+| DevSecOps Engineer | Delivery, Kubernetes, governance |
+| Cloud Infrastructure Engineer | Infrastructure automation, Linux systems, network engineering, healthcare AI, MLOps |
+| Kubernetes Platform Engineer | Kubernetes, observability, network engineering, healthcare AI, MLOps |
+| Platform Engineer | Delivery, infrastructure automation, Kubernetes, observability, Linux systems, healthcare AI, MLOps |
+| Security/Governance Engineer | Delivery, governance, Linux systems, database reliability, data engineering, network engineering, healthcare AI, MLOps |
+| AI Engineer | Data engineering, healthcare AI, MLOps |
+| Machine Learning Engineer | Data engineering, healthcare AI, MLOps |
 
 ## Portfolio Use-Case Count
 
@@ -881,34 +883,37 @@ rollback path.
 
 | Date | Decision | Rationale | Operational effect |
 | --- | --- | --- | --- |
-| 2026-07-27 | Expand the architecture from five active projects to a ten-project enterprise portfolio | Give DevOps, SRE, database, systems, data and network engineers complete specialist capability domains rather than organizing the program around the MAAS workload | Projects 6–10 are approved target architecture only. No VM, IP, product, capacity commitment or implementation-completion claim is created by this decision. |
-| 2026-07-27 | Create repository scaffolds for Projects 6–10 | Establish GitLab source-control homes for the approved planned capability domains | Repository creation only. Implementation, product installation, VM placement, and capacity expansion remain separately approved work. |
-| 2026-07-27 | Start Project 6 implementation against the existing VM fleet | Implement Linux operations use cases without creating new infrastructure | Adds Ansible inventory, playbooks, roles, evidence reports, and runbooks for Linux lifecycle, baseline, patching, access, storage, network/time, capacity, drift, compliance, and break-glass recovery. |
+| 2026-07-27 | Expand the architecture into a broader enterprise platform portfolio | Give DevOps, SRE, database, systems, data and network engineers complete specialist capability domains around shared provider-payer operations | Specialist domains are approved as target architecture only. No VM, IP, product, capacity commitment or implementation-completion claim is created by this decision. |
+| 2026-07-27 | Create repository scaffolds for the specialist platform domains | Establish GitLab source-control homes for Linux systems, database reliability, resilience, data engineering, and network engineering | Repository creation only. Implementation, product installation, VM placement, and capacity expansion remain separately approved work. |
+| 2026-07-27 | Start Linux systems implementation against the existing VM fleet | Implement Linux operations use cases without creating new infrastructure | Adds Ansible inventory, playbooks, roles, evidence reports, and runbooks for Linux lifecycle, baseline, patching, access, storage, network/time, capacity, drift, compliance, and break-glass recovery. |
 | 2026-07-27 | Add Jenkins/AWX launcher guardrails for Linux systems operations | Let operators select project, branch, inventory, playbook, and extra vars while preserving review and safety controls | Adds `projects/run-ansible-playbook`, shared-library allowlists, `CONFIRM_APPLY` for state-changing playbooks, and AWX/Jenkins integration documentation. |
-| 2026-07-27 | Start Projects 7–10 first implementation slices | Complete the approved database, resilience, data, and network project starts without expanding infrastructure | Adds safe Ansible evidence playbooks, GitLab CI validation, runbooks, training coverage, and Jenkins/AWX catalog registration for the four remaining enterprise projects. |
-| 2026-07-27 | Add Projects 11–12 for AI and ML platform domains | Reflect healthcare platform demand for production AI, RAG, agents, MLOps, model governance, drift monitoring and regulated AI operations | Adds approved planned domains for `healthcare-ai-platform` and `mlops-model-platform`; does not save individual job-posting details or authorize new runtime capacity. |
+| 2026-07-27 | Start database, resilience, data, and network first implementation slices | Complete the approved specialist domain starts without expanding infrastructure | Adds safe Ansible evidence playbooks, GitLab CI validation, runbooks, engineering coverage, and Jenkins/AWX catalog registration for those teams. |
+| 2026-07-27 | Add AI and ML platform domains | Reflect healthcare platform demand for production AI, RAG, agents, MLOps, model governance, drift monitoring and regulated AI operations | Adds approved planned domains for `healthcare-ai-platform` and `mlops-model-platform`; does not save individual job-posting details or authorize new runtime capacity. |
 | 2026-07-27 | Add AI/ML edge and high-memory capacity direction | Separate developer inference from heavier backend workloads | Plans `midh-ai-edge-01` as a Mac Studio M1 AI/ML development and edge-inference node, and `infra03` as a future 256 GB Linux server for data, observability, AI/ML backend, and resilience workloads. |
 
 ## Recommended Implementation Order
 
-1. Continue Projects 1–5 until the existing on-prem control plane is accepted.
-2. Continue Project 6 using the existing Linux VM fleet; avoid new VMs unless a
-   capacity review explicitly approves them.
-3. Use Project 7 for database readiness, backup/restore, security,
+1. Stabilize the existing on-prem control plane: GitLab, Jenkins, AWX,
+   Kubernetes, observability, governance, and shared automation.
+2. Continue Linux systems automation against the existing VM fleet; avoid new
+   VMs unless a capacity review explicitly approves them.
+3. Use the database reliability domain for database readiness, backup/restore, security,
    performance, and lifecycle evidence against existing database and backup VMs.
-4. Use Project 10 for source-of-truth, DNS/DHCP, connectivity, firewall/proxy,
-   and Kubernetes network review before changing DHCP, routing, or the physical
-   network.
-5. Use Project 8 to consume existing observability signals and incident records
-   for service catalog, SLO, incident, exercise, and readiness evidence.
-6. Use Project 9 for data source, quality, orchestration, lineage, and access
-   governance evidence before deploying any new data processing products.
-7. Use Project 11 after data/governance foundations exist; start with RAG,
+4. Use the network engineering domain for source-of-truth, DNS/DHCP,
+   connectivity, firewall/proxy, and Kubernetes network review before changing
+   DHCP, routing, or the physical network.
+5. Use the resilience/service operations domain to consume existing
+   observability signals and incident records for service catalog, SLO,
+   incident, exercise, and readiness evidence.
+6. Use the data engineering domain for data source, quality, orchestration,
+   lineage, and access governance evidence before deploying any new data
+   processing products.
+7. Use the healthcare AI domain after data/governance foundations exist; start with RAG,
    agent guardrails, FHIR-aware APIs, AI evaluation, audit logging, and workflow
    integration.
-8. Use Project 12 after data-quality and Kubernetes foundations exist; start
-   with ML lifecycle, model registry, CI/CT/CD, monitoring, drift, retraining
-   and governance evidence.
+8. Use the MLOps model platform after data-quality and Kubernetes foundations
+   exist; start with ML lifecycle, model registry, CI/CT/CD, monitoring, drift,
+   retraining and governance evidence.
 
 This order avoids treating products as projects and builds reusable enterprise
 capabilities for platform, reliability, security, systems, database, data,

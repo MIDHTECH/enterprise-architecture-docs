@@ -3,7 +3,8 @@
 ## Purpose
 
 This runbook records the program-level workflow for launching approved Ansible
-automation through Jenkins and AWX. Active consumers are Projects 6–10:
+automation through Jenkins and AWX. Active consumers are the specialist
+platform domains:
 `linux-systems-platform`, `database-reliability-platform`,
 `resilience-service-operations`, `data-engineering-platform`, and
 `network-engineering-platform`.
@@ -74,7 +75,7 @@ After preflight succeeds, run assessment playbooks such as
 Run `playbooks/site.yml` only after reviewing assessment output and selecting
 `CONFIRM_APPLY`.
 
-## Projects 7-10 Smoke Tests
+## Specialist Domain Smoke Tests
 
 Use the same job with `GIT_BRANCH=main`,
 `INVENTORY_SOURCE_PATH=inventories/production/hosts.yml`, and
@@ -92,6 +93,7 @@ rejects playbooks that are not approved for the selected project.
 
 ## GitLab CI Gate
 
-Projects 6–10 validate playbooks in GitLab CI with `structure`,
-`ansible_syntax`, and `ansible_lint`. Jenkins/AWX execution is the operational
-smoke and runtime gate. GitLab CI does not connect to production VMs.
+The specialist platform repositories validate playbooks in GitLab CI with
+`structure`, `ansible_syntax`, and `ansible_lint`. Jenkins/AWX execution is the
+operational smoke and runtime gate. GitLab CI does not connect to production
+VMs.

@@ -44,7 +44,7 @@
   </defs>
 
   <rect class="bg" width="1700" height="980"/>
-  <text class="title" x="32" y="48">Project 2: MidhHealth Hybrid Cloud Infrastructure Architecture</text>
+  <text class="title" x="32" y="48">MidhHealth Hybrid Cloud Infrastructure Architecture</text>
   <text class="txt" x="34" y="76">Azure ExpressRoute hub-and-spoke shown in detail; AWS and GCP follow the same governed landing-zone, private-connectivity, policy, and evidence model.</text>
 
   <rect class="cloud" x="20" y="105" width="1660" height="575"/>

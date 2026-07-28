@@ -38,15 +38,14 @@ operators and engineers a common operating record for the platform.
 
 ## Repository Purpose
 
-This is the documentation home for the twelve-project MidhHealth enterprise
-portfolio. The projects should be understood as departments or platform domains
-inside one integrated provider-payer organization, not as separate labs. They
-support hospital operations, digital care, claims, eligibility,
-authorizations, member services, analytics, security, and platform operations.
-They share the `midhhealth` GitLab organization, one Jenkins/AWX delivery
-control plane, one governance model, common environment standards, and a hybrid
-target footprint across on-prem KVM/Kubernetes and future AWS/Azure/GCP
-validation.
+This is the documentation home for the MidhHealth enterprise platform
+portfolio. The repositories map to platform teams inside one integrated
+provider-payer organization. Together they support hospital operations, digital
+care, claims, eligibility, authorizations, member services, analytics,
+security, and platform operations. They share the `midhhealth` GitLab
+organization, one Jenkins/AWX delivery control plane, one governance model,
+common environment standards, and a hybrid target footprint across on-prem
+KVM/Kubernetes and future AWS/Azure/GCP validation.
 
 The documentation is expected to drive executable work. A good use case should
 be convertible into a Jenkins job, AWX playbook, GitLab CI stage, GitOps sync,
@@ -55,10 +54,10 @@ The portfolio avoids saving job-posting details; it uses current industry
 requirements to shape practical backlog items that can produce operational
 evidence in the lab.
 
-Projects 1–10 now have implementation repositories. Projects 6–10 are active
-first slices that reuse existing VMs and do not imply new product installs or
-production capacity. Projects 11–12 are approved AI/ML platform additions based
-on current healthcare platform requirements. Their lab capacity plan now
+The current implementation includes active first slices for Linux systems,
+database reliability, resilience/service operations, data engineering, and
+network engineering. Those slices reuse existing VMs and do not imply new
+product installs or production capacity. AI/ML platform capacity planning
 includes a Mac Studio M1 development/edge-inference node and a planned
 memory-optimized Linux server for heavier data, observability, and AI/ML
 workloads.

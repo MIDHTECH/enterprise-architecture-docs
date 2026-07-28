@@ -10,11 +10,11 @@ observability, and supporting product VMs. The cloud side is the governed
 extension path for AWS, Azure, and GCP, using the same repository, review,
 delivery, security, and evidence standards.
 
-Projects 6–10 use the existing VM fleet for first-slice operations automation
-and evidence collection; they have no dedicated VM or IP allocation. Their
-automation reuses existing GitLab, Jenkins, AWX, KVM, Kubernetes,
-observability, DNS, and proxy capacity where safe. A capacity review is
-required before any new VM or product is authorized.
+The systems, database, resilience, data, and network automation slices use the
+existing VM fleet for operations automation and evidence collection; they have
+no dedicated VM or IP allocation. Their automation reuses existing GitLab,
+Jenkins, AWX, KVM, Kubernetes, observability, DNS, and proxy capacity where
+safe. A capacity review is required before any new VM or product is authorized.
 
 The approved capacity direction adds two distinct roles: a planned third Linux
 server with 256 GB RAM for high-memory platform workloads, and a Mac Studio M1

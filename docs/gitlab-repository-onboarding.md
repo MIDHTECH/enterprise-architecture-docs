@@ -121,7 +121,7 @@ for this evidence and the associated SRE near-miss record.
 
 ### 2026-07-27 Enterprise Repository Scaffold Update
 
-- Created private GitLab repositories for Projects 6–10:
+- Created private GitLab repositories for the specialist platform domains:
   `linux-systems-platform`,
   `database-reliability-platform`,
   `resilience-service-operations`,
