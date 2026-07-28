@@ -33,11 +33,11 @@ account credentials after TLS and the permanent identity model are configured.
 | `observability-sre-platform` | `maas-enterprise-cloud-platform/observability-sre-platform` |
 | `ansible-observability` | `maas-enterprise-cloud-platform/ansible-observability` |
 | `ansible-prometheus` | `maas-enterprise-cloud-platform/ansible-prometheus` |
-| `enterprise-linux-systems-platform` | `maas-enterprise-cloud-platform/enterprise-linux-systems-platform` |
-| `enterprise-database-reliability-platform` | `maas-enterprise-cloud-platform/enterprise-database-reliability-platform` |
-| `enterprise-resilience-service-operations` | `maas-enterprise-cloud-platform/enterprise-resilience-service-operations` |
-| `enterprise-data-engineering-platform` | `maas-enterprise-cloud-platform/enterprise-data-engineering-platform` |
-| `enterprise-network-engineering-platform` | `maas-enterprise-cloud-platform/enterprise-network-engineering-platform` |
+| `linux-systems-platform` | `maas-enterprise-cloud-platform/linux-systems-platform` |
+| `database-reliability-platform` | `maas-enterprise-cloud-platform/database-reliability-platform` |
+| `resilience-service-operations` | `maas-enterprise-cloud-platform/resilience-service-operations` |
+| `data-engineering-platform` | `maas-enterprise-cloud-platform/data-engineering-platform` |
+| `network-engineering-platform` | `maas-enterprise-cloud-platform/network-engineering-platform` |
 
 The local directory `jenkins_jobs` intentionally maps to the hyphenated GitLab
 path `jenkins-jobs`.
@@ -122,11 +122,11 @@ for this evidence and the associated SRE near-miss record.
 ### 2026-07-27 Planned Enterprise Repository Scaffold Update
 
 - Created private GitLab repositories for Projects 6–10:
-  `enterprise-linux-systems-platform`,
-  `enterprise-database-reliability-platform`,
-  `enterprise-resilience-service-operations`,
-  `enterprise-data-engineering-platform`, and
-  `enterprise-network-engineering-platform`.
+  `linux-systems-platform`,
+  `database-reliability-platform`,
+  `resilience-service-operations`,
+  `data-engineering-platform`, and
+  `network-engineering-platform`.
 - Added minimal repository scaffolds with README, project overview, local
   validation script, and GitLab CI validation job.
 - Kept implementation status as planned. Repository creation does not approve

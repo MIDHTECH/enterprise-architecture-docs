@@ -26,11 +26,11 @@ The authoritative scope and all 187 use cases are maintained in
 - Prometheus, Grafana, and Node Exporter installation:
   `maas-enterprise-cloud-platform/ansible-prometheus`
 - Planned enterprise repository scaffolds:
-  `maas-enterprise-cloud-platform/enterprise-linux-systems-platform`,
-  `maas-enterprise-cloud-platform/enterprise-database-reliability-platform`,
-  `maas-enterprise-cloud-platform/enterprise-resilience-service-operations`,
-  `maas-enterprise-cloud-platform/enterprise-data-engineering-platform`,
-  `maas-enterprise-cloud-platform/enterprise-network-engineering-platform`
+  `maas-enterprise-cloud-platform/linux-systems-platform`,
+  `maas-enterprise-cloud-platform/database-reliability-platform`,
+  `maas-enterprise-cloud-platform/resilience-service-operations`,
+  `maas-enterprise-cloud-platform/data-engineering-platform`,
+  `maas-enterprise-cloud-platform/network-engineering-platform`
 
 ## Observability hosts
 

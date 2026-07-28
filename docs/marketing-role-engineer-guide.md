@@ -32,11 +32,11 @@ architecture and roadmap experience, but not completed implementations.
 | `kubernetes-platform-gitops` | Kubernetes Platform Engineer, GitOps Engineer, Platform Engineer | Cloud Native Engineer, SRE |
 | `observability-sre-platform` | SRE Engineer, Observability Engineer, Reliability Engineer | Platform Engineer, Incident Response Engineer |
 | `cloud-governance-ops-automation` | Cloud Governance Engineer, Cloud Security Engineer, Cloud Operations Engineer | IAM Engineer, Compliance Automation Engineer |
-| `enterprise-linux-systems-platform` (planned) | Linux Systems Engineer, Infrastructure Engineer, Systems Automation Engineer | Virtualization Engineer, SRE |
-| `enterprise-database-reliability-platform` (planned) | Database Reliability Engineer, Database Engineer, Database Administrator | SRE, Security Engineer |
-| `enterprise-resilience-service-operations` (planned) | SRE, Service Operations Engineer, Resilience Engineer | Incident Manager, Performance Engineer |
-| `enterprise-data-engineering-platform` (planned) | Data Engineer, Data Platform Engineer, Analytics Engineer | DataOps Engineer, Database Engineer |
-| `enterprise-network-engineering-platform` (planned) | Network Engineer, Network Automation Engineer, Cloud Network Engineer | Kubernetes Network Engineer, Security Engineer |
+| `linux-systems-platform` (planned) | Linux Systems Engineer, Infrastructure Engineer, Systems Automation Engineer | Virtualization Engineer, SRE |
+| `database-reliability-platform` (planned) | Database Reliability Engineer, Database Engineer, Database Administrator | SRE, Security Engineer |
+| `resilience-service-operations` (planned) | SRE, Service Operations Engineer, Resilience Engineer | Incident Manager, Performance Engineer |
+| `data-engineering-platform` (planned) | Data Engineer, Data Platform Engineer, Analytics Engineer | DataOps Engineer, Database Engineer |
+| `network-engineering-platform` (planned) | Network Engineer, Network Automation Engineer, Cloud Network Engineer | Kubernetes Network Engineer, Security Engineer |
 | `jenkins_jobs` | Jenkins Platform Engineer, CI/CD Automation Engineer | DevOps Engineer, Release Engineer |
 | `jenkins-shared-library` | Jenkins Shared Library Engineer, Pipeline Automation Engineer | DevOps Engineer, AWX/Ansible Automation Engineer |
 

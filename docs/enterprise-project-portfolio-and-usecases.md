@@ -79,11 +79,11 @@ flowchart TB
 | 3 | `kubernetes-platform-gitops` | Active implementation |
 | 4 | `observability-sre-platform` | Active implementation |
 | 5 | `cloud-governance-ops-automation` | Active implementation |
-| 6 | `enterprise-linux-systems-platform` | Repository scaffold created; implementation planned |
-| 7 | `enterprise-database-reliability-platform` | Repository scaffold created; implementation planned |
-| 8 | `enterprise-resilience-service-operations` | Repository scaffold created; implementation planned |
-| 9 | `enterprise-data-engineering-platform` | Repository scaffold created; implementation planned |
-| 10 | `enterprise-network-engineering-platform` | Repository scaffold created; implementation planned |
+| 6 | `linux-systems-platform` | Repository scaffold created; implementation planned |
+| 7 | `database-reliability-platform` | Repository scaffold created; implementation planned |
+| 8 | `resilience-service-operations` | Repository scaffold created; implementation planned |
+| 9 | `data-engineering-platform` | Repository scaffold created; implementation planned |
+| 10 | `network-engineering-platform` | Repository scaffold created; implementation planned |
 
 Repository creation for a planned project does not authorize VM creation or
 product installation. The current hypervisors are capacity constrained, so
@@ -112,11 +112,11 @@ Recommended repositories:
 | `kubernetes-platform-gitops` | AKS/EKS/GKE platform, Helm, Argo CD/Flux, ingress, policy, autoscaling |
 | `observability-sre-platform` | Prometheus, Grafana, logs, traces, alerts, SLOs, incident dashboards |
 | `cloud-governance-ops-automation` | IAM/RBAC, secrets, compliance, backup, DR, cost, certificate, remediation automation |
-| `enterprise-linux-systems-platform` | Linux lifecycle, KVM, patching, configuration, storage, DNS and system services |
-| `enterprise-database-reliability-platform` | Database lifecycle, performance, backup, recovery, security and upgrades |
-| `enterprise-resilience-service-operations` | SLOs, incidents, capacity, performance, chaos, DR and service operations |
-| `enterprise-data-engineering-platform` | Batch/stream ingestion, orchestration, transformation, quality, lineage and lakehouse patterns |
-| `enterprise-network-engineering-platform` | IPAM, DNS/DHCP, routing, switching, firewalls, VPN, cloud and Kubernetes networking |
+| `linux-systems-platform` | Linux lifecycle, KVM, patching, configuration, storage, DNS and system services |
+| `database-reliability-platform` | Database lifecycle, performance, backup, recovery, security and upgrades |
+| `resilience-service-operations` | SLOs, incidents, capacity, performance, chaos, DR and service operations |
+| `data-engineering-platform` | Batch/stream ingestion, orchestration, transformation, quality, lineage and lakehouse patterns |
+| `network-engineering-platform` | IPAM, DNS/DHCP, routing, switching, firewalls, VPN, cloud and Kubernetes networking |
 | `jenkins-jobs` | Jenkins Job DSL seed jobs and managed pipeline definitions |
 | `jenkins-shared-library` | Reusable Jenkins pipeline steps, including AWX launch helper |
 
