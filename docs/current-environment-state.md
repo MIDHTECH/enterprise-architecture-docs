@@ -4,10 +4,11 @@ Last verified: 2026-07-27
 
 ## Enterprise project portfolio
 
-The architecture contains ten projects. Projects 1–5 have active
-implementation repositories. Projects 6–10—Linux systems, database
-reliability, resilience/service operations, data engineering, and network
-engineering—have repository scaffolds and remain approved planned
+The architecture contains ten projects. Projects 1–6 have active
+implementation repositories. Project 6, `linux-systems-platform`, implements
+Linux operations automation against the existing VM fleet. Projects 7–10—
+database reliability, resilience/service operations, data engineering, and
+network engineering—have repository scaffolds and remain approved planned
 capabilities. No VM, IP address, product installation, or capacity expansion is
 implied by their inclusion in the architecture.
 
@@ -25,8 +26,9 @@ The authoritative scope and all 187 use cases are maintained in
   `maas-enterprise-cloud-platform/ansible-observability`
 - Prometheus, Grafana, and Node Exporter installation:
   `maas-enterprise-cloud-platform/ansible-prometheus`
+- Linux systems implementation:
+  `maas-enterprise-cloud-platform/linux-systems-platform`
 - Planned enterprise repository scaffolds:
-  `maas-enterprise-cloud-platform/linux-systems-platform`,
   `maas-enterprise-cloud-platform/database-reliability-platform`,
   `maas-enterprise-cloud-platform/resilience-service-operations`,
   `maas-enterprise-cloud-platform/data-engineering-platform`,

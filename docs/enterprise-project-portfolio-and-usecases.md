@@ -1,10 +1,10 @@
 # Enterprise Project Portfolio and Use Case Coverage
 
 This document explains how the ten enterprise projects fit together and which
-role-based use cases each one supports. Projects 1–5 have active
-implementation repositories. Projects 6–10 now have repository scaffolds and
-remain planned until implementation scope, products, capacity, and VM placement
-are separately approved.
+role-based use cases each one supports. Projects 1–6 have active
+implementation repositories. Projects 7–10 have repository scaffolds and remain
+planned until implementation scope, products, capacity, and VM placement are
+separately approved.
 
 The portfolio is role-centered for DevOps, SRE, Database, Linux/System, Data,
 and Network Engineers. MAAS is one possible reference workload, not the
@@ -79,7 +79,7 @@ flowchart TB
 | 3 | `kubernetes-platform-gitops` | Active implementation |
 | 4 | `observability-sre-platform` | Active implementation |
 | 5 | `cloud-governance-ops-automation` | Active implementation |
-| 6 | `linux-systems-platform` | Repository scaffold created; implementation planned |
+| 6 | `linux-systems-platform` | Active first implementation slice against existing VM fleet |
 | 7 | `database-reliability-platform` | Repository scaffold created; implementation planned |
 | 8 | `resilience-service-operations` | Repository scaffold created; implementation planned |
 | 9 | `data-engineering-platform` | Repository scaffold created; implementation planned |
@@ -87,8 +87,9 @@ flowchart TB
 
 Repository creation for a planned project does not authorize VM creation or
 product installation. The current hypervisors are capacity constrained, so
-Projects 6–10 must first reuse existing automation and Kubernetes capacity or
-complete a documented capacity expansion.
+Projects 7–10 must first reuse existing automation and Kubernetes capacity or
+complete a documented capacity expansion. Project 6 uses the existing VM fleet
+for Linux operations automation and does not create new VMs.
 
 ## GitLab Repository Model
 
@@ -393,7 +394,9 @@ flowchart TB
 
 ## Project 6: Enterprise Linux Systems Engineering Platform
 
-**Status:** Planned.
+**Status:** Active first implementation slice. The repository manages Linux
+operations use cases against the existing VM fleet; it does not create new VMs
+or install major products.
 
 **Purpose:** Standardize the lifecycle and operation of enterprise Linux,
 virtualization, storage, network services, and system software.
@@ -660,12 +663,13 @@ flowchart LR
 | --- | --- | --- | --- |
 | 2026-07-27 | Expand the architecture from five active projects to a ten-project enterprise portfolio | Give DevOps, SRE, database, systems, data and network engineers complete specialist capability domains rather than organizing the program around the MAAS workload | Projects 6–10 are approved target architecture only. No VM, IP, product, capacity commitment or implementation-completion claim is created by this decision. |
 | 2026-07-27 | Create repository scaffolds for Projects 6–10 | Establish GitLab source-control homes for the approved planned capability domains | Repository creation only. Implementation, product installation, VM placement, and capacity expansion remain separately approved work. |
+| 2026-07-27 | Start Project 6 implementation against the existing VM fleet | Implement Linux operations use cases without creating new infrastructure | Adds Ansible inventory, playbooks, roles, evidence reports, and runbooks for Linux lifecycle, baseline, patching, access, storage, network/time, capacity, drift, compliance, and break-glass recovery. |
 
 ## Recommended Implementation Order
 
 1. Continue Projects 1–5 until the existing on-prem control plane is accepted.
-2. Start Project 6 using the existing Linux, KVM, BIND and NGINX automation;
-   avoid new VMs initially.
+2. Continue Project 6 using the existing Linux VM fleet; avoid new VMs unless a
+   capacity review explicitly approves them.
 3. Start Project 7 only after AWX is operational and assume ownership of the
    paused PostgreSQL lifecycle.
 4. Start Project 10 with source-of-truth/IPAM design before changing DHCP,

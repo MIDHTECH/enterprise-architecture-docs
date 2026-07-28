@@ -2,7 +2,8 @@
 
 This guide gives you a natural way to talk about the ten-project enterprise
 portfolio in interviews. Projects 1–5 describe active implementation
-repositories. Projects 6–10 describe the approved target architecture and must
+repositories. Project 6 has an active first implementation slice against the
+existing VM fleet. Projects 7–10 describe the approved target architecture and must
 be presented as planned work, not completed experience.
 
 ## Positioning Statement
@@ -83,7 +84,7 @@ For role-specific positioning, team model, and contribution wording, see [Market
 
 **Use cases covered:** Secrets management, IAM/RBAC standardization, compliance scanning, infrastructure hardening, private endpoints, DNS/certificate management, backup and DR, cost optimization, incident remediation, toil reduction.
 
-## Project 6: Enterprise Linux Systems Platform (Planned)
+## Project 6: Enterprise Linux Systems Platform
 
 **Target problem:** Linux lifecycle, KVM, patching, storage, DNS, identity, and
 system services need consistent automation and operational evidence.

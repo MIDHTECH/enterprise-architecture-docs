@@ -24,7 +24,7 @@ flowchart TB
         ansobs[ansible-observability]
         ansprom[ansible-prometheus]
         gov[cloud-governance-ops-automation]
-        systems[linux-systems-platform / planned]
+        systems[linux-systems-platform / active first slice]
         database[database-reliability-platform / planned]
         resilience[resilience-service-operations / planned]
         dataeng[data-engineering-platform / planned]

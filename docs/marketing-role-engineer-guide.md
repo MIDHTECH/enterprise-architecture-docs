@@ -32,7 +32,7 @@ architecture and roadmap experience, but not completed implementations.
 | `kubernetes-platform-gitops` | Kubernetes Platform Engineer, GitOps Engineer, Platform Engineer | Cloud Native Engineer, SRE |
 | `observability-sre-platform` | SRE Engineer, Observability Engineer, Reliability Engineer | Platform Engineer, Incident Response Engineer |
 | `cloud-governance-ops-automation` | Cloud Governance Engineer, Cloud Security Engineer, Cloud Operations Engineer | IAM Engineer, Compliance Automation Engineer |
-| `linux-systems-platform` (planned) | Linux Systems Engineer, Infrastructure Engineer, Systems Automation Engineer | Virtualization Engineer, SRE |
+| `linux-systems-platform` | Linux Systems Engineer, Infrastructure Engineer, Systems Automation Engineer | Virtualization Engineer, SRE |
 | `database-reliability-platform` (planned) | Database Reliability Engineer, Database Engineer, Database Administrator | SRE, Security Engineer |
 | `resilience-service-operations` (planned) | SRE, Service Operations Engineer, Resilience Engineer | Incident Manager, Performance Engineer |
 | `data-engineering-platform` (planned) | Data Engineer, Data Platform Engineer, Analytics Engineer | DataOps Engineer, Database Engineer |
