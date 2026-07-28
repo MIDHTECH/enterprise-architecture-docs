@@ -26,8 +26,11 @@ account credentials after TLS and the permanent identity model are configured.
 | --- | --- |
 | `enterprise-architecture-docs` | `midhhealth/enterprise-architecture/enterprise-architecture-docs` |
 | `devsecops-cicd-orchestrator` | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
+| `ansible-jenkins` | `midhhealth/platform-delivery/ansible-jenkins` |
 | `jenkins_jobs` | `midhhealth/platform-delivery/jenkins-jobs` |
 | `jenkins-shared-library` | `midhhealth/platform-delivery/jenkins-shared-library` |
+| `ansible-kubernetes` | `midhhealth/platform-engineering/ansible-kubernetes` |
+| `awx-inventory` | `midhhealth/platform-engineering/awx-inventory` |
 | `cloud-infra-automation-platform` | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
 | `kubernetes-platform-gitops` | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
 | `linux-systems-platform` | `midhhealth/platform-engineering/linux-systems-platform` |
@@ -39,6 +42,8 @@ account credentials after TLS and the permanent identity model are configured.
 | `cloud-governance-ops-automation` | `midhhealth/security-governance/cloud-governance-ops-automation` |
 | `database-reliability-platform` | `midhhealth/data-and-integration/database-reliability-platform` |
 | `data-engineering-platform` | `midhhealth/data-and-integration/data-engineering-platform` |
+| `healthcare-ai-platform` | `midhhealth/ai-and-ml-platform/healthcare-ai-platform` |
+| `mlops-model-platform` | `midhhealth/ai-and-ml-platform/mlops-model-platform` |
 
 The local directory `jenkins_jobs` intentionally maps to the hyphenated GitLab
 path `jenkins-jobs`.
@@ -89,6 +94,29 @@ git -C workspace.training/<repository> \
 
 The hashes must match. Also verify that `git remote -v` contains no destination
 outside `gitlab.example.com`.
+
+## Full Workstation Checkout Reconciliation
+
+Use this sequence when the GitLab organization or subgroup naming changes:
+
+1. Read the authenticated GitLab project inventory and record every canonical
+   `midhhealth/<subgroup>/<project>` path.
+2. Inventory local repositories under `workspace.training` and verify every
+   worktree is clean before changing a remote.
+3. For an existing checkout, update only `origin` to its canonical MidhHealth
+   path and run `git pull --ff-only`.
+4. Clone each missing repository into a flat
+   `workspace.training/<local-repository>` directory.
+5. Preserve the intentional local name `jenkins_jobs` for the GitLab project
+   `jenkins-jobs`.
+6. Do not delete legacy directories or overwrite a non-empty directory during
+   reconciliation.
+7. Confirm every checkout is clean and that local `HEAD` matches
+   `origin/<default-branch>`.
+
+Never infer the complete inventory from the old GitLab namespace: transferred
+projects may continue to work through redirects while new repositories exist
+only in the `midhhealth` organization.
 
 ### Initial Import Evidence
 
@@ -142,6 +170,21 @@ for this evidence and the associated SRE near-miss record.
 - Added Jenkins job-as-code for `projects/run-ansible-playbook`.
 - Added shared-library guardrails for approved playbooks, allowed extra vars,
   and `CONFIRM_APPLY` on state-changing playbooks.
+
+### 2026-07-28 Full MidhHealth Checkout Update
+
+- The authenticated GitLab inventory contained 20 repositories.
+- Updated the eight existing workstation checkouts from the legacy namespace
+  redirects to their canonical `midhhealth/<subgroup>/<project>` origins.
+- Cloned the 12 missing repositories:
+  `ansible-jenkins`, `ansible-kubernetes`, `awx-inventory`,
+  `ansible-observability`, `ansible-prometheus`,
+  `healthcare-ai-platform`, `mlops-model-platform`,
+  `data-engineering-platform`, `database-reliability-platform`,
+  `linux-systems-platform`, `network-engineering-platform`, and
+  `resilience-service-operations`.
+- Verified all 20 repositories were clean and each local default-branch commit
+  matched its `origin` tracking branch.
 
 ## Follow-up Hardening
 
