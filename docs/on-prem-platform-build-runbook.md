@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This is the operator runbook for rebuilding the two physical lab hosts and
+This is the operator runbook for rebuilding the three physical lab hosts and
 preparing them for the enterprise platform lab. It records both automated
 actions and the manual steps that require local console access or a sudo
 password.
@@ -16,8 +16,9 @@ later phase.
 | --- | --- | --- | --- |
 | `infra01.example.com` | Primary KVM hypervisor | Ubuntu 26.04 LTS Desktop with GNOME | `192.168.1.38` |
 | `infra02.example.com` | Secondary KVM hypervisor | Ubuntu 26.04 LTS Desktop with GNOME | `192.168.1.169` (`.73` was the rebuild-time lease) |
+| `infra03.example.com` | Expansion KVM hypervisor | Ubuntu 26.04 LTS Desktop with GNOME | `192.168.1.186` pre-bridge lease |
 
-The management account on both hosts is `midhtechadmin`.
+The management account on all three hosts is `midhtechadmin`.
 
 Do not begin VM provisioning until each physical-host address has a DHCP
 reservation and forward/reverse DNS is stable.
@@ -585,6 +586,8 @@ VM-specific product automation owns all directories below `/data`.
 | 2026-07-25 | infra01 VM fleet | Detected concurrent lifecycle workflow | All 13 domains were cycled during DNS bootstrap; product configuration paused pending stable guests; see INC-2026-011 |
 | 2026-07-25 | `dns.example.com` | Installed lab DNS through Ansible | BIND enabled and active; forward/reverse zones, UDP/TCP, recursion, firewall, and second-run idempotence validated; Copper9100 DHCP option remains manual |
 | 2026-07-25 | Lab DNS | Added physical hypervisor records | Added A/PTR records for `infra01.example.com` at `.38` and `infra02.example.com` at `.169`; DHCP reservations remain required |
+| 2026-07-28 | `infra03.example.com` | Installed and validated virtualization baseline | 32 CPUs, 247 GiB RAM, KVM, QEMU 10.2.1, libvirt 12.0.0, Ansible 2.20.1, Chrony, Cockpit, default NAT network, and persistent `lab-images` pool validated; reboot required |
+| 2026-07-28 | `infra03.example.com` | Passed physical bridge preflight | `eno1` owns the `.186` DHCP lease and default route; console-supervised `br0` cutover, bridge reservation, `lab-bridge`, and VM placement remain pending |
 | 2026-07-25 | Linksys DHCP | Reserved lab infrastructure addresses | Verified 42 IP/MAC reservations: infra01 `.38`, infra02 `.169`, and deterministic VM assignments `.101–.140`; router DHCP restart completed and both hosts remained reachable |
 | 2026-07-25 | Linksys device database | Planned stale-device cleanup | 824 records inspected: 42 connected, 42 reservation MACs protected, 3 customized offline records protected, and 779 disconnected uncustomized candidates; deletion requires explicit risk approval because firmware exposes no last-seen timestamp |
 | 2026-07-25 | Mac administration workstation | Applied temporary lab DNS override | Wi-Fi DNS set to `192.168.1.106`; GitLab, AWX, and public recursion validated; permanent Linksys DNS advertisement remains pending |

@@ -56,6 +56,7 @@ The authoritative zone also includes the physical hypervisors:
 | --- | --- | --- |
 | `infra01.example.com` | `192.168.1.38` | DHCP reservation for the infra01 `br0` MAC |
 | `infra02.example.com` | `192.168.1.169` | DHCP reservation for the infra02 `br0` MAC |
+| `infra03.example.com` | `192.168.1.186` | Pre-bridge DHCP lease; reserve the final infra03 `br0` MAC before cutover |
 
 These addresses originated through DHCP. Staff must update the zone serial and
 records if either address changes, but the preferred control is a permanent
