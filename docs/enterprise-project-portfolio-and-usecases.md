@@ -398,17 +398,13 @@ flowchart LR
 
 **Architecture:**
 
-```mermaid
-flowchart TB
-    tf[Terraform Root Module] --> network[Network: VPC/VNet/Subnet/Firewall]
-    tf --> compute[Compute: EC2/Azure VM/GCE]
-    tf --> storage[Storage: S3/Blob/GCS]
-    tf --> database[Database: RDS/Azure PostgreSQL/Cloud SQL]
-    tf --> containers[Containers: ECS/AKS/GKE]
-    compute --> inventory[Dynamic Inventory]
-    inventory --> ansible[Ansible Playbooks]
-    ansible --> baseline[Patch, Packages, Docker, Linux Baseline]
-```
+![MidhHealth hybrid infrastructure architecture](assets/project-2-hybrid-infrastructure-architecture.svg)
+
+This is the infrastructure architecture layer for the enterprise platform. It
+shows healthcare channels, on-premises facilities, shared platform services,
+cloud landing zones, observability/evidence collection, and the
+Terraform/Ansible control loop that keeps changes reviewed, traceable, and
+recoverable.
 
 **What this covers:**
 
