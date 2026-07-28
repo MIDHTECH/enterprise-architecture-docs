@@ -6,21 +6,22 @@ For the required project training structure and interview question-bank standard
 
 ## Program Positioning
 
-Present the active repositories and planned capability roadmap as one
+Present the active repositories and first-slice capability roadmap as one
 enterprise platform program, not as disconnected labs:
 
 > I contributed to the first five implementation domains of a ten-project
 > enterprise platform program: infrastructure, CI/CD, Kubernetes delivery,
-> observability, and governance automation. I also helped define the planned
-> capability architecture for Linux systems, database reliability, service
+> observability, and governance automation. I also started first-slice
+> capability automation for Linux systems, database reliability, service
 > operations, data engineering, and network engineering. The domains use
 > GitLab review, Jenkins delivery, Terraform infrastructure, Ansible
 > configuration, GitOps, monitoring, and security controls as shared
 > foundations.
 
 Only claim implementation contributions for work supported by repositories,
-commits, tests, or operational evidence. Projects marked planned are valid
-architecture and roadmap experience, but not completed implementations.
+commits, tests, or operational evidence. Projects marked as first-slice
+automation are valid implementation experience, but not completed product
+deployments.
 
 ## Role-to-Project Map
 
@@ -33,10 +34,10 @@ architecture and roadmap experience, but not completed implementations.
 | `observability-sre-platform` | SRE Engineer, Observability Engineer, Reliability Engineer | Platform Engineer, Incident Response Engineer |
 | `cloud-governance-ops-automation` | Cloud Governance Engineer, Cloud Security Engineer, Cloud Operations Engineer | IAM Engineer, Compliance Automation Engineer |
 | `linux-systems-platform` | Linux Systems Engineer, Infrastructure Engineer, Systems Automation Engineer | Virtualization Engineer, SRE |
-| `database-reliability-platform` (planned) | Database Reliability Engineer, Database Engineer, Database Administrator | SRE, Security Engineer |
-| `resilience-service-operations` (planned) | SRE, Service Operations Engineer, Resilience Engineer | Incident Manager, Performance Engineer |
-| `data-engineering-platform` (planned) | Data Engineer, Data Platform Engineer, Analytics Engineer | DataOps Engineer, Database Engineer |
-| `network-engineering-platform` (planned) | Network Engineer, Network Automation Engineer, Cloud Network Engineer | Kubernetes Network Engineer, Security Engineer |
+| `database-reliability-platform` | Database Reliability Engineer, Database Engineer, Database Administrator | SRE, Security Engineer |
+| `resilience-service-operations` | SRE, Service Operations Engineer, Resilience Engineer | Incident Manager, Performance Engineer |
+| `data-engineering-platform` | Data Engineer, Data Platform Engineer, Analytics Engineer | DataOps Engineer, Database Engineer |
+| `network-engineering-platform` | Network Engineer, Network Automation Engineer, Cloud Network Engineer | Kubernetes Network Engineer, Security Engineer |
 | `jenkins_jobs` | Jenkins Platform Engineer, CI/CD Automation Engineer | DevOps Engineer, Release Engineer |
 | `jenkins-shared-library` | Jenkins Shared Library Engineer, Pipeline Automation Engineer | DevOps Engineer, AWX/Ansible Automation Engineer |
 

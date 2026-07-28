@@ -3,8 +3,10 @@
 ## Purpose
 
 This runbook records the program-level workflow for launching approved Ansible
-automation through Jenkins and AWX. The first active consumer is
-`linux-systems-platform`.
+automation through Jenkins and AWX. Active consumers are Projects 6–10:
+`linux-systems-platform`, `database-reliability-platform`,
+`resilience-service-operations`, `data-engineering-platform`, and
+`network-engineering-platform`.
 
 ## Source Repositories
 
@@ -13,6 +15,10 @@ automation through Jenkins and AWX. The first active consumer is
 | `jenkins-jobs` | Defines the generated Jenkins job `projects/run-ansible-playbook` |
 | `jenkins-shared-library` | Provides `ansibleAwxPipeline` and shared AWX reconciliation/launch logic |
 | `linux-systems-platform` | Provides Linux inventory, playbooks, roles, runbooks, and GitLab CI validation |
+| `database-reliability-platform` | Provides database readiness, backup/restore, security, performance, and lifecycle evidence automation |
+| `resilience-service-operations` | Provides service catalog, SLO, incident, exercise, and readiness evidence automation |
+| `data-engineering-platform` | Provides data source, quality, orchestration, lineage, and access governance evidence automation |
+| `network-engineering-platform` | Provides source-of-truth, DNS/DHCP, connectivity, firewall/proxy, and Kubernetes network evidence automation |
 
 ## Jenkins Job
 
@@ -64,8 +70,24 @@ After preflight succeeds, run assessment playbooks such as
 Run `playbooks/site.yml` only after reviewing assessment output and selecting
 `CONFIRM_APPLY`.
 
+## Projects 7-10 Smoke Tests
+
+Use the same job with `GIT_BRANCH=main`,
+`INVENTORY_SOURCE_PATH=inventories/production/hosts.yml`, and
+`CONFIRM_APPLY=false`.
+
+| Project | First playbook |
+| --- | --- |
+| `database-reliability-platform` | `playbooks/preflight.yml` |
+| `resilience-service-operations` | `playbooks/preflight.yml` |
+| `data-engineering-platform` | `playbooks/preflight.yml` |
+| `network-engineering-platform` | `playbooks/preflight.yml` |
+
+Focused evidence playbooks may be run after preflight. The shared library
+rejects playbooks that are not approved for the selected project.
+
 ## GitLab CI Gate
 
-`linux-systems-platform` validates playbooks in GitLab CI with `structure`,
+Projects 6–10 validate playbooks in GitLab CI with `structure`,
 `ansible_syntax`, and `ansible_lint`. Jenkins/AWX execution is the operational
 smoke and runtime gate. GitLab CI does not connect to production VMs.

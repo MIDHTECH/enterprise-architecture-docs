@@ -4,13 +4,11 @@ Last verified: 2026-07-27
 
 ## Enterprise project portfolio
 
-The architecture contains ten projects. Projects 1–6 have active
-implementation repositories. Project 6, `linux-systems-platform`, implements
-Linux operations automation against the existing VM fleet. Projects 7–10—
-database reliability, resilience/service operations, data engineering, and
-network engineering—have repository scaffolds and remain approved planned
-capabilities. No VM, IP address, product installation, or capacity expansion is
-implied by their inclusion in the architecture.
+The architecture contains ten projects. Projects 1–10 have implementation
+repositories. Projects 6–10 are active first slices against the existing VM
+fleet: Linux systems, database reliability, resilience/service operations, data
+engineering, and network engineering. No VM, IP address, product installation,
+or capacity expansion is implied by their inclusion in the architecture.
 
 The authoritative scope and all 187 use cases are maintained in
 [Enterprise Project Portfolio and Use Case Coverage](enterprise-project-portfolio-and-usecases.md).
@@ -32,7 +30,7 @@ The authoritative scope and all 187 use cases are maintained in
   `projects/run-ansible-playbook` generated from
   `maas-enterprise-cloud-platform/jenkins-jobs` and backed by
   `maas-enterprise-cloud-platform/jenkins-shared-library`
-- Planned enterprise repository scaffolds:
+- Enterprise first-slice implementation repositories:
   `maas-enterprise-cloud-platform/database-reliability-platform`,
   `maas-enterprise-cloud-platform/resilience-service-operations`,
   `maas-enterprise-cloud-platform/data-engineering-platform`,
@@ -78,7 +76,7 @@ troubleshooting steps are maintained in
    refreshed from `jenkins-jobs`.
 2. Configure AWX GitLab SSH host trust for `gitlab.example.com:2222`.
 3. Confirm AWX SCM and machine credential IDs for the Linux VM fleet.
-4. Run the `linux-systems-platform` preflight smoke test through Jenkins/AWX.
+4. Run preflight smoke tests for Projects 6–10 through Jenkins/AWX.
 5. Provision Grafana data sources for Prometheus, Loki, and Tempo.
 6. Connect Prometheus alert delivery to Alertmanager and validate a test alert.
 7. Apply dashboards, alert rules, and SLOs from `observability-sre-platform`.

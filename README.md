@@ -32,8 +32,9 @@ This repo is the written map for the training platform. It explains how the infr
 ## Repository Purpose
 
 This is the documentation home for the ten-project enterprise portfolio.
-Projects 1–6 are active implementations; Projects 7–10 are approved planned
-capabilities:
+Projects 1–10 now have implementation repositories. Projects 6–10 are active
+first slices that reuse existing VMs and do not imply new product installs,
+new VM placement, or production capacity:
 
 - Enterprise DevSecOps Delivery Platform
 - Enterprise Multi-Cloud Infrastructure Platform

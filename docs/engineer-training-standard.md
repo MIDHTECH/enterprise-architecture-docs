@@ -6,15 +6,15 @@ must distinguish VM provisioning from product installation and use the
 incident register whenever source-of-truth drift is discovered.
 
 Use this standard for every enterprise platform project. The portfolio contains
-ten capability projects: five active implementations and five planned
-additions for Linux systems, database reliability, resilience/service
-operations, data engineering, and network engineering. An engineer should be
+ten capability projects. Projects 6–10 are active first implementation slices
+for Linux systems, database reliability, resilience/service operations, data
+engineering, and network engineering. An engineer should be
 able to explain the project clearly, defend the architecture, describe their
 contribution, and answer practical interview questions from multiple angles.
 
-Never present a planned project as implemented. Planned training material must
-use target-state language, identify prerequisites, and distinguish architecture
-work from repository, VM, product, and operational acceptance.
+Never present a first-slice repository as a completed product deployment.
+Training material must distinguish evidence automation from repository, VM,
+product, and operational acceptance.
 
 The expected voice is a senior DevOps, cloud, platform, or SRE engineer with 6-8 years of hands-on experience. Documentation should sound like the engineer has owned production delivery, made tradeoffs, worked with cross-functional teams, supported audits, handled incidents, and improved reliability, security, and automation outcomes. Avoid junior or classroom phrasing. Use language that shows practical ownership, decision-making, risk awareness, and measurable business impact.
 

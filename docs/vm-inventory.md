@@ -226,12 +226,11 @@ the central observability platform.
 7. Do not create additional VMs without updating this inventory and the
    capacity totals.
 
-Project 6 uses the existing VM fleet for Linux operations automation and does
-not receive a dedicated VM, address or MAC allocation from this document.
-Projects 7–10 remain logical architecture additions only until a capacity
-review is approved. Prefer existing services and Kubernetes workloads where
-practical; infra01 and infra02 currently lack safe headroom for an unreviewed
-product fleet.
+Projects 6–10 use the existing VM fleet for first-slice operations automation
+and evidence collection. They do not receive dedicated VM, address, or MAC
+allocations from this document. Prefer existing services and Kubernetes
+workloads where practical; infra01 and infra02 currently lack safe headroom for
+an unreviewed product fleet.
 
 ## Current Implementation State
 

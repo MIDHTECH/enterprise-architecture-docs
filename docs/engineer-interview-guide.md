@@ -2,15 +2,15 @@
 
 This guide gives you a natural way to talk about the ten-project enterprise
 portfolio in interviews. Projects 1–5 describe active implementation
-repositories. Project 6 has an active first implementation slice against the
-existing VM fleet. Projects 7–10 describe the approved target architecture and must
-be presented as planned work, not completed experience.
+repositories. Projects 6–10 have active first implementation slices against the
+existing VM fleet and must be presented as evidence automation, not completed
+product deployments.
 
 ## Positioning Statement
 
 Use this version when you need a short overview:
 
-> I built the first five implementation domains of a ten-project enterprise platform portfolio covering CI/CD, infrastructure, Kubernetes, observability, and governance. I also designed the next capability domains for Linux systems, database reliability, service operations, data engineering, and network engineering. GitLab provides source control and review, Terraform and Ansible provide automation, Jenkins and GitLab CI provide delivery, and GitOps and operational controls connect the platform.
+> I built the first five implementation domains of a ten-project enterprise platform portfolio covering CI/CD, infrastructure, Kubernetes, observability, and governance. I then started first-slice automation for Linux systems, database reliability, service operations, data engineering, and network engineering using the existing VM fleet. GitLab provides source control and review, Terraform and Ansible provide automation, Jenkins and GitLab CI provide delivery, and GitOps and operational controls connect the platform.
 
 For role-specific positioning, team model, and contribution wording, see [Marketing Role and Engineer Contribution Guide](marketing-role-engineer-guide.md).
 
@@ -163,7 +163,7 @@ Use this flow:
 5. Kubernetes/GitOps standardizes platform deployment.
 6. Observability detects issues and supports incident response.
 7. Governance automation enforces security, compliance, cost, secrets, and operational standards.
-8. Planned systems, database, network, data, and service-operations domains
+8. First-slice systems, database, network, data, and service-operations domains
    reuse those controls and add specialist engineering workflows.
 
 ## Interview Closing Statement
@@ -173,6 +173,6 @@ Use this version:
 > Together, the active projects and approved roadmap show an enterprise
 > operating model: source-controlled work, reviewed changes, automated
 > infrastructure and delivery, Kubernetes desired state, observability,
-> governance, and planned specialist domains for systems, databases,
+> governance, and first-slice specialist domains for systems, databases,
 > resilience, data, and networking. I clearly separate what I implemented from
 > what I designed so the discussion remains accurate and defensible.

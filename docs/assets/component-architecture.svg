@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="860" viewBox="0 0 1400 860" role="img" aria-labelledby="title desc">
   <title id="title">Ten-Project Enterprise Platform Portfolio</title>
-  <desc id="desc">Five active implementation projects and five planned specialist engineering projects share a GitLab delivery control plane and on-premises runtime foundations.</desc>
+  <desc id="desc">Ten implementation projects share a GitLab delivery control plane and on-premises runtime foundations; Projects 6-10 are active first slices on existing VMs.</desc>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
       <path d="M0 0L10 5L0 10Z" fill="#334155"/>
@@ -35,17 +35,17 @@
   <rect x="1106" y="265" width="244" height="122" rx="10" class="active"/>
   <text x="1126" y="294" class="label">5 · Governance / Ops</text><text x="1126" y="319" class="small">IAM, secrets, compliance,</text><text x="1126" y="338" class="small">backup, cost and remediation</text><text x="1126" y="368" class="small">Active implementation</text>
 
-  <text x="60" y="435" class="head">Approved target capabilities — no repository, VM, IP, or product allocation yet</text>
-  <rect x="50" y="455" width="244" height="122" rx="10" class="planned"/>
-  <text x="70" y="484" class="label">6 · Linux Systems</text><text x="70" y="509" class="small">OS lifecycle, KVM, patching,</text><text x="70" y="528" class="small">storage, DNS and services</text><text x="70" y="558" class="small">Planned architecture</text>
-  <rect x="314" y="455" width="244" height="122" rx="10" class="planned"/>
-  <text x="334" y="484" class="label">7 · Database Reliability</text><text x="334" y="509" class="small">Lifecycle, performance, backup,</text><text x="334" y="528" class="small">recovery, security and upgrades</text><text x="334" y="558" class="small">Planned architecture</text>
-  <rect x="578" y="455" width="244" height="122" rx="10" class="planned"/>
-  <text x="598" y="484" class="label">8 · Resilience / Service Ops</text><text x="598" y="509" class="small">SLOs, incidents, capacity,</text><text x="598" y="528" class="small">performance, chaos and DR</text><text x="598" y="558" class="small">Planned architecture</text>
-  <rect x="842" y="455" width="244" height="122" rx="10" class="planned"/>
-  <text x="862" y="484" class="label">9 · Data Engineering</text><text x="862" y="509" class="small">Ingestion, orchestration, quality,</text><text x="862" y="528" class="small">lineage and lakehouse patterns</text><text x="862" y="558" class="small">Planned architecture</text>
-  <rect x="1106" y="455" width="244" height="122" rx="10" class="planned"/>
-  <text x="1126" y="484" class="label">10 · Network Engineering</text><text x="1126" y="509" class="small">IPAM, DNS/DHCP, routing, VPN,</text><text x="1126" y="528" class="small">firewalls, cloud and K8s network</text><text x="1126" y="558" class="small">Planned architecture</text>
+  <text x="60" y="435" class="head">Active first slices using existing VMs; no new VM, IP, or product allocation</text>
+  <rect x="50" y="455" width="244" height="122" rx="10" class="active"/>
+  <text x="70" y="484" class="label">6 · Linux Systems</text><text x="70" y="509" class="small">OS lifecycle, KVM, patching,</text><text x="70" y="528" class="small">storage, DNS and services</text><text x="70" y="558" class="small">Active first slice</text>
+  <rect x="314" y="455" width="244" height="122" rx="10" class="active"/>
+  <text x="334" y="484" class="label">7 · Database Reliability</text><text x="334" y="509" class="small">Lifecycle, performance, backup,</text><text x="334" y="528" class="small">recovery, security and upgrades</text><text x="334" y="558" class="small">Active first slice</text>
+  <rect x="578" y="455" width="244" height="122" rx="10" class="active"/>
+  <text x="598" y="484" class="label">8 · Resilience / Service Ops</text><text x="598" y="509" class="small">SLOs, incidents, capacity,</text><text x="598" y="528" class="small">performance, chaos and DR</text><text x="598" y="558" class="small">Active first slice</text>
+  <rect x="842" y="455" width="244" height="122" rx="10" class="active"/>
+  <text x="862" y="484" class="label">9 · Data Engineering</text><text x="862" y="509" class="small">Ingestion, orchestration, quality,</text><text x="862" y="528" class="small">lineage and lakehouse patterns</text><text x="862" y="558" class="small">Active first slice</text>
+  <rect x="1106" y="455" width="244" height="122" rx="10" class="active"/>
+  <text x="1126" y="484" class="label">10 · Network Engineering</text><text x="1126" y="509" class="small">IPAM, DNS/DHCP, routing, VPN,</text><text x="1126" y="528" class="small">firewalls, cloud and K8s network</text><text x="1126" y="558" class="small">Active first slice</text>
 
   <path d="M700 205V246" class="flow"/>
   <path d="M700 205V418" class="dash"/>
@@ -58,5 +58,5 @@
   <text x="1220" y="724" text-anchor="middle" class="label">Future Cloud</text><text x="1220" y="748" text-anchor="middle" class="small">AWS EKS / ECR validation</text><text x="1220" y="768" text-anchor="middle" class="small">explicitly deferred</text>
   <path d="M700 387V630" class="flow"/>
   <path d="M700 577V630" class="dash"/>
-  <text x="60" y="835" class="small">Solid green = active implementation • dashed amber = planned capability • lab has no infrastructure HA</text>
+  <text x="60" y="835" class="small">Solid green = active implementation or active first slice • dashed paths = future expansion • lab has no infrastructure HA</text>
 </svg>

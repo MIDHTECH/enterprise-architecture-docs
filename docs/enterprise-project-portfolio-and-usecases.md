@@ -1,10 +1,10 @@
 # Enterprise Project Portfolio and Use Case Coverage
 
 This document explains how the ten enterprise projects fit together and which
-role-based use cases each one supports. Projects 1–6 have active
-implementation repositories. Projects 7–10 have repository scaffolds and remain
-planned until implementation scope, products, capacity, and VM placement are
-separately approved.
+role-based use cases each one supports. Projects 1–10 have implementation
+repositories. Projects 6–10 currently use active first slices against existing
+VMs and do not imply new product installs, new VM placement, or production
+capacity.
 
 The portfolio is role-centered for DevOps, SRE, Database, Linux/System, Data,
 and Network Engineers. MAAS is one possible reference workload, not the
@@ -80,16 +80,15 @@ flowchart TB
 | 4 | `observability-sre-platform` | Active implementation |
 | 5 | `cloud-governance-ops-automation` | Active implementation |
 | 6 | `linux-systems-platform` | Active first implementation slice against existing VM fleet |
-| 7 | `database-reliability-platform` | Repository scaffold created; implementation planned |
-| 8 | `resilience-service-operations` | Repository scaffold created; implementation planned |
-| 9 | `data-engineering-platform` | Repository scaffold created; implementation planned |
-| 10 | `network-engineering-platform` | Repository scaffold created; implementation planned |
+| 7 | `database-reliability-platform` | Active first implementation slice against existing VM fleet |
+| 8 | `resilience-service-operations` | Active first implementation slice against existing VM fleet |
+| 9 | `data-engineering-platform` | Active first implementation slice against existing VM fleet |
+| 10 | `network-engineering-platform` | Active first implementation slice against existing VM fleet |
 
-Repository creation for a planned project does not authorize VM creation or
-product installation. The current hypervisors are capacity constrained, so
-Projects 7–10 must first reuse existing automation and Kubernetes capacity or
-complete a documented capacity expansion. Project 6 uses the existing VM fleet
-for Linux operations automation and does not create new VMs.
+Active first slices for Projects 6–10 do not authorize VM creation or product
+installation. The current hypervisors are capacity constrained, so these
+projects reuse existing automation, GitLab, Jenkins/AWX, and VM capacity unless
+a documented capacity expansion is approved.
 
 ## GitLab Repository Model
 
@@ -670,20 +669,22 @@ flowchart LR
 | 2026-07-27 | Create repository scaffolds for Projects 6–10 | Establish GitLab source-control homes for the approved planned capability domains | Repository creation only. Implementation, product installation, VM placement, and capacity expansion remain separately approved work. |
 | 2026-07-27 | Start Project 6 implementation against the existing VM fleet | Implement Linux operations use cases without creating new infrastructure | Adds Ansible inventory, playbooks, roles, evidence reports, and runbooks for Linux lifecycle, baseline, patching, access, storage, network/time, capacity, drift, compliance, and break-glass recovery. |
 | 2026-07-27 | Add Jenkins/AWX launcher guardrails for Linux systems operations | Let operators select project, branch, inventory, playbook, and extra vars while preserving review and safety controls | Adds `projects/run-ansible-playbook`, shared-library allowlists, `CONFIRM_APPLY` for state-changing playbooks, and AWX/Jenkins integration documentation. |
+| 2026-07-27 | Start Projects 7–10 first implementation slices | Complete the approved database, resilience, data, and network project starts without expanding infrastructure | Adds safe Ansible evidence playbooks, GitLab CI validation, runbooks, training coverage, and Jenkins/AWX catalog registration for the four remaining enterprise projects. |
 
 ## Recommended Implementation Order
 
 1. Continue Projects 1–5 until the existing on-prem control plane is accepted.
 2. Continue Project 6 using the existing Linux VM fleet; avoid new VMs unless a
    capacity review explicitly approves them.
-3. Start Project 7 only after AWX is operational and assume ownership of the
-   paused PostgreSQL lifecycle.
-4. Start Project 10 with source-of-truth/IPAM design before changing DHCP,
-   routing or the physical network.
-5. Start Project 8 by consuming existing observability signals and incident
-   records.
-6. Start Project 9 after database, network and Kubernetes foundations are
-   stable; deploy processing workloads to Kubernetes where practical.
+3. Use Project 7 for database readiness, backup/restore, security,
+   performance, and lifecycle evidence against existing database and backup VMs.
+4. Use Project 10 for source-of-truth, DNS/DHCP, connectivity, firewall/proxy,
+   and Kubernetes network review before changing DHCP, routing, or the physical
+   network.
+5. Use Project 8 to consume existing observability signals and incident records
+   for service catalog, SLO, incident, exercise, and readiness evidence.
+6. Use Project 9 for data source, quality, orchestration, lineage, and access
+   governance evidence before deploying any new data processing products.
 
 This order avoids treating products as projects, keeps MAAS as one optional
 reference workload, and builds reusable enterprise capabilities for the six

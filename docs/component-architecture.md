@@ -2,9 +2,9 @@
 
 ![Ten-project enterprise platform visual architecture diagram](assets/component-architecture.svg)
 
-This diagram explains how the active implementation repositories and planned
+This diagram explains how the active implementation repositories and
 role-centered projects work together as one enterprise platform program.
-Planned projects are logical capabilities only; they do not represent
+Projects 6–10 are active first implementation slices and do not represent new
 installed products or allocated VMs.
 
 ```mermaid
@@ -25,10 +25,10 @@ flowchart TB
         ansprom[ansible-prometheus]
         gov[cloud-governance-ops-automation]
         systems[linux-systems-platform / active first slice]
-        database[database-reliability-platform / planned]
-        resilience[resilience-service-operations / planned]
-        dataeng[data-engineering-platform / planned]
-        network[network-engineering-platform / planned]
+        database[database-reliability-platform / active first slice]
+        resilience[resilience-service-operations / active first slice]
+        dataeng[data-engineering-platform / active first slice]
+        network[network-engineering-platform / active first slice]
         jobs[jenkins-jobs]
         lib[jenkins-shared-library]
     end
@@ -61,10 +61,10 @@ flowchart TB
     ansprom --> mr
     gov --> mr
     systems --> mr
-    database -. planned .-> mr
-    resilience -. planned .-> mr
-    dataeng -. planned .-> mr
-    network -. planned .-> mr
+    database --> mr
+    resilience --> mr
+    dataeng --> mr
+    network --> mr
     jobs --> jenkins
     lib --> jenkins
     mr --> protected
@@ -112,10 +112,10 @@ flowchart TB
 | Observability/SRE | Provides dashboards, alerts, SLOs, incident runbooks, and RCA evidence |
 | Governance Automation | Enforces IAM, secrets, compliance, backups, cost, certificates, and remediation |
 | Linux Systems Platform | Active first slice for Linux lifecycle, baseline, patching, storage, DNS/NTP, drift, compliance evidence, and recovery runbooks against the existing VM fleet |
-| Database Reliability Platform (planned) | Automates database lifecycle, security, performance, backup, recovery, and upgrades |
-| Resilience and Service Operations (planned) | Connects SLOs, incident response, capacity, performance, chaos, and disaster recovery |
-| Data Engineering Platform (planned) | Governs ingestion, orchestration, transformation, quality, lineage, and lakehouse patterns |
-| Network Engineering Platform (planned) | Automates IPAM, DNS/DHCP, routing, switching, firewalls, VPN, cloud, and Kubernetes networking |
+| Database Reliability Platform | Active first slice for database readiness, security, performance, backup, recovery, and lifecycle evidence |
+| Resilience and Service Operations | Active first slice for service catalog, SLO, incident, exercise, and readiness evidence |
+| Data Engineering Platform | Active first slice for source inventory, quality, orchestration, lineage, and access governance evidence |
+| Network Engineering Platform | Active first slice for source-of-truth, DNS/DHCP, connectivity, firewall/proxy, and Kubernetes network evidence |
 | Jenkins Jobs | Creates Jenkins pipeline jobs from source-controlled Job DSL, including `projects/run-ansible-playbook` |
 | Jenkins Shared Library | Provides reusable AWX launch logic to pipelines, including playbook allowlists, extra-vars allowlists, and apply confirmation guardrails |
 | Delivery Control Plane | GitLab, protected branches, Jenkins, AWX, and Ansible working together |
@@ -133,12 +133,11 @@ flowchart TB
 6. Observability and governance continuously validate reliability, security, and compliance.
 7. `linux-systems-platform` uses the Jenkins/AWX Ansible launcher for approved
    Linux operations against the existing VM fleet.
-8. The remaining planned projects extend those controls into database, service
-   operations, data, and network engineering after capacity and implementation
-   approval.
+8. Projects 7–10 extend those controls into database, service operations, data,
+   and network engineering using evidence-only first slices.
 
 The current lab has no infrastructure HA. Numeric suffixes identify only true
 cluster members. The Elastic/Splunk VMs are provisioned but their products are
 not installed as of 2026-07-27. Project 6 uses existing VMs for operations
 automation; Projects 7–10 have no dedicated runtime allocation and must not be
-shown as deployed.
+shown as deployed products.
