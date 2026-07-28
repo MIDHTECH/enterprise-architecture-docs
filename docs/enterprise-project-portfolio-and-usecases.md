@@ -25,6 +25,30 @@ program's organizing principle.
 
 These are not meant to read like classroom exercises. They are structured as working engineering repos with GitLab, CI/CD controls, environment separation, review gates, security checks, docs, and operational runbooks.
 
+## Recent Healthcare Hiring Signals
+
+The newer use cases are shaped from current healthcare technology hiring
+patterns, but the portfolio does not store job postings or copy role language.
+The signal is clear enough without turning the docs into a scraped job board:
+healthcare teams want engineers who can keep hybrid platforms reliable while
+modernizing data movement, making AI safe enough to operate, and proving that
+changes are reviewed, observable, and recoverable.
+
+For MidhHealth, that translates into practical work:
+
+| Hiring signal | MidhHealth use case direction |
+| --- | --- |
+| SRE roles now expect observability, resilience, automation, and AI-assisted operations to live together | Build alerts that carry enough context for triage, enrich incidents with runbook and dependency evidence, and measure whether automation actually reduces recovery time |
+| Healthcare data roles keep asking for EHR, FHIR, HL7/X12, cloud data platforms, lineage, quality, and real-time pipelines | Treat data feeds as governed products: inventory the source, validate the schema, track lineage, monitor freshness, and make failures visible before downstream teams make decisions from stale data |
+| AI roles are moving from experiments to production systems with RAG, agents, responsible AI, evaluation, and auditability | Start with constrained assistants for knowledge retrieval, claims or care-operation support, and incident summarization; require prompt/version tracking, human review, and safety checks before workflow integration |
+| MLOps roles emphasize model registries, CI/CT/CD, serving, monitoring, drift, rollback, and governance evidence | Promote models like software: every candidate has data lineage, validation results, deployment evidence, telemetry, rollback path, and an owner |
+| Cloud/platform roles still need CI/CD, IaC, Kubernetes, security, cost controls, and operational support | Keep the platform boring in the best way: repeatable builds, protected branches, review gates, secrets out of Git, and visible deployment evidence |
+
+The goal is not to claim that every tool is installed today. The goal is to make
+each repo tell a believable story about the kind of work a healthcare platform
+engineer, SRE, data engineer, AI engineer, or MLOps engineer would actually be
+asked to do.
+
 ## Enterprise Architecture
 
 ```mermaid
@@ -733,6 +757,13 @@ flowchart LR
 | Clinical and Payer Workflow Integration | API-first integration into provider and insurance workflows |
 | AI Incident Response | Playbooks for unsafe output, tool failure and degraded models |
 
+The first useful AI slice should feel small and real: index approved runbooks,
+policy documents, service catalogs, and sanitized healthcare workflow notes;
+let an engineer ask why an alert is noisy, why a claims feed is late, or what
+changed before a service degraded; then return cited context, confidence,
+owner, and next action. That is more valuable than a flashy assistant with no
+audit trail.
+
 ## Project 12: Enterprise MLOps Model Platform
 
 **Status:** Approved planned project.
@@ -779,6 +810,13 @@ flowchart LR
 | ML Infrastructure as Code | Reproducible cloud and Kubernetes model environments |
 | Model Governance Evidence | Audit records for regulated model operation |
 | ML Incident Response | Runbooks for degraded, biased or unavailable models |
+
+The first useful MLOps slice should prove that a model can move through the
+same discipline as application code. A small readmission-risk, claim-routing,
+call-center intent, or capacity-forecasting model is enough: track the dataset,
+record the training run, run validation gates, publish an approved artifact,
+serve it in a controlled environment, watch drift and latency, and document the
+rollback path.
 
 ## How the Twelve Projects Cover the Role Families
 
