@@ -35,6 +35,7 @@ operators and engineers a common operating record for the platform.
 - [Engineer Training Standard](docs/engineer-training-standard.md)
 - [Enterprise Branching Strategy](docs/branching-strategy.md)
 - [Component Architecture Diagram](docs/component-architecture.md)
+- [Platform Domain Pages](docs/projects/README.md)
 
 ## Repository Purpose
 

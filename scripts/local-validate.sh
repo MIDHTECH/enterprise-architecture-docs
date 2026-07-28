@@ -21,6 +21,19 @@ required_docs=(
   "docs/engineer-interview-guide.md"
   "docs/engineer-training-standard.md"
   "docs/marketing-role-engineer-guide.md"
+  "docs/projects/README.md"
+  "docs/projects/devsecops-delivery.md"
+  "docs/projects/multi-cloud-infrastructure.md"
+  "docs/projects/kubernetes-platform.md"
+  "docs/projects/observability-sre.md"
+  "docs/projects/governance-operations.md"
+  "docs/projects/linux-systems.md"
+  "docs/projects/database-reliability.md"
+  "docs/projects/resilience-service-operations.md"
+  "docs/projects/data-engineering.md"
+  "docs/projects/network-engineering.md"
+  "docs/projects/healthcare-ai.md"
+  "docs/projects/mlops-model-platform.md"
 )
 
 for path in "${required_docs[@]}"; do

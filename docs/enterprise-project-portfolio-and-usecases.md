@@ -231,20 +231,20 @@ flowchart TB
 
 ## Portfolio Status
 
-| # | Repository | Status on 2026-07-27 |
-| ---: | --- | --- |
-| 1 | `devsecops-cicd-orchestrator` | Active implementation |
-| 2 | `cloud-infra-automation-platform` | Active implementation |
-| 3 | `kubernetes-platform-gitops` | Active implementation |
-| 4 | `observability-sre-platform` | Active implementation |
-| 5 | `cloud-governance-ops-automation` | Active implementation |
-| 6 | `linux-systems-platform` | Active first implementation slice against existing VM fleet |
-| 7 | `database-reliability-platform` | Active first implementation slice against existing VM fleet |
-| 8 | `resilience-service-operations` | Active first implementation slice against existing VM fleet |
-| 9 | `data-engineering-platform` | Active first implementation slice against existing VM fleet |
-| 10 | `network-engineering-platform` | Active first implementation slice against existing VM fleet |
-| 11 | `healthcare-ai-platform` | Approved AI platform project; implementation planned |
-| 12 | `mlops-model-platform` | Approved ML platform project; implementation planned |
+| Domain | Repository | Team page | Status on 2026-07-27 |
+| --- | --- | --- | --- |
+| DevSecOps delivery | `devsecops-cicd-orchestrator` | [Team model](projects/devsecops-delivery.md) | Active implementation |
+| Multi-cloud infrastructure | `cloud-infra-automation-platform` | [Team model](projects/multi-cloud-infrastructure.md) | Active implementation |
+| Kubernetes platform | `kubernetes-platform-gitops` | [Team model](projects/kubernetes-platform.md) | Active implementation |
+| Observability and SRE | `observability-sre-platform` | [Team model](projects/observability-sre.md) | Active implementation |
+| Governance and operations automation | `cloud-governance-ops-automation` | [Team model](projects/governance-operations.md) | Active implementation |
+| Linux systems engineering | `linux-systems-platform` | [Team model](projects/linux-systems.md) | Active first implementation slice against existing VM fleet |
+| Database reliability | `database-reliability-platform` | [Team model](projects/database-reliability.md) | Active first implementation slice against existing VM fleet |
+| Resilience and service operations | `resilience-service-operations` | [Team model](projects/resilience-service-operations.md) | Active first implementation slice against existing VM fleet |
+| Data engineering and integration | `data-engineering-platform` | [Team model](projects/data-engineering.md) | Active first implementation slice against existing VM fleet |
+| Network engineering and automation | `network-engineering-platform` | [Team model](projects/network-engineering.md) | Active first implementation slice against existing VM fleet |
+| Healthcare AI platform | `healthcare-ai-platform` | [Team model](projects/healthcare-ai.md) | Approved AI platform domain; implementation planned |
+| MLOps model platform | `mlops-model-platform` | [Team model](projects/mlops-model-platform.md) | Approved ML platform domain; implementation planned |
 
 The Linux systems, database reliability, resilience/service operations, data
 engineering, and network engineering teams use existing automation, GitLab,
@@ -258,6 +258,9 @@ host heavier backend data, observability, AI/ML batch, and model-serving
 workloads after installation and placement controls are documented. Protected
 data access, production model deployment, external model providers, and
 regulated AI workflows still require separate approval.
+
+Team size, team-member responsibilities, operating interfaces, and use-case
+scope are maintained in the [platform domain pages](projects/README.md).
 
 ## GitLab Repository Model
 

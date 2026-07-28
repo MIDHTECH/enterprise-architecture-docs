@@ -135,7 +135,7 @@ flowchart TB
 
 | Component | Purpose |
 | --- | --- |
-| MidhHealth Integrated Care | Fictional integrated care delivery and health insurance organization |
+| MidhHealth Integrated Care | Integrated care delivery and health insurance organization |
 | Care Delivery Operations | Hospital systems, clinical platforms, digital care, patient access, and care operations |
 | Insurance / Payer Operations | Claims, eligibility, authorizations, member services, payment integrity, and payer analytics |
 | Application and Platform Teams | Consumers and contributors to the enterprise platform |
