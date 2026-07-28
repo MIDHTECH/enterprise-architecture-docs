@@ -1,19 +1,21 @@
 # Enterprise Project Portfolio and Use Case Coverage
 
-This document explains how the ten enterprise projects fit together for
+This document explains how the twelve enterprise projects fit together for
 **MidhHealth Integrated Care**, a fictional care delivery and health insurance
 organization. The platform supports both provider operations and payer
 operations: hospital systems, digital care, claims, eligibility,
 authorizations, member services, analytics, security, and hybrid infrastructure.
 Projects 1–10 have implementation repositories. Projects 6–10 currently use
 active first slices against existing VMs and do not imply new product installs,
-new VM placement, or production capacity.
+new VM placement, or production capacity. Projects 11–12 add AI and ML platform
+domains based on aggregate healthcare technology job requirements from the last
+six months.
 
 Read the projects as one organization-wide hybrid platform program. The repos
 represent platform domains owned by different engineering teams inside
-MidhHealth, but they share one GitLab group, one review and delivery model, one
-Jenkins/AWX automation control plane, shared governance controls, and common
-on-prem/cloud operating standards.
+MidhHealth, but they share one top-level GitLab organization, one review and
+delivery model, one Jenkins/AWX automation control plane, shared governance
+controls, and common on-prem/cloud operating standards.
 
 The portfolio is role-centered for DevOps, SRE, Database, Linux/System, Data,
 and Network Engineers. MAAS is one possible reference workload, not the
@@ -25,7 +27,7 @@ These are not meant to read like classroom exercises. They are structured as wor
 
 ```mermaid
 flowchart TB
-    org[MidhHealth Integrated Care] --> git[GitLab Group]
+    org[MidhHealth Integrated Care] --> git[GitLab Organization: midhhealth]
     org --> teams[Platform, SRE, Security, Data, Network and App Teams]
     teams --> git
     git --> apprepo[Application and Project Repositories]
@@ -64,6 +66,8 @@ flowchart TB
     resilience[Project 8: Resilience and Service Operations]
     data[Project 9: Data Engineering and Integration]
     network[Project 10: Network Engineering and Automation]
+    ai[Project 11: Healthcare AI Platform]
+    ml[Project 12: MLOps Model Platform]
 
     iac --> systems
     network --> iac
@@ -79,6 +83,11 @@ flowchart TB
     sec --> database
     sec --> data
     sec --> network
+    data --> ai
+    data --> ml
+    ai --> apps
+    ml --> ai
+    obs --> ml
 
     onprem[On-Prem KVM and Kubernetes] --> k8s
     cloudtarget[Governed Cloud Targets] --> aws
@@ -93,7 +102,7 @@ flowchart TB
 | Business model | Integrated care delivery and health insurance provider |
 | Provider operations | Hospital systems, clinical platforms, digital care, patient access, and care operations |
 | Payer operations | Claims, eligibility, authorizations, member services, payment integrity, and analytics |
-| Source control | One GitLab group, protected branches, merge requests, and audit trail |
+| Source control | One `midhhealth` GitLab organization, domain subgroups, protected branches, merge requests, and audit trail |
 | Delivery | Jenkins, GitLab CI, AWX, Ansible, Terraform, GitOps, and reusable shared libraries |
 | On-premises platform | KVM/libvirt, Rocky Linux VMs, DNS, NGINX, Kubernetes, observability, and product VMs |
 | Cloud platform | AWS, Azure, and GCP foundations managed through the same Terraform, Ansible, CI, governance, and review model |
@@ -114,11 +123,17 @@ flowchart TB
 | 8 | `resilience-service-operations` | Active first implementation slice against existing VM fleet |
 | 9 | `data-engineering-platform` | Active first implementation slice against existing VM fleet |
 | 10 | `network-engineering-platform` | Active first implementation slice against existing VM fleet |
+| 11 | `healthcare-ai-platform` | Approved AI platform project; implementation planned |
+| 12 | `mlops-model-platform` | Approved ML platform project; implementation planned |
 
 Active first slices for Projects 6–10 do not authorize VM creation or product
 installation. The current hypervisors are capacity constrained, so these
 projects reuse existing automation, GitLab, Jenkins/AWX, and VM capacity unless
 a documented capacity expansion is approved.
+
+Projects 11–12 are approved logical platform domains. They must reuse existing
+GitLab, CI/CD, Kubernetes, observability, data, and governance foundations until
+separate capacity, product, and compliance approval is completed.
 
 ## GitLab Repository Model
 
@@ -126,29 +141,35 @@ All projects and documentation should live in GitLab so code, review, approvals,
 
 For the standard branch naming, merge request, protected branch, environment, and rollback model, see [Enterprise Branching Strategy](branching-strategy.md).
 
-Recommended GitLab group:
+Recommended GitLab organization:
 
 ```text
-maas-enterprise-cloud-platform/
+midhhealth/
 ```
 
-Recommended repositories:
+Recommended subgroups and repositories:
 
-| GitLab repository | Purpose |
+| GitLab path | Purpose |
 | --- | --- |
-| `enterprise-architecture-docs` | Architecture diagrams, use case mapping, implementation roadmap, engineer interview narratives |
-| `devsecops-cicd-orchestrator` | Jenkins/GitLab CI pipeline, security gates, Docker build, AWX/Ansible deployment |
-| `cloud-infra-automation-platform` | Terraform and Ansible automation for AWS, Azure, and GCP infrastructure |
-| `kubernetes-platform-gitops` | AKS/EKS/GKE platform, Helm, Argo CD/Flux, ingress, policy, autoscaling |
-| `observability-sre-platform` | Prometheus, Grafana, logs, traces, alerts, SLOs, incident dashboards |
-| `cloud-governance-ops-automation` | IAM/RBAC, secrets, compliance, backup, DR, cost, certificate, remediation automation |
-| `linux-systems-platform` | Linux lifecycle, KVM, patching, configuration, storage, DNS and system services |
-| `database-reliability-platform` | Database lifecycle, performance, backup, recovery, security and upgrades |
-| `resilience-service-operations` | SLOs, incidents, capacity, performance, chaos, DR and service operations |
-| `data-engineering-platform` | Batch/stream ingestion, orchestration, transformation, quality, lineage and lakehouse patterns |
-| `network-engineering-platform` | IPAM, DNS/DHCP, routing, switching, firewalls, VPN, cloud and Kubernetes networking |
-| `jenkins-jobs` | Jenkins Job DSL seed jobs and managed pipeline definitions |
-| `jenkins-shared-library` | Reusable Jenkins pipeline steps, including AWX launch helper |
+| `midhhealth/enterprise-architecture/enterprise-architecture-docs` | Architecture diagrams, use case mapping, implementation roadmap, engineer interview narratives |
+| `midhhealth/platform-delivery/devsecops-cicd-orchestrator` | Jenkins/GitLab CI pipeline, security gates, Docker build, AWX/Ansible deployment |
+| `midhhealth/platform-delivery/jenkins-jobs` | Jenkins Job DSL seed jobs and managed pipeline definitions |
+| `midhhealth/platform-delivery/jenkins-shared-library` | Reusable Jenkins pipeline steps, including AWX launch helper |
+| `midhhealth/platform-engineering/cloud-infra-automation-platform` | Terraform and Ansible automation for AWS, Azure, and GCP infrastructure |
+| `midhhealth/platform-engineering/kubernetes-platform-gitops` | AKS/EKS/GKE platform, Helm, Argo CD/Flux, ingress, policy, autoscaling |
+| `midhhealth/platform-engineering/linux-systems-platform` | Linux lifecycle, KVM, patching, configuration, storage, DNS and system services |
+| `midhhealth/platform-engineering/network-engineering-platform` | IPAM, DNS/DHCP, routing, switching, firewalls, VPN, cloud and Kubernetes networking |
+| `midhhealth/reliability-operations/observability-sre-platform` | Prometheus, Grafana, logs, traces, alerts, SLOs, incident dashboards |
+| `midhhealth/reliability-operations/resilience-service-operations` | SLOs, incidents, capacity, performance, exercises, DR and service operations |
+| `midhhealth/reliability-operations/ansible-observability` | Native observability product installation and operations |
+| `midhhealth/reliability-operations/ansible-prometheus` | Prometheus, Grafana, and Node Exporter installation automation |
+| `midhhealth/security-governance/cloud-governance-ops-automation` | IAM/RBAC, secrets, compliance, backup, DR, cost, certificate, remediation automation |
+| `midhhealth/data-and-integration/database-reliability-platform` | Database lifecycle, performance, backup, recovery, security and upgrades |
+| `midhhealth/data-and-integration/data-engineering-platform` | Batch/stream ingestion, orchestration, transformation, quality, lineage and lakehouse patterns |
+| `midhhealth/ai-and-ml-platform/healthcare-ai-platform` | RAG, agentic workflows, AI assistants, FHIR-aware APIs, responsible AI controls, and AI workflow integration |
+| `midhhealth/ai-and-ml-platform/mlops-model-platform` | ML lifecycle, feature pipelines, model registry, CI/CT/CD, serving, monitoring, drift, retraining, and model governance |
+| `midhhealth/care-delivery-platform` | Future clinical, patient access, digital care, and hospital operations applications |
+| `midhhealth/payer-operations-platform` | Future claims, eligibility, authorizations, member services, and payment integrity applications |
 
 Recommended GitLab flow:
 
@@ -659,21 +680,104 @@ flowchart LR
 | Capacity and Bandwidth Planning | Forecasted network growth |
 | Network Change Validation and Rollback | Pre/post checks and safe recovery |
 
-## How the Ten Projects Cover the Role Families
+## Project 11: Enterprise Healthcare AI Platform
+
+**Status:** Approved planned project.
+
+**Purpose:** Build production-ready AI application capabilities for care
+delivery, payer operations, value-based care, member services, clinician
+workflows, and enterprise knowledge automation.
+
+**Candidate tools:** Python, FastAPI, LangChain or LangGraph, Semantic Kernel,
+AutoGen, vector databases, Azure AI Search, Weaviate, Pinecone, FAISS,
+OpenAI-compatible APIs, FHIR APIs, Kubernetes, Helm, Terraform, GitLab CI,
+Prometheus, Grafana, OpenTelemetry, policy-as-code and responsible AI checks.
+
+```mermaid
+flowchart LR
+    source[EHR / Claims / Policies / Knowledge] --> retrieve[RAG and Retrieval]
+    retrieve --> agents[AI Agents and Assistants]
+    agents --> workflows[Care / Payer Workflows]
+    workflows --> guardrails[Responsible AI Guardrails]
+    guardrails --> telemetry[AI Observability and Feedback]
+```
+
+| Use case | Coverage target |
+| --- | --- |
+| Clinical AI Assistant Platform | Secure assistants for clinical workflow support |
+| Payer AI Assistant Platform | Claims, eligibility, authorization and member-service support |
+| Retrieval-Augmented Generation | Governed document and knowledge retrieval |
+| Agentic Workflow Automation | Tool-calling workflows with safe execution boundaries |
+| Healthcare Knowledge Base Indexing | Chunking, embeddings, ranking and searchable knowledge stores |
+| FHIR-Aware AI APIs | Auditable clinical-data exchange for AI workflows |
+| AI Prompt and Response Evaluation | Regression, safety and quality evaluation |
+| Responsible AI Controls | Bias, transparency, approval and human-review guardrails |
+| AI Workflow Audit Logging | Traceable prompts, context, tools and responses |
+| AI Cost and Latency Optimization | Token, model, cache and inference performance controls |
+| AI Security and Access Control | Least-privilege access to tools, data and model endpoints |
+| AI Release Governance | Reviewable promotion across development, QA, stage and production |
+| AI Observability | Metrics, traces, evaluations, failures and user feedback |
+| Clinical and Payer Workflow Integration | API-first integration into provider and insurance workflows |
+| AI Incident Response | Playbooks for unsafe output, tool failure and degraded models |
+
+## Project 12: Enterprise MLOps Model Platform
+
+**Status:** Approved planned project.
+
+**Purpose:** Standardize machine-learning lifecycle operations for training,
+validation, deployment, monitoring, retraining, model governance, and production
+reliability across clinical, operational, financial and payer use cases.
+
+**Candidate tools:** MLflow, Kubeflow, SageMaker, Azure ML, Vertex AI,
+Databricks, Spark, Python, SQL, feature stores, model registries, Docker,
+Kubernetes, Helm, Terraform, GitLab CI, Airflow, Prometheus, Grafana,
+OpenTelemetry, Great Expectations and data-quality tooling.
+
+```mermaid
+flowchart LR
+    data[Curated Data / Features] --> train[Training and Validation]
+    train --> registry[Model Registry]
+    registry --> deploy[Batch / Real-Time Serving]
+    deploy --> monitor[Model Monitoring]
+    monitor --> retrain[Retraining and Promotion]
+    retrain --> registry
+```
+
+| Use case | Coverage target |
+| --- | --- |
+| ML Training Pipeline Standardization | Repeatable training workflows |
+| Feature Engineering and Feature Stores | Governed reusable features |
+| Model Registry and Versioning | Traceable model lineage and promotion |
+| Model Validation Gates | Accuracy, fairness, safety and performance checks |
+| CI/CT/CD for ML | Automated train, test, validate, deploy and promote workflows |
+| Batch Inference | Scheduled scoring and downstream delivery |
+| Real-Time Inference APIs | Low-latency model serving |
+| Model Observability | Latency, errors, throughput and quality signals |
+| Drift Detection | Data, prediction and concept drift monitoring |
+| Automated Retraining | Controlled retraining triggers and approvals |
+| Model Rollback | Safe recovery to a prior approved model |
+| Experiment Tracking | Metrics, artifacts, parameters and reproducibility |
+| ML Infrastructure as Code | Reproducible cloud and Kubernetes model environments |
+| Model Governance Evidence | Audit records for regulated model operation |
+| ML Incident Response | Runbooks for degraded, biased or unavailable models |
+
+## How the Twelve Projects Cover the Role Families
 
 | Role family | Best matching projects |
 | --- | --- |
 | DevOps Engineer | Projects 1, 2, 3, 6 |
-| Site Reliability Engineer | Projects 3, 4, 7, 8 |
-| Database Engineer | Projects 7, 8, 9 |
+| Site Reliability Engineer | Projects 3, 4, 7, 8, 11, 12 |
+| Database Engineer | Projects 7, 8, 9, 12 |
 | Linux/System Engineer | Projects 2, 4, 6, 8 |
-| Data Engineer | Projects 7, 9 |
+| Data Engineer | Projects 7, 9, 11, 12 |
 | Network Engineer | Projects 2, 3, 6, 10 |
 | DevSecOps Engineer | Projects 1, 3, 5 |
-| Cloud Infrastructure Engineer | Projects 2, 6, 10 |
-| Kubernetes Platform Engineer | Projects 3, 4, 10 |
-| Platform Engineer | Projects 1, 2, 3, 4, 6 |
-| Security/Governance Engineer | Projects 1, 5, 6, 7, 9, 10 |
+| Cloud Infrastructure Engineer | Projects 2, 6, 10, 11, 12 |
+| Kubernetes Platform Engineer | Projects 3, 4, 10, 11, 12 |
+| Platform Engineer | Projects 1, 2, 3, 4, 6, 11, 12 |
+| Security/Governance Engineer | Projects 1, 5, 6, 7, 9, 10, 11, 12 |
+| AI Engineer | Projects 9, 11, 12 |
+| Machine Learning Engineer | Projects 9, 11, 12 |
 
 ## Portfolio Use-Case Count
 
@@ -689,7 +793,9 @@ flowchart LR
 | 8. Resilience and Service Operations | 20 |
 | 9. Data Engineering and Integration | 25 |
 | 10. Network Engineering and Automation | 31 |
-| **Total** | **187** |
+| 11. Healthcare AI Platform | 15 |
+| 12. MLOps Model Platform | 15 |
+| **Total** | **217** |
 
 ## Portfolio Decision Record
 
@@ -700,6 +806,7 @@ flowchart LR
 | 2026-07-27 | Start Project 6 implementation against the existing VM fleet | Implement Linux operations use cases without creating new infrastructure | Adds Ansible inventory, playbooks, roles, evidence reports, and runbooks for Linux lifecycle, baseline, patching, access, storage, network/time, capacity, drift, compliance, and break-glass recovery. |
 | 2026-07-27 | Add Jenkins/AWX launcher guardrails for Linux systems operations | Let operators select project, branch, inventory, playbook, and extra vars while preserving review and safety controls | Adds `projects/run-ansible-playbook`, shared-library allowlists, `CONFIRM_APPLY` for state-changing playbooks, and AWX/Jenkins integration documentation. |
 | 2026-07-27 | Start Projects 7–10 first implementation slices | Complete the approved database, resilience, data, and network project starts without expanding infrastructure | Adds safe Ansible evidence playbooks, GitLab CI validation, runbooks, training coverage, and Jenkins/AWX catalog registration for the four remaining enterprise projects. |
+| 2026-07-27 | Add Projects 11–12 for AI and ML platform domains | Reflect healthcare job-market demand for production AI, RAG, agents, MLOps, model governance, drift monitoring and regulated AI operations | Adds approved planned domains for `healthcare-ai-platform` and `mlops-model-platform`; does not save individual job-posting details or authorize new runtime capacity. |
 
 ## Recommended Implementation Order
 
@@ -715,7 +822,13 @@ flowchart LR
    for service catalog, SLO, incident, exercise, and readiness evidence.
 6. Use Project 9 for data source, quality, orchestration, lineage, and access
    governance evidence before deploying any new data processing products.
+7. Use Project 11 after data/governance foundations exist; start with RAG,
+   agent guardrails, FHIR-aware APIs, AI evaluation, audit logging, and workflow
+   integration.
+8. Use Project 12 after data-quality and Kubernetes foundations exist; start
+   with ML lifecycle, model registry, CI/CT/CD, monitoring, drift, retraining
+   and governance evidence.
 
-This order avoids treating products as projects, keeps MAAS as one optional
-reference workload, and builds reusable enterprise capabilities for the six
-target engineering role families.
+This order avoids treating products as projects and builds reusable enterprise
+capabilities for platform, reliability, security, systems, database, data,
+network, AI and machine-learning engineering role families.

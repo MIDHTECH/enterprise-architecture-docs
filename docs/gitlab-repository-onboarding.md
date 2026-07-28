@@ -10,7 +10,8 @@ platform automation before AWX is introduced.
 
 - GitLab URL: `http://gitlab.example.com`
 - GitLab VM: `gitlab.example.com` (`192.168.1.101`)
-- Top-level group: `maas-enterprise-cloud-platform`
+- Top-level group: `midhhealth`
+- Display name: `MidhHealth`
 - Default branch: `main`
 - Project visibility: private
 
@@ -23,21 +24,21 @@ account credentials after TLS and the permanent identity model are configured.
 
 | Local repository | GitLab project |
 | --- | --- |
-| `cloud-governance-ops-automation` | `maas-enterprise-cloud-platform/cloud-governance-ops-automation` |
-| `cloud-infra-automation-platform` | `maas-enterprise-cloud-platform/cloud-infra-automation-platform` |
-| `devsecops-cicd-orchestrator` | `maas-enterprise-cloud-platform/devsecops-cicd-orchestrator` |
-| `enterprise-architecture-docs` | `maas-enterprise-cloud-platform/enterprise-architecture-docs` |
-| `jenkins-shared-library` | `maas-enterprise-cloud-platform/jenkins-shared-library` |
-| `jenkins_jobs` | `maas-enterprise-cloud-platform/jenkins-jobs` |
-| `kubernetes-platform-gitops` | `maas-enterprise-cloud-platform/kubernetes-platform-gitops` |
-| `observability-sre-platform` | `maas-enterprise-cloud-platform/observability-sre-platform` |
-| `ansible-observability` | `maas-enterprise-cloud-platform/ansible-observability` |
-| `ansible-prometheus` | `maas-enterprise-cloud-platform/ansible-prometheus` |
-| `linux-systems-platform` | `maas-enterprise-cloud-platform/linux-systems-platform` |
-| `database-reliability-platform` | `maas-enterprise-cloud-platform/database-reliability-platform` |
-| `resilience-service-operations` | `maas-enterprise-cloud-platform/resilience-service-operations` |
-| `data-engineering-platform` | `maas-enterprise-cloud-platform/data-engineering-platform` |
-| `network-engineering-platform` | `maas-enterprise-cloud-platform/network-engineering-platform` |
+| `enterprise-architecture-docs` | `midhhealth/enterprise-architecture/enterprise-architecture-docs` |
+| `devsecops-cicd-orchestrator` | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
+| `jenkins_jobs` | `midhhealth/platform-delivery/jenkins-jobs` |
+| `jenkins-shared-library` | `midhhealth/platform-delivery/jenkins-shared-library` |
+| `cloud-infra-automation-platform` | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
+| `kubernetes-platform-gitops` | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
+| `linux-systems-platform` | `midhhealth/platform-engineering/linux-systems-platform` |
+| `network-engineering-platform` | `midhhealth/platform-engineering/network-engineering-platform` |
+| `observability-sre-platform` | `midhhealth/reliability-operations/observability-sre-platform` |
+| `resilience-service-operations` | `midhhealth/reliability-operations/resilience-service-operations` |
+| `ansible-observability` | `midhhealth/reliability-operations/ansible-observability` |
+| `ansible-prometheus` | `midhhealth/reliability-operations/ansible-prometheus` |
+| `cloud-governance-ops-automation` | `midhhealth/security-governance/cloud-governance-ops-automation` |
+| `database-reliability-platform` | `midhhealth/data-and-integration/database-reliability-platform` |
+| `data-engineering-platform` | `midhhealth/data-and-integration/data-engineering-platform` |
 
 The local directory `jenkins_jobs` intentionally maps to the hyphenated GitLab
 path `jenkins-jobs`.
@@ -45,7 +46,7 @@ path `jenkins-jobs`.
 ## Remote Policy
 
 Every repository must have one writable remote named `origin`, and it must
-target the on-premises GitLab group:
+target the on-premises MidhHealth GitLab organization:
 
 ```bash
 git -C workspace.training/<repository> remote -v
@@ -65,7 +66,7 @@ After workstation DNS and GitLab access are working:
 
 ```bash
 git clone \
-  http://gitlab.example.com/maas-enterprise-cloud-platform/<project>.git
+  ssh://git@gitlab.example.com:2222/midhhealth/<subgroup>/<project>.git
 cd <project>
 git switch main
 git pull --ff-only
@@ -108,18 +109,17 @@ worktrees, exactly one remote, and matching local/remote `main` hashes:
 The documentation repository receives a subsequent documentation-only commit
 for this evidence and the associated SRE near-miss record.
 
-### 2026-07-27 Repository Organization Update
+### 2026-07-27 MidhHealth Organization Update
 
-- Created `maas-enterprise-cloud-platform/ansible-observability` for native
-  observability-tool installation and operations.
-- Transferred project ID 10 from `cloud-team/ansible-prometheus` to
-  `maas-enterprise-cloud-platform/ansible-prometheus`.
-- Preserved the transferred project's branches, history, artifacts, and
-  settings.
-- Standardized the group display name and path as
-  `maas-enterprise-cloud-platform`.
+- Adopted `midhhealth` as the top-level GitLab organization for all teams.
+- Split repositories into domain subgroups for enterprise architecture,
+  platform delivery, platform engineering, reliability operations,
+  security/governance, and data/integration.
+- Preserved existing repository names and histories.
+- Kept MAAS only as a reference workload and interview-source label, not as the
+  enterprise organization namespace.
 
-### 2026-07-27 Planned Enterprise Repository Scaffold Update
+### 2026-07-27 Enterprise Repository Scaffold Update
 
 - Created private GitLab repositories for Projects 6–10:
   `linux-systems-platform`,
@@ -127,10 +127,11 @@ for this evidence and the associated SRE near-miss record.
   `resilience-service-operations`,
   `data-engineering-platform`, and
   `network-engineering-platform`.
-- Added minimal repository scaffolds with README, project overview, local
-  validation script, and GitLab CI validation job.
-- Kept implementation status as planned. Repository creation does not approve
-  new VMs, products, IP addresses, or capacity expansion.
+- Added implementation slices with README, project overview, inventories,
+  Ansible playbooks, roles, local validation, runbooks, training coverage, and
+  GitLab CI validation.
+- Repository creation does not approve new VMs, products, IP addresses, or
+  capacity expansion.
 
 ### 2026-07-27 Linux Systems Jenkins/AWX Update
 

@@ -17,6 +17,7 @@ required_docs=(
   "docs/product-installation-splunk.md"
   "docs/sre-incident-register.md"
   "docs/jenkins-awx-ansible-operations.md"
+  "docs/gitlab-organization-model.md"
   "docs/engineer-interview-guide.md"
   "docs/engineer-training-standard.md"
   "docs/marketing-role-engineer-guide.md"
@@ -37,7 +38,9 @@ grep -q "database-reliability-platform" "$portfolio"
 grep -q "resilience-service-operations" "$portfolio"
 grep -q "data-engineering-platform" "$portfolio"
 grep -q "network-engineering-platform" "$portfolio"
-grep -Fq '| **Total** | **187** |' "$portfolio"
+grep -q "healthcare-ai-platform" "$portfolio"
+grep -q "mlops-model-platform" "$portfolio"
+grep -Fq '| **Total** | **217** |' "$portfolio"
 use_case_count="$(
   awk '
     /^## Project [0-9]+:/ { in_project=1; next }
@@ -46,7 +49,7 @@ use_case_count="$(
     END { print count+0 }
   ' "$portfolio"
 )"
-test "$use_case_count" -eq 187
+test "$use_case_count" -eq 217
 grep -q "elasticsearch01.example.com" docs/vm-inventory.md
 grep -q "elasticsearch03.example.com" docs/vm-inventory.md
 grep -q "splunk.example.com" docs/vm-inventory.md
@@ -56,6 +59,10 @@ grep -q "INC-2026-020" docs/sre-incident-register.md
 grep -q "projects/run-ansible-playbook" docs/jenkins-awx-ansible-operations.md
 grep -q "CONFIRM_APPLY" docs/jenkins-awx-ansible-operations.md
 grep -q "AWX_SCM_CREDENTIAL_ID" docs/jenkins-awx-ansible-operations.md
+grep -q "midhhealth/platform-delivery/jenkins-jobs" docs/jenkins-awx-ansible-operations.md
+grep -q "midhhealth/platform-engineering/linux-systems-platform" docs/gitlab-organization-model.md
+grep -q "midhhealth/ai-and-ml-platform/healthcare-ai-platform" docs/gitlab-organization-model.md
+grep -q "midhhealth/ai-and-ml-platform/mlops-model-platform" docs/gitlab-organization-model.md
 
 if grep -R --line-number --exclude='sre-incident-register.md' \
   'infra01\.midhtech\.local' docs; then

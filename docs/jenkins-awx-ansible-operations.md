@@ -36,8 +36,12 @@ Operators select `PROJECT`, `GIT_BRANCH`, `PLAYBOOK`,
 The Jenkins seed job must read `jenkins-jobs` from:
 
 ```text
-ssh://git@gitlab.example.com:2222/maas-enterprise-cloud-platform/jenkins-jobs.git
+ssh://git@gitlab.example.com:2222/midhhealth/platform-delivery/jenkins-jobs.git
 ```
+
+The shared library also expects active Ansible project repositories under the
+MidhHealth domain subgroups, such as `platform-engineering`,
+`reliability-operations`, and `data-and-integration`.
 
 ## Safety Controls
 

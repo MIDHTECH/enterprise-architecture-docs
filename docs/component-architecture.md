@@ -2,7 +2,7 @@
 
 ![Ten-project enterprise platform visual architecture diagram](assets/component-architecture.svg)
 
-This diagram explains how the active implementation repositories and
+This diagram explains how the active and planned implementation repositories and
 role-centered projects work together for **MidhHealth Integrated Care**, a
 fictional integrated care delivery and health insurance organization with a
 hybrid on-premises and cloud platform program.
@@ -21,23 +21,35 @@ flowchart TB
         networkops[Network Engineering]
     end
 
-    subgraph gitlab[GitLab Group: maas-enterprise-cloud-platform]
-        arch[enterprise-architecture-docs]
-        cicd[devsecops-cicd-orchestrator]
-        infra[cloud-infra-automation-platform]
-        k8s[kubernetes-platform-gitops]
-        obs[observability-sre-platform]
-        ansobs[ansible-observability]
-        ansprom[ansible-prometheus]
-        gov[cloud-governance-ops-automation]
-        systems[linux-systems-platform / active first slice]
-        database[database-reliability-platform / active first slice]
-        resilience[resilience-service-operations / active first slice]
-        dataeng[data-engineering-platform / active first slice]
-        network[network-engineering-platform / active first slice]
-        jobs[jenkins-jobs]
-        lib[jenkins-shared-library]
+    subgraph gitlab[GitLab Organization: midhhealth]
+        arch[enterprise-architecture]
+        delivery[platform-delivery]
+        platform[platform-engineering]
+        reliability[reliability-operations]
+        security[security-governance]
+        datagroup[data-and-integration]
+        aiml[ai-and-ml-platform]
+        careapps[care-delivery-platform]
+        payerapps[payer-operations-platform]
     end
+
+    arch --> archdocs[enterprise-architecture-docs]
+    delivery --> cicd[devsecops-cicd-orchestrator]
+    delivery --> jobs[jenkins-jobs]
+    delivery --> lib[jenkins-shared-library]
+    platform --> infra[cloud-infra-automation-platform]
+    platform --> k8s[kubernetes-platform-gitops]
+    platform --> systems[linux-systems-platform / active first slice]
+    platform --> network[network-engineering-platform / active first slice]
+    reliability --> obs[observability-sre-platform]
+    reliability --> resilience[resilience-service-operations / active first slice]
+    reliability --> ansobs[ansible-observability]
+    reliability --> ansprom[ansible-prometheus]
+    security --> gov[cloud-governance-ops-automation]
+    datagroup --> database[database-reliability-platform / active first slice]
+    datagroup --> dataeng[data-engineering-platform / active first slice]
+    aiml --> ai[healthcare-ai-platform / planned]
+    aiml --> mlops[mlops-model-platform / planned]
 
     subgraph delivery[Delivery Control Plane]
         mr[Merge Requests]
@@ -62,7 +74,7 @@ flowchart TB
     governance --> mr
     dataowners --> mr
     networkops --> mr
-    arch --> mr
+    archdocs --> mr
     cicd --> mr
     infra --> mr
     k8s --> mr
@@ -74,6 +86,8 @@ flowchart TB
     database --> mr
     resilience --> mr
     dataeng --> mr
+    ai --> mr
+    mlops --> mr
     network --> mr
     jobs --> jenkins
     lib --> jenkins
@@ -101,6 +115,9 @@ flowchart TB
     infra -. foundation .-> systems
     systems -. host services .-> database
     database -. governed data .-> dataeng
+    dataeng -. governed data .-> ai
+    dataeng -. curated features .-> mlops
+    mlops -. model lifecycle .-> ai
     network -. connectivity .-> kvm
     network -. connectivity .-> clusters
     obs -. reliability signals .-> resilience
@@ -117,7 +134,7 @@ flowchart TB
 | Application and Platform Teams | Consumers and contributors to the enterprise platform |
 | Security / Governance / Audit | Reviews risk, compliance, evidence, and production controls |
 | SRE / Operations | Owns reliability, incidents, alerts, and operational readiness |
-| GitLab Group | Single enterprise program home for all repositories |
+| GitLab Organization | `midhhealth` top-level namespace with domain subgroups for platform, reliability, security, data, AI/ML, care delivery, and payer operations |
 | Architecture Docs | Documents program architecture, role mapping, training standards, and interview material |
 | DevSecOps Orchestrator | Automates build, test, scan, package, deploy, and evidence collection |
 | Infrastructure Platform | Provisions AWS, Azure, and GCP infrastructure with Terraform and Ansible |
@@ -129,6 +146,8 @@ flowchart TB
 | Resilience and Service Operations | Active first slice for service catalog, SLO, incident, exercise, and readiness evidence |
 | Data Engineering Platform | Active first slice for source inventory, quality, orchestration, lineage, and access governance evidence |
 | Network Engineering Platform | Active first slice for source-of-truth, DNS/DHCP, connectivity, firewall/proxy, and Kubernetes network evidence |
+| Healthcare AI Platform | Planned domain for RAG, agents, AI assistants, FHIR-aware APIs, AI evaluation, guardrails and workflow integration |
+| MLOps Model Platform | Planned domain for training, registry, model serving, monitoring, drift, retraining and governance |
 | Jenkins Jobs | Creates Jenkins pipeline jobs from source-controlled Job DSL, including `projects/run-ansible-playbook` |
 | Jenkins Shared Library | Provides reusable AWX launch logic to pipelines, including playbook allowlists, extra-vars allowlists, and apply confirmation guardrails |
 | Delivery Control Plane | GitLab, protected branches, Jenkins, AWX, and Ansible working together |
@@ -149,6 +168,9 @@ flowchart TB
    Linux operations against the existing VM fleet.
 8. Projects 7–10 extend those controls into database, service operations, data,
    and network engineering using evidence-only first slices.
+9. Projects 11–12 extend the same controls into healthcare AI and ML model
+   operations after data, security, Kubernetes and governance foundations are
+   accepted.
 
 The current lab has no infrastructure HA. Numeric suffixes identify only true
 cluster members. The Elastic/Splunk VMs are provisioned but their products are

@@ -14,6 +14,7 @@ you language for talking about the work in interviews.
 - [Staff Documentation Standard](docs/documentation-standard.md)
 - [SRE Incident Register](docs/sre-incident-register.md)
 - [GitLab Repository Onboarding](docs/gitlab-repository-onboarding.md)
+- [GitLab Organization Model](docs/gitlab-organization-model.md)
 - [Jenkins AWX Ansible Operations](docs/jenkins-awx-ansible-operations.md)
 - [PostgreSQL 18 Installation](docs/product-installation-postgresql.md)
 - [Lab DNS and Copper9100 Configuration](docs/product-installation-dns.md)
@@ -36,18 +37,20 @@ you language for talking about the work in interviews.
 
 ## Repository Purpose
 
-This is the documentation home for the ten-project MidhHealth enterprise
+This is the documentation home for the twelve-project MidhHealth enterprise
 portfolio. The projects should be understood as departments or platform domains
 inside one integrated provider-payer organization, not as separate labs. They
 support hospital operations, digital care, claims, eligibility,
 authorizations, member services, analytics, security, and platform operations.
-They share one GitLab namespace, one Jenkins/AWX delivery control plane, one
-governance model, common environment standards, and a hybrid target footprint
-across on-prem KVM/Kubernetes and future AWS/Azure/GCP validation.
+They share the `midhhealth` GitLab organization, one Jenkins/AWX delivery
+control plane, one governance model, common environment standards, and a hybrid
+target footprint across on-prem KVM/Kubernetes and future AWS/Azure/GCP
+validation.
 
 Projects 1–10 now have implementation repositories. Projects 6–10 are active
 first slices that reuse existing VMs and do not imply new product installs,
-new VM placement, or production capacity:
+new VM placement, or production capacity. Projects 11–12 are approved AI/ML
+platform additions based on aggregate healthcare job-market requirements:
 
 - Enterprise DevSecOps Delivery Platform
 - Enterprise Multi-Cloud Infrastructure Platform
@@ -59,10 +62,12 @@ new VM placement, or production capacity:
 - Enterprise Resilience and Service Operations
 - Enterprise Data Engineering and Integration
 - Enterprise Network Engineering and Automation
+- Enterprise Healthcare AI Platform
+- Enterprise MLOps Model Platform
 
 It is also the authoritative operations record for rebuilding `infra01` and
 `infra02`, provisioning their Rocky Linux virtual machines, installing platform
-products, and rehearsing the MAAS modernization path on premises.
+products, and rehearsing healthcare platform modernization paths on premises.
 
 ## Extra Docs
 

@@ -149,10 +149,10 @@ Bootstrap Argo CD once, then let Argo CD install:
 
 Use the dedicated automation repositories:
 
-1. Run `maas-enterprise-cloud-platform/ansible-prometheus` for Prometheus,
+1. Run `midhhealth/reliability-operations/ansible-prometheus` for Prometheus,
    Grafana, and Node Exporter.
 2. Run syntax validation, lint, and check mode in
-   `maas-enterprise-cloud-platform/ansible-observability`.
+   `midhhealth/reliability-operations/ansible-observability`.
 3. Run `playbooks/install-observability.yml`.
 4. Run `playbooks/verify-observability.yml`.
 5. Apply the common baseline to the provisioned Elastic/Splunk VMs.

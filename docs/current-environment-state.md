@@ -23,26 +23,33 @@ The authoritative scope and all 187 use cases are maintained in
 
 ## GitLab organization
 
-- Group display name: `maas-enterprise-cloud-platform`
-- Group path: `maas-enterprise-cloud-platform`
+- Top-level group display name: `MidhHealth`
+- Top-level group path: `midhhealth`
+- Subgroups: `enterprise-architecture`, `platform-delivery`,
+  `platform-engineering`, `reliability-operations`, `security-governance`,
+  `data-and-integration`, `ai-and-ml-platform`, `care-delivery-platform`, and
+  `payer-operations-platform`
 - Visibility: private
 - Observability use cases:
-  `maas-enterprise-cloud-platform/observability-sre-platform`
+  `midhhealth/reliability-operations/observability-sre-platform`
 - Observability installation:
-  `maas-enterprise-cloud-platform/ansible-observability`
+  `midhhealth/reliability-operations/ansible-observability`
 - Prometheus, Grafana, and Node Exporter installation:
-  `maas-enterprise-cloud-platform/ansible-prometheus`
+  `midhhealth/reliability-operations/ansible-prometheus`
 - Linux systems implementation:
-  `maas-enterprise-cloud-platform/linux-systems-platform`
+  `midhhealth/platform-engineering/linux-systems-platform`
 - Jenkins/AWX Ansible launcher:
   `projects/run-ansible-playbook` generated from
-  `maas-enterprise-cloud-platform/jenkins-jobs` and backed by
-  `maas-enterprise-cloud-platform/jenkins-shared-library`
+  `midhhealth/platform-delivery/jenkins-jobs` and backed by
+  `midhhealth/platform-delivery/jenkins-shared-library`
 - Enterprise first-slice implementation repositories:
-  `maas-enterprise-cloud-platform/database-reliability-platform`,
-  `maas-enterprise-cloud-platform/resilience-service-operations`,
-  `maas-enterprise-cloud-platform/data-engineering-platform`,
-  `maas-enterprise-cloud-platform/network-engineering-platform`
+  `midhhealth/data-and-integration/database-reliability-platform`,
+  `midhhealth/reliability-operations/resilience-service-operations`,
+  `midhhealth/data-and-integration/data-engineering-platform`,
+  `midhhealth/platform-engineering/network-engineering-platform`
+- Approved AI/ML platform repositories:
+  `midhhealth/ai-and-ml-platform/healthcare-ai-platform`,
+  `midhhealth/ai-and-ml-platform/mlops-model-platform`
 
 ## Observability hosts
 
