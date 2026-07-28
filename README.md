@@ -10,6 +10,7 @@ you language for talking about the work in interviews.
 ## Documents
 
 - [Enterprise Project Portfolio and Use Case Coverage](docs/enterprise-project-portfolio-and-usecases.md)
+- [Advanced Use Case Comparison](docs/advanced-usecase-comparison.md)
 - [On-Premises Platform Build Runbook](docs/on-prem-platform-build-runbook.md)
 - [Staff Documentation Standard](docs/documentation-standard.md)
 - [SRE Incident Register](docs/sre-incident-register.md)
