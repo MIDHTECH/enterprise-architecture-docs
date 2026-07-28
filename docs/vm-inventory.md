@@ -38,6 +38,10 @@ package updates. Its `eno1`-to-`br0` cutover must be performed from the physical
 console after reserving the bridge DHCP identity; no VMs are assigned to
 infra03 yet.
 
+The `.141–.160` block was verified clear of consumer leases on 2026-07-28.
+Bridge preflight passed with the existing `.186` DHCP identity and physical MAC
+cloned onto the planned `br0`; the console-supervised cutover remains pending.
+
 ## Address and MAC Allocation
 
 Addresses `.101–.118` except `.109` are allocated to infra01 and
