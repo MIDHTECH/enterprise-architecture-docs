@@ -36,7 +36,7 @@ The lab supports two deployment targets:
 | --- | --- | --- | --- |
 | `infra01` | Existing Linux/KVM platform host | Core product VMs and shared platform services | Keep stable control-plane workloads here when possible |
 | `infra02` | Existing Linux/KVM platform host | General application, integration, Kubernetes and VM workloads | Balance non-critical workloads with `infra01` |
-| `infra03` | Available 256 GB Linux/KVM host | Data engineering, observability scale, AI/ML batch, model-serving backends and resilience testing | `br0`, `lab-bridge`, storage and DNS validated; label as memory optimized before workload placement |
+| `infra03` | Available 256 GB Linux/KVM host with 3.58 TiB VM pool | Elasticsearch and Kubernetes consolidation first; later data engineering, observability scale, AI/ML batch and resilience testing | `br0`, `lab-bridge`, internal DNS, `lab-images`, and `infra03-images` validated |
 | `midh-ai-edge-01` | Mac Studio M1, 32 GB RAM, 512 GB disk | Local AI inference, embeddings, notebooks, prompt/model evaluation and AI/ML CI smoke tests | Do not store protected production data; avoid long-term observability/data retention |
 
 Application promotion uses Kubernetes namespaces instead of a separate cluster

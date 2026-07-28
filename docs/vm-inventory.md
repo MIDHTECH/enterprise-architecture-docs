@@ -41,6 +41,16 @@ The `.141–.160` block was verified clear of consumer leases on 2026-07-28.
 The persistent `lab-bridge` network, internal DNS, gateway connectivity,
 storage pool, and three-host readiness checks pass.
 
+An additional 3.6 TiB disk was explicitly reformatted on 2026-07-28 as ext4
+label `infra03-libvirt`, mounted persistently at
+`/var/lib/libvirt/infra03-images`, and registered as the active, persistent,
+autostart libvirt pool `infra03-images`. It provides approximately 3.58 TiB for
+the approved first migration goal: move all three Elasticsearch nodes and the
+four-node Kubernetes cluster from infra01/02 to infra03, validate service and
+cluster health, then remove only the confirmed source copies to reclaim host
+capacity. VM names, IP addresses, MAC addresses, and guest configuration remain
+unchanged during migration.
+
 ## Address and MAC Allocation
 
 Addresses `.101–.118` except `.109` are allocated to infra01 and

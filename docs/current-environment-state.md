@@ -69,7 +69,7 @@ development.
 | --- | --- | --- |
 | `infra01` | Core platform and VM host | GitLab, Jenkins, AWX, DNS, proxy, and selected shared product VMs |
 | `infra02` | General platform and application host | Kubernetes workers, integration workloads, observability targets, and supporting VMs |
-| `infra03` | Available 256 GB memory-optimized Linux/KVM host | Data engineering, observability scale, AI/ML batch jobs, model-serving backends, and resilience exercises; ready for approved VM placement |
+| `infra03` | Available 256 GB memory-optimized Linux/KVM host with 3.58 TiB VM pool | First priority is Elasticsearch and Kubernetes consolidation; later data, observability, AI/ML backend, and resilience workloads require capacity review |
 | `midh-ai-edge-01` | Mac Studio M1, 32 GB RAM, 512 GB disk | AI/ML development, local inference, embeddings, notebooks, prompt and model evaluation, and CI smoke tests |
 
 The Mac Studio is not a primary Kubernetes worker and is not a regulated
@@ -196,3 +196,6 @@ coverage. The access defect is tracked separately as INC-2026-027.
 14. Register `midh-ai-edge-01` as the Mac Studio AI/ML development endpoint.
 15. Define `infra03` Kubernetes labels and workload placement guardrails before
     assigning VMs from its reserved `.141–.160` block.
+15. Migrate Elasticsearch01–03 and the Kubernetes control plane/workers to the
+    `infra03-images` pool, validate application and cluster health, then retire
+    the confirmed source domains to free infra01/02 capacity.
