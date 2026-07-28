@@ -48,9 +48,12 @@ target footprint across on-prem KVM/Kubernetes and future AWS/Azure/GCP
 validation.
 
 Projects 1–10 now have implementation repositories. Projects 6–10 are active
-first slices that reuse existing VMs and do not imply new product installs,
-new VM placement, or production capacity. Projects 11–12 are approved AI/ML
-platform additions based on aggregate healthcare job-market requirements:
+first slices that reuse existing VMs and do not imply new product installs or
+production capacity. Projects 11–12 are approved AI/ML platform additions based
+on aggregate healthcare job-market requirements. Their lab capacity plan now
+includes a Mac Studio M1 development/edge-inference node and a planned
+memory-optimized Linux server for heavier data, observability, and AI/ML
+workloads.
 
 - Enterprise DevSecOps Delivery Platform
 - Enterprise Multi-Cloud Infrastructure Platform
@@ -66,8 +69,10 @@ platform additions based on aggregate healthcare job-market requirements:
 - Enterprise MLOps Model Platform
 
 It is also the authoritative operations record for rebuilding `infra01` and
-`infra02`, provisioning their Rocky Linux virtual machines, installing platform
-products, and rehearsing healthcare platform modernization paths on premises.
+`infra02`, planning the additional memory-optimized Linux host, registering the
+Mac Studio AI/ML edge environment, provisioning Rocky Linux virtual machines,
+installing platform products, and rehearsing healthcare platform modernization
+paths on premises.
 
 ## Extra Docs
 

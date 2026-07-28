@@ -6,10 +6,12 @@ organization. The platform supports both provider operations and payer
 operations: hospital systems, digital care, claims, eligibility,
 authorizations, member services, analytics, security, and hybrid infrastructure.
 Projects 1–10 have implementation repositories. Projects 6–10 currently use
-active first slices against existing VMs and do not imply new product installs,
-new VM placement, or production capacity. Projects 11–12 add AI and ML platform
-domains based on aggregate healthcare technology job requirements from the last
-six months.
+active first slices against existing VMs and do not imply new product installs
+or production capacity. The capacity direction now adds a planned third Linux
+server with 256 GB RAM and a Mac Studio M1 named `midh-ai-edge-01` for AI/ML
+development and edge inference. Projects 11–12 add AI and ML platform domains
+based on aggregate healthcare technology job requirements from the last six
+months.
 
 Read the projects as one organization-wide hybrid platform program. The repos
 represent platform domains owned by different engineering teams inside
@@ -106,6 +108,8 @@ flowchart TB
 | Delivery | Jenkins, GitLab CI, AWX, Ansible, Terraform, GitOps, and reusable shared libraries |
 | On-premises platform | KVM/libvirt, Rocky Linux VMs, DNS, NGINX, Kubernetes, observability, and product VMs |
 | Cloud platform | AWS, Azure, and GCP foundations managed through the same Terraform, Ansible, CI, governance, and review model |
+| AI/ML edge | Mac Studio M1 `midh-ai-edge-01` for non-production inference, embeddings, notebooks, and evaluation |
+| Memory-optimized expansion | Planned 256 GB Linux server for data, observability, AI/ML backend workloads, and resilience exercises |
 | Governance | Security, secrets, compliance, cost, backup, certificate, and change controls across both on-prem and cloud |
 | Operations | SLOs, incident evidence, runbooks, platform telemetry, and controlled remediation |
 
@@ -126,14 +130,17 @@ flowchart TB
 | 11 | `healthcare-ai-platform` | Approved AI platform project; implementation planned |
 | 12 | `mlops-model-platform` | Approved ML platform project; implementation planned |
 
-Active first slices for Projects 6–10 do not authorize VM creation or product
-installation. The current hypervisors are capacity constrained, so these
-projects reuse existing automation, GitLab, Jenkins/AWX, and VM capacity unless
-a documented capacity expansion is approved.
+Active first slices for Projects 6–10 do not authorize product installation.
+They reuse existing automation, GitLab, Jenkins/AWX, and VM capacity unless a
+documented capacity expansion is approved.
 
-Projects 11–12 are approved logical platform domains. They must reuse existing
-GitLab, CI/CD, Kubernetes, observability, data, and governance foundations until
-separate capacity, product, and compliance approval is completed.
+Projects 11–12 are approved logical platform domains. The Mac Studio may be
+used for AI/ML development, local inference, embeddings, notebooks, evaluation,
+and CI smoke tests. The planned 256 GB Linux server may host heavier backend
+data, observability, AI/ML batch, and model-serving workloads after installation
+and placement controls are documented. Protected data access, production model
+deployment, external model providers, and regulated AI workflows still require
+separate approval.
 
 ## GitLab Repository Model
 
@@ -693,6 +700,12 @@ AutoGen, vector databases, Azure AI Search, Weaviate, Pinecone, FAISS,
 OpenAI-compatible APIs, FHIR APIs, Kubernetes, Helm, Terraform, GitLab CI,
 Prometheus, Grafana, OpenTelemetry, policy-as-code and responsible AI checks.
 
+**Lab placement:** `midh-ai-edge-01` supports local inference, embeddings,
+prompt evaluation, notebooks, and AI assistant prototypes without becoming a
+production data host. Backend vector search, API services, telemetry, and
+larger batch workloads should target Kubernetes or the planned 256 GB Linux
+server when capacity is available.
+
 ```mermaid
 flowchart LR
     source[EHR / Claims / Policies / Knowledge] --> retrieve[RAG and Retrieval]
@@ -732,6 +745,12 @@ reliability across clinical, operational, financial and payer use cases.
 Databricks, Spark, Python, SQL, feature stores, model registries, Docker,
 Kubernetes, Helm, Terraform, GitLab CI, Airflow, Prometheus, Grafana,
 OpenTelemetry, Great Expectations and data-quality tooling.
+
+**Lab placement:** `midh-ai-edge-01` supports experiment notebooks, small-model
+inference, embeddings, evaluation jobs, and developer smoke tests. Training
+pipelines, model registry services, feature pipelines, batch scoring, and
+larger model-serving backends should target Kubernetes or the planned 256 GB
+Linux server after workload labels, storage, and governance controls are set.
 
 ```mermaid
 flowchart LR
@@ -807,6 +826,7 @@ flowchart LR
 | 2026-07-27 | Add Jenkins/AWX launcher guardrails for Linux systems operations | Let operators select project, branch, inventory, playbook, and extra vars while preserving review and safety controls | Adds `projects/run-ansible-playbook`, shared-library allowlists, `CONFIRM_APPLY` for state-changing playbooks, and AWX/Jenkins integration documentation. |
 | 2026-07-27 | Start Projects 7–10 first implementation slices | Complete the approved database, resilience, data, and network project starts without expanding infrastructure | Adds safe Ansible evidence playbooks, GitLab CI validation, runbooks, training coverage, and Jenkins/AWX catalog registration for the four remaining enterprise projects. |
 | 2026-07-27 | Add Projects 11–12 for AI and ML platform domains | Reflect healthcare job-market demand for production AI, RAG, agents, MLOps, model governance, drift monitoring and regulated AI operations | Adds approved planned domains for `healthcare-ai-platform` and `mlops-model-platform`; does not save individual job-posting details or authorize new runtime capacity. |
+| 2026-07-27 | Add AI/ML edge and high-memory capacity direction | Separate developer inference from heavier backend workloads | Plans `midh-ai-edge-01` as a Mac Studio M1 AI/ML development and edge-inference node, and `infra03` as a future 256 GB Linux server for data, observability, AI/ML backend, and resilience workloads. |
 
 ## Recommended Implementation Order
 

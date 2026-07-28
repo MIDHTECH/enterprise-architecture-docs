@@ -14,12 +14,33 @@ governance standards, environment promotion, and operational evidence.
 
 Projects 1–10 have implementation repositories. Projects 6–10 are active first
 slices against the existing VM fleet: Linux systems, database reliability,
-resilience/service operations, data engineering, and network engineering. No
-VM, IP address, product installation, or capacity expansion is implied by their
-inclusion in the architecture.
+resilience/service operations, data engineering, and network engineering. They
+do not imply new product installation. A separate capacity plan now tracks a
+third memory-optimized Linux server and a Mac Studio M1 AI/ML edge development
+node.
 
-The authoritative scope and all 187 use cases are maintained in
+The authoritative scope and all 217 use cases are maintained in
 [Enterprise Project Portfolio and Use Case Coverage](enterprise-project-portfolio-and-usecases.md).
+
+## Hybrid capacity plan
+
+The lab is moving from a two-node on-premises base toward a hybrid engineering
+footprint that separates platform runtime, high-memory workloads, and AI/ML
+development.
+
+| Environment | Planned role | Workload boundary |
+| --- | --- | --- |
+| `infra01` | Core platform and VM host | GitLab, Jenkins, AWX, DNS, proxy, and selected shared product VMs |
+| `infra02` | General platform and application host | Kubernetes workers, integration workloads, observability targets, and supporting VMs |
+| `infra03` | Planned 256 GB memory-optimized Linux server | Data engineering, observability scale, AI/ML batch jobs, model-serving backends, and resilience exercises |
+| `midh-ai-edge-01` | Mac Studio M1, 32 GB RAM, 512 GB disk | AI/ML development, local inference, embeddings, notebooks, prompt and model evaluation, and CI smoke tests |
+
+The Mac Studio is not a primary Kubernetes worker and is not a regulated
+production data host. It is used as an engineering workstation and edge
+inference environment for non-production AI/ML workflows. The planned
+memory-optimized Linux server is the preferred placement for backend AI/ML,
+data, observability, and batch workloads that exceed the Mac Studio's memory or
+storage envelope.
 
 ## GitLab organization
 
@@ -98,3 +119,6 @@ troubleshooting steps are maintained in
 8. Configure production alert receivers.
 9. Decide whether Loki and Tempo should move from local storage to MinIO.
 10. Add TLS, SSO, and restricted network access.
+11. Register `midh-ai-edge-01` as the Mac Studio AI/ML development endpoint.
+12. Plan `infra03` hardware installation, network identity, storage layout,
+    Kubernetes labels, and workload placement guardrails.

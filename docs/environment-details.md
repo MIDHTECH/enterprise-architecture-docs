@@ -16,12 +16,28 @@ automation reuses existing GitLab, Jenkins, AWX, KVM, Kubernetes,
 observability, DNS, and proxy capacity where safe. A capacity review is
 required before any new VM or product is authorized.
 
+The approved capacity direction adds two distinct roles: a planned third Linux
+server with 256 GB RAM for high-memory platform workloads, and a Mac Studio M1
+with 32 GB unified memory and 512 GB storage named `midh-ai-edge-01` for AI/ML
+development, local inference, embeddings, notebooks, and evaluation. The Mac
+Studio remains outside the primary Kubernetes worker pool unless a separate
+experiment explicitly authorizes it.
+
 The lab supports two deployment targets:
 
 | Target | Purpose | Provisioning path | Delivery path |
 | --- | --- | --- | --- |
 | Local KVM | Active on-premises integration, operations, and product environment | Ansible + libvirt + cloud-init | GitLab → Jenkins/AWX → Harbor/Artifactory → Argo CD |
 | AWS/Azure/GCP | Governed cloud validation and expansion environments | AWX → Terraform/OpenTofu → cloud services | GitLab → Jenkins/GitLab CI → cloud registry/services → GitOps |
+
+## Physical and Edge Capacity Plan
+
+| Asset | Role | Primary workloads | Placement notes |
+| --- | --- | --- | --- |
+| `infra01` | Existing Linux/KVM platform host | Core product VMs and shared platform services | Keep stable control-plane workloads here when possible |
+| `infra02` | Existing Linux/KVM platform host | General application, integration, Kubernetes and VM workloads | Balance non-critical workloads with `infra01` |
+| `infra03` | Planned 256 GB Linux server | Data engineering, observability scale, AI/ML batch, model-serving backends and resilience testing | Label as memory optimized; use taints or placement controls for heavy workloads |
+| `midh-ai-edge-01` | Mac Studio M1, 32 GB RAM, 512 GB disk | Local AI inference, embeddings, notebooks, prompt/model evaluation and AI/ML CI smoke tests | Do not store protected production data; avoid long-term observability/data retention |
 
 Application promotion uses Kubernetes namespaces instead of a separate cluster
 for every environment:
