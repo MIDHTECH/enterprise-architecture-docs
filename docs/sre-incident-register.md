@@ -836,14 +836,17 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   `guest-ssh-add-authorized-keys`, but both operations fail against
   `/home/midhtechadmin/.ssh/authorized_keys`: reading returns permission
   denied, and additive key repair reports that the inaccessible `.ssh`
-  directory already exists.
+  directory already exists. A read-only root-key check also returned permission
+  denied. Libvirt confirms an active serial console for the VM.
 - Impact: AWX cannot be managed by the standard Ansible credential and is the
   only missing Filebeat sender, leaving fleet-log acceptance at 30/31.
 - Cause: Ownership or mode drift on the account's `.ssh` path. Exact file
   metadata requires one privileged repair inside the guest.
-- Resolution: Pending operator console or local desktop access. Repair
-  ownership and modes, preserve existing keys, append the approved workstation
-  public key only if absent, and then retest canonical SSH.
+- Resolution: Pending operator console or local desktop access. The supported
+  path is `virsh --connect qemu:///system console awx.example.com` from
+  infra01. Repair ownership and modes, preserve existing keys, append the
+  approved workstation public key only if absent, and then retest canonical
+  SSH.
 - Validation required for closure: `ssh midhtechadmin@awx.example.com` succeeds
   with the standard key; Filebeat deploys; service/output checks pass; the
   verifier reports 31 expected, 31 observed, and no missing hosts.

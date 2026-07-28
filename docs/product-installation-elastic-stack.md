@@ -89,8 +89,17 @@ inventory group. Missing hosts are failures, not exclusions.
 
 ### Manual AWX access repair
 
-INC-2026-027 requires one local AWX console or desktop session. Run these
-commands inside `awx.example.com`; they preserve the existing file:
+INC-2026-027 requires one local AWX console or desktop session. From an
+interactive terminal, connect to infra01 and open the configured serial console:
+
+```bash
+ssh midhtechadmin@infra01.example.com
+virsh --connect qemu:///system console awx.example.com
+```
+
+Log in with the existing local AWX account. Use `Ctrl+]` to leave the serial
+console. Run these commands inside `awx.example.com`; they preserve the
+existing file:
 
 ```bash
 sudo install -d -o midhtechadmin -g midhtechadmin -m 0700 \
