@@ -143,75 +143,24 @@ observability, profiling, and incident evidence.
 
 ## Enterprise Architecture
 
-```mermaid
-flowchart TB
-    org[MidhHealth Integrated Care] --> git[GitLab Organization: midhhealth]
-    org --> teams[Platform, SRE, Security, Data, Network and App Teams]
-    teams --> git
-    git --> apprepo[Application and Project Repositories]
-    git --> docsrepo[Enterprise Architecture Documentation]
-    git --> infrarepo[Infrastructure Repositories]
-    apprepo --> cicd[DevSecOps CI/CD Orchestrator]
-    cicd --> scans[Security and Quality Gates]
-    cicd --> artifacts[Container Image and Build Artifacts]
-    cicd --> awx[AWX or Ansible Automation]
+![MidhHealth integrated care enterprise architecture](assets/component-architecture.svg)
 
-    engineer[Cloud or Platform Engineer] --> infrarepo
-    infrarepo --> iac[Multi-Cloud Infrastructure Automation]
-    iac --> aws[AWS Infrastructure]
-    iac --> azure[Azure Infrastructure]
-    iac --> gcp[GCP Infrastructure]
-    iac --> ansible[Ansible Host Configuration]
+The architecture should be read left to right:
 
-    iac --> k8s[Kubernetes Platform Engineering and GitOps]
-    artifacts --> k8s
-    k8s --> apps[Containerized Applications]
+1. Business operations create platform demand through hospital, digital care,
+   insurance, and partner workflows.
+2. Application and product teams turn that demand into care delivery, payer
+   operations, shared API, and analytics work.
+3. The `midhhealth` GitLab organization holds the architecture, delivery,
+   infrastructure, Kubernetes, governance, Linux, database, resilience, data,
+   network, AI, and MLOps repositories.
+4. GitLab CI, Jenkins, AWX, Ansible, Terraform, and GitOps execute approved
+   changes against the shared runtime foundation.
+5. Runtime, data, AI, observability, reliability, security, and compliance
+   evidence flow back into the next platform decision.
 
-    apps --> obs[Observability and SRE Reliability Platform]
-    k8s --> obs
-    aws --> obs
-    azure --> obs
-    gcp --> obs
-
-    sec[Cloud Governance, Security, and Operations Automation]
-    sec --> iac
-    sec --> k8s
-    sec --> obs
-    sec --> cicd
-
-    systems[Linux Systems Engineering]
-    database[Database Engineering and Reliability]
-    resilience[Resilience and Service Operations]
-    data[Data Engineering and Integration]
-    network[Network Engineering and Automation]
-    ai[Healthcare AI Platform]
-    ml[MLOps Model Platform]
-
-    iac --> systems
-    network --> iac
-    network --> k8s
-    systems --> database
-    systems --> data
-    database --> data
-    data --> apps
-    obs --> resilience
-    resilience --> systems
-    resilience --> database
-    sec --> systems
-    sec --> database
-    sec --> data
-    sec --> network
-    data --> ai
-    data --> ml
-    ai --> apps
-    ml --> ai
-    obs --> ml
-
-    onprem[On-Prem KVM and Kubernetes] --> k8s
-    cloudtarget[Governed Cloud Targets] --> aws
-    cloudtarget --> azure
-    cloudtarget --> gcp
-```
+The detailed component explanation lives in
+[Component Architecture](component-architecture.md).
 
 ## Organization Model
 
