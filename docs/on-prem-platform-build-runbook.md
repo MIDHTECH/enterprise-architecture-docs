@@ -16,7 +16,7 @@ later phase.
 | --- | --- | --- | --- |
 | `infra01.example.com` | Primary KVM hypervisor | Ubuntu 26.04 LTS Desktop with GNOME | `192.168.1.38` |
 | `infra02.example.com` | Secondary KVM hypervisor | Ubuntu 26.04 LTS Desktop with GNOME | `192.168.1.169` (`.73` was the rebuild-time lease) |
-| `infra03.example.com` | Expansion KVM hypervisor | Ubuntu 26.04 LTS Desktop with GNOME | `192.168.1.186` pre-bridge lease |
+| `infra03.example.com` | Expansion KVM hypervisor | Ubuntu 26.04 LTS Desktop with GNOME | `192.168.1.186` on `br0` |
 
 The management account on all three hosts is `midhtechadmin`.
 
@@ -590,6 +590,7 @@ VM-specific product automation owns all directories below `/data`.
 | 2026-07-28 | `infra03.example.com` | Passed physical bridge preflight | `eno1` owns the `.186` DHCP lease and default route; console-supervised `br0` cutover, bridge reservation, `lab-bridge`, and VM placement remain pending |
 | 2026-07-28 | Copper9100 DHCP | Reserved infra03 expansion range | Added infra03 host `.186` and deterministic VM reservations `.141–.160`, increasing the verified reservation set from 42 to 63; active consumer leases in the block must clear before VM deployment |
 | 2026-07-28 | `infra03.example.com` | Cleared bridge safety gates | All consumer leases vacated `.141–.160`; final preflight passed for `eno1`, `br0`, and cloned bridge MAC `b8:ca:3a:95:ea:b0`; physical-console apply remains pending |
+| 2026-07-28 | `infra03.example.com` | Completed physical bridge and libvirt network | `br0` retained `.186` and reserved MAC `b8:ca:3a:95:ea:b0`; gateway, internal DNS, persistent/autostart `lab-bridge`, `lab-images`, KVM, services, and all-host readiness validated |
 | 2026-07-25 | Linksys DHCP | Reserved lab infrastructure addresses | Verified 42 IP/MAC reservations: infra01 `.38`, infra02 `.169`, and deterministic VM assignments `.101–.140`; router DHCP restart completed and both hosts remained reachable |
 | 2026-07-25 | Linksys device database | Planned stale-device cleanup | 824 records inspected: 42 connected, 42 reservation MACs protected, 3 customized offline records protected, and 779 disconnected uncustomized candidates; deletion requires explicit risk approval because firmware exposes no last-seen timestamp |
 | 2026-07-25 | Mac administration workstation | Applied temporary lab DNS override | Wi-Fi DNS set to `192.168.1.106`; GitLab, AWX, and public recursion validated; permanent Linksys DNS advertisement remains pending |

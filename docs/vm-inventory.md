@@ -22,7 +22,7 @@ MidhHealth enterprise platform environment. The physical hypervisors run Ubuntu
 | --- | --- | --- | --- |
 | `infra01.example.com` | `192.168.1.38/24` | Ubuntu 26.04 LTS Desktop | KVM compute host A |
 | `infra02.example.com` | `192.168.1.169/24` | Ubuntu 26.04 LTS Desktop | KVM compute host B |
-| `infra03.example.com` | `192.168.1.186/24` (pre-bridge lease) | Ubuntu 26.04 LTS Desktop | KVM compute host C; bridge and VM placement pending |
+| `infra03.example.com` | `192.168.1.186/24` | Ubuntu 26.04 LTS Desktop | KVM compute host C; ready for approved VM placement |
 
 The default gateway is `192.168.1.1`. The authoritative lab resolver is
 `192.168.1.106`; router DNS advertisement remains a documented follow-up. VM
@@ -33,14 +33,13 @@ allocation. Do not assign an address merely because it does not answer a ping.
 Infra03 was admitted on 2026-07-28 with 32 logical CPUs, approximately 247 GiB
 RAM, and approximately 921 GiB available in its persistent `lab-images` pool.
 KVM acceleration, QEMU 10.2.1, libvirt 12.0.0, Ansible 2.20.1, Chrony, Cockpit,
-and the default NAT network are validated. The host requires a reboot after
-package updates. Its `eno1`-to-`br0` cutover must be performed from the physical
-console after reserving the bridge DHCP identity; no VMs are assigned to
-infra03 yet.
+the default NAT network, and the post-upgrade reboot are validated. The
+`eno1`-to-`br0` cutover preserved `.186` and reserved MAC
+`b8:ca:3a:95:ea:b0`; no VMs are assigned to infra03 yet.
 
 The `.141–.160` block was verified clear of consumer leases on 2026-07-28.
-Bridge preflight passed with the existing `.186` DHCP identity and physical MAC
-cloned onto the planned `br0`; the console-supervised cutover remains pending.
+The persistent `lab-bridge` network, internal DNS, gateway connectivity,
+storage pool, and three-host readiness checks pass.
 
 ## Address and MAC Allocation
 
