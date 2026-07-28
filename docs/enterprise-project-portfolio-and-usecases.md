@@ -96,6 +96,53 @@ These backlog items are the bridge between job-derived requirements and code.
 Each one can become a GitLab issue, Jenkins job, AWX template, playbook, CI
 stage, dashboard, or runbook without inventing a new product installation.
 
+## 2026 Automation Focus Areas
+
+The next implementation wave should focus on automation that keeps desired
+state, runtime health, and deployment evidence connected. These areas are
+current because teams are no longer satisfied with "we have Terraform" or "we
+have monitoring." They want the platform to notice drift, explain impact,
+propose a safe action, and prove the system recovered.
+
+| Area | What MidhHealth should build next | Primary repos |
+| --- | --- | --- |
+| Infrastructure automation | Terraform drift detection, plan automation, state integrity checks, change impact analysis, policy-driven provisioning, and reconciliation loops | `cloud-infra-automation-platform`, `devsecops-cicd-orchestrator`, `cloud-governance-ops-automation` |
+| Cloud operations automation | Event-driven remediation, runbook automation, human-approved recovery, cost anomaly detection, and right-sizing recommendations | `cloud-governance-ops-automation`, `resilience-service-operations`, `observability-sre-platform` |
+| Kubernetes automation | GitOps reconciliation, live-vs-Git drift checks, automated rollback, progressive delivery, continuous verification, policy enforcement, and workload right-sizing | `kubernetes-platform-gitops`, `observability-sre-platform`, `devsecops-cicd-orchestrator` |
+| Platform engineering | Internal developer portal, service catalog, golden paths, environment templates, reusable infrastructure modules, and self-service requests | `cloud-infra-automation-platform`, `kubernetes-platform-gitops`, `jenkins-jobs`, `jenkins-shared-library` |
+| Observability and SRE | OpenTelemetry instrumentation, eBPF/zero-code visibility, observability pipelines, SLO as code, burn-rate alerting, health scoring, change correlation, and incident triage | `observability-sre-platform`, `resilience-service-operations`, `healthcare-ai-platform` |
+
+The strongest resume/project slice is not all of this at once. It is a thin
+closed loop that can be demonstrated end to end: detect drift or degraded
+health, explain the impact, require approval when the action is risky, run a
+controlled fix, and verify recovery.
+
+| Focus item | Executable implementation |
+| --- | --- |
+| Terraform Drift Detector | Scheduled Terraform plan compares state and provider reality; output becomes a drift report |
+| Automated Drift Remediation | Approved Jenkins/AWX workflow reapplies the reviewed Terraform configuration |
+| Terraform Plan Analyzer | Merge requests publish summarized creates, updates, destroys, and risky dependencies |
+| Infrastructure Change Impact Analyzer | Pipeline maps changed Terraform resources to apps, data feeds, routes, SLOs, and owners |
+| Cloud Misconfiguration Detector | Policy scan checks public exposure, weak IAM, missing tags, encryption, backups, and logging |
+| Kubernetes Drift Monitor | Script compares Git manifests with live cluster objects and flags unmanaged changes |
+| GitOps Reconciliation | Argo CD or Flux restores approved desired state after review |
+| Automated Rollback Controller | Deployment health score fails promotion and rolls back when SLO or smoke checks fail |
+| Deployment Health Scoring | Release gate combines health endpoint, error rate, latency, logs, and recent alerts |
+| SLO Burn-Rate Alerting | Prometheus rules alert on fast and slow budget burn, not just raw downtime |
+| Change-to-Incident Correlation | Incident context links alerts to recent commits, deployments, Terraform plans, and GitOps syncs |
+| Automated Incident Triage | Guarded workflow gathers service owner, dependency, dashboard, runbook, and likely change source |
+| Self-Healing Infrastructure | Low-risk failures trigger known recovery playbooks, followed by validation |
+| Cloud Cost Anomaly Detection | Scheduled report flags spend or usage jumps by project, owner, environment, or service |
+| Resource Right-Sizing Automation | Utilization data proposes CPU, memory, storage, and replica adjustments with approval gates |
+
+Current external signals support this direction. CNCF's Q1 2026 Technology
+Radar placed Helm, Backstage, and kro in the application-delivery "Adopt"
+category, and OpenTelemetry's 2026 eBPF work emphasizes production readiness
+and hybrid instrumentation. MidhHealth should use those signals pragmatically:
+Backstage-style portal and catalog work belongs in the platform backlog; Helm
+and GitOps belong in Kubernetes delivery; OpenTelemetry and eBPF belong in
+observability, profiling, and incident evidence.
+
 ## Enterprise Architecture
 
 ```mermaid
