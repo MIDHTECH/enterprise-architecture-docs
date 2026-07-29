@@ -86,6 +86,7 @@ facts; they do not erase the original observation.
 | INC-2026-052 | 2026-07-29 | SEV-4 | Resolved near miss | AWX web UI | Direct SPA navigation displayed stale DNS form data on the NGINX template edit route |
 | INC-2026-053 | 2026-07-29 | SEV-4 | Resolved near miss | Kubernetes delivery architecture | Planned ingress launch would have wrapped Helm in Ansible and bypassed Jenkins |
 | INC-2026-054 | 2026-07-29 | SEV-4 | Resolved | Kubernetes CI | First Helm-boundary pipeline failed role-prefix lint |
+| INC-2026-055 | 2026-07-29 | SEV-4 | Resolved near miss | Jenkins infrastructure CI | `ansible-jenkins` would deploy the controller automatically from `main` |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1029,6 +1030,11 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   preparing local validation for ingress-nginx. No repository or cluster
   change depended on that attempt. A mandatory GitLab CI syntax/lint contract
   was added to `ansible-kubernetes` before deployment.
+- Recurrence: The default Intel Mac Python again exposed only Ansible Core
+  releases through 2.15 while `ansible-jenkins` requires 2.16 or newer.
+  Installation stopped before syntax or lint execution. The change therefore
+  relies on the repository's pinned GitLab CI gate and cannot advance to AWX
+  until that gate passes.
 - Evidence/related runbook:
   [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
 
@@ -1777,6 +1783,31 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Corrective automation: The GitLab lint job remains a required source gate.
 - Evidence/related runbook:
   [Kubernetes Helm Delivery](kubernetes-helm-delivery-runbook.md)
+
+## INC-2026-055: Jenkins Controller Pipeline Had Automatic Main Deployment
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Resolved near miss
+- Component: `ansible-jenkins` GitLab CI production job
+- Detection/symptom: Pre-publication review found `deploy_production` would
+  start automatically for every commit to `main`.
+- Impact: Publishing the dedicated-agent infrastructure code could also have
+  reconfigured the Jenkins controller without a separate operator approval.
+  No such pipeline was started from the unreviewed change.
+- Cause: The legacy repository treated merge to `main` as deployment approval.
+- Resolution: The production controller job is now a protected manual job.
+  Validation remains automatic. The agent bootstrap is a separately bounded
+  AWX operation.
+- Validation: The corrective GitLab pipeline ID and result are appended after
+  publication. The Jenkins controller must remain unchanged until an operator
+  explicitly starts the manual job.
+- Prevention/follow-up: Every infrastructure repository must separate source
+  validation from production mutation. A push is not deployment approval.
+- Corrective automation: CI keeps lint and syntax automatic and declares
+  `deploy_production` with `when: manual`.
+- Evidence/related runbook:
+  [Sequential Build and Change Control](sequential-build-change-control.md)
 
 ## New Incident Template
 

@@ -52,6 +52,20 @@ image is pinned by tag and SHA-256 digest in
 
 ## Jenkins Agent Acceptance
 
+The initial agent connection is a bootstrap exception because Jenkins cannot
+schedule work on an agent that does not exist yet:
+
+1. Sign in to Jenkins and create permanent node `jenkins-agent01`.
+2. Set remote root `/var/lib/jenkins/agent`, one executor, label
+   `kubernetes-deployer`, and the inbound/WebSocket launch method.
+3. Copy the generated agent secret directly into an encrypted, prompted AWX
+   variable named `jenkins_agent_secret`. Do not place it in inventory or
+   GitLab variables.
+4. Run `ansible-jenkins/playbooks/jenkins-agent.yml` through AWX against only
+   `jenkins-agent01.example.com`.
+5. Destroy the operator's temporary copy of the secret after AWX stores or
+   consumes it.
+
 Before enabling the deployment job:
 
 1. Confirm `jenkins-agent01.example.com` is online in **Manage Jenkins >
