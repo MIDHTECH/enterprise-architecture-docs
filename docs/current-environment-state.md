@@ -150,7 +150,7 @@ The following readiness evidence was collected directly through 2026-07-29:
 | Loki log pipeline | AWX job 381 returned one run-specific stream containing the accepted Tempo trace ID | Accepted for the bounded correlated workload |
 | Tempo trace pipeline | AWX job 381 found and retrieved trace `f819ea257b72ff3a7fd5998e807b3430`, then correlated it to the Loki event | Accepted for the bounded correlated workload |
 | Management applications | GitLab, AWX, Prometheus, Grafana, Kibana, and the Headlamp NGINX route returned HTTP responses; Jenkins returned the expected authenticated HTTP 403 | Available |
-| Headlamp name resolution | Direct NGINX routing returned HTTP 200, but `headlamp.apps.example.com` did not resolve and is absent from the authoritative zone | Degraded; tracked by INC-2026-030 |
+| Headlamp name resolution | BIND, the Mac split resolver, and Kubernetes CoreDNS return `192.168.1.114`; normal application URL returns HTTP 200 | Accepted through AWX jobs 398 and 402 |
 
 The platform can deploy and exercise stateless test applications through
 ClusterIP or NodePort and can accept their logs, metrics, and traces. The
@@ -208,7 +208,8 @@ forwarding corrections recorded in INC-2026-036 through INC-2026-038.
 
 1. Run the Jenkins seed job so `projects/run-ansible-playbook` is created or
    refreshed from `jenkins-jobs`.
-2. Configure AWX GitLab SSH host trust for `gitlab.example.com:2222`.
+2. Reconcile AWX project definitions and read-only GitLab deploy-key
+   assignments as controller configuration as code.
 3. Confirm AWX SCM and machine credential IDs for the Linux VM fleet.
 4. Run preflight smoke tests for the systems, database, resilience, data, and
    network automation slices through Jenkins/AWX.

@@ -74,6 +74,8 @@ facts; they do not erase the original observation.
 | INC-2026-040 | 2026-07-29 | SEV-4 | Resolved | GitLab CI validation | Default images, conflicting stage graphs, and ignored Ansible paths prevented repository validation |
 | INC-2026-041 | 2026-07-29 | SEV-3 | Resolved | Terraform security controls | First executable Checkov scan found 14 blocking policy gaps in legacy cloud examples |
 | INC-2026-042 | 2026-07-29 | SEV-4 | Resolved | GitLab Runner image policy | Forced registry checks failed cached CI images during router-DNS timeouts |
+| INC-2026-043 | 2026-07-29 | SEV-4 | Resolved | AWX cloud project SCM | Existing AWX deploy key was not enabled for the cloud repository |
+| INC-2026-044 | 2026-07-29 | SEV-4 | Resolved | AWX Ansible role discovery | DNS job could not find the repository-local `bind_dns` role |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -933,18 +935,20 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   host`. The same request forced to `192.168.1.114` with `curl --resolve`
   returned HTTP 200, and the authoritative zone did not contain a Headlamp
   record.
-- Impact: Staff cannot open Headlamp by its documented application URL.
+- Impact: Staff could not open Headlamp by its documented application URL.
   Kubernetes, Headlamp, its NodePort, and the NGINX route remain healthy.
-- Cause: The Headlamp application A record is absent from, or was not loaded
-  into, the authoritative `example.com` zone.
+- Cause: The Headlamp application A record was omitted from the managed BIND
+  service-record inventory.
 - Contributing factors: Proxy-route verification can pass independently of
   client and authoritative DNS validation.
-- Resolution: Pending. Add `headlamp.apps.example.com` pointing to
-  `192.168.1.114`, increment the zone serial, validate the zone, reload BIND,
-  and confirm authoritative lookup, client lookup, and HTTP access.
-- Validation required for closure: The authoritative resolver returns
-  `192.168.1.114`; a normal client lookup returns the same address; and
-  `http://headlamp.apps.example.com` returns HTTP 200 without `--resolve`.
+- Resolution: Added `headlamp.apps.example.com` at `192.168.1.114`, advanced
+  the zone serial to `2026072901`, added an authoritative lookup assertion to
+  the BIND role, and deployed through AWX job 398.
+- Validation: Authoritative BIND and the Mac split-DNS resolver returned
+  `192.168.1.114`; normal HTTP access returned 200; a disposable Kubernetes
+  pod resolved the name through CoreDNS `10.43.0.10`; and the pod was removed
+  automatically. AWX idempotence job 402 completed with `ok=13`, `changed=0`,
+  `unreachable=0`, and `failed=0`.
 - Prevention/follow-up: Every NGINX application route acceptance test must
   include authoritative DNS, normal client DNS, and HTTP response checks.
 - Corrective automation: Add Headlamp to the DNS inventory and the combined
@@ -1334,6 +1338,59 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   project-level pull policy.
 - Corrective automation: Manage runner Docker pull policy and allowed-policy
   lists as code in the GitLab installation repository.
+- Evidence/related runbook:
+  [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
+
+## INC-2026-043: AWX Deploy Key Was Not Enabled for Cloud Repository
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Resolved
+- Component: AWX project 23, GitLab cloud project, and AWX SCM deploy key
+- Detection/symptom: Initial AWX cloud project update 389 loaded the
+  `awx-gitlab-scm` identity and trusted `gitlab.example.com:2222`, but GitLab
+  returned that the project could not be found or accessed.
+- Impact: AWX could not synchronize the validated DNS playbook, so no live
+  DNS change was attempted.
+- Cause: The existing read-only AWX deploy key was enabled for other Ansible
+  repositories but was not associated with
+  `cloud-infra-automation-platform`.
+- Resolution: Enabled the existing `AWX SCM read-only` deploy key for only the
+  cloud project with `can_push=false`. No new private key was created.
+- Validation: AWX project update 390 synchronized successfully from the
+  canonical SSH URL.
+- Prevention/follow-up: Treat deploy-key assignment as part of onboarding
+  every AWX-managed GitLab repository and retain read-only scope unless a
+  separately approved workflow requires writes.
+- Corrective automation: Reconcile AWX project definitions and GitLab
+  read-only deploy-key assignments from controller configuration as code.
+- Evidence/related runbook:
+  [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
+
+## INC-2026-044: AWX Could Not Discover Repository-Local DNS Role
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Resolved
+- Component: `cloud-infra-automation-platform` AWX runtime contract
+- Detection/symptom: DNS deployment job 394 stopped before connecting to the
+  target because `bind_dns` was not found in AWX's default role search paths.
+- Impact: The managed DNS record was not deployed; the existing BIND service
+  and zone remained unchanged.
+- Cause: The repository's only `ansible.cfg` was inside `ansible/`. AWX runs
+  from the project root, so it did not load that configuration or discover
+  `ansible/roles`.
+- Resolution: Added a root `ansible.cfg` with
+  `roles_path = ansible/roles` and the corresponding inventory path. GitLab
+  pipeline 337 passed format, Terraform, layout, Ansible lint, and Checkov
+  gates before the retry.
+- Validation: AWX DNS job 398 completed successfully. The second convergence,
+  job 402, reported `changed=0`, `unreachable=0`, and `failed=0`.
+- Prevention/follow-up: Every AWX project with a nested Ansible tree must
+  expose controller configuration from the repository root or declare an
+  equivalent supported execution-environment setting.
+- Corrective automation: Validate AWX role discovery as part of repository
+  onboarding, not only Ansible syntax in CI.
 - Evidence/related runbook:
   [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
 

@@ -98,6 +98,40 @@ The specialist platform repositories validate playbooks in GitLab CI with
 operational smoke and runtime gate. GitLab CI does not connect to production
 VMs.
 
+## Cloud Infrastructure DNS Workflow
+
+The lab DNS configuration now uses these AWX objects:
+
+| Object | ID | Name |
+| --- | ---: | --- |
+| Project | 23 | `cloud-infra-automation-platform` |
+| Inventory | 4 | `cloud-infra-production` |
+| Inventory source | 24 | `cloud-infra-onprem` |
+| Job template | 25 | `deploy-lab-dns` |
+
+The project synchronizes
+`ssh://git@gitlab.example.com:2222/midhhealth/platform-engineering/cloud-infra-automation-platform.git`
+with the existing GitLab SCM credential. The inventory source imports
+`ansible/inventory/onprem.yml`; the template runs only
+`ansible/playbooks/dns.yml` with the existing managed-host machine credential.
+
+Before launching the template:
+
+1. require the cloud GitLab pipeline to pass;
+2. confirm project and inventory synchronization are successful;
+3. confirm the inventory contains `dns_servers`;
+4. launch `deploy-lab-dns`;
+5. run it a second time and require zero changes;
+6. validate authoritative DNS, a normal client, Kubernetes CoreDNS, and the
+   application HTTP response.
+
+The AWX SCM deploy key must be enabled read-only for this project. A successful
+host-key handshake followed by “project could not be found” indicates missing
+repository authorization, not missing SSH trust. The repository root must
+contain `ansible.cfg` with `roles_path = ansible/roles`; otherwise AWX cannot
+discover nested roles even when CI syntax validation succeeds. See
+INC-2026-043 and INC-2026-044.
+
 ## GitLab Runner Eligibility and Queue Recovery
 
 Use this procedure when GitLab jobs remain pending.
