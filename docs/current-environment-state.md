@@ -25,20 +25,34 @@ Implementation and acceptance counts are maintained separately in
 
 ## Live on-premises infrastructure
 
-The following state was verified directly on 2026-07-28:
+The following state was verified directly through 2026-07-29:
 
 | Layer | Verified state |
 | --- | --- |
-| `infra01.example.com` and `infra02.example.com` | Ubuntu 26.04 LTS, KVM available, libvirt 12 active, physical `br0` active |
-| Virtual machines | 31 of 31 domains running: 17 on infra01 and 14 on infra02 |
-| Product roles | 22 active product/runtime roles; 9 VMs remain provisioned without their intended product |
+| `infra01.example.com` | Last accepted as Ubuntu 26.04 LTS with KVM/libvirt and `br0`; currently absent from the LAN with all hosted guests |
+| `infra02.example.com` | Ubuntu 26.04 LTS, `br0` active, 14/14 domains running, and no active change process |
+| `infra03.example.com` | Ubuntu 26.04 LTS, `br0` active, three new build-execution domains running with autostart |
+| Virtual machines | 34 domains in the latest inventory: 17 on infra01, 14 on infra02, and 3 on infra03; only infra02/03 can currently be verified |
+| Product roles | At least 23 runtime roles directly verified; Harbor is installed, while Vault and Keycloak await revalidation after infra01 recovery |
 | Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready |
 | AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
-| Git repositories | 20 local repositories clean and equal to their GitLab remote HEAD |
+| Git repositories | Publication is frozen: AWX inventory, Kubernetes ingress, and incident documentation each have one local unpushed commit |
 
-The provisioned-only product VMs are `vault`, `keycloak`, `governance`,
-`backup`, `awx-execution`, `harbor`, `artifactory`, `sonarqube`, and `splunk`.
-PostgreSQL 18 is active on `postgres.example.com`.
+The directly verified provisioned-only product VMs include `governance`,
+`backup`, `awx-execution`, `artifactory`, `sonarqube`, and `splunk`.
+PostgreSQL 18 is active on `postgres.example.com`. Harbor 2.15.0 is active on
+`harbor.example.com`: all ten Harbor, registry, database, Redis, portal,
+job-service, and Trivy containers are healthy, the health API is healthy, and
+native HTTPS returns 200. An older documentation clone claims completed Vault
+and Keycloak work, but those infra01 guests are unavailable and must be
+revalidated before that state becomes canonical.
+
+Three infra03 guests were provisioned at `.136–.138`:
+`gitlab-runner-app01`, `gitlab-runner-infra01`, and `jenkins-agent01`.
+All three are running Rocky Linux and have autostart enabled, but no GitLab
+Runner or Jenkins Agent service is installed or running. Their placement,
+addressing, source code, and intended scope must be reconciled before any one
+of them is configured.
 
 The four-node application cluster currently contains the control-plane components,
 CoreDNS, Flannel, and Headlamp. Argo CD, MetalLB, ingress-nginx, cert-manager,
@@ -62,9 +76,10 @@ Headlamp uses `30080`. Source-restricted firewalld rules allow only
 approved lab-LAN consumers to reach Loki and Tempo and allow the Kubernetes
 pod CIDR to reach the OpenTelemetry receivers.
 
-Vault, Keycloak, Harbor, Artifactory, SonarQube, and Splunk application URLs
-return an intentional HTTP 503 with `product-not-installed`. Internal TLS is
-not deployed yet, so the accepted current URLs use HTTP. See
+Artifactory, SonarQube, and Splunk remain provisioned-only. Harbor is healthy
+on its native HTTPS endpoint, but its normal DNS and NGINX route cannot be
+accepted while infra01, DNS, and NGINX are unavailable. Vault and Keycloak
+must be revalidated after infra01 recovery. See
 [Standalone NGINX Reverse-Proxy Installation](product-installation-nginx.md).
 
 ## Hybrid capacity plan
@@ -147,8 +162,8 @@ The following readiness evidence was collected directly through 2026-07-29:
 
 | Capability | Live evidence | Readiness |
 | --- | --- | --- |
-| Hypervisor capacity | 31/31 VMs running across infra01 and infra02; approximately 58/121 GiB and 34/107 GiB RAM in use; both root filesystems below 3% utilization | Ready |
-| Kubernetes base | 4/4 nodes Ready; CoreDNS forwards `example.com` deterministically to `192.168.1.106`; three repeated lookups succeeded from every worker | Ready for stateless test workloads |
+| Hypervisor capacity | infra02 has 14/14 VMs running and infra03 has 3/3; infra01 and its last-known 17 domains cannot currently be inspected | Blocked by infra01 network loss |
+| Kubernetes base | Last accepted at 4/4 nodes Ready; application API and two infra01-hosted nodes are currently unreachable from the management path | Temporarily unavailable |
 | Persistent Kubernetes applications | No StorageClass and no PVCs | Blocked until storage is installed and tested |
 | Kubernetes application ingress | No IngressClass or ingress controller; Headlamp is exposed by NodePort | Blocked for standard application URLs |
 | Elastic host logging | Filebeat active and encrypted-output validation passed on 31/31 Rocky Linux VMs; Logstash queue empty; all 31 inventory hostnames present in Elasticsearch | Accepted |

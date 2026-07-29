@@ -83,6 +83,11 @@ Mac Studio AI/ML edge environment, provisioning Rocky Linux virtual machines,
 installing platform products, and rehearsing healthcare platform modernization
 paths on premises.
 
+Infrastructure work is serialized through
+[Sequential Build and Change Control](docs/sequential-build-change-control.md).
+Staff and automation must close the active component before starting another
+build, migration, installation, or upgrade.
+
 ## Reference Docs
 
 - [Engineering question bank](docs/interview-questions.md)
