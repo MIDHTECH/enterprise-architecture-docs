@@ -97,3 +97,50 @@ The specialist platform repositories validate playbooks in GitLab CI with
 `structure`, `ansible_syntax`, and `ansible_lint`. Jenkins/AWX execution is the
 operational smoke and runtime gate. GitLab CI does not connect to production
 VMs.
+
+## GitLab Runner Eligibility and Queue Recovery
+
+Use this procedure when GitLab jobs remain pending.
+
+1. Confirm the runner process and token before changing anything:
+
+   ```bash
+   sudo docker ps --filter name=gitlab-runner
+   sudo docker exec gitlab-runner gitlab-runner verify
+   sudo docker logs --since 10m gitlab-runner
+   ```
+
+2. Interpret repeated job-request HTTP 204 responses correctly. They show that
+   the runner can reach GitLab and GitLab has no job *eligible for that runner*;
+   they do not by themselves indicate a stopped scheduler.
+3. Check runner scope in GitLab. An untagged project job still cannot use a
+   runner assigned to a different project. Verify:
+
+   - runner type is `instance_type` for this shared lab runner;
+   - no obsolete rows restrict it through `ci_runner_projects`;
+   - `run_untagged` is enabled;
+   - job and runner tags match;
+   - protected-branch policy permits the job.
+
+4. Keep the lab runner configuration at:
+
+   ```toml
+   concurrent = 2
+
+   [[runners]]
+     request_concurrency = 2
+     executor = "docker"
+   ```
+
+5. After a scope change, restart only the runner container, verify its token,
+   and watch a job from two different projects receive the runner ID. Do not
+   call the incident resolved merely because the container is running.
+6. Classify the outcome accurately:
+
+   - pending with no runner ID: continue eligibility/coordinator diagnosis;
+   - running or terminal with a runner ID: scheduling is working;
+   - `script_failure` or exit 127 after assignment: repair the repository CI
+     image or script as a separate defect.
+
+See INC-2026-039 in the
+[SRE Incident Register](sre-incident-register.md) for the 2026-07-29 recovery.

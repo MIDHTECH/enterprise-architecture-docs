@@ -70,7 +70,7 @@ facts; they do not erase the original observation.
 | INC-2026-036 | 2026-07-29 | SEV-3 | Resolved | Observability data plane | Host firewalls blocked Kubernetes-to-OTel and collector/Grafana/AWX access to Tempo and Loki |
 | INC-2026-037 | 2026-07-29 | SEV-3 | Resolved | Authoritative DNS | BIND query ACL excluded the Kubernetes pod network |
 | INC-2026-038 | 2026-07-29 | SEV-3 | Resolved | Kubernetes CoreDNS | Private-zone lookups were randomly sent to the router resolver and returned empty answers |
-| INC-2026-039 | 2026-07-29 | SEV-4 | Open | GitLab Runner | Registered runner stopped claiming eligible pending validation jobs |
+| INC-2026-039 | 2026-07-29 | SEV-4 | Resolved | GitLab Runner | Project-scoped runner could not claim validation jobs from the wider GitLab instance |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1168,25 +1168,37 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-07-29
 - Severity: SEV-4
-- Status: Open
+- Status: Resolved
 - Component: GitLab Runner 19.2 Docker executor
 - Detection/symptom: The runner container was active, its registration
-  verified successfully, it was enabled for untagged instance jobs, and
-  `ci_running_builds` was empty, but pending jobs were not assigned. Container
-  restart and a bounded `run-single` recovery worker did not claim work.
+  verified successfully, and `ci_running_builds` was empty, but pending jobs
+  in projects 2 and 15 were not assigned. GitLab logged successful
+  `/api/v4/jobs/request` polling followed by HTTP 204 responses.
 - Impact: New infrastructure and observability validation pipelines remained
   pending or were canceled by superseding commits. Live fixes were verified
-  through AWX and direct acceptance, but current CI evidence is incomplete.
-- Cause: Not yet isolated; investigation must cover runner long polling,
-  coordinator scheduling, project eligibility, and the already-running
-  pipeline 303.
-- Resolution: Pending. The temporary recovery worker was stopped; the normal
-  runner remains registered.
-- Validation required for closure: A new untagged test pipeline is assigned to
-  runner 1, completes, and updates `contacted_at`; pending observability
-  pipeline 307 must reach a terminal result.
-- Prevention/follow-up: Enable runner metrics/debug logging and alert on
-  pending jobs with no runner assignment.
+  through AWX and direct acceptance while GitLab CI evidence was delayed.
+- Cause: The only runner was `project_type` and mapped through
+  `ci_runner_projects` only to projects 9 and 10. It was therefore healthy but
+  ineligible for projects 2 and 15. The earlier description of the runner as
+  enabled for instance jobs was incorrect: `run_untagged=true` controls tag
+  matching but does not override project scope.
+- Resolution: Removed the two obsolete project associations and converted the
+  runner to `instance_type`. GitLab stores runner types in partitions, so the
+  conversion moved the record from runner ID 1 to ID 2 while preserving the
+  valid authentication token. The runner container was restarted to refresh
+  scope. `/srv/gitlab-runner/config/config.toml` was then tuned to
+  `concurrent=2` and `request_concurrency=2`; the pre-change copy is
+  `/srv/gitlab-runner/config/config.toml.pre-instance-scope-20260729`.
+- Validation: `gitlab-runner verify` passed. Runner ID 2 concurrently claimed
+  job 497 from project 2 and job 511 from project 15. Pipeline 307 left the
+  pending state and both its validation jobs were assigned. Job 498 from
+  project 2 completed successfully. Other claimed jobs that ended with script
+  failures prove scheduling worked and are repository CI defects, not a
+  recurrence of this incident.
+- Prevention/follow-up: Manage runner scope and concurrency as code. Alert on
+  pending jobs with no eligible runner, but confirm `runner_type`,
+  `ci_runner_projects`, tags, protected-ref policy, and the coordinator HTTP
+  response before restarting a healthy runner.
 - Corrective automation: Manage runner configuration, health checks, and queue
   diagnostics through the GitLab installation repository.
 - Evidence/related runbook:
