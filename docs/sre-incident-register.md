@@ -62,6 +62,7 @@ facts; they do not erase the original observation.
 | INC-2026-028 | 2026-07-28 | SEV-4 | Resolved | Recovery target context | AWX permission-repair commands were initially run on infra01 instead of inside the AWX console |
 | INC-2026-029 | 2026-07-28 | SEV-4 | Resolved | AWX serial console | A stale virsh client held the AWX console lock and blocked operator login |
 | INC-2026-030 | 2026-07-28 | SEV-4 | Open | Headlamp DNS | Headlamp NGINX route is healthy, but its application FQDN is absent from authoritative DNS |
+| INC-2026-031 | 2026-07-28 | SEV-4 | Resolved | Prometheus inventory | Live metrics coverage fell to 27/31 hosts while documentation still reported 31/31 |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -846,7 +847,10 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   without removing the existing key.
 - Validation: `ssh midhtechadmin@awx.example.com` succeeded with the standard
   key; Filebeat 9.4.2 deployed; the service/output checks passed; and the
-  verifier reported 31 expected, 31 observed, and no missing hosts.
+  verifier reported 31 expected, 31 observed, and no missing hosts. AWX
+  Prometheus job `321` later managed all 31 inventory hosts with zero failed or
+  unreachable targets, proving execution-environment access as well as
+  workstation access.
 - Prevention/follow-up: Add authorized-key ownership/mode assertions to the
   common Rocky baseline and validate them before product installation.
 - Corrective automation: After access is restored, encode the permission check
@@ -936,6 +940,42 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   DNS/proxy verification workflow.
 - Evidence/related runbook:
   [Standalone NGINX Reverse-Proxy Installation](product-installation-nginx.md)
+
+## INC-2026-031: Prometheus Inventory Drift Reduced Host Coverage
+
+- Date: 2026-07-28
+- Severity: SEV-4
+- Status: Resolved
+- Component: AWX `production-inventory` source, Prometheus scrape
+  configuration, and monitoring documentation
+- Detection/symptom: Prometheus reported all 28 configured targets Up, but the
+  node job contained only 27 hosts. The Kubernetes control plane and three
+  workers were absent while documentation still reported 31 Node Exporters.
+- Impact: Metrics-based dashboards and investigations had no data for four
+  Kubernetes nodes. A green target page concealed incomplete inventory
+  coverage.
+- Cause: The successful AWX inventory source project remained at commit
+  `5b97ec5`; GitLab `awx-inventory` had advanced to commit `94c8cf6` with the
+  complete production inventory. Prometheus therefore rendered a scrape list
+  from stale inventory.
+- Contributing factors: Acceptance checked whether configured targets were Up
+  but did not compare the target count and names with canonical inventory.
+  Documentation retained a previously verified 32/32 result after live state
+  regressed.
+- Resolution: Launched `deploy-prometheus-stack` as AWX job `321`. Update-on-
+  launch synchronized the Prometheus and inventory projects and regenerated
+  the Prometheus configuration from all 31 hosts.
+- Validation: Job `321` completed successfully with zero failed and zero
+  unreachable hosts. All hosts passed the local Node Exporter endpoint check.
+  Prometheus returned 32/32 targets Up: 31 Node Exporters plus its self-target.
+  Grafana was active with the Prometheus data source, dashboard provider, and
+  Server Fleet Overview dashboard provisioned.
+- Prevention/follow-up: Monitoring acceptance must compare current inventory
+  revision, expected hostnames, configured targets, and Up targets.
+- Corrective automation: Add an inventory-to-Prometheus coverage assertion
+  that fails unless expected and observed Node Exporter sets are identical.
+- Evidence/related runbook:
+  [Current Environment State](current-environment-state.md)
 
 ## New Incident Template
 
