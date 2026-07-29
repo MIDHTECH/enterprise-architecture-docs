@@ -72,7 +72,7 @@ facts; they do not erase the original observation.
 | INC-2026-038 | 2026-07-29 | SEV-3 | Resolved | Kubernetes CoreDNS | Private-zone lookups were randomly sent to the router resolver and returned empty answers |
 | INC-2026-039 | 2026-07-29 | SEV-4 | Resolved | GitLab Runner | Project-scoped runner could not claim validation jobs from the wider GitLab instance |
 | INC-2026-040 | 2026-07-29 | SEV-4 | Resolved | GitLab CI validation | Default images, conflicting stage graphs, and ignored Ansible paths prevented repository validation |
-| INC-2026-041 | 2026-07-29 | SEV-3 | Open | Terraform security controls | First executable Checkov scan found 14 blocking policy gaps in legacy cloud examples |
+| INC-2026-041 | 2026-07-29 | SEV-3 | Resolved | Terraform security controls | First executable Checkov scan found 14 blocking policy gaps in legacy cloud examples |
 | INC-2026-042 | 2026-07-29 | SEV-4 | Resolved | GitLab Runner image policy | Forced registry checks failed cached CI images during router-DNS timeouts |
 
 ## INC-2026-001: Automated USB Imaging Blocked
@@ -926,7 +926,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-07-28
 - Severity: SEV-4
-- Status: Open
+- Status: Resolved
 - Component: Authoritative lab DNS and
   `headlamp.apps.example.com`
 - Detection/symptom: A normal client request failed with `Could not resolve
@@ -1045,10 +1045,12 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   GitLab. The workstation route to `.101` carried `REJECT`, its ARP entry was
   incomplete, and infra02 independently reported neighbor state `FAILED` for
   both infra01 `.38` and GitLab `.101`. This occurrence points to infra01
-  being powered off, disconnected, or absent from the LAN rather than to a
-  workstation-only path problem. A standard Wake-on-LAN packet sent from
-  infra02 to infra01's documented bridge MAC produced no response; infra02
-  continued to return `Destination Host Unreachable`.
+  being temporarily absent from the LAN rather than to a GitLab-only problem.
+  A standard Wake-on-LAN packet sent from infra02 to infra01's documented
+  bridge MAC produced no immediate response; infra02 continued to return
+  `Destination Host Unreachable`. When the path recovered, infra01 reported
+  almost four days of uninterrupted uptime. The host had not powered off or
+  rebooted, confirming another management-network/bridge-path interruption.
 - Corrective automation: Add a management-path check that compares direct,
   hypervisor-to-guest, and proxied SSH before declaring a guest down.
 - Evidence/related runbook:
@@ -1288,12 +1290,12 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   pipeline 329 job 696 passed 171 controls; six generic IAM findings remained
   because Checkov classified the required KMS root-administration statements
   as standalone IAM policies. The equivalent policies are now attached
-  directly to the KMS keys. Commit `d89a05a` contains the final canonical
-  Terraform formatting but is awaiting publication while infra01 and GitLab
-  are offline under the recurrence recorded in INC-2026-033.
-- Validation required for closure: Remediate all 14 controls, obtain a
-  zero-failure Checkov result, and complete a reviewed Terraform plan in the
-  intended cloud test environment.
+  directly to the KMS keys.
+- Validation: Cloud pipeline 332 passed Terraform format, both Terraform
+  validations, layout validation, and Ansible lint. Checkov job 730 passed
+  155 controls with zero failed and zero skipped checks. Plan, apply,
+  bootstrap, and smoke jobs remain manual by design and were not run against
+  an operator-started cloud test environment.
 - Prevention/follow-up: Introduce policy scanning when a module is created,
   not after the module portfolio is assembled.
 - Corrective automation: Keep the Checkov image pinned and retain blocking
@@ -1326,8 +1328,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   completed.
 - Validation: Post-reload cloud pipeline 322 used runner ID 2 and passed
   cached-image Terraform format job 614 and provider-validation job 615.
-  The Checkov stage may remain red only for the separate blocking findings in
-  INC-2026-041.
+  INC-2026-041 subsequently resolved with a zero-failure Checkov result.
 - Prevention/follow-up: Mirror CI images into Harbor when available and pin
   images by digest. Test runner policy compatibility before adding a
   project-level pull policy.
