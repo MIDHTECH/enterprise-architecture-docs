@@ -49,10 +49,11 @@ and tested before deployment.
 | --- | --- | --- | --- |
 | Kubernetes | 1.34, latest patch | kubeadm on Rocky Linux 9 | Upgrade one minor at a time |
 | containerd | 2.1, latest approved patch | Native on Kubernetes nodes | Validate CRI compatibility before Kubernetes upgrade |
+| Helm | 4.1.0 | Pinned binary on `jenkins-agent01`; Jenkins release execution | Upgrade only after chart and rollback compatibility tests |
 | Cilium | 1.18, latest patch | Argo CD | Upgrade one supported minor at a time |
 | Argo CD | 3.1, latest patch | Kubernetes | Pin manifests/chart and review upgrade notes |
 | MetalLB | 0.15, latest patch | Kubernetes | Pin CRDs and controller/speaker images |
-| ingress-nginx | 1.13, latest patch | Kubernetes | Pin controller and admission jobs |
+| ingress-nginx | Chart 4.15.0; controller 1.15.1 | Jenkins-managed Helm release; controller image digest pinned | Validate chart lock, render, atomic deployment, second convergence, and rollback |
 | cert-manager | 1.18, latest patch | Kubernetes | Back up and upgrade CRDs first |
 | Kyverno | 1.15, latest patch | Kubernetes | Validate policies against new engine |
 | External Secrets Operator | 0.19, latest patch | Kubernetes | Validate CRDs and provider behavior |

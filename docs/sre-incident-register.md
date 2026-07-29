@@ -84,6 +84,7 @@ facts; they do not erase the original observation.
 | INC-2026-050 | 2026-07-29 | SEV-4 | Resolved | NGINX automation | Firewalld and deferred-handler assumptions caused partial convergence |
 | INC-2026-051 | 2026-07-29 | SEV-4 | Resolved | AWX inventory groups | A successful DNS job skipped all work because the selected inventory lacked `dns_servers` |
 | INC-2026-052 | 2026-07-29 | SEV-4 | Resolved near miss | AWX web UI | Direct SPA navigation displayed stale DNS form data on the NGINX template edit route |
+| INC-2026-053 | 2026-07-29 | SEV-4 | Resolved near miss | Kubernetes delivery architecture | Planned ingress launch would have wrapped Helm in Ansible and bypassed Jenkins |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1714,6 +1715,43 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   reconciliation does not depend on sequential browser form state.
 - Evidence/related runbook:
   [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
+
+## INC-2026-053: Kubernetes Deployment Boundary Was About to Be Bypassed
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Resolved near miss
+- Component: GitLab CI, Jenkins, AWX, Ansible, Helm, and ingress-nginx
+- Detection/symptom: The proposed ingress execution path would have launched
+  AWX directly and the existing Ansible role applied the upstream
+  ingress-nginx manifest with `kubectl`.
+- Impact: No ingress resources were deployed. Had the plan continued, Jenkins
+  would not have owned approval, deployment evidence, promotion, or rollback,
+  and Helm release history would not have existed.
+- Timeline: The gap was detected during pre-deployment review after the
+  Kubernetes cluster audit and before an active deployment job was launched.
+- Cause: The cluster-bootstrap playbook had accumulated application-tier
+  responsibilities, and the Jenkins job delegated both infrastructure and
+  application deployment to AWX.
+- Contributing factors: `jenkins-agent01` was provisioned but not configured;
+  the existing Jenkins pipeline used `agent any`; and the ingress automation
+  predated the explicit platform boundary.
+- Resolution: CHG-2026-002 makes GitLab CI the source validation gate, Jenkins
+  the deployment orchestrator, Helm the Kubernetes release manager, and
+  AWX/Ansible the host and cluster prerequisite manager. The dedicated Jenkins
+  agent must be accepted before ingress deployment starts.
+- Validation: No `IngressClass`, ingress resource, or ingress controller was
+  present when the correction was made. Final validation will be appended
+  after the Jenkins agent and Helm deployment pipeline are accepted.
+- Prevention/follow-up: Kubernetes product changes must include a Helm chart
+  or pinned upstream chart, a Jenkins plan/deploy/rollback contract, and an
+  explicit kubeconfig credential. Ansible roles must not run Helm or apply
+  application manifests.
+- Corrective automation: CI will reject the retired ingress Ansible role and
+  validate the Helm chart. The Jenkins job will require a dedicated agent
+  label and an explicit deployment confirmation.
+- Evidence/related runbook:
+  [Sequential Build and Change Control](sequential-build-change-control.md)
 
 ## New Incident Template
 

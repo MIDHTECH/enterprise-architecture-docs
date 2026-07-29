@@ -17,15 +17,22 @@ Jenkins, or AWX control plane.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | None |
-| Component | None |
-| State | Ready for the next sequential change |
-| Blocker | None |
-| Permitted work | Read-only audit and selection of exactly one next queue item |
-| Prohibited work | Starting more than one component or bypassing GitLab/AWX validation |
-| Exit criteria | A single next component is recorded here before mutation |
+| Change ID | CHG-2026-002 |
+| Component | Jenkins Kubernetes deployment path and `jenkins-agent01` executor |
+| State | Design correction and implementation in progress |
+| Blocker | Direct workstation SSH to infra01 and the Jenkins VM is currently timing out; the signed-in Jenkins agent view is not available |
+| Permitted work | Configure the dedicated Jenkins agent, make Jenkins own Helm plan/deploy/rollback, restrict AWX/Ansible to host and cluster prerequisites, validate and publish those changes, and prove one sequential ingress deployment |
+| Prohibited work | Installing ingress through Ansible, launching AWX directly as the application deployment path, deploying storage or applications, modifying another runner, or using the Jenkins controller as the permanent executor |
+| Exit criteria | Agent online with pinned Helm/kubectl toolchain; GitLab CI green; Jenkins plan and deploy green; Helm release healthy; rollback tested; second convergence clean; documentation and incidents current; related repositories clean |
 
 `CHG-2026-001` is complete.
+
+The ingress queue item exposed an unmet delivery prerequisite:
+`jenkins-agent01` was only provisioned. The queue is therefore explicitly
+reordered to complete row 5 before row 6. GitLab CI remains the source
+validation gate. Jenkins owns deployment orchestration and approval. Helm owns
+Kubernetes releases. AWX and Ansible own only VM, operating-system, firewall,
+container-runtime, and Kubernetes-cluster configuration.
 
 ## Completed change
 

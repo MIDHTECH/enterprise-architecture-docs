@@ -18,6 +18,7 @@ required_docs=(
   "docs/product-installation-splunk.md"
   "docs/sre-incident-register.md"
   "docs/jenkins-awx-ansible-operations.md"
+  "docs/kubernetes-helm-delivery-runbook.md"
   "docs/gitlab-organization-model.md"
   "docs/engineer-interview-guide.md"
   "docs/engineer-training-standard.md"
@@ -82,6 +83,10 @@ grep -q "midhhealth/platform-engineering/linux-systems-platform" docs/gitlab-org
 grep -q "midhhealth/platform-delivery/ansible-jenkins" docs/gitlab-organization-model.md
 grep -q "midhhealth/platform-delivery/awx-inventory" docs/gitlab-organization-model.md
 grep -q "midhhealth/platform-engineering/ansible-kubernetes" docs/gitlab-organization-model.md
+grep -q "projects/deploy-kubernetes-ingress" docs/kubernetes-helm-delivery-runbook.md
+grep -q "kubernetes-production-kubeconfig" docs/kubernetes-helm-delivery-runbook.md
+grep -q "Helm | 4.1.0" docs/product-versions.md
+grep -q "Chart 4.15.0; controller 1.15.1" docs/product-versions.md
 grep -q "midhhealth/ai-and-ml-platform/healthcare-ai-platform" docs/gitlab-organization-model.md
 grep -q "midhhealth/ai-and-ml-platform/mlops-model-platform" docs/gitlab-organization-model.md
 grep -q "| Defined portfolio use cases | 217 |" docs/use-case-implementation-status.md

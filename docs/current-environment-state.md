@@ -133,6 +133,10 @@ storage envelope.
   `projects/run-ansible-playbook` generated from
   `midhhealth/platform-delivery/jenkins-jobs` and backed by
   `midhhealth/platform-delivery/jenkins-shared-library`
+- Kubernetes Helm delivery:
+  source boundary and Jenkins job code are under CHG-2026-002. The dedicated
+  `jenkins-agent01` executor and kubeconfig credential are not yet accepted,
+  so ingress has not been deployed.
 - Enterprise first-slice implementation repositories:
   `midhhealth/data-and-integration/database-reliability-platform`,
   `midhhealth/reliability-operations/resilience-service-operations`,

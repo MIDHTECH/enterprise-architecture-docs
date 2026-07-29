@@ -231,7 +231,7 @@ Annual controller review:
 | --- | --- | --- | --- |
 | Cilium | Early 1.x | 1.18.z | Sequential supported minor upgrades |
 | MetalLB | Early 0.x | 0.15.z | Convert legacy ConfigMap to CRDs before removal |
-| ingress-nginx | 0.x | 1.13.z | Review Kubernetes API and annotation removals |
+| ingress-nginx | 0.x | Chart 4.15.0 / controller 1.15.1 | Review Kubernetes API and annotation removals; pin chart lock and controller digest |
 | cert-manager | 0.x | 1.18.z | Back up resources and upgrade CRDs first |
 | Kyverno | Not released | 1.15.z | Test every policy against target engine |
 | External Secrets | Predecessor projects | 0.19.z | Convert CRDs/provider configuration |
@@ -239,6 +239,12 @@ Annual controller review:
 | Velero | 0.x | 1.17.z | Upgrade server and plugins together |
 | Longhorn | Not released | 1.9.z | Follow only documented sequential versions |
 | Trivy Operator | Not released | 0.29.z | Review report CRD changes |
+
+The 2026 ingress migration changes ownership as well as version: retire
+checksum-pinned raw-manifest application from Ansible, adopt a locked Helm
+release, and make Jenkins own plan, approval, deployment, acceptance, and
+rollback. Preserve the old Headlamp NodePort until the edge route and Helm
+rollback are proven.
 
 ### Prometheus and Alertmanager
 

@@ -161,9 +161,9 @@ flowchart TB
 | Network Engineering Platform | Active first slice for source-of-truth, DNS/DHCP, connectivity, firewall/proxy, and Kubernetes network evidence |
 | Healthcare AI Platform | Planned domain for RAG, agents, AI assistants, FHIR-aware APIs, AI evaluation, guardrails and workflow integration |
 | MLOps Model Platform | Planned domain for training, registry, model serving, monitoring, drift, retraining and governance |
-| Jenkins Jobs | Creates Jenkins pipeline jobs from source-controlled Job DSL, including `projects/run-ansible-playbook` |
-| Jenkins Shared Library | Provides reusable AWX launch logic to pipelines, including playbook allowlists, extra-vars allowlists, and apply confirmation guardrails |
-| Delivery Control Plane | GitLab, protected branches, Jenkins, AWX, and Ansible working together |
+| Jenkins Jobs | Creates Jenkins pipeline jobs from source-controlled Job DSL, including `projects/run-ansible-playbook` and `projects/deploy-kubernetes-ingress` |
+| Jenkins Shared Library | Provides separate reusable contracts for AWX infrastructure operations and direct Helm release lifecycle |
+| Delivery Control Plane | GitLab validates source; Jenkins orchestrates approved changes; AWX/Ansible configure infrastructure; Helm manages Kubernetes releases |
 | Runtime Platforms | On-premises VMs/Kubernetes, cloud resources, applications, and telemetry |
 | On-premises access and compute | One standalone NGINX proxy fronts user HTTP URLs; infra01/infra02 host dedicated Rocky Linux product VMs |
 | Enterprise observability comparison | Three Elasticsearch nodes plus standalone Kibana, Logstash, and Splunk complement the Prometheus/Grafana path |
@@ -172,7 +172,8 @@ flowchart TB
 
 1. Teams propose changes through GitLab merge requests.
 2. Protected `main` branches ensure review, approvals, and evidence.
-3. Jenkins and AWX automate build, deployment, and operations.
+3. Jenkins orchestrates approved changes. It uses AWX for infrastructure and
+   cluster configuration and Helm directly for Kubernetes releases.
 4. Terraform and Ansible provision and configure on-premises and cloud
    resources through the same review model.
 5. GitOps syncs approved Kubernetes desired state to clusters.
