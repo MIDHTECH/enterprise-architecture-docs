@@ -1192,9 +1192,11 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Validation: `gitlab-runner verify` passed. Runner ID 2 concurrently claimed
   job 497 from project 2 and job 511 from project 15. Pipeline 307 left the
   pending state and both its validation jobs were assigned. Job 498 from
-  project 2 completed successfully. Other claimed jobs that ended with script
-  failures prove scheduling worked and are repository CI defects, not a
-  recurrence of this incident.
+  project 2 completed successfully. Fresh enterprise-documentation pipeline
+  310 for commit `aac120f` was assigned to runner ID 2 and completed
+  successfully. Other claimed jobs that ended with script failures prove
+  scheduling worked and are repository CI defects, not a recurrence of this
+  incident.
 - Prevention/follow-up: Manage runner scope and concurrency as code. Alert on
   pending jobs with no eligible runner, but confirm `runner_type`,
   `ci_runner_projects`, tags, protected-ref policy, and the coordinator HTTP
