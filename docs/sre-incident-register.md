@@ -89,6 +89,7 @@ facts; they do not erase the original observation.
 | INC-2026-055 | 2026-07-29 | SEV-4 | Resolved near miss | Jenkins infrastructure CI | `ansible-jenkins` would deploy the controller automatically from `main` |
 | INC-2026-056 | 2026-07-29 | SEV-4 | Open | Lab DNS | `jenkins-agent01.example.com` had no authoritative record |
 | INC-2026-057 | 2026-07-29 | SEV-4 | Resolved | Jenkins source of truth | Catalog reported stale version and container deployment |
+| INC-2026-058 | 2026-07-29 | SEV-4 | Resolved | Jenkins agent CI | Agent role used `systemctl` instead of service facts |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1860,6 +1861,29 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   platform inventory audits.
 - Evidence/related runbook:
   [Product Version Catalog](product-versions.md)
+
+## INC-2026-058: Jenkins Agent Role Failed Service-State Lint
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Resolved
+- Component: `ansible-jenkins` pipeline 356, lint job 860
+- Detection/symptom: Syntax validation passed, but Ansible lint rejected the
+  final `systemctl is-active jenkins-agent` command.
+- Impact: The dedicated agent was not configured. The protected controller
+  deployment job was skipped, so the live Jenkins controller did not change.
+- Cause: The role used a shell-oriented service-state check where an Ansible
+  service fact was available.
+- Resolution: Replaced the command with `ansible.builtin.service_facts` and an
+  assertion on `jenkins-agent.service`.
+- Validation: The corrective pipeline ID and result are appended after the new
+  revision completes.
+- Prevention/follow-up: Use service modules and facts for systemd lifecycle
+  and reserve command tasks for tools without an Ansible module.
+- Corrective automation: Keep production-profile Ansible lint blocking before
+  AWX can run the agent playbook.
+- Evidence/related runbook:
+  [Kubernetes Helm Delivery](kubernetes-helm-delivery-runbook.md)
 
 ## New Incident Template
 
