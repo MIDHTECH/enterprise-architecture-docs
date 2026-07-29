@@ -19,8 +19,8 @@ Jenkins, or AWX control plane.
 | --- | --- |
 | Change ID | CHG-2026-002 |
 | Component | Jenkins Kubernetes deployment path and `jenkins-agent01` executor |
-| State | Design correction and implementation in progress |
-| Blocker | Direct workstation SSH to infra01 and the Jenkins VM is currently timing out; the signed-in Jenkins agent view is not available |
+| State | Source gates passed; DNS and Jenkins-agent runtime bootstrap pending |
+| Blocker | AWX browser session requires operator sign-in before the controlled DNS template can run |
 | Permitted work | Configure the dedicated Jenkins agent, make Jenkins own Helm plan/deploy/rollback, restrict AWX/Ansible to host and cluster prerequisites, validate and publish those changes, and prove one sequential ingress deployment |
 | Prohibited work | Installing ingress through Ansible, launching AWX directly as the application deployment path, deploying storage or applications, modifying another runner, or using the Jenkins controller as the permanent executor |
 | Exit criteria | Agent online with pinned Helm/kubectl toolchain; GitLab CI green; Jenkins plan and deploy green; Helm release healthy; rollback tested; second convergence clean; documentation and incidents current; related repositories clean |
@@ -33,6 +33,12 @@ reordered to complete row 5 before row 6. GitLab CI remains the source
 validation gate. Jenkins owns deployment orchestration and approval. Helm owns
 Kubernetes releases. AWX and Ansible own only VM, operating-system, firewall,
 container-runtime, and Kubernetes-cluster configuration.
+
+Accepted source evidence: ingress correction pipeline 354, Jenkins shared
+library pipeline 351, Jenkins Job DSL pipeline 352, Jenkins agent correction
+pipeline 360, and agent DNS source pipeline 358 passed. Pipeline 360 explicitly
+skipped the protected controller deployment job. No ingress or agent runtime
+change has started.
 
 ## Completed change
 

@@ -1778,8 +1778,8 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   the role is named `kubernetes_ingress_prerequisites`.
 - Resolution: Renamed all four registered variables to the complete
   `kubernetes_ingress_prerequisites_` prefix and updated their references.
-- Validation: The corrective pipeline ID and final result are appended after
-  GitLab completes the new revision.
+- Validation: Corrective pipeline 354 passed syntax, lint, deployment-boundary,
+  and Helm validation for commit `e34bd54`.
 - Prevention/follow-up: Keep Ansible lint blocking and run the same pinned CI
   toolchain before deployment. Never retry a deterministic lint failure
   without a corrective commit.
@@ -1802,9 +1802,9 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Resolution: The production controller job is now a protected manual job.
   Validation remains automatic. The agent bootstrap is a separately bounded
   AWX operation.
-- Validation: The corrective GitLab pipeline ID and result are appended after
-  publication. The Jenkins controller must remain unchanged until an operator
-  explicitly starts the manual job.
+- Validation: Pipeline 360 passed for the Jenkins-agent correction and
+  explicitly skipped the protected controller deployment job. The Jenkins
+  controller remained on its active 2.568.1 service.
 - Prevention/follow-up: Every infrastructure repository must separate source
   validation from production mutation. A push is not deployment approval.
 - Corrective automation: CI keeps lint and syntax automatic and declares
@@ -1876,8 +1876,9 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   service fact was available.
 - Resolution: Replaced the command with `ansible.builtin.service_facts` and an
   assertion on `jenkins-agent.service`.
-- Validation: The corrective pipeline ID and result are appended after the new
-  revision completes.
+- Validation: Corrective pipeline 360 passed syntax and production-profile
+  lint for commit `82adf11`; its protected controller deployment job was
+  skipped.
 - Prevention/follow-up: Use service modules and facts for systemd lifecycle
   and reserve command tasks for tools without an Ansible module.
 - Corrective automation: Keep production-profile Ansible lint blocking before
