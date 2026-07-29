@@ -155,8 +155,11 @@ Use the dedicated automation repositories:
    `midhhealth/reliability-operations/ansible-observability`.
 3. Run `playbooks/install-observability.yml`.
 4. Run `playbooks/verify-observability.yml`.
-5. Apply the common baseline to the provisioned Elastic/Splunk VMs.
-6. Run the approved Elastic Stack and Splunk AWX workflows.
+5. Run `playbooks/deploy-telemetry-smoke.yml` through AWX and require a
+   non-empty Tempo trace ID, successful trace-by-ID retrieval, and at least
+   one Loki stream containing the same trace ID.
+6. Apply the common baseline to the provisioned Elastic/Splunk VMs.
+7. Run the approved Elastic Stack and Splunk AWX workflows.
 
 The resulting service placement is:
 
@@ -178,9 +181,11 @@ The current deployment uses native systemd services; Docker is not part of the
 observability VM runtime.
 
 Elastic Stack 9.4.2 is installed and verified on its five VMs. Splunk remains
-provisioned-only. PostgreSQL 18 is active. The Elastic ingestion path contains
-only synthetic AWX verification events; enroll approved Rocky Linux log
-senders before reporting centralized fleet logging complete.
+provisioned-only. PostgreSQL 18 is active. Encrypted Elastic host logging is
+accepted for all 31 Rocky Linux VMs. Grafana has Prometheus, Loki, and Tempo
+data sources; bounded correlated telemetry was accepted in AWX job 381. Each
+application must repeat the telemetry proof with its own service identity,
+dashboards, alerts, and SLOs.
 
 ## 8. Enable Governance
 

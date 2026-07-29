@@ -63,6 +63,14 @@ facts; they do not erase the original observation.
 | INC-2026-029 | 2026-07-28 | SEV-4 | Resolved | AWX serial console | A stale virsh client held the AWX console lock and blocked operator login |
 | INC-2026-030 | 2026-07-28 | SEV-4 | Open | Headlamp DNS | Headlamp NGINX route is healthy, but its application FQDN is absent from authoritative DNS |
 | INC-2026-031 | 2026-07-28 | SEV-4 | Resolved | Prometheus inventory | Live metrics coverage fell to 27/31 hosts while documentation still reported 31/31 |
+| INC-2026-032 | 2026-07-29 | SEV-4 | Resolved | Ansible validation workstation | Mac Python and OpenSSL constraints blocked a repo-local Ansible environment |
+| INC-2026-033 | 2026-07-29 | SEV-4 | Monitoring | VM management network | Direct administration-workstation SSH intermittently timed out while hypervisor-to-guest traffic remained healthy |
+| INC-2026-034 | 2026-07-29 | SEV-3 | Resolved | AWX execution environment | Forced Quay image pulls blocked jobs during external DNS failures |
+| INC-2026-035 | 2026-07-29 | SEV-3 | Resolved | Node Exporter reconciliation | An idempotent run unnecessarily downloaded an already installed binary and failed on GitHub DNS |
+| INC-2026-036 | 2026-07-29 | SEV-3 | Resolved | Observability data plane | Host firewalls blocked Kubernetes-to-OTel and collector/Grafana/AWX access to Tempo and Loki |
+| INC-2026-037 | 2026-07-29 | SEV-3 | Resolved | Authoritative DNS | BIND query ACL excluded the Kubernetes pod network |
+| INC-2026-038 | 2026-07-29 | SEV-3 | Resolved | Kubernetes CoreDNS | Private-zone lookups were randomly sent to the router resolver and returned empty answers |
+| INC-2026-039 | 2026-07-29 | SEV-4 | Open | GitLab Runner | Registered runner stopped claiming eligible pending validation jobs |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -976,6 +984,213 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   that fails unless expected and observed Node Exporter sets are identical.
 - Evidence/related runbook:
   [Current Environment State](current-environment-state.md)
+
+## INC-2026-032: Mac Ansible Validation Environment Was Not Buildable
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Resolved
+- Component: Administration-workstation Python, Ansible Core, cryptography,
+  OpenSSL, and `pkg-config`
+- Detection/symptom: The default Mac Python could install only an older
+  Ansible Core than the repository required. The bundled Python 3.12 path then
+  failed while building `cryptography` because a compatible OpenSSL development
+  environment was unavailable.
+- Impact: Local syntax and lint validation could not run from the workstation.
+  No managed host was changed by the failed setup.
+- Cause: The workstation language/runtime and native crypto build dependencies
+  did not match the repository's validation requirements.
+- Resolution: Used the repository's GitLab CI and AWX execution environment
+  instead of modifying the workstation toolchain.
+- Validation: `ansible-prometheus` pipeline 300 passed lint and syntax checks;
+  AWX job 356 successfully reconciled Grafana.
+- Prevention/follow-up: Publish and use a pinned validation container or
+  supported controller environment for every Ansible repository.
+- Corrective automation: Keep controller validation in CI/AWX and treat local
+  virtual environments as optional developer tooling.
+- Evidence/related runbook:
+  [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
+
+## INC-2026-033: Direct Workstation-to-VM SSH Was Intermittent
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Monitoring
+- Component: Copper9100 workstation-to-lab-VM management path
+- Detection/symptom: Direct SSH and ICMP from the Mac intermittently timed out
+  to AWX, GitLab, infra01, infra02, and observability guests. During the same
+  windows, the owning hypervisor could ping its guest with sub-millisecond
+  latency.
+- Impact: Operational inspection was delayed and some commands required
+  retries or `ProxyJump` through the owning hypervisor. Services and guest
+  east-west traffic continued to operate.
+- Cause: Not yet isolated. Evidence points to the workstation/Wi-Fi path rather
+  than guest availability.
+- Resolution: Used canonical direct SSH when available and hypervisor
+  `ProxyJump` for deterministic guest access. No guest reboot was required.
+- Validation: The same guests repeatedly accepted SSH through the hypervisor,
+  and the deployment and acceptance jobs completed.
+- Prevention/follow-up: Capture workstation ARP, route, Wi-Fi association,
+  router client, and packet-loss evidence during the next occurrence.
+- Corrective automation: Add a management-path check that compares direct,
+  hypervisor-to-guest, and proxied SSH before declaring a guest down.
+- Evidence/related runbook:
+  [Current Environment State](current-environment-state.md)
+
+## INC-2026-034: AWX Jobs Were Blocked by Forced Execution-Image Pulls
+
+- Date: 2026-07-29
+- Severity: SEV-3
+- Status: Resolved
+- Component: AWX execution environments and `quay.io`
+- Detection/symptom: AWX automation pods entered `ImagePullBackOff` with Quay
+  DNS and HTTP timeouts. Inventory update 350 terminated in error before
+  Ansible started.
+- Impact: Inventory and deployment jobs could not launch despite the AWX
+  execution image already being cached on the node.
+- Cause: All AWX execution environments had an empty/default pull policy,
+  causing jobs using mutable image tags to contact the external registry.
+- Resolution: Set all three AWX execution environments to pull policy
+  `missing`.
+- Validation: Retried inventory update 353 completed successfully from the
+  cached image; Grafana deployment job 356 and telemetry job 381 also launched
+  successfully.
+- Prevention/follow-up: Pin execution-image versions and use `missing` for the
+  on-premises lab. Mirror required images into Harbor after Harbor is installed.
+- Corrective automation: Export AWX execution-environment definitions and pull
+  policies as controller configuration.
+- Evidence/related runbook:
+  [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
+
+## INC-2026-035: Node Exporter Reconciliation Required GitHub Egress
+
+- Date: 2026-07-29
+- Severity: SEV-3
+- Status: Resolved
+- Component: `ansible-prometheus` Node Exporter role
+- Detection/symptom: AWX job 343 failed on `Download Node Exporter` for
+  multiple hosts with DNS failures and timeouts even though Node Exporter
+  1.11.1 was already installed.
+- Impact: The play never reached Grafana, so Loki and Tempo data-source files
+  were not provisioned.
+- Cause: The role downloaded and extracted Node Exporter on every
+  reconciliation instead of comparing the installed version first.
+- Resolution: Commit `ea2e816` added an installed-version check and guarded
+  download, extraction, and binary installation.
+- Validation: GitLab pipeline 300 passed; AWX job 356 skipped redundant binary
+  installation, provisioned the data sources, and verified Grafana.
+- Prevention/follow-up: Reconciliation of an installed version must not depend
+  on Internet availability.
+- Corrective automation: Retain the version assertion and add a second-run
+  idempotence test to CI.
+- Evidence/related runbook:
+  [Current Environment State](current-environment-state.md)
+
+## INC-2026-036: Observability Host Firewalls Blocked the Telemetry Path
+
+- Date: 2026-07-29
+- Severity: SEV-3
+- Status: Resolved
+- Component: OpenTelemetry Collector, Tempo, Loki, and firewalld
+- Detection/symptom: Smoke job 361 found `no route to host` from a Kubernetes
+  pod to `otel.example.com:4317`. After that path was opened, collector logs
+  showed the same error to `tempo.example.com:4317`; Tempo API and Loki API
+  ports were also absent from managed firewall policy.
+- Impact: Locally healthy services could not exchange telemetry or be queried
+  by Grafana/AWX, so end-to-end logs and traces were unavailable.
+- Cause: Installation roles verified only loopback health and did not manage
+  consumer-facing data-plane ports.
+- Resolution: `ansible-observability` commits `67ba728` and `9fbba58` manage
+  OTLP 4317/4318, Tempo 3200, and Loki 3100 with source-restricted rules.
+  Equivalent validated break-glass rules were applied while CI remained
+  pending.
+- Validation: Kubernetes connected to the collector; collector-to-Tempo,
+  Tempo readiness/search, and Loki readiness succeeded. AWX job 381 completed
+  the full trace/log correlation workflow.
+- Prevention/follow-up: Acceptance must test from each real producer and
+  consumer network, not from service loopback only.
+- Corrective automation: Keep all observability data-plane firewall rules in
+  the product roles and verify them from the Kubernetes control plane.
+- Evidence/related runbook:
+  [Current Environment State](current-environment-state.md)
+
+## INC-2026-037: BIND Rejected Kubernetes Pod-Network Queries
+
+- Date: 2026-07-29
+- Severity: SEV-3
+- Status: Resolved
+- Component: `dns.example.com` BIND query and recursion ACL
+- Detection/symptom: BIND allowed only `localhost` and `192.168.1.0/24`; the
+  Kubernetes pod CIDR `10.244.0.0/16` was absent.
+- Impact: CoreDNS upstream queries originating from pods could be refused,
+  preventing workloads from resolving on-premises service names.
+- Cause: DNS installation predated the Kubernetes pod-network integration.
+- Resolution: Commit `3681bb3` changed the BIND role to manage a list of
+  authorized networks containing the lab LAN and pod CIDR. The live
+  configuration was backed up, validated with `named-checkconf`, and reloaded.
+- Validation: A pod on worker02 resolved `otel.example.com` directly through
+  `192.168.1.106` to `192.168.1.131`.
+- Prevention/follow-up: Review DNS ACLs whenever CNI or service-network CIDRs
+  change.
+- Corrective automation: `bind_dns_allowed_networks` is the source of truth for
+  recursive-query clients.
+- Evidence/related runbook:
+  [DNS Installation](product-installation-dns.md)
+
+## INC-2026-038: CoreDNS Randomly Used the Router for Private Names
+
+- Date: 2026-07-29
+- Severity: SEV-3
+- Status: Resolved
+- Component: Kubernetes CoreDNS upstream selection
+- Detection/symptom: CoreDNS forwarded all external names through
+  `/etc/resolv.conf`, which contained both `192.168.1.106` and the router
+  `192.168.1.1`. The router returned empty or negative answers for private
+  `example.com` records. Telemetry jobs 366, 371, and 376 therefore failed at
+  different stages even after individual firewall paths were repaired.
+- Impact: Pod service-name resolution was nondeterministic and telemetry
+  exporters could lose their bounded payload before DNS recovered.
+- Cause: The private zone had no dedicated CoreDNS forwarding block.
+- Resolution: Commit `cc466bc` added an Ansible-managed `example.com` server
+  block forwarding only to `192.168.1.106`; other names retain the normal
+  upstream path. CoreDNS was rolled out cleanly.
+- Validation: Three consecutive lookups of `otel.example.com` returned
+  `192.168.1.131` from pods pinned to worker01, worker02, and worker03.
+  Acceptance job 381 then succeeded.
+- Prevention/follow-up: Every private DNS zone must have an explicit
+  authoritative forwarder in CoreDNS.
+- Corrective automation: The Kubernetes `coredns` role manages the private
+  zone and authoritative server.
+- Evidence/related runbook:
+  [Current Environment State](current-environment-state.md)
+
+## INC-2026-039: GitLab Runner Stopped Claiming Pending Jobs
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Open
+- Component: GitLab Runner 19.2 Docker executor
+- Detection/symptom: The runner container was active, its registration
+  verified successfully, it was enabled for untagged instance jobs, and
+  `ci_running_builds` was empty, but pending jobs were not assigned. Container
+  restart and a bounded `run-single` recovery worker did not claim work.
+- Impact: New infrastructure and observability validation pipelines remained
+  pending or were canceled by superseding commits. Live fixes were verified
+  through AWX and direct acceptance, but current CI evidence is incomplete.
+- Cause: Not yet isolated; investigation must cover runner long polling,
+  coordinator scheduling, project eligibility, and the already-running
+  pipeline 303.
+- Resolution: Pending. The temporary recovery worker was stopped; the normal
+  runner remains registered.
+- Validation required for closure: A new untagged test pipeline is assigned to
+  runner 1, completes, and updates `contacted_at`; pending observability
+  pipeline 307 must reach a terminal result.
+- Prevention/follow-up: Enable runner metrics/debug logging and alert on
+  pending jobs with no runner assignment.
+- Corrective automation: Manage runner configuration, health checks, and queue
+  diagnostics through the GitLab installation repository.
+- Evidence/related runbook:
+  [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
 
 ## New Incident Template
 

@@ -1,6 +1,6 @@
 # Current Environment State
 
-Last verified: 2026-07-28
+Last verified: 2026-07-29
 
 ## Enterprise project portfolio
 
@@ -52,7 +52,8 @@ returns the current active and unavailable route catalog. Active routes include
 GitLab, Jenkins, AWX, Headlamp, Prometheus, Alertmanager, Grafana, MinIO, Loki,
 Tempo, OpenTelemetry HTTP, and Kibana. AWX uses its verified NodePort `32000`;
 Headlamp uses `30080`. Source-restricted firewalld rules allow only
-`192.168.1.114` to reach the otherwise restricted observability HTTP ports.
+approved lab-LAN consumers to reach Loki and Tempo and allow the Kubernetes
+pod CIDR to reach the OpenTelemetry receivers.
 
 Vault, Keycloak, Harbor, Artifactory, SonarQube, and Splunk application URLs
 return an intentional HTTP 503 with `product-not-installed`. Internal TLS is
@@ -135,29 +136,28 @@ Node Exporter 1.11.1 is installed on managed platform hosts.
 
 ## Application and telemetry readiness audit
 
-The following readiness evidence was collected directly on 2026-07-28:
+The following readiness evidence was collected directly through 2026-07-29:
 
 | Capability | Live evidence | Readiness |
 | --- | --- | --- |
 | Hypervisor capacity | 31/31 VMs running across infra01 and infra02; approximately 58/121 GiB and 34/107 GiB RAM in use; both root filesystems below 3% utilization | Ready |
-| Kubernetes base | 4/4 nodes Ready; CoreDNS, Flannel, control-plane components, and Headlamp healthy; 22 allocatable CPUs and approximately 41.1 GiB allocatable memory | Ready for stateless test workloads |
+| Kubernetes base | 4/4 nodes Ready; CoreDNS forwards `example.com` deterministically to `192.168.1.106`; three repeated lookups succeeded from every worker | Ready for stateless test workloads |
 | Persistent Kubernetes applications | No StorageClass and no PVCs | Blocked until storage is installed and tested |
 | Kubernetes application ingress | No IngressClass or ingress controller; Headlamp is exposed by NodePort | Blocked for standard application URLs |
 | Elastic host logging | Filebeat active and encrypted-output validation passed on 31/31 Rocky Linux VMs; Logstash queue empty; all 31 inventory hostnames present in Elasticsearch | Accepted |
 | Prometheus metrics | 32/32 configured targets Up after AWX job 321: Prometheus plus 31 Node Exporters | Accepted for all Rocky Linux VMs |
-| Grafana visualization | Grafana healthy; Prometheus data source, dashboard provider, and Server Fleet Overview dashboard provisioned | Ready for host metrics |
-| Loki log pipeline | Loki service healthy, but the last-hour query returned zero streams and no labels | Standby; no live workload logs |
-| Tempo trace pipeline | Tempo and the OpenTelemetry Collector are healthy, but Tempo returned zero traces | Standby; no end-to-end trace proof |
+| Grafana visualization | AWX job 356 provisioned Prometheus, Loki, and Tempo data sources plus the Server Fleet Overview dashboard | Accepted for metrics, logs, and trace exploration |
+| Loki log pipeline | AWX job 381 returned one run-specific stream containing the accepted Tempo trace ID | Accepted for the bounded correlated workload |
+| Tempo trace pipeline | AWX job 381 found and retrieved trace `f819ea257b72ff3a7fd5998e807b3430`, then correlated it to the Loki event | Accepted for the bounded correlated workload |
 | Management applications | GitLab, AWX, Prometheus, Grafana, Kibana, and the Headlamp NGINX route returned HTTP responses; Jenkins returned the expected authenticated HTTP 403 | Available |
 | Headlamp name resolution | Direct NGINX routing returned HTTP 200, but `headlamp.apps.example.com` did not resolve and is absent from the authoritative zone | Degraded; tracked by INC-2026-030 |
 
 The platform can deploy and exercise stateless test applications through
-ClusterIP or NodePort today. It is not yet ready for enterprise-style stateful
-application deployment or accepted logs-metrics-traces monitoring. The minimum
-acceptance path is to install and test Kubernetes storage and ingress,
-provision the Loki and Tempo Grafana integrations, and run an
-OpenTelemetry-instrumented smoke application that proves logs, metrics, and
-traces from workload to query and dashboard.
+ClusterIP or NodePort and can accept their logs, metrics, and traces. The
+shared telemetry path is accepted; each application must still prove its own
+service-specific telemetry, dashboards, alerts, and SLOs. Enterprise-style
+stateful deployment and standard application ingress remain blocked until
+Kubernetes storage and ingress are installed and tested.
 
 ## Step-by-step verification
 
@@ -197,6 +197,13 @@ Logstash reported 571,057 input events, 571,057 output events, and zero queued
 events after final enrollment. INC-2026-024 and the AWX access incident
 INC-2026-027 are resolved.
 
+Grafana reconciliation completed in AWX job `356`. Correlated telemetry
+acceptance completed in AWX job `381` with run ID `20260729T164944Z`, Tempo
+trace ID `f819ea257b72ff3a7fd5998e807b3430`, successful trace-by-ID retrieval,
+and one Loki stream containing the same trace ID. Failed jobs `361`, `366`,
+`371`, and `376` exposed and drove the managed firewall, BIND ACL, and CoreDNS
+forwarding corrections recorded in INC-2026-036 through INC-2026-038.
+
 ## Remaining integration work
 
 1. Run the Jenkins seed job so `projects/run-ansible-playbook` is created or
@@ -205,24 +212,20 @@ INC-2026-027 are resolved.
 3. Confirm AWX SCM and machine credential IDs for the Linux VM fleet.
 4. Run preflight smoke tests for the systems, database, resilience, data, and
    network automation slices through Jenkins/AWX.
-5. Provision Grafana data sources and dashboards for Loki and Tempo;
-   Prometheus and the Server Fleet Overview dashboard are provisioned.
-6. Deploy one OpenTelemetry-instrumented smoke application and require
-   non-zero, correlated logs, metrics, and traces before declaring telemetry
-   ready.
-7. Install and validate a Kubernetes StorageClass and ingress controller.
-8. Connect Prometheus alert delivery to Alertmanager and validate a test alert.
-9. Apply dashboards, alert rules, and SLOs from `observability-sre-platform`.
-10. Configure production alert receivers.
-11. Decide whether Loki and Tempo should move from local storage to MinIO.
-12. Back up `/etc/midhhealth/elastic-stack` through the restricted platform
+5. Install and validate a Kubernetes StorageClass and ingress controller.
+6. Connect Prometheus alert delivery to Alertmanager and validate a test alert.
+7. Apply application dashboards, alert rules, and SLOs from
+   `observability-sre-platform`.
+8. Configure production alert receivers.
+9. Decide whether Loki and Tempo should move from local storage to MinIO.
+10. Back up `/etc/midhhealth/elastic-stack` through the restricted platform
     secret-backup process.
-13. Configure reverse-proxy TLS and SSO for Kibana.
-14. Enroll structured Jenkins, AWX job, Kubernetes ingress, PostgreSQL,
+11. Configure reverse-proxy TLS and SSO for Kibana.
+12. Enroll structured Jenkins, AWX job, Kubernetes ingress, PostgreSQL,
     application, AI, and MLOps log classes through the Logstash boundary.
-15. Register `midh-ai-edge-01` as the Mac Studio AI/ML development endpoint.
-16. Define `infra03` Kubernetes labels and workload placement guardrails before
+13. Register `midh-ai-edge-01` as the Mac Studio AI/ML development endpoint.
+14. Define `infra03` Kubernetes labels and workload placement guardrails before
     assigning VMs from its reserved `.141–.160` block.
-17. Migrate Elasticsearch01–03 and the Kubernetes control plane/workers to the
+15. Migrate Elasticsearch01–03 and the Kubernetes control plane/workers to the
     `infra03-images` pool, validate application and cluster health, then retire
     the confirmed source domains to free infra01/02 capacity.

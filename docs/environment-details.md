@@ -147,18 +147,18 @@ endpoints are not NGINX virtual hosts.
 
 ## Current Implementation Status
 
-| Layer | State on 2026-07-28 |
+| Layer | State through 2026-07-29 |
 | --- | --- |
 | Hypervisors, bridges, and libvirt | Operational |
 | 31 Rocky Linux VM domains | Running with autostart |
-| BIND DNS | Installed and serving the current zone |
+| BIND DNS | Installed; lab LAN and Kubernetes pod CIDR authorized |
 | GitLab CE | Installed |
 | Standalone NGINX | Installed; active routes verified; uninstalled products return intentional 503 |
-| Prometheus, Alertmanager, Grafana, Loki, Tempo, OTel, MinIO | Installed as native systemd services; integration/TLS/SSO work remains |
+| Prometheus, Alertmanager, Grafana, Loki, Tempo, OTel, MinIO | Native systemd services; Prometheus metrics and bounded correlated Loki/Tempo telemetry accepted; alert routing/TLS/SSO remain |
 | Elastic Stack | Elastic and Filebeat 9.4.2 healthy; encrypted Linux fleet logs accepted from all 31 VMs |
 | Splunk | VM provisioned; product not installed |
 | PostgreSQL | PostgreSQL 18 active |
-| Local Kubernetes | Four nodes Ready; CoreDNS, Flannel, and Headlamp present; GitOps/add-on stack absent |
+| Local Kubernetes | Four nodes Ready; CoreDNS forwards `example.com` only to `192.168.1.106`; Flannel and Headlamp present; GitOps/add-on stack absent |
 | Remaining platform products | Provisioned or planned; verify each runbook before reporting installed |
 | Portfolio projects 6–10 | Executable first slices exist; Jenkins/AWX runtime acceptance evidence pending |
 | Healthcare AI and MLOps | Repository scaffolds; runtime implementation planned |

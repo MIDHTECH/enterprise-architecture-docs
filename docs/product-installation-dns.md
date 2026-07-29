@@ -3,7 +3,8 @@
 ## Purpose
 
 `dns.example.com` provides authoritative forward and reverse records for the
-on-premises lab and recursive DNS for clients on `192.168.1.0/24`. The
+on-premises lab and recursive DNS for clients on `192.168.1.0/24` and
+Kubernetes pods on `10.244.0.0/16`. The
 Copper9100 DHCP service must advertise this server so connected clients can
 resolve lab names without editing local hosts files.
 
@@ -13,9 +14,13 @@ product and AWX the second.
 
 ## Current Status
 
-As of 2026-07-27, BIND is installed, enabled, and active. Forward, reverse,
+As of 2026-07-29, BIND is installed, enabled, and active. Forward, reverse,
 UDP, TCP, and recursive lookups pass, and the Ansible role has converged with
 `changed=0`, `failed=0`, and `unreachable=0`.
+
+The managed query and recursion ACL includes both `192.168.1.0/24` and the
+Kubernetes pod CIDR `10.244.0.0/16`. CoreDNS forwards `example.com` only to
+`192.168.1.106`; all other names use the normal node upstreams.
 
 Zone serial `2026072801` includes the physical hosts, all 31 VMs, reverse
 records, and approved `*.apps.example.com` service names at `.114`. The latest
@@ -44,7 +49,7 @@ application service names, and public recursive lookups are validated.
 | DNS address | `192.168.1.106` |
 | Internal zone | `example.com` |
 | Reverse zone | `1.168.192.in-addr.arpa` |
-| Permitted client network | `192.168.1.0/24` |
+| Permitted client networks | `192.168.1.0/24`, `10.244.0.0/16` |
 | Current Copper9100 gateway/DHCP server | `192.168.1.1` |
 
 The router must reserve `192.168.1.106` for the DNS VM. The complete VM range
@@ -124,9 +129,40 @@ The `bind_dns` role:
 - installs BIND and its diagnostic tools;
 - serves authoritative `A` and `PTR` records for the VM inventory;
 - forwards non-lab queries to the approved external resolvers;
-- restricts queries and recursion to localhost and `192.168.1.0/24`;
+- restricts queries and recursion to localhost, `192.168.1.0/24`, and
+  `10.244.0.0/16`;
 - permits TCP and UDP port 53 through firewalld;
 - validates zone syntax and both authoritative and recursive lookups.
+
+## Kubernetes CoreDNS Integration
+
+The Kubernetes `coredns` role in
+`midhhealth/platform-engineering/ansible-kubernetes` manages an explicit
+`example.com` server block:
+
+```text
+example.com:53 {
+    errors
+    cache 30
+    forward . 192.168.1.106
+}
+```
+
+Do not forward the private zone through the node's general
+`/etc/resolv.conf`. Nodes also receive the router resolver as a secondary
+server, and that resolver returns empty or negative answers for private names.
+
+After changing the BIND ACL or CoreDNS configuration:
+
+1. validate BIND with `named-checkconf`;
+2. reload BIND;
+3. roll out the CoreDNS deployment;
+4. run at least three private-zone lookups from a pod pinned to every worker;
+5. require the canonical answer on every lookup.
+
+The 2026-07-29 acceptance test returned `192.168.1.131` for
+`otel.example.com` three consecutive times on worker01, worker02, and worker03.
+See INC-2026-037 and INC-2026-038.
 
 ## Manual Copper9100 DHCP Step
 
