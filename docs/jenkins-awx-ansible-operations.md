@@ -144,3 +144,30 @@ Use this procedure when GitLab jobs remain pending.
 
 See INC-2026-039 in the
 [SRE Incident Register](sre-incident-register.md) for the 2026-07-29 recovery.
+
+## GitLab CI Runtime Contract
+
+Do not rely on the runner's fallback image for project tools. Every repository
+must declare:
+
+- a pinned image for Terraform, Checkov, Python, or other required tooling;
+- one merged stage graph when local CI files are included;
+- pinned Python requirements and Ansible collections;
+- explicit `ANSIBLE_CONFIG` and `ANSIBLE_ROLES_PATH` values when the build
+  directory permissions can disable automatic configuration discovery;
+- manual gates for plans, applies, and smoke tests that require an
+  operator-started environment.
+
+Use the job trace to classify failures:
+
+- exit 127 means the declared runtime lacks a command;
+- a pipeline with no builds usually indicates merged-configuration or stage
+  validation failure;
+- Ansible "role not found" with the role checked into the repository usually
+  indicates an ignored configuration or incorrect role path;
+- Checkov policy failures are security findings and must not be converted to
+  soft failures without an explicitly approved risk exception.
+
+The cloud project currently enforces Terraform 1.13.5, Ansible Core 2.21.2,
+ansible-lint 26.6.0, and Checkov 3.3.8. See INC-2026-040 and INC-2026-041 in
+the [SRE Incident Register](sre-incident-register.md).

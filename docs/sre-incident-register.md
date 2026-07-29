@@ -71,6 +71,8 @@ facts; they do not erase the original observation.
 | INC-2026-037 | 2026-07-29 | SEV-3 | Resolved | Authoritative DNS | BIND query ACL excluded the Kubernetes pod network |
 | INC-2026-038 | 2026-07-29 | SEV-3 | Resolved | Kubernetes CoreDNS | Private-zone lookups were randomly sent to the router resolver and returned empty answers |
 | INC-2026-039 | 2026-07-29 | SEV-4 | Resolved | GitLab Runner | Project-scoped runner could not claim validation jobs from the wider GitLab instance |
+| INC-2026-040 | 2026-07-29 | SEV-4 | Resolved | GitLab CI validation | Default images, conflicting stage graphs, and ignored Ansible paths prevented repository validation |
+| INC-2026-041 | 2026-07-29 | SEV-3 | Open | Terraform security controls | First executable Checkov scan found 14 blocking policy gaps in legacy cloud examples |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1032,6 +1034,11 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   and the deployment and acceptance jobs completed.
 - Prevention/follow-up: Capture workstation ARP, route, Wi-Fi association,
   router client, and packet-loss evidence during the next occurrence.
+- Recurrence: During CI repair publication, direct HTTP and SSH to GitLab
+  timed out once while infra01 still reached GitLab ICMP and ports 22/80.
+  The retry succeeded without a guest change. A later read-only check timed
+  out to both GitLab and infra01 from the workstation, further supporting a
+  workstation/Wi-Fi or router-path fault rather than a single guest failure.
 - Corrective automation: Add a management-path check that compares direct,
   hypervisor-to-guest, and proxied SSH before declaring a guest down.
 - Evidence/related runbook:
@@ -1205,6 +1212,71 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   diagnostics through the GitLab installation repository.
 - Evidence/related runbook:
   [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
+
+## INC-2026-040: GitLab CI Validation Runtimes Were Incomplete
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Resolved
+- Component: `cloud-infra-automation-platform`,
+  `ansible-observability`, and GitLab Runner Docker executor
+- Detection/symptom: After INC-2026-039 restored job assignment, cloud
+  Terraform jobs 495 and 496 exited 127 because the runner fallback
+  `python:3.13-slim` image did not contain Terraform. Cloud main pipeline 305
+  failed before creating builds because included CI files declared
+  incompatible stage graphs. Observability syntax job 511 could not find the
+  checked-in `blackbox_exporter` role because Ansible ignored configuration
+  discovery in GitLab's world-writable build directory.
+- Impact: CI could not provide reliable Terraform, Ansible, or observability
+  validation despite the live platform acceptance tests succeeding.
+- Cause: The repositories depended on runner-global defaults and implicit
+  Ansible configuration discovery instead of declaring complete job runtimes.
+- Resolution: Added one canonical cloud pipeline stage graph, pinned Terraform
+  1.13.5, Ansible Core 2.21.2, ansible-lint 26.6.0, and project-specific
+  images. Added explicit environment defaults, `ANSIBLE_CONFIG`,
+  `ANSIBLE_ROLES_PATH`, and the `community.docker` collection dependency.
+  Cloud Ansible validation uses the minimum structural/syntax profile while
+  the pre-existing style backlog is remediated separately.
+- Validation: Cloud pipeline 317 passed Terraform format, provider validation,
+  local validation, layout validation, and Ansible lint jobs 569 through 573.
+  Observability pipeline 315 passed syntax job 554 and lint job 555.
+- Prevention/follow-up: Every CI job must declare its tool image,
+  dependencies, stage, and repository paths. Runner defaults are fallback
+  safety only and are not a project runtime contract.
+- Corrective automation: Maintain pinned CI requirements and collection files
+  in each repository and validate the complete merged GitLab configuration.
+- Evidence/related runbook:
+  [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
+
+## INC-2026-041: Checkov Found Blocking Legacy Terraform Gaps
+
+- Date: 2026-07-29
+- Severity: SEV-3
+- Status: Open
+- Component: `cloud-infra-automation-platform` Terraform modules and Checkov
+- Detection/symptom: The first executable Checkov job, pipeline 317 job 574,
+  passed 77 controls and failed 14. Findings cover container image
+  immutability and pull policy, IAM resource scope, security-group egress and
+  attachment, VPC flow/default-group controls, and S3 notifications,
+  replication, lifecycle, access logging, and KMS encryption.
+- Impact: The legacy LocalStack/Kind Terraform examples are not approved as
+  production-ready cloud modules, and their security stage remains blocking.
+  This does not affect the accepted on-premises libvirt architecture.
+- Cause: The examples predate the executable policy gate and implement only a
+  development smoke-test subset of enterprise AWS controls.
+- Resolution: Pending remediation. Checkov was upgraded to 3.3.8 and all
+  findings remain blocking. A proposed soft-fail baseline was not published.
+  Terraform plan and environment smoke jobs are manual so push pipelines
+  cannot contact or mutate operator-started environments.
+- Validation required for closure: Remediate all 14 controls, obtain a
+  zero-failure Checkov result, and complete a reviewed Terraform plan in the
+  intended cloud test environment.
+- Prevention/follow-up: Introduce policy scanning when a module is created,
+  not after the module portfolio is assembled.
+- Corrective automation: Keep the Checkov image pinned and retain blocking
+  enforcement for every policy ID.
+- Evidence/related runbook:
+  [Product Version Catalog](product-versions.md)
 
 ## New Incident Template
 
