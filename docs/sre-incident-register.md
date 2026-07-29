@@ -1040,6 +1040,15 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   The retry succeeded without a guest change. A later read-only check timed
   out to both GitLab and infra01 from the workstation, further supporting a
   workstation/Wi-Fi or router-path fault rather than a single guest failure.
+  During Checkov remediation publication on 2026-07-29, the failure changed
+  shape: the workstation reached the router and infra02, but not infra01 or
+  GitLab. The workstation route to `.101` carried `REJECT`, its ARP entry was
+  incomplete, and infra02 independently reported neighbor state `FAILED` for
+  both infra01 `.38` and GitLab `.101`. This occurrence points to infra01
+  being powered off, disconnected, or absent from the LAN rather than to a
+  workstation-only path problem. A standard Wake-on-LAN packet sent from
+  infra02 to infra01's documented bridge MAC produced no response; infra02
+  continued to return `Destination Host Unreachable`.
 - Corrective automation: Add a management-path check that compares direct,
   hypervisor-to-guest, and proxied SSH before declaring a guest down.
 - Evidence/related runbook:
@@ -1265,10 +1274,23 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   This does not affect the accepted on-premises libvirt architecture.
 - Cause: The examples predate the executable policy gate and implement only a
   development smoke-test subset of enterprise AWS controls.
-- Resolution: Pending remediation. Checkov was upgraded to 3.3.8 and all
-  findings remain blocking. A proposed soft-fail baseline was not published.
-  Terraform plan and environment smoke jobs are manual so push pipelines
+- Resolution: Remediation is implemented without policy skips. The workload
+  image is digest-pinned; IAM and security-group scope is restricted; VPC flow
+  logs and default-group lockdown are present; and S3 now includes KMS
+  encryption, notifications, versioning, lifecycle, access logging, and
+  replication. Access logging and disaster recovery intentionally require
+  external log-bucket, replica-bucket, and replica-key inputs so the module
+  does not model unsafe self-logging or fake same-bucket replication.
+  Terraform plan and environment smoke jobs remain manual so push pipelines
   cannot contact or mutate operator-started environments.
+- Remediation evidence: Pipeline 327 job 672 passed 153 controls and reported
+  only two missing explicit KMS key policies. After adding those policies,
+  pipeline 329 job 696 passed 171 controls; six generic IAM findings remained
+  because Checkov classified the required KMS root-administration statements
+  as standalone IAM policies. The equivalent policies are now attached
+  directly to the KMS keys. Commit `d89a05a` contains the final canonical
+  Terraform formatting but is awaiting publication while infra01 and GitLab
+  are offline under the recurrence recorded in INC-2026-033.
 - Validation required for closure: Remediate all 14 controls, obtain a
   zero-failure Checkov result, and complete a reviewed Terraform plan in the
   intended cloud test environment.
