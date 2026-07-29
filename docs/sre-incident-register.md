@@ -73,6 +73,7 @@ facts; they do not erase the original observation.
 | INC-2026-039 | 2026-07-29 | SEV-4 | Resolved | GitLab Runner | Project-scoped runner could not claim validation jobs from the wider GitLab instance |
 | INC-2026-040 | 2026-07-29 | SEV-4 | Resolved | GitLab CI validation | Default images, conflicting stage graphs, and ignored Ansible paths prevented repository validation |
 | INC-2026-041 | 2026-07-29 | SEV-3 | Open | Terraform security controls | First executable Checkov scan found 14 blocking policy gaps in legacy cloud examples |
+| INC-2026-042 | 2026-07-29 | SEV-4 | Resolved | GitLab Runner image policy | Forced registry checks failed cached CI images during router-DNS timeouts |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1277,6 +1278,41 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   enforcement for every policy ID.
 - Evidence/related runbook:
   [Product Version Catalog](product-versions.md)
+
+## INC-2026-042: Forced CI Image Pulls Failed During Router-DNS Outage
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Resolved
+- Component: GitLab Runner Docker executor, Docker Hub, and router DNS
+- Detection/symptom: Cloud pipeline 318 jobs 579 and 580 failed while
+  resolving `registry-1.docker.io` through `192.168.1.1`. Terraform 1.13.5
+  was already cached, but the runner's `always` policy still performed a
+  registry manifest request. The first project-side `if-not-present` attempt
+  in pipeline 321 was rejected because the runner allowed only `always`.
+- Impact: Deterministic validation jobs failed because an external registry
+  lookup was unavailable, even though the required pinned tool image existed
+  locally.
+- Cause: Project image policy and the runner's
+  `allowed_pull_policies` were inconsistent; the runner had no cached-first
+  option.
+- Resolution: Backed up runner configuration to
+  `/srv/gitlab-runner/config/config.toml.pre-pull-policy-20260729`, set the
+  default Docker pull policy to `if-not-present`, and allowed both
+  `always` and `if-not-present`. Project images explicitly use
+  `if-not-present`. The runner token verified and configuration hot reload
+  completed.
+- Validation: Post-reload cloud pipeline 322 used runner ID 2 and passed
+  cached-image Terraform format job 614 and provider-validation job 615.
+  The Checkov stage may remain red only for the separate blocking findings in
+  INC-2026-041.
+- Prevention/follow-up: Mirror CI images into Harbor when available and pin
+  images by digest. Test runner policy compatibility before adding a
+  project-level pull policy.
+- Corrective automation: Manage runner Docker pull policy and allowed-policy
+  lists as code in the GitLab installation repository.
+- Evidence/related runbook:
+  [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
 
 ## New Incident Template
 

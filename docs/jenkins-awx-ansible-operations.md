@@ -171,3 +171,17 @@ Use the job trace to classify failures:
 The cloud project currently enforces Terraform 1.13.5, Ansible Core 2.21.2,
 ansible-lint 26.6.0, and Checkov 3.3.8. See INC-2026-040 and INC-2026-041 in
 the [SRE Incident Register](sre-incident-register.md).
+
+Pinned project images use `pull_policy: if-not-present`. The shared runner
+must therefore contain:
+
+```toml
+[runners.docker]
+  pull_policy = "if-not-present"
+  allowed_pull_policies = ["always", "if-not-present"]
+```
+
+If a job reports `runner_configuration_error` for an invalid pull policy,
+fix the runner allowlist and wait for its configuration hot reload before
+retrying. If an `always` pull fails while the image is cached, do not delete
+the cache; use the approved cached-first policy. See INC-2026-042.
