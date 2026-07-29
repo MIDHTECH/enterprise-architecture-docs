@@ -19,9 +19,9 @@ Jenkins, or AWX control plane.
 | --- | --- |
 | Change ID | `CHG-2026-001` |
 | Component | Foundation recovery and complete activity audit |
-| State | Blocked |
-| Blocker | infra01 and every infra01-hosted control service are absent from the LAN |
-| Permitted work | Read-only inspection, incident evidence, console diagnostics, and documentation |
+| State | Recovery in progress |
+| Blocker | Control-plane recovery/activity audit passed; pending local commits and live-state documentation must be reconciled and published |
+| Permitted work | Sequential source-of-truth reconciliation/publication, INC-2026-046 monitoring evidence, incident evidence, and documentation |
 | Prohibited work | New product installation, AWX launch, Kubernetes mutation, VM provisioning, migration, or upgrade |
 | Exit criteria | infra01, GitLab, Jenkins, AWX, DNS, NGINX, and the application Kubernetes API are reachable; active jobs are audited; source-of-truth drift is reconciled |
 
@@ -33,7 +33,12 @@ The 2026-07-29 audit found:
 
 | Area | Evidence | Classification |
 | --- | --- | --- |
-| infra01 and guests | SSH and service ports unavailable; Mac ARP incomplete; infra02 neighbor state `FAILED` | Active blocker |
+| infra01 and guests | Host recovered after a full reboot; bridge and 17/17 domains are up with expected IPv4 addresses. STP is disabled; one controlled canary reboot passed. | Monitoring under INC-2026-046 |
+| GitLab | Backend redirects normally; `gitlab.apps.example.com` proxies to the sign-in route; no visible CI workload process | Recovered; INC-2026-047 resolved |
+| Jenkins | Service active on port 8080; backend and `jenkins.apps.example.com` sign-in pages return HTTP 200; no visible executor workload | Healthy and idle |
+| AWX | API and `awx.apps.example.com` return HTTP 200; AWX 24.6.1 control heartbeat is current with capacity 30; no visible Ansible Runner workload | Healthy and idle |
+| Application Kubernetes | Explicit context `kubernetes-admin@kubernetes`; server 1.34.10; control plane plus three workers Ready; no non-running pods or active Jobs | Healthy and idle |
+| NGINX routes | All 12 routes advertised as active returned expected UI, redirect, authentication, or API-root responses through `*.apps.example.com` | Healthy |
 | infra02 | 14/14 VMs running; no Ansible, Terraform, VM-build, or package-change process except routine `dnf makecache` on Logstash | Stable |
 | infra03 | Host stable; three recently provisioned VMs running with autostart | Unreconciled completed provisioning |
 | `gitlab-runner-app01` | `.136`, Rocky VM running; no GitLab Runner service or process | Provisioned only |
@@ -83,4 +88,3 @@ A component is complete only when all of the following are true:
 7. current-state, installation, and operations documentation is updated;
 8. all related repositories are clean and synchronized with GitLab;
 9. the active-change row is closed before the next queue item starts.
-

@@ -29,10 +29,10 @@ The following state was verified directly through 2026-07-29:
 
 | Layer | Verified state |
 | --- | --- |
-| `infra01.example.com` | Last accepted as Ubuntu 26.04 LTS with KVM/libvirt and `br0`; currently absent from the LAN with all hosted guests |
+| `infra01.example.com` | Ubuntu 26.04 LTS host reachable after a full reboot; KVM/libvirt, `br0`, and 17/17 autostart domains are up with expected IPv4 addresses; STP is disabled and canary recovery passed |
 | `infra02.example.com` | Ubuntu 26.04 LTS, `br0` active, 14/14 domains running, and no active change process |
 | `infra03.example.com` | Ubuntu 26.04 LTS, `br0` active, three new build-execution domains running with autostart |
-| Virtual machines | 34 domains in the latest inventory: 17 on infra01, 14 on infra02, and 3 on infra03; only infra02/03 can currently be verified |
+| Virtual machines | 34 domains in the latest inventory: 17 on infra01, 14 on infra02, and 3 on infra03; all domains are running and all infra01 guests recovered expected IPv4 addresses |
 | Product roles | At least 23 runtime roles directly verified; Harbor is installed, while Vault and Keycloak await revalidation after infra01 recovery |
 | Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready |
 | AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
@@ -76,10 +76,15 @@ Headlamp uses `30080`. Source-restricted firewalld rules allow only
 approved lab-LAN consumers to reach Loki and Tempo and allow the Kubernetes
 pod CIDR to reach the OpenTelemetry receivers.
 
+Backend VM names such as `gitlab.example.com` identify service hosts.
+User-facing reverse-proxy names use the `apps.example.com` zone. For example,
+`gitlab.apps.example.com` is the accepted GitLab URL and currently redirects
+through NGINX to the GitLab sign-in route.
+
 Artifactory, SonarQube, and Splunk remain provisioned-only. Harbor is healthy
-on its native HTTPS endpoint, but its normal DNS and NGINX route cannot be
-accepted while infra01, DNS, and NGINX are unavailable. Vault and Keycloak
-must be revalidated after infra01 recovery. See
+on its native HTTPS endpoint, but its application route remains listed as
+unavailable by NGINX and requires separate acceptance. Vault and Keycloak must
+be revalidated after infra01 recovery. See
 [Standalone NGINX Reverse-Proxy Installation](product-installation-nginx.md).
 
 ## Hybrid capacity plan
@@ -162,8 +167,8 @@ The following readiness evidence was collected directly through 2026-07-29:
 
 | Capability | Live evidence | Readiness |
 | --- | --- | --- |
-| Hypervisor capacity | infra02 has 14/14 VMs running and infra03 has 3/3; infra01 and its last-known 17 domains cannot currently be inspected | Blocked by infra01 network loss |
-| Kubernetes base | Last accepted at 4/4 nodes Ready; application API and two infra01-hosted nodes are currently unreachable from the management path | Temporarily unavailable |
+| Hypervisor capacity | infra01 has 17/17, infra02 has 14/14, and infra03 has 3/3 domains running; infra01 bridge correction and one controlled guest reboot passed | Monitoring under INC-2026-046 |
+| Kubernetes base | Explicit `kubernetes-admin@kubernetes` context reports server 1.34.10, 4/4 nodes Ready, no non-running pods, and no active Jobs | Accepted after infra01 recovery |
 | Persistent Kubernetes applications | No StorageClass and no PVCs | Blocked until storage is installed and tested |
 | Kubernetes application ingress | No IngressClass or ingress controller; Headlamp is exposed by NodePort | Blocked for standard application URLs |
 | Elastic host logging | Filebeat active and encrypted-output validation passed on 31/31 Rocky Linux VMs; Logstash queue empty; all 31 inventory hostnames present in Elasticsearch | Accepted |

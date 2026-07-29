@@ -77,6 +77,8 @@ facts; they do not erase the original observation.
 | INC-2026-043 | 2026-07-29 | SEV-4 | Resolved | AWX cloud project SCM | Existing AWX deploy key was not enabled for the cloud repository |
 | INC-2026-044 | 2026-07-29 | SEV-4 | Resolved | AWX Ansible role discovery | DNS job could not find the repository-local `bind_dns` role |
 | INC-2026-045 | 2026-07-29 | SEV-4 | Resolved | Kubernetes evidence scope | A DNS acceptance pod initially ran in AWX's k3s cluster instead of the four-node application cluster |
+| INC-2026-046 | 2026-07-29 | SEV-2 | Monitoring | infra01 VM networking | Host reboot initially left 16 of 17 autostart guests without IPv4 after bridge STP delayed forwarding |
+| INC-2026-047 | 2026-07-29 | SEV-2 | Resolved | GitLab startup | GitLab ports returned resets or refusals during extended post-reboot startup |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1279,7 +1281,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-07-29
 - Severity: SEV-3
-- Status: Open
+- Status: Resolved
 - Component: `cloud-infra-automation-platform` Terraform modules and Checkov
 - Detection/symptom: The first executable Checkov job, pipeline 317 job 574,
   passed 77 controls and failed 14. Findings cover container image
@@ -1434,6 +1436,90 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   verification playbooks and document AWX k3s as a separate platform cluster.
 - Evidence/related runbook:
   [Current Environment State](current-environment-state.md)
+
+## INC-2026-046: Bridge STP Delayed Guest Networking During Host Reboot
+
+- Date: 2026-07-29
+- Severity: SEV-2
+- Status: Monitoring
+- Component: `infra01.example.com`, NetworkManager bridge `lab-br0`, libvirt
+  autostart guests, and guest network initialization
+- Detection/symptom: After infra01 completed a full host reboot, all 17
+  autostart domains were running but only `nginx.example.com` had its expected
+  IPv4 address. QEMU guest-agent evidence showed the other 16 guests had an
+  Ethernet interface but no IPv4 address or IPv4 route.
+- Impact: GitLab, Jenkins, AWX, authoritative DNS, the application Kubernetes
+  control plane, and the remaining infra01-hosted services were unavailable.
+  Product deployment and every queued infrastructure change remain frozen.
+- Timeline: Infra01 booted at approximately 15:35 UTC. The first VM tap entered
+  bridge listening state at 15:38:46 and forwarding at 15:39:17. Additional
+  taps entered listening through 15:39:19 and did not finish forwarding until
+  15:39:50. NGINX, whose tap was first, was the only guest to recover IPv4.
+- Cause: Evidence supports a startup race: `lab-br0` had STP enabled with a
+  15-second forward delay, while all 17 guests autostarted together. Most
+  guests initialized their static network while their tap was not yet
+  forwarding and did not retry successfully. Recovery of a canary and the
+  fleet is still required to confirm this causal assessment.
+- Contributing factors: The bridge has only one physical uplink and VM tap
+  ports, but the managed build script explicitly enabled STP. Simultaneous
+  libvirt autostart amplified the race across the control plane.
+- Resolution: Disabled STP at runtime and persistently on infra01 without
+  cycling the management bridge. The remaining guests subsequently reported
+  their expected addresses without additional reboots. Rebooted only
+  `backup.example.com` as the controlled canary.
+- Validation: The canary regained `192.168.1.113/24`, its default route via
+  `192.168.1.1`, a connected `192.168.1.0/24` route, and stable 3/3
+  reachability after its guest agent completed startup. All 17 infra01 guests
+  then reported their expected IPv4 addresses through the QEMU guest agent.
+  The incident remains Monitoring until a future controlled infra01 reboot
+  validates fleet-wide startup with STP disabled.
+- Prevention/follow-up: Keep STP disabled on the single-uplink lab bridges and
+  evaluate ordered or delayed domain autostart for control-plane dependencies.
+  Reboot acceptance must confirm every expected guest address and service.
+- Corrective automation: The physical bridge script now creates `lab-br0`
+  with `bridge.stp no`. Apply the live correction sequentially to each
+  hypervisor and publish the source after GitLab recovery.
+- Evidence/related runbook:
+  [Sequential Build and Change Control](sequential-build-change-control.md)
+
+## INC-2026-047: GitLab Did Not Become Healthy After Guest Network Recovery
+
+- Date: 2026-07-29
+- Severity: SEV-2
+- Status: Resolved
+- Component: `gitlab.example.com` Docker-based GitLab 19.2.0 runtime
+- Detection/symptom: The VM recovered `192.168.1.101/24`, Docker was active,
+  and ports 80 and 2222 were listening, but local GitLab health/readiness
+  requests reset and remote HTTP refused the connection. Eight additional
+  health checks over two minutes returned no HTTP status.
+- Impact: GitLab repositories, pipelines, job inventory, and publication of
+  pending source-of-truth commits remain unavailable. The sequential build
+  queue cannot advance.
+- Timeline: The GitLab VM had been up approximately nine minutes when the
+  audit began. Visible container processes showed `gitlab-ctl upgrade-check`
+  for version 19.2.0, but the service did not become healthy during the
+  bounded observation window.
+- Cause: GitLab's containerized services required an extended startup period
+  after the host and VM reboot. During that interval the published ports were
+  present before the application was ready to accept requests.
+- Contributing factors: NGINX returns its route catalog with HTTP 200 when the
+  GitLab upstream is unavailable; that response must not be mistaken for
+  GitLab health.
+- Resolution: Allowed startup to complete without restarting the container or
+  changing configuration.
+- Validation: The backend root returned the expected redirect to
+  `/users/sign_in`; `gitlab.apps.example.com` returned the same GitLab sign-in
+  redirect through NGINX; and no Terraform, Ansible, kubectl, Packer, or
+  GitLab Runner helper workload was visible on the VM. The NGINX catalog uses
+  `gitlab.apps.example.com`; `gitlab.example.com` remains the backend VM name.
+- Prevention/follow-up: Add an explicit upstream-failure status to the NGINX
+  route catalog and include post-reboot GitLab container health in foundation
+  acceptance.
+- Corrective automation: Add a bounded GitLab application-readiness wait to
+  post-reboot acceptance and distinguish listening ports from application
+  readiness.
+- Evidence/related runbook:
+  [Sequential Build and Change Control](sequential-build-change-control.md)
 
 ## New Incident Template
 
