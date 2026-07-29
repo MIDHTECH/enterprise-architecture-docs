@@ -110,10 +110,12 @@ ansible-playbook -i inventory/onprem.yml \
 ```
 
 The accepted AWX objects are project 23
-`cloud-infra-automation-platform`, inventory 4
-`cloud-infra-production`, and job template 26
+`cloud-infra-automation-platform`, inventory 2
+`production`, and job template 26
 `deploy-nginx-reverse-proxy`. The template has a fixed
 `nginx.example.com` limit and uses the existing managed-host SSH credential.
+Inventory 4, `cloud-infra-production`, is reserved for the three physical KVM
+hosts and must not be used for this product playbook.
 
 The roles install the Rocky NGINX 1.26 package stream, configure application
 virtual hosts and forwarding headers, permit HTTP/HTTPS in firewalld, enable

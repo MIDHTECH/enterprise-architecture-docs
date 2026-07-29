@@ -105,17 +105,22 @@ The lab DNS configuration now uses these AWX objects:
 | Object | ID | Name |
 | --- | ---: | --- |
 | Project | 23 | `cloud-infra-automation-platform` |
-| Inventory | 4 | `cloud-infra-production` |
-| Inventory source | 24 | `cloud-infra-onprem` |
+| Product inventory | 2 | `production` |
+| Product inventory project | 9 | `awx-inventory` |
+| Product inventory source | 10 | `production-inventory` |
+| Foundation inventory | 4 | `cloud-infra-production` |
+| Foundation inventory source | 24 | `cloud-infra-onprem` |
 | Job template | 25 | `deploy-lab-dns` |
 | Job template | 26 | `deploy-nginx-reverse-proxy` |
 
 The project synchronizes
 `ssh://git@gitlab.example.com:2222/midhhealth/platform-engineering/cloud-infra-automation-platform.git`
-with the existing GitLab SCM credential. The inventory source imports
-`ansible/inventory/onprem.yml`; the template runs only
-`ansible/playbooks/dns.yml` with the existing managed-host machine credential.
-The NGINX template runs only
+with the existing GitLab SCM credential. Foundation inventory source 24
+imports `ansible/inventory/foundation.yml` and contains only infra01, infra02,
+and infra03. The dedicated `awx-inventory` repository supplies the canonical
+product groups in inventory 2. Both templates use inventory 2 and the existing
+managed-host machine credential. The DNS template runs only
+`ansible/playbooks/dns.yml`; the NGINX template runs only
 `ansible/playbooks/nginx-reverse-proxy.yml`, uses the same credential, and has
 a fixed `nginx.example.com` limit.
 
@@ -124,9 +129,11 @@ Before launching the template:
 1. require the cloud GitLab pipeline to pass;
 2. confirm project and inventory synchronization are successful;
 3. confirm the inventory contains `dns_servers`;
-4. launch `deploy-lab-dns`;
-5. run it a second time and require zero changes;
-6. validate authoritative DNS, a normal client, Kubernetes CoreDNS, and the
+4. require the job output to show one processed DNS host; a green job that
+   says `no hosts matched` is a failed acceptance;
+5. launch `deploy-lab-dns`;
+6. run it a second time and require zero changes;
+7. validate authoritative DNS, a normal client, Kubernetes CoreDNS, and the
    application HTTP response.
 
 The AWX SCM deploy key must be enabled read-only for this project. A successful
@@ -141,6 +148,12 @@ For the accepted NGINX workflow, project update 416 synchronized revision
 idempotency job 421 completed with `changed=0`, `unreachable=0`, and
 `failed=0`. See INC-2026-050 for the partial-convergence failure that led to
 the immediate post-validation handler flush.
+
+Inventory normalization completed through cloud commit `8f259d0`, inventory
+commit `2c8ccfe`, cloud pipeline 346, inventory pipeline 347, and foundation
+sync job 425. DNS jobs 433 and 438 and NGINX jobs 443 and 448 then completed
+with one expected host, zero changes, and zero failures. See INC-2026-049
+through INC-2026-052.
 
 ## GitLab Runner Eligibility and Queue Recovery
 

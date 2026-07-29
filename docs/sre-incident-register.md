@@ -80,8 +80,10 @@ facts; they do not erase the original observation.
 | INC-2026-046 | 2026-07-29 | SEV-2 | Monitoring | infra01 VM networking | Host reboot initially left 16 of 17 autostart guests without IPv4 after bridge STP delayed forwarding |
 | INC-2026-047 | 2026-07-29 | SEV-2 | Resolved | GitLab startup | GitLab ports returned resets or refusals during extended post-reboot startup |
 | INC-2026-048 | 2026-07-29 | SEV-3 | Resolved | Vault post-reboot recovery | Vault 2.0.3 restarted sealed; controlled unseal and route acceptance restored service |
-| INC-2026-049 | 2026-07-29 | SEV-4 | Open | AWX inventory | Overlapping inventories inflate 35 unique hostnames to 70 host records |
+| INC-2026-049 | 2026-07-29 | SEV-4 | Resolved | AWX inventory | Overlapping inventories inflated 35 unique hostnames to 70 host records |
 | INC-2026-050 | 2026-07-29 | SEV-4 | Resolved | NGINX automation | Firewalld and deferred-handler assumptions caused partial convergence |
+| INC-2026-051 | 2026-07-29 | SEV-4 | Resolved | AWX inventory groups | A successful DNS job skipped all work because the selected inventory lacked `dns_servers` |
+| INC-2026-052 | 2026-07-29 | SEV-4 | Resolved near miss | AWX web UI | Direct SPA navigation displayed stale DNS form data on the NGINX template edit route |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1563,7 +1565,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-07-29
 - Severity: SEV-4
-- Status: Open
+- Status: Resolved
 - Component: AWX inventories `production`, `cloud-infra-production`,
   `kubernetes-production`, and `Demo Inventory`
 - Detection/symptom: The global AWX Hosts view reports 70 items even though
@@ -1573,27 +1575,39 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   wrong-inventory selection risk. A job targets one inventory, so duplicate
   records do not by themselves execute a play twice.
 - Cause: AWX host objects are inventory-scoped, not globally deduplicated.
-  `production` contains 31 records; `cloud-infra-production` contains those
+  `production` contained 31 records; `cloud-infra-production` contained those
   same 31 plus `infra01`, `infra02`, and `infra03`; and
-  `kubernetes-production` contains four Kubernetes nodes already present in
-  both broad inventories. `Demo Inventory` adds `localhost`.
+  `kubernetes-production` contained four Kubernetes nodes already present in
+  both broad inventories. The broad cloud inventory was created during
+  project-specific DNS onboarding without an ownership boundary.
 - Dependency evidence: `production` is synchronized by inventory source 10
   from project 9, `awx-inventory`, and is used by five Prometheus,
   Elasticsearch, and telemetry job templates. `cloud-infra-production` is
   synchronized by inventory source 24 from project 23,
   `cloud-infra-automation-platform`, and is currently used only by job
-  template 25, `deploy-lab-dns`. The second broad inventory was created during
-  project-specific DNS onboarding rather than from a documented isolation
-  requirement.
+  templates 25 and 26, `deploy-lab-dns` and
+  `deploy-nginx-reverse-proxy`, before normalization. `Demo Inventory`
+  currently has zero hosts but remains attached to the built-in Demo Job
+  Template, so it was retained as an isolated sample.
 - Validation: Direct authenticated AWX API counts are 31 + 34 + 4 + 1 = 70.
   All 31 `production` names exist in `cloud-infra-production`; all four
   Kubernetes names also exist there. The resulting distinct-name count is 35.
-- Resolution: Pending dependency audit. Do not delete an inventory or host
-  record until its projects, inventory sources, job templates, schedules,
-  credentials, RBAC, and variable precedence are mapped.
-- Prevention/follow-up: Select one canonical broad inventory or document
-  explicit trust-boundary reasons for every scoped inventory. Remove the demo
-  inventory after confirming no training workflow depends on it.
+- Resolution: Commit `8f259d0` added
+  `ansible/inventory/foundation.yml` with only infra01, infra02, and infra03;
+  GitLab pipeline 346 passed. AWX templates 25 and 26 were moved to the
+  canonical `production` inventory. Source 24 now imports the foundation file
+  with overwrite enabled; sync job 425 succeeded and reduced
+  `cloud-infra-production` to three records. `kubernetes-production` remains
+  the intentional four-node cluster RBAC boundary.
+- Post-resolution validation: AWX now has 38 host records: 31 product records,
+  three foundation records, four Kubernetes records, and zero Demo records.
+  There are 34 distinct names, with only the intentional four Kubernetes-node
+  overlap. DNS jobs 433 and 438 and NGINX jobs 443 and 448 each targeted one
+  host and completed with `changed=0`, `unreachable=0`, and `failed=0`.
+- Prevention/follow-up: Keep product VMs in `production`, physical KVM hosts
+  in `cloud-infra-production`, and cluster-scoped automation in
+  `kubernetes-production`. Retain Demo only while its built-in job template is
+  intentionally kept; do not count it as managed infrastructure.
 - Corrective automation: Reconcile AWX controller objects as code and add a
   check that reports total records, unique names, cross-inventory overlap, and
   orphaned inventory sources.
@@ -1637,6 +1651,69 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   inactive firewalld scenarios to role validation.
 - Evidence/related runbook:
   [Sequential Build and Change Control](sequential-build-change-control.md)
+
+## INC-2026-051: Successful AWX Job Skipped Every DNS Host
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Resolved
+- Component: AWX job template 25, `production` inventory, and
+  `awx-inventory`
+- Detection/symptom: DNS validation job 428 displayed `Successful`, but its
+  output warned that `dns_servers` did not match any host and the play was
+  skipped.
+- Impact: No DNS configuration or validation ran. Accepting controller status
+  alone would have produced false deployment evidence.
+- Cause: The template was correctly moved to the canonical `production`
+  inventory, but that inventory defined the product host without the
+  `dns_servers` role group required by
+  `ansible/playbooks/dns.yml`. `nginx_reverse_proxy` was missing for the same
+  reason.
+- Resolution: `awx-inventory` commit `2c8ccfe` added the two one-host product
+  groups and a CI guard. GitLab pipeline 347 passed, and the local Git remote
+  was corrected from the redirected `cloud-team` path to
+  `midhhealth/platform-engineering/awx-inventory`.
+- Validation: AWX synchronized the updated inventory. DNS jobs 433 and 438
+  each processed `dns.example.com` and reported `ok=13`, `changed=0`,
+  `unreachable=0`, `failed=0`, and `skipped=2`. NGINX jobs 443 and 448
+  processed `nginx.example.com` and reported zero changes and zero failures.
+- Prevention/follow-up: Acceptance must require a nonzero expected host count
+  and play recap, not only a green AWX status. Inventory CI must verify every
+  product group referenced by a controlled playbook.
+- Corrective automation: Retain
+  `awx-inventory/scripts/validate-inventory.sh` and extend it whenever a
+  playbook introduces another required production group.
+- Evidence/related runbook:
+  [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
+
+## INC-2026-052: AWX Edit Route Reused Stale Template Form State
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Resolved near miss
+- Component: AWX 24.6.1 web UI template editor
+- Detection/symptom: Direct single-page navigation from template 25 edit to
+  template 26 edit showed the NGINX breadcrumb but retained the DNS template
+  name and DNS playbook in the form.
+- Impact: Saving the stale form could have overwritten the NGINX template
+  with DNS settings. No incorrect save occurred.
+- Cause: The browser route changed while the existing React form state was
+  retained instead of being reloaded for the new template ID.
+- Resolution: The edit was stopped before submission. Template 26 was opened
+  in a fresh tab, where its name, NGINX playbook, fixed host limit, and current
+  inventory were independently verified before saving.
+- Validation: Template 26 details remained
+  `deploy-nginx-reverse-proxy`, playbook
+  `ansible/playbooks/nginx-reverse-proxy.yml`, limit
+  `nginx.example.com`, and inventory `production`. Jobs 443 and 448 succeeded
+  with zero changes and zero failures.
+- Prevention/follow-up: Open a fresh AWX page for each template edit and
+  verify breadcrumb, form name, playbook, inventory, and limit immediately
+  before Save. Never trust the route alone after direct SPA navigation.
+- Corrective automation: Manage AWX controller objects as code so routine
+  reconciliation does not depend on sequential browser form state.
+- Evidence/related runbook:
+  [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
 
 ## New Incident Template
 

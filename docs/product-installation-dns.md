@@ -28,12 +28,16 @@ records add Elasticsearch nodes `.116`, `.133`, and `.134`; Kibana `.117`;
 Splunk `.118`; Logstash `.135`; the Kibana/Splunk application aliases; and
 `headlamp.apps.example.com`.
 
-Headlamp DNS was reconciled through AWX project 23, dedicated inventory 4,
+Headlamp DNS was initially reconciled through AWX project 23, inventory 4,
 inventory source 24, and DNS-only job template 25. Deployment job 398
-succeeded. Idempotence job 402 reported `ok=13`, `changed=0`,
-`unreachable=0`, and `failed=0`. Acceptance also proved the name through
-authoritative BIND, the Mac split resolver, Kubernetes CoreDNS, and normal
-HTTP status 200.
+succeeded, and job 402 reported `ok=13`, `changed=0`, `unreachable=0`, and
+`failed=0`. Inventory normalization later moved template 25 to canonical
+product inventory 2, `production`; inventory 4 now contains only infra01,
+infra02, and infra03. Production inventory commit `2c8ccfe` added the required
+`dns_servers` group. Jobs 433 and 438 each processed `dns.example.com` and
+reported `changed=0`, `unreachable=0`, and `failed=0`. Acceptance also proved
+the name through authoritative BIND, the Mac split resolver, Kubernetes
+CoreDNS, and normal HTTP status 200.
 
 The Linksys router now contains 63 verified DHCP reservations: infra01,
 infra02, infra03, and every address from `.101` through `.160`. Automatic client DNS

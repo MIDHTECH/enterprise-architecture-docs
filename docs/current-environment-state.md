@@ -36,6 +36,7 @@ The following state was verified directly through 2026-07-29:
 | Product roles | At least 23 runtime roles directly verified; Harbor is installed; Vault 2.0.3 is active, unsealed, and accepted through NGINX; Keycloak still awaits revalidation |
 | Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready |
 | AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
+| AWX inventories | 38 records across four inventories: 31 product, three physical foundation, four intentional Kubernetes RBAC records, and zero Demo hosts; 34 distinct names |
 | Git repositories | AWX inventory, Kubernetes ingress, and cloud-infrastructure corrections are published; incident documentation is updated as each sequential change closes |
 
 The directly verified provisioned-only product VMs include `governance`,
@@ -183,6 +184,7 @@ The following readiness evidence was collected directly through 2026-07-29:
 | Management applications | GitLab, AWX, Prometheus, Grafana, Kibana, and the Headlamp NGINX route returned HTTP responses; Jenkins returned the expected authenticated HTTP 403 | Available |
 | Headlamp name resolution | BIND, the Mac split resolver, and Kubernetes CoreDNS return `192.168.1.114`; normal application URL returns HTTP 200 | Accepted through AWX jobs 398 and 402 |
 | Vault secrets service | Vault 2.0.3 reports initialized, unsealed, active, and HTTP 200 through the verified NGINX TLS upstream; NGINX convergence job 421 reported `changed=0`, `unreachable=0`, and `failed=0` | Accepted through AWX jobs 417 and 421 |
+| AWX inventory boundaries | Product VMs are canonical in `production`; infra01/02/03 are isolated in `cloud-infra-production`; the four Kubernetes records remain a deliberate cluster RBAC boundary | Accepted through sync job 425 and DNS/NGINX jobs 433, 438, 443, and 448 |
 
 The platform can deploy and exercise stateless test applications through
 ClusterIP or NodePort and can accept their logs, metrics, and traces. The

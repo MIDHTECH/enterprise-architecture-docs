@@ -17,15 +17,25 @@ Jenkins, or AWX control plane.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `CHG-2026-001` |
-| Component | Foundation recovery and complete activity audit |
-| State | Recovery in progress |
-| Blocker | Vault route recovery is accepted; overlapping AWX inventory dependencies remain under INC-2026-049 |
-| Permitted work | Read-only AWX inventory dependency audit, sequential live-state reconciliation, incident evidence, and documentation |
-| Prohibited work | New product installation, AWX launch, Kubernetes mutation, VM provisioning, migration, or upgrade |
-| Exit criteria | infra01, GitLab, Jenkins, AWX, DNS, NGINX, and the application Kubernetes API are reachable; active jobs are audited; source-of-truth drift is reconciled |
+| Change ID | None |
+| Component | None |
+| State | Ready for the next sequential change |
+| Blocker | None |
+| Permitted work | Read-only audit and selection of exactly one next queue item |
+| Prohibited work | Starting more than one component or bypassing GitLab/AWX validation |
+| Exit criteria | A single next component is recorded here before mutation |
 
-Do not advance the queue until `CHG-2026-001` is complete.
+`CHG-2026-001` is complete.
+
+## Completed change
+
+`CHG-2026-001` restored and audited the foundation control plane and closed
+the AWX inventory duplication. Cloud commit `8f259d0` passed pipeline 346;
+inventory commit `2c8ccfe` passed pipeline 347; source sync job 425 reduced
+`cloud-infra-production` to infra01/02/03; and DNS jobs 433/438 plus NGINX
+jobs 443/448 each processed one expected host with `changed=0`,
+`unreachable=0`, and `failed=0`. INC-2026-049, INC-2026-051, and the
+INC-2026-052 near miss are resolved.
 
 ## Activity audit
 
@@ -51,11 +61,11 @@ The 2026-07-29 audit found:
 | Workstation activity | No running Git publication, SSH administration, Ansible, Terraform, kubectl, libvirt, or image-build process | No conflicting active process |
 | GitLab/AWX/Jenkins | Recovered with infra01; GitLab pipelines and bounded AWX jobs were audited, and Jenkins remained healthy and idle | Audit complete |
 
-An older documentation clone contains uncommitted Harbor, Vault, and Keycloak
-installation artifacts. Those files are preserved but are not canonical until
-live state, secrets handling, rollback, validation, and Git history are
-reviewed. The `awx-inventory`, Kubernetes ingress, and incident-documentation
-repositories each have one local unpushed commit.
+Older documentation clones contain Harbor, Vault, and Keycloak installation
+artifacts. Those files are preserved but are not canonical until live state,
+secrets handling, rollback, validation, and Git history are reviewed. The
+canonical cloud and AWX inventory repositories are published and clean after
+the inventory-normalization change.
 
 ## Build queue
 
