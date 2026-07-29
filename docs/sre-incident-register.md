@@ -85,6 +85,7 @@ facts; they do not erase the original observation.
 | INC-2026-051 | 2026-07-29 | SEV-4 | Resolved | AWX inventory groups | A successful DNS job skipped all work because the selected inventory lacked `dns_servers` |
 | INC-2026-052 | 2026-07-29 | SEV-4 | Resolved near miss | AWX web UI | Direct SPA navigation displayed stale DNS form data on the NGINX template edit route |
 | INC-2026-053 | 2026-07-29 | SEV-4 | Resolved near miss | Kubernetes delivery architecture | Planned ingress launch would have wrapped Helm in Ansible and bypassed Jenkins |
+| INC-2026-054 | 2026-07-29 | SEV-4 | Resolved | Kubernetes CI | First Helm-boundary pipeline failed role-prefix lint |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1752,6 +1753,30 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   label and an explicit deployment confirmation.
 - Evidence/related runbook:
   [Sequential Build and Change Control](sequential-build-change-control.md)
+
+## INC-2026-054: Ingress Prerequisite Role Failed Variable-Prefix Lint
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Resolved
+- Component: `ansible-kubernetes` GitLab pipeline 350, lint job 849
+- Detection/symptom: Ansible lint rejected four registered variables in
+  `kubernetes_ingress_prerequisites` because their names did not contain the
+  complete role prefix.
+- Impact: Source validation stopped before any Jenkins, AWX, Helm, or
+  Kubernetes runtime change. Syntax validation passed.
+- Cause: The variables used the shorter `kubernetes_ingress_` prefix while
+  the role is named `kubernetes_ingress_prerequisites`.
+- Resolution: Renamed all four registered variables to the complete
+  `kubernetes_ingress_prerequisites_` prefix and updated their references.
+- Validation: The corrective pipeline ID and final result are appended after
+  GitLab completes the new revision.
+- Prevention/follow-up: Keep Ansible lint blocking and run the same pinned CI
+  toolchain before deployment. Never retry a deterministic lint failure
+  without a corrective commit.
+- Corrective automation: The GitLab lint job remains a required source gate.
+- Evidence/related runbook:
+  [Kubernetes Helm Delivery](kubernetes-helm-delivery-runbook.md)
 
 ## New Incident Template
 
