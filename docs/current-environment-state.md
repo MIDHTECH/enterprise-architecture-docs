@@ -32,18 +32,25 @@ The following state was verified directly on 2026-07-28:
 | `infra01.example.com` and `infra02.example.com` | Ubuntu 26.04 LTS, KVM available, libvirt 12 active, physical `br0` active |
 | Virtual machines | 31 of 31 domains running: 17 on infra01 and 14 on infra02 |
 | Product roles | 22 active product/runtime roles; 9 VMs remain provisioned without their intended product |
-| Local Kubernetes | Kubernetes 1.34.10; one control plane and three workers Ready |
+| Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready |
+| AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
 | Git repositories | 20 local repositories clean and equal to their GitLab remote HEAD |
 
 The provisioned-only product VMs are `vault`, `keycloak`, `governance`,
 `backup`, `awx-execution`, `harbor`, `artifactory`, `sonarqube`, and `splunk`.
 PostgreSQL 18 is active on `postgres.example.com`.
 
-The local Kubernetes cluster currently contains the control-plane components,
+The four-node application cluster currently contains the control-plane components,
 CoreDNS, Flannel, and Headlamp. Argo CD, MetalLB, ingress-nginx, cert-manager,
 Kyverno, External Secrets Operator, metrics-server, Velero, Longhorn,
 OpenTelemetry Operator, Trivy Operator, and Argo Rollouts are not installed in
 the current cluster and must not be reported as completed.
+
+Do not treat AWX's local k3s context as the application cluster. Application
+acceptance must use `/etc/kubernetes/admin.conf` on
+`k8s-control.example.com`, confirm all four expected node names, and record the
+API server version before collecting evidence. AWX platform-cluster evidence
+must be labeled separately. See INC-2026-045.
 
 ## Application access
 

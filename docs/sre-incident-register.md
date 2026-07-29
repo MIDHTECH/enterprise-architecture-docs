@@ -76,6 +76,7 @@ facts; they do not erase the original observation.
 | INC-2026-042 | 2026-07-29 | SEV-4 | Resolved | GitLab Runner image policy | Forced registry checks failed cached CI images during router-DNS timeouts |
 | INC-2026-043 | 2026-07-29 | SEV-4 | Resolved | AWX cloud project SCM | Existing AWX deploy key was not enabled for the cloud repository |
 | INC-2026-044 | 2026-07-29 | SEV-4 | Resolved | AWX Ansible role discovery | DNS job could not find the repository-local `bind_dns` role |
+| INC-2026-045 | 2026-07-29 | SEV-4 | Resolved | Kubernetes evidence scope | A DNS acceptance pod initially ran in AWX's k3s cluster instead of the four-node application cluster |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1015,6 +1016,10 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   supported controller environment for every Ansible repository.
 - Corrective automation: Keep controller validation in CI/AWX and treat local
   virtual environments as optional developer tooling.
+- Recurrence: The same bundled Python 3.12 `cryptography` build failed while
+  preparing local validation for ingress-nginx. No repository or cluster
+  change depended on that attempt. A mandatory GitLab CI syntax/lint contract
+  was added to `ansible-kubernetes` before deployment.
 - Evidence/related runbook:
   [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
 
@@ -1031,8 +1036,9 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Impact: Operational inspection was delayed and some commands required
   retries or `ProxyJump` through the owning hypervisor. Services and guest
   east-west traffic continued to operate.
-- Cause: Not yet isolated. Evidence points to the workstation/Wi-Fi path rather
-  than guest availability.
+- Cause: Not yet isolated. Some occurrences affect only the workstation path;
+  others make infra01 and all of its guests disappear from both the
+  workstation and infra02 while infra01 itself remains powered on.
 - Resolution: Used canonical direct SSH when available and hypervisor
   `ProxyJump` for deterministic guest access. No guest reboot was required.
 - Validation: The same guests repeatedly accepted SSH through the hypervisor,
@@ -1055,6 +1061,11 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   `Destination Host Unreachable`. When the path recovered, infra01 reported
   almost four days of uninterrupted uptime. The host had not powered off or
   rebooted, confirming another management-network/bridge-path interruption.
+  During ingress publication, two HTTP pushes stalled. The workstation again
+  showed a rejected route and incomplete ARP for GitLab; infra02 independently
+  showed `FAILED` neighbors for infra01 and GitLab, and had no IPv6 neighbor
+  for infra01's documented bridge MAC. The ingress commit remained local and
+  no AWX or Kubernetes deployment was started.
 - Corrective automation: Add a management-path check that compares direct,
   hypervisor-to-guest, and proxied SSH before declaring a guest down.
 - Evidence/related runbook:
@@ -1393,6 +1404,36 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   onboarding, not only Ansible syntax in CI.
 - Evidence/related runbook:
   [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
+
+## INC-2026-045: DNS Acceptance Initially Used the Wrong Kubernetes Context
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Resolved
+- Component: AWX platform k3s cluster and four-node kubeadm application cluster
+- Detection/symptom: The first disposable DNS-check pod was launched with
+  `/usr/local/bin/kubectl` on `awx.example.com`. That context reported a
+  single AWX node running k3s `1.36.2`, not the documented four-node
+  application cluster.
+- Impact: The result proved private-zone forwarding for the AWX platform
+  cluster but was initially attributed too broadly to Kubernetes acceptance.
+  The DNS record, BIND deployment, and HTTP result were unaffected.
+- Cause: Two independent Kubernetes control planes exist in the environment,
+  and the verification command did not identify its expected context and node
+  count before creating the disposable pod.
+- Resolution: Inspected both clusters explicitly, then reran the automatically
+  removed DNS-check pod from `k8s-control.example.com` with
+  `/etc/kubernetes/admin.conf`.
+- Validation: The intended kubeadm `1.34.10` cluster reported one control
+  plane and three workers Ready. Its CoreDNS service at `10.96.0.10` resolved
+  `headlamp.apps.example.com` to `192.168.1.114`; the pod was deleted.
+- Prevention/follow-up: Every Kubernetes acceptance command must record the
+  API server version, context, expected node set, and kubeconfig before using
+  its result as evidence.
+- Corrective automation: Add cluster identity assertions to Kubernetes
+  verification playbooks and document AWX k3s as a separate platform cluster.
+- Evidence/related runbook:
+  [Current Environment State](current-environment-state.md)
 
 ## New Incident Template
 
