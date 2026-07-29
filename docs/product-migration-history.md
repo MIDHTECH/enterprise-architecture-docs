@@ -37,7 +37,7 @@ Every product migration follows this sequence:
 | Ubuntu host | 18.04 LTS | 18.04 LTS | 20.04 LTS | 20.04 LTS | 22.04 LTS | 22.04 LTS | 24.04 LTS | 24.04 LTS | 26.04 LTS |
 | Enterprise Linux guest | CentOS/RHEL 7 | CentOS/RHEL 7 | CentOS/RHEL 8 | Rocky 8 | Rocky 9 | Rocky 9 | Rocky 9 | Rocky 9 | Rocky 9 |
 | GitLab | 11.x | 12.x | 13.x | 14.x | 15.x | 16.x | 17.x | 18.x | 19.2.z |
-| Jenkins LTS | 2.138.x | 2.176.x | 2.235.x | 2.263.x | 2.332.x | 2.401.x | 2.479.x | 2.516.x | 2.555.3 |
+| Jenkins LTS | 2.138.x | 2.176.x | 2.235.x | 2.263.x | 2.332.x | 2.401.x | 2.479.x | 2.516.x | 2.568.1 |
 | AWX | 2.x | 9.x | 15.x | 19.x | 21.x | 23.x | 24.x | 24.x | 24.6.1 |
 | Vault | 0.11 | 1.2 | 1.6 | 1.9 | 1.12 | 1.15 | 1.18 | 1.20 | 2.0.3 |
 | Keycloak | 4.x | 8.x | 11.x | 15.x | 20.x | 23.x | 26.0 | 26.2 | 26.4.z |

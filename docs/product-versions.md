@@ -32,7 +32,7 @@ and tested before deployment.
 | Ansible Core CI | 2.21.2 | Python CI container | Pin with repository requirements |
 | ansible-lint | 26.6.0 | Python CI container | Raise the enforced profile as legacy findings are remediated |
 | Checkov | 3.3.8 | `bridgecrew/checkov` container | All findings remain blocking unless a risk exception is explicitly approved |
-| Jenkins | 2.555.3 LTS | Container on `jenkins.example.com` | [Jenkins LTS changelog](https://www.jenkins.io/changelog-stable/) |
+| Jenkins | 2.568.1 LTS | Native RPM and systemd on `jenkins.example.com` | [Jenkins LTS changelog](https://www.jenkins.io/changelog-stable/) |
 | AWX | 24.6.1 | AWX Operator on dedicated k3s | AWX and operator release notes |
 | AWX Operator | 2.19.1 | k3s on `awx.example.com` | AWX Operator releases |
 | AWX execution environment | Project-owned `2026.07.0` | OCI image on `awx-execution.example.com` | Rebuild monthly from locked dependencies |

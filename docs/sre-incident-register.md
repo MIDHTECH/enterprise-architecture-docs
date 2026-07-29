@@ -87,6 +87,8 @@ facts; they do not erase the original observation.
 | INC-2026-053 | 2026-07-29 | SEV-4 | Resolved near miss | Kubernetes delivery architecture | Planned ingress launch would have wrapped Helm in Ansible and bypassed Jenkins |
 | INC-2026-054 | 2026-07-29 | SEV-4 | Resolved | Kubernetes CI | First Helm-boundary pipeline failed role-prefix lint |
 | INC-2026-055 | 2026-07-29 | SEV-4 | Resolved near miss | Jenkins infrastructure CI | `ansible-jenkins` would deploy the controller automatically from `main` |
+| INC-2026-056 | 2026-07-29 | SEV-4 | Open | Lab DNS | `jenkins-agent01.example.com` had no authoritative record |
+| INC-2026-057 | 2026-07-29 | SEV-4 | Resolved | Jenkins source of truth | Catalog reported stale version and container deployment |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1808,6 +1810,56 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   `deploy_production` with `when: manual`.
 - Evidence/related runbook:
   [Sequential Build and Change Control](sequential-build-change-control.md)
+
+## INC-2026-056: Jenkins Agent DNS Record Was Missing
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Open
+- Component: Authoritative `example.com` DNS and
+  `jenkins-agent01.example.com`
+- Detection/symptom: SSH by FQDN failed with a name-resolution error while
+  SSH to documented address `192.168.1.138` succeeded and the guest hostname
+  matched.
+- Impact: Jenkins, AWX, and staff cannot reliably address the deployment
+  agent by its required enterprise hostname.
+- Cause: The VM and inventory were created, but the canonical BIND record list
+  stopped at `.135`.
+- Resolution: Pending controlled DNS convergence. Cloud source adds
+  `jenkins-agent01` at `192.168.1.138` and increments the zone serial.
+- Validation: Require GitLab CI, AWX DNS job with one expected host, a second
+  zero-change run, and authoritative forward/reverse lookup evidence before
+  resolving.
+- Prevention/follow-up: Provisioning acceptance must require DNS before a VM
+  is handed to product automation.
+- Corrective automation: Extend inventory validation to compare provisioned VM
+  names with authoritative DNS records.
+- Evidence/related runbook:
+  [Lab DNS and Copper9100 Configuration](product-installation-dns.md)
+
+## INC-2026-057: Jenkins Version and Deployment Model Were Stale
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Resolved
+- Component: Jenkins product catalog and live controller
+- Detection/symptom: The catalog reported Jenkins 2.555.3 in a container.
+  The live `X-Jenkins` header reports 2.568.1 and `systemctl` reports the
+  native Jenkins service active.
+- Impact: Upgrade planning and staff troubleshooting would use the wrong
+  version and service lifecycle.
+- Cause: The product catalog was not updated after the controller's native RPM
+  reconciliation and LTS upgrade.
+- Resolution: Updated the product catalog and annual migration row to Jenkins
+  2.568.1 LTS with native RPM/systemd deployment.
+- Validation: The controller returned `X-Jenkins: 2.568.1`; the official
+  Jenkins LTS changelog lists 2.568.1 for July 2026.
+- Prevention/follow-up: Compare the live response header and service manager
+  with the catalog during every Jenkins change.
+- Corrective automation: Add Jenkins version and service-model evidence to
+  platform inventory audits.
+- Evidence/related runbook:
+  [Product Version Catalog](product-versions.md)
 
 ## New Incident Template
 
