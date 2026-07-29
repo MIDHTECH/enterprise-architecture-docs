@@ -81,7 +81,7 @@ the verified current endpoints use HTTP:
 | `http://harbor.apps.example.com` | OCI images and Helm OCI | Intentional 503; product not installed |
 | `http://artifactory.apps.example.com` | Build artifacts | Intentional 503; product not installed |
 | `http://sonarqube.apps.example.com` | Code quality | Intentional 503; product not installed |
-| `http://vault.apps.example.com` | Secrets | Intentional 503; product not installed |
+| `http://vault.apps.example.com` | Secrets | Active; UI root redirects and `/v1/sys/health` returns HTTP 200 while unsealed |
 | `http://keycloak.apps.example.com` | SSO/OIDC | Intentional 503; product not installed |
 | `http://splunk.apps.example.com` | Splunk search and administration | Intentional 503; product not installed |
 

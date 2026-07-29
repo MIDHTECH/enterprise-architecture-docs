@@ -108,12 +108,16 @@ The lab DNS configuration now uses these AWX objects:
 | Inventory | 4 | `cloud-infra-production` |
 | Inventory source | 24 | `cloud-infra-onprem` |
 | Job template | 25 | `deploy-lab-dns` |
+| Job template | 26 | `deploy-nginx-reverse-proxy` |
 
 The project synchronizes
 `ssh://git@gitlab.example.com:2222/midhhealth/platform-engineering/cloud-infra-automation-platform.git`
 with the existing GitLab SCM credential. The inventory source imports
 `ansible/inventory/onprem.yml`; the template runs only
 `ansible/playbooks/dns.yml` with the existing managed-host machine credential.
+The NGINX template runs only
+`ansible/playbooks/nginx-reverse-proxy.yml`, uses the same credential, and has
+a fixed `nginx.example.com` limit.
 
 Before launching the template:
 
@@ -131,6 +135,12 @@ repository authorization, not missing SSH trust. The repository root must
 contain `ansible.cfg` with `roles_path = ansible/roles`; otherwise AWX cannot
 discover nested roles even when CI syntax validation succeeds. See
 INC-2026-043 and INC-2026-044.
+
+For the accepted NGINX workflow, project update 416 synchronized revision
+`bc8481a`; deployment job 417 activated the validated route catalog; and
+idempotency job 421 completed with `changed=0`, `unreachable=0`, and
+`failed=0`. See INC-2026-050 for the partial-convergence failure that led to
+the immediate post-validation handler flush.
 
 ## GitLab Runner Eligibility and Queue Recovery
 

@@ -79,6 +79,9 @@ facts; they do not erase the original observation.
 | INC-2026-045 | 2026-07-29 | SEV-4 | Resolved | Kubernetes evidence scope | A DNS acceptance pod initially ran in AWX's k3s cluster instead of the four-node application cluster |
 | INC-2026-046 | 2026-07-29 | SEV-2 | Monitoring | infra01 VM networking | Host reboot initially left 16 of 17 autostart guests without IPv4 after bridge STP delayed forwarding |
 | INC-2026-047 | 2026-07-29 | SEV-2 | Resolved | GitLab startup | GitLab ports returned resets or refusals during extended post-reboot startup |
+| INC-2026-048 | 2026-07-29 | SEV-3 | Resolved | Vault post-reboot recovery | Vault 2.0.3 restarted sealed; controlled unseal and route acceptance restored service |
+| INC-2026-049 | 2026-07-29 | SEV-4 | Open | AWX inventory | Overlapping inventories inflate 35 unique hostnames to 70 host records |
+| INC-2026-050 | 2026-07-29 | SEV-4 | Resolved | NGINX automation | Firewalld and deferred-handler assumptions caused partial convergence |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1518,6 +1521,120 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Corrective automation: Add a bounded GitLab application-readiness wait to
   post-reboot acceptance and distinguish listening ports from application
   readiness.
+- Evidence/related runbook:
+  [Sequential Build and Change Control](sequential-build-change-control.md)
+
+## INC-2026-048: Vault Remained Sealed After Reboot
+
+- Date: 2026-07-29
+- Severity: SEV-3
+- Status: Resolved
+- Component: `vault.example.com`, Vault Community 2.0.3
+- Detection/symptom: The native Vault service and TCP 8200 listener were
+  active after the VM reboot, but the HTTPS health response reported
+  `initialized=true`, `sealed=true`, `standby=true`, and HTTP 503.
+- Impact: Vault UI/API and dependent secret workflows were unavailable.
+  NGINX listed `vault.apps.example.com` as unavailable until the controlled
+  recovery and proxy acceptance completed.
+- Cause: The single-node Community deployment uses Shamir unseal keys and has
+  no accepted automatic-unseal design. A service restart therefore returns
+  Vault to the sealed state.
+- Contributing factors: The older installation source keeps initialization
+  material in a root-only local recovery file. That is usable for this lab
+  recovery but does not meet the final enterprise custody design.
+- Resolution: The operator submitted the three-key threshold locally without
+  printing or copying key values. Vault returned to active service, and the
+  reviewed NGINX role published its HTTPS upstream with the pinned backend
+  certificate.
+- Validation: Direct and proxied health reported `initialized=true`,
+  `sealed=false`, `standby=false`, and HTTP 200. AWX jobs 417 and 421 applied
+  and reconverged the NGINX route; job 421 reported `changed=0`,
+  `unreachable=0`, and `failed=0`.
+- Prevention/follow-up: Create a separate approved recovery-key custody
+  procedure and evaluate an enterprise-appropriate auto-unseal design. Never
+  commit, log, paste, or display initialization material.
+- Corrective automation: Replace the uncommitted installer artifact with
+  reviewed, idempotent automation that separates installation, initialization,
+  unseal recovery, and secret-engine configuration.
+- Evidence/related runbook:
+  [Sequential Build and Change Control](sequential-build-change-control.md)
+
+## INC-2026-049: Overlapping AWX Inventories Doubled Host Records
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Open
+- Component: AWX inventories `production`, `cloud-infra-production`,
+  `kubernetes-production`, and `Demo Inventory`
+- Detection/symptom: The global AWX Hosts view reports 70 items even though
+  the environment does not contain 70 distinct managed machines.
+- Impact: Operators can misread inventory records as physical/virtual host
+  count. Redundant broad inventories also increase variable-drift and
+  wrong-inventory selection risk. A job targets one inventory, so duplicate
+  records do not by themselves execute a play twice.
+- Cause: AWX host objects are inventory-scoped, not globally deduplicated.
+  `production` contains 31 records; `cloud-infra-production` contains those
+  same 31 plus `infra01`, `infra02`, and `infra03`; and
+  `kubernetes-production` contains four Kubernetes nodes already present in
+  both broad inventories. `Demo Inventory` adds `localhost`.
+- Dependency evidence: `production` is synchronized by inventory source 10
+  from project 9, `awx-inventory`, and is used by five Prometheus,
+  Elasticsearch, and telemetry job templates. `cloud-infra-production` is
+  synchronized by inventory source 24 from project 23,
+  `cloud-infra-automation-platform`, and is currently used only by job
+  template 25, `deploy-lab-dns`. The second broad inventory was created during
+  project-specific DNS onboarding rather than from a documented isolation
+  requirement.
+- Validation: Direct authenticated AWX API counts are 31 + 34 + 4 + 1 = 70.
+  All 31 `production` names exist in `cloud-infra-production`; all four
+  Kubernetes names also exist there. The resulting distinct-name count is 35.
+- Resolution: Pending dependency audit. Do not delete an inventory or host
+  record until its projects, inventory sources, job templates, schedules,
+  credentials, RBAC, and variable precedence are mapped.
+- Prevention/follow-up: Select one canonical broad inventory or document
+  explicit trust-boundary reasons for every scoped inventory. Remove the demo
+  inventory after confirming no training workflow depends on it.
+- Corrective automation: Reconcile AWX controller objects as code and add a
+  check that reports total records, unique names, cross-inventory overlap, and
+  orphaned inventory sources.
+- Evidence/related runbook:
+  [Jenkins, AWX, and Ansible Operations](jenkins-awx-ansible-operations.md)
+
+## INC-2026-050: NGINX Role Assumed Firewalld Was Running
+
+- Date: 2026-07-29
+- Severity: SEV-4
+- Status: Resolved
+- Component: `nginx.example.com`, AWX job template 26, job 407
+- Detection/symptom: The first controlled NGINX convergence failed while
+  querying the permanent `http` and `https` services. `firewall-cmd` returned
+  RC 252 and `FirewallD is not running`.
+- Impact: The role stopped after installing the Vault trust certificate and
+  rendering the managed NGINX configuration. It did not reach the handler
+  flush, service-health validation, or version-lock task. The existing NGINX
+  process continued serving its prior loaded configuration.
+- Cause: The role assumed that an installed `firewall-cmd` client meant the
+  firewalld daemon was active.
+- Contributing factors: The standalone proxy already had firewalld stopped,
+  the role did not inspect runtime state before querying permanent rules, and
+  its NGINX reload handler was deferred until after firewall work. The failed
+  run wrote the configuration but did not reload NGINX; job 412 then reported
+  `changed=0` because the files already matched, leaving the older in-memory
+  configuration active.
+- Resolution: The role detects `firewall-cmd --state`, manages
+  HTTP/HTTPS rules only when the daemon is active, and flushes the NGINX
+  handler immediately after configuration validation. It does not silently
+  start a host firewall as part of an application-route change.
+- Validation: GitLab pipelines 343 and 344 passed. AWX project update 416
+  synchronized revision `bc8481a`; job 417 loaded the route; proxied Vault
+  health returned HTTP 200; and job 421 completed with `changed=0`,
+  `unreachable=0`, and `failed=0`.
+- Prevention/follow-up: Treat firewall lifecycle as a separately approved
+  baseline control. Application roles may reconcile rules when the service is
+  active but must not change the firewall lifecycle without an explicit
+  host-baseline change.
+- Corrective automation: Retain the runtime-state guard and add active and
+  inactive firewalld scenarios to role validation.
 - Evidence/related runbook:
   [Sequential Build and Change Control](sequential-build-change-control.md)
 

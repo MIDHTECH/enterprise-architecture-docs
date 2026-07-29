@@ -20,8 +20,8 @@ Jenkins, or AWX control plane.
 | Change ID | `CHG-2026-001` |
 | Component | Foundation recovery and complete activity audit |
 | State | Recovery in progress |
-| Blocker | Control-plane recovery/activity audit passed; pending local commits and live-state documentation must be reconciled and published |
-| Permitted work | Sequential source-of-truth reconciliation/publication, INC-2026-046 monitoring evidence, incident evidence, and documentation |
+| Blocker | Vault route recovery is accepted; overlapping AWX inventory dependencies remain under INC-2026-049 |
+| Permitted work | Read-only AWX inventory dependency audit, sequential live-state reconciliation, incident evidence, and documentation |
 | Prohibited work | New product installation, AWX launch, Kubernetes mutation, VM provisioning, migration, or upgrade |
 | Exit criteria | infra01, GitLab, Jenkins, AWX, DNS, NGINX, and the application Kubernetes API are reachable; active jobs are audited; source-of-truth drift is reconciled |
 
@@ -38,7 +38,7 @@ The 2026-07-29 audit found:
 | Jenkins | Service active on port 8080; backend and `jenkins.apps.example.com` sign-in pages return HTTP 200; no visible executor workload | Healthy and idle |
 | AWX | API and `awx.apps.example.com` return HTTP 200; AWX 24.6.1 control heartbeat is current with capacity 30; no visible Ansible Runner workload | Healthy and idle |
 | Application Kubernetes | Explicit context `kubernetes-admin@kubernetes`; server 1.34.10; control plane plus three workers Ready; no non-running pods or active Jobs | Healthy and idle |
-| NGINX routes | All 12 routes advertised as active returned expected UI, redirect, authentication, or API-root responses through `*.apps.example.com` | Healthy |
+| NGINX routes | The catalog advertises 13 active routes and five intentional unavailable routes. All active routes returned expected non-5xx UI, redirect, authentication, or API responses; Vault health is HTTP 200 and unsealed. | Healthy; jobs 417 and 421 accepted |
 | infra02 | 14/14 VMs running; no Ansible, Terraform, VM-build, or package-change process except routine `dnf makecache` on Logstash | Stable |
 | infra03 | Host stable; three recently provisioned VMs running with autostart | Unreconciled completed provisioning |
 | `gitlab-runner-app01` | `.136`, Rocky VM running; no GitLab Runner service or process | Provisioned only |
@@ -49,7 +49,7 @@ The 2026-07-29 audit found:
 | SonarQube | `.124`; no product service detected | Provisioned only |
 | PostgreSQL | `.125`; PostgreSQL 18 service active | Installed |
 | Workstation activity | No running Git publication, SSH administration, Ansible, Terraform, kubectl, libvirt, or image-build process | No conflicting active process |
-| GitLab/AWX/Jenkins | Unreachable with infra01; pipeline and job audit cannot complete | Audit blocked |
+| GitLab/AWX/Jenkins | Recovered with infra01; GitLab pipelines and bounded AWX jobs were audited, and Jenkins remained healthy and idle | Audit complete |
 
 An older documentation clone contains uncommitted Harbor, Vault, and Keycloak
 installation artifacts. Those files are preserved but are not canonical until

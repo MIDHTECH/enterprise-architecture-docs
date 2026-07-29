@@ -5,7 +5,7 @@
 The lab does not implement high availability. One standalone Rocky Linux VM
 provides friendly HTTP application URLs:
 
-Implementation status as of 2026-07-28: installed, reconciled with the live
+Implementation status as of 2026-07-29: installed, reconciled with the live
 environment, and validated.
 
 | Identity | Address | Placement | Purpose |
@@ -32,7 +32,7 @@ There is no second NGINX VM, Keepalived, VRRP, or floating VIP. Address
 | `http://tempo.apps.example.com` | `192.168.1.130:3200` | Active HTTP API |
 | `http://otel.apps.example.com` | `192.168.1.131:4318` | Active HTTP receiver |
 | `http://kibana.apps.example.com` | `192.168.1.117:5601` | Active |
-| `http://vault.apps.example.com` | No backend | Intentional 503 |
+| `http://vault.apps.example.com` | `https://192.168.1.104:8200` | Active; verified backend TLS |
 | `http://keycloak.apps.example.com` | No backend | Intentional 503 |
 | `http://harbor.apps.example.com` | No backend | Intentional 503 |
 | `http://artifactory.apps.example.com` | No backend | Intentional 503 |
@@ -109,10 +109,20 @@ ansible-playbook -i inventory/onprem.yml \
   playbooks/nginx-reverse-proxy.yml
 ```
 
+The accepted AWX objects are project 23
+`cloud-infra-automation-platform`, inventory 4
+`cloud-infra-production`, and job template 26
+`deploy-nginx-reverse-proxy`. The template has a fixed
+`nginx.example.com` limit and uses the existing managed-host SSH credential.
+
 The roles install the Rocky NGINX 1.26 package stream, configure application
 virtual hosts and forwarding headers, permit HTTP/HTTPS in firewalld, enable
 the SELinux backend-connect boolean, record the installed package version,
-and expose `/nginx-health`. Restricted observability backends receive
+and expose `/nginx-health`. Firewall rules are reconciled only when firewalld
+is active; the role does not silently start a stopped host firewall.
+Validated configuration changes are activated before later host-policy tasks,
+so a subsequent task failure cannot strand a written but unloaded NGINX
+configuration. Restricted observability backends receive
 persistent firewalld rich rules allowing only source `192.168.1.114`.
 
 Installed package lock:
@@ -157,6 +167,22 @@ Reconciliation evidence from 2026-07-28:
 - Loki `/ready`: HTTP 200
 - Tempo `/ready`: HTTP 200
 - unavailable product routes: intentional HTTP 503
+
+Vault route acceptance evidence from 2026-07-29:
+
+- GitLab pipelines 342, 343, and 344 passed the automatic validation, lint,
+  and security gates for the route and corrective automation;
+- AWX job 407 exposed inactive-firewalld handling and stopped before reload;
+- AWX job 412 proved the firewall guard but revealed the prior written
+  configuration had not been loaded;
+- AWX job 417 activated revision `bc8481a` and restarted NGINX after syntax
+  validation;
+- AWX job 421 was the accepted second convergence:
+  `ok=14`, `changed=0`, `unreachable=0`, `failed=0`, `skipped=5`;
+- `vault.apps.example.com/v1/sys/health` returned HTTP 200 with
+  `initialized=true`, `sealed=false`, and `standby=false`;
+- the root catalog lists 13 active routes and five intentional unavailable
+  routes; all active routes returned expected non-5xx application behavior.
 
 ## Publish DNS
 

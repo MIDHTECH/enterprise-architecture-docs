@@ -33,19 +33,21 @@ The following state was verified directly through 2026-07-29:
 | `infra02.example.com` | Ubuntu 26.04 LTS, `br0` active, 14/14 domains running, and no active change process |
 | `infra03.example.com` | Ubuntu 26.04 LTS, `br0` active, three new build-execution domains running with autostart |
 | Virtual machines | 34 domains in the latest inventory: 17 on infra01, 14 on infra02, and 3 on infra03; all domains are running and all infra01 guests recovered expected IPv4 addresses |
-| Product roles | At least 23 runtime roles directly verified; Harbor is installed, while Vault and Keycloak await revalidation after infra01 recovery |
+| Product roles | At least 23 runtime roles directly verified; Harbor is installed; Vault 2.0.3 is active, unsealed, and accepted through NGINX; Keycloak still awaits revalidation |
 | Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready |
 | AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
-| Git repositories | Publication is frozen: AWX inventory, Kubernetes ingress, and incident documentation each have one local unpushed commit |
+| Git repositories | AWX inventory, Kubernetes ingress, and cloud-infrastructure corrections are published; incident documentation is updated as each sequential change closes |
 
 The directly verified provisioned-only product VMs include `governance`,
 `backup`, `awx-execution`, `artifactory`, `sonarqube`, and `splunk`.
 PostgreSQL 18 is active on `postgres.example.com`. Harbor 2.15.0 is active on
 `harbor.example.com`: all ten Harbor, registry, database, Redis, portal,
 job-service, and Trivy containers are healthy, the health API is healthy, and
-native HTTPS returns 200. An older documentation clone claims completed Vault
-and Keycloak work, but those infra01 guests are unavailable and must be
-revalidated before that state becomes canonical.
+native HTTPS returns 200. Vault 2.0.3 is active on
+`vault.example.com`, reports `initialized=true`, `sealed=false`, and
+`standby=false`, and is reachable through `vault.apps.example.com`. Keycloak
+still requires separate revalidation before its older installation claim
+becomes canonical.
 
 Three infra03 guests were provisioned at `.136–.138`:
 `gitlab-runner-app01`, `gitlab-runner-infra01`, and `jenkins-agent01`.
@@ -71,8 +73,10 @@ must be labeled separately. See INC-2026-045.
 `nginx.example.com` is the single non-HA HTTP reverse proxy. Its root URL
 returns the current active and unavailable route catalog. Active routes include
 GitLab, Jenkins, AWX, Headlamp, Prometheus, Alertmanager, Grafana, MinIO, Loki,
-Tempo, OpenTelemetry HTTP, and Kibana. AWX uses its verified NodePort `32000`;
-Headlamp uses `30080`. Source-restricted firewalld rules allow only
+Tempo, OpenTelemetry HTTP, Kibana, and Vault. AWX uses its verified NodePort
+`32000`; Headlamp uses `30080`. The Vault upstream uses HTTPS with the
+version-controlled backend certificate as its trust anchor. Source-restricted
+firewalld rules allow only
 approved lab-LAN consumers to reach Loki and Tempo and allow the Kubernetes
 pod CIDR to reach the OpenTelemetry receivers.
 
@@ -83,8 +87,8 @@ through NGINX to the GitLab sign-in route.
 
 Artifactory, SonarQube, and Splunk remain provisioned-only. Harbor is healthy
 on its native HTTPS endpoint, but its application route remains listed as
-unavailable by NGINX and requires separate acceptance. Vault and Keycloak must
-be revalidated after infra01 recovery. See
+unavailable by NGINX and requires separate acceptance. Keycloak must still be
+revalidated after infra01 recovery. See
 [Standalone NGINX Reverse-Proxy Installation](product-installation-nginx.md).
 
 ## Hybrid capacity plan
@@ -178,6 +182,7 @@ The following readiness evidence was collected directly through 2026-07-29:
 | Tempo trace pipeline | AWX job 381 found and retrieved trace `f819ea257b72ff3a7fd5998e807b3430`, then correlated it to the Loki event | Accepted for the bounded correlated workload |
 | Management applications | GitLab, AWX, Prometheus, Grafana, Kibana, and the Headlamp NGINX route returned HTTP responses; Jenkins returned the expected authenticated HTTP 403 | Available |
 | Headlamp name resolution | BIND, the Mac split resolver, and Kubernetes CoreDNS return `192.168.1.114`; normal application URL returns HTTP 200 | Accepted through AWX jobs 398 and 402 |
+| Vault secrets service | Vault 2.0.3 reports initialized, unsealed, active, and HTTP 200 through the verified NGINX TLS upstream; NGINX convergence job 421 reported `changed=0`, `unreachable=0`, and `failed=0` | Accepted through AWX jobs 417 and 421 |
 
 The platform can deploy and exercise stateless test applications through
 ClusterIP or NodePort and can accept their logs, metrics, and traces. The
