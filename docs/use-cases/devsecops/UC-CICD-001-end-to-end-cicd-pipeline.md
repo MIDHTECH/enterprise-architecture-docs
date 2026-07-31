@@ -12,7 +12,7 @@ Last verified: 2026-07-31
 | Change record | `CHG-2026-002` |
 | Target | Podinfo application mirrored into on-premises GitLab, Jenkins, AWX, dedicated Jenkins agent, and Kubernetes cluster |
 | Current state | **In progress — source gates passed; runtime execution and rollback evidence pending** |
-| Current blocker | The approved AWX local-proxy access path must be restored before `jenkins-agent01` bootstrap and Jenkins runtime acceptance continue |
+| Current blocker | AWX proxy source is accepted; an operator must sign in to AWX so the controlled local-proxy and DNS convergence can run before `jenkins-agent01` bootstrap |
 | Owner | Platform Delivery team |
 
 ## Purpose
@@ -153,6 +153,7 @@ repository under `/Users/midhmaclab/Documents/MIDHTECHLAB`.
 | `github.com/stefanprodan/podinfo` | `LICENSE`, `Dockerfile`, `go.mod`, `charts/podinfo`, `deploy`, `otel`, `test` | Upstream license, build, dependency, deployment, telemetry, and test source | Candidate reviewed from public repository; immutable import commit pending |
 | `midhhealth/applications/podinfo` | `UPSTREAM.md`, `LICENSE`, `.gitlab-ci.yml`, `Dockerfile`, application source, tests, and chart/values overlay | Internal build source and provenance record | GitLab project/import not yet created |
 | `midhhealth/platform-engineering/ansible-kubernetes` | `.gitlab-ci.yml` | GitLab source-validation stages | Pipeline 354 passed |
+| `midhhealth/platform-engineering/cloud-infra-automation-platform` | `ansible/playbooks/awx-local-proxy.yml`, `ansible/roles/awx_local_proxy`, and `ansible/roles/bind_dns/defaults/main.yml` | Restores the approved AWX service-local proxy and direct DNS route needed by the deployment control plane | Commit `5a7a6ade`; branch pipeline 372 and canonical-main pipeline 374 passed; runtime convergence pending |
 | same | `scripts/local-validate.sh` | Local entry point matching CI validation | Commit `e34bd54` |
 | same | `scripts/validate-deployment-boundary.sh` | Prevents Ansible from owning application-tier Helm deployment | Pipeline 354 passed |
 | same | `charts/platform-ingress/Chart.yaml` | Pinned ingress-nginx chart dependency | Commit `e34bd54` |

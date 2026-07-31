@@ -19,8 +19,8 @@ Jenkins, or AWX control plane.
 | --- | --- |
 | Change ID | CHG-2026-002 |
 | Component | Jenkins Kubernetes deployment path, `jenkins-agent01` executor, and blocking AWX access-route correction |
-| State | Source gates passed; AWX local proxy/direct DNS correction must restore the approved control-plane access path before Jenkins-agent runtime bootstrap continues |
-| Blocker | The implemented shared `*.apps.example.com` NGINX route does not match the approved service-local proxy architecture, and the shared DNS/NGINX guests lost gateway reachability after infra01 recovery |
+| State | AWX local-proxy and direct-DNS source is on canonical main with green gates; controlled AWX runtime convergence is next |
+| Blocker | The AWX 24.6.1 login page is reachable through the temporary direct NodePort, but the operator must sign in before the approved AWX job template can be synchronized, created or verified, and launched |
 | Permitted work | Replace the AWX shared-proxy dependency with an Ansible-managed NGINX proxy on the AWX VM (`80/443` to local NodePort `32000`), point the canonical AWX hostname directly to `.103`, validate and publish that prerequisite, then configure the dedicated Jenkins agent and continue the existing Jenkins/Helm acceptance path |
 | Prohibited work | Installing ingress through Ansible, changing another application or runner before the AWX access correction is accepted, modifying the shared NGINX VM as a workaround, deploying storage or applications, or using the Jenkins controller as the permanent executor |
 | Exit criteria | Agent online with pinned Helm/kubectl toolchain; GitLab CI green; Jenkins plan and deploy green; Helm release healthy; rollback tested; second convergence clean; documentation and incidents current; related repositories clean |
@@ -41,6 +41,11 @@ skipped the protected controller deployment job. No ingress or agent runtime
 change has started. Documentation pipeline 367 passed the first detailed
 use-case record, its seven Jira stories, and the new documentation-contract
 validator for commit `ca129e5a`; this does not change the runtime state.
+Cloud branch pipeline 372 passed the AWX local-proxy source, including
+production-profile Ansible lint. Canonical-main pipeline 374 passed for commit
+`5a7a6ade` after transient job 964 was retried as job 973; INC-2026-059 records
+the external Alpine repository failure. The AWX API at
+`127.0.0.1:32000/api/v2/ping/` returned version 24.6.1 before deployment.
 
 ## Completed change
 

@@ -90,6 +90,7 @@ facts; they do not erase the original observation.
 | INC-2026-056 | 2026-07-29 | SEV-4 | Open | Lab DNS | `jenkins-agent01.example.com` had no authoritative record |
 | INC-2026-057 | 2026-07-29 | SEV-4 | Resolved | Jenkins source of truth | Catalog reported stale version and container deployment |
 | INC-2026-058 | 2026-07-29 | SEV-4 | Resolved | Jenkins agent CI | Agent role used `systemctl` instead of service facts |
+| INC-2026-059 | 2026-07-31 | SEV-4 | Resolved | Cloud infrastructure CI | Main Terraform validation briefly failed when Alpine package indexes were unavailable |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1885,6 +1886,40 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   AWX can run the agent playbook.
 - Evidence/related runbook:
   [Kubernetes Helm Delivery](kubernetes-helm-delivery-runbook.md)
+
+## INC-2026-059: Main Terraform Validation Lost Alpine Package Index
+
+- Date: 2026-07-31
+- Severity: SEV-4
+- Status: Resolved
+- Component: `cloud-infra-automation-platform` pipeline 374,
+  `terraform_validate` job 964
+- Detection/symptom: The canonical-main pipeline failed before Terraform
+  validation because `apk add --no-cache bash` could not fetch the Alpine 3.22
+  `main` index and then reported `bash (no such package)`.
+- Impact: The AWX local-proxy deployment gate stopped. No AWX, DNS, NGINX,
+  Terraform, or other runtime change occurred.
+- Timeline: Branch pipeline 372 passed the identical source. Main pipeline 374
+  later encountered the temporary repository error. Only the failed job was
+  retried as job 973 after the log proved the failure was external to the
+  submitted code.
+- Cause: Temporary failure reaching the Alpine package repository from the
+  GitLab Runner while preparing the pinned Terraform container.
+- Contributing factors: The Terraform image does not contain Bash, so every
+  validation job depends on a live Alpine package-index fetch.
+- Resolution: Retried only `terraform_validate`; job 973 passed. Pipeline 374
+  then passed validation, production-profile Ansible lint, and IaC security
+  scanning. Manual plan, configure, verify, and apply jobs were not run.
+- Validation: The retry used the same commit `5a7a6ade`; Terraform validation
+  passed without a code change, confirming a transient dependency failure.
+- Prevention/follow-up: Replace runtime `apk add` with a checksum/digest-pinned
+  internal CI image containing Bash, or cache/mirror required Alpine packages
+  in the lab. Keep the first failed log for comparison and never retry a
+  deterministic source failure without a correction.
+- Corrective automation: Add a prepared Terraform validation image to the
+  internal registry backlog; keep source validation blocking.
+- Evidence/related runbook:
+  [Sequential Build and Change Control](sequential-build-change-control.md)
 
 ## New Incident Template
 
