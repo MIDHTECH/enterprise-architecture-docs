@@ -1,6 +1,6 @@
 # Sequential Build and Change Control
 
-Last verified: 2026-07-29
+Last verified: 2026-07-31
 
 ## Operating rule
 
@@ -18,11 +18,11 @@ Jenkins, or AWX control plane.
 | Field | Current value |
 | --- | --- |
 | Change ID | CHG-2026-002 |
-| Component | Jenkins Kubernetes deployment path and `jenkins-agent01` executor |
-| State | Source gates passed; DNS and Jenkins-agent runtime bootstrap pending |
-| Blocker | AWX browser session requires operator sign-in before the controlled DNS template can run |
-| Permitted work | Configure the dedicated Jenkins agent, make Jenkins own Helm plan/deploy/rollback, restrict AWX/Ansible to host and cluster prerequisites, validate and publish those changes, and prove one sequential ingress deployment |
-| Prohibited work | Installing ingress through Ansible, launching AWX directly as the application deployment path, deploying storage or applications, modifying another runner, or using the Jenkins controller as the permanent executor |
+| Component | Jenkins Kubernetes deployment path, `jenkins-agent01` executor, and blocking AWX access-route correction |
+| State | Source gates passed; AWX local proxy/direct DNS correction must restore the approved control-plane access path before Jenkins-agent runtime bootstrap continues |
+| Blocker | The implemented shared `*.apps.example.com` NGINX route does not match the approved service-local proxy architecture, and the shared DNS/NGINX guests lost gateway reachability after infra01 recovery |
+| Permitted work | Replace the AWX shared-proxy dependency with an Ansible-managed NGINX proxy on the AWX VM (`80/443` to local NodePort `32000`), point the canonical AWX hostname directly to `.103`, validate and publish that prerequisite, then configure the dedicated Jenkins agent and continue the existing Jenkins/Helm acceptance path |
+| Prohibited work | Installing ingress through Ansible, changing another application or runner before the AWX access correction is accepted, modifying the shared NGINX VM as a workaround, deploying storage or applications, or using the Jenkins controller as the permanent executor |
 | Exit criteria | Agent online with pinned Helm/kubectl toolchain; GitLab CI green; Jenkins plan and deploy green; Helm release healthy; rollback tested; second convergence clean; documentation and incidents current; related repositories clean |
 
 `CHG-2026-001` is complete.
