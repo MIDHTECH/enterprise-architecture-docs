@@ -471,6 +471,19 @@ execution is captured, sanitized, committed, and reviewed.
 | `ATT-CICD-010` | 006 | Recovered Headlamp route after rollback | Headlamp/browser | Pending runtime |
 | `ART-CICD-008` | 006 | Helm history, rollback log, and measured recovery time | Jenkins artifact | Pending runtime |
 
+### Documentation publication evidence
+
+Pipeline 367 passed for documentation commit `ca129e5a` on 2026-07-31. It
+executed the repository validation and the detailed use-case contract. This is
+evidence that the documentation structure is published and valid; it is not
+application deployment evidence for STORY-CICD-000 through STORY-CICD-006.
+
+![GitLab documentation pipeline 367 passed](../../assets/use-cases/UC-CICD-001/DOC-CICD-001-pipeline-367-20260731-1959-UTC.jpg)
+
+| ID | Source | Capture time | Observation | Review status |
+| --- | --- | --- | --- | --- |
+| `DOC-CICD-001` | GitLab pipeline 367 | 2026-07-31 19:59 UTC | Pipeline passed for commit `ca129e5a` on `main` | Verified |
+
 Screenshot capture procedure:
 
 1. Open the exact GitLab pipeline, Jenkins build, AWX job, or Headlamp page.

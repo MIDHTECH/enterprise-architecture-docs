@@ -38,7 +38,9 @@ Accepted source evidence: ingress correction pipeline 354, Jenkins shared
 library pipeline 351, Jenkins Job DSL pipeline 352, Jenkins agent correction
 pipeline 360, and agent DNS source pipeline 358 passed. Pipeline 360 explicitly
 skipped the protected controller deployment job. No ingress or agent runtime
-change has started.
+change has started. Documentation pipeline 367 passed the first detailed
+use-case record, its seven Jira stories, and the new documentation-contract
+validator for commit `ca129e5a`; this does not change the runtime state.
 
 ## Completed change
 
