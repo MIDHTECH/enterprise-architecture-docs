@@ -318,7 +318,7 @@ This diagram shows the project architecture, control boundaries, runtime targets
 
 | Use case | Coverage |
 | --- | --- |
-| End-to-End CI/CD Pipeline Setup | Implemented through Jenkins pipeline stages from checkout to deployment |
+| [End-to-End CI/CD Pipeline Setup](use-cases/devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md) | Source gates passed; dedicated agent, live Jenkins plan/deploy/rollback, and evidence acceptance remain pending under `CHG-2026-002` |
 | Automated Build Pipeline | Build process runs in pipeline instead of local machines |
 | Automated Unit Testing in CI | Tests run before package/deploy stages |
 | Code Quality Gate Integration | Pipeline has a place for quality scans and gating |

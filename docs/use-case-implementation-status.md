@@ -1,6 +1,11 @@
 # Use-Case Implementation Status
 
-Last verified: 2026-07-28
+Last verified: 2026-07-31
+
+Detailed use cases are expanded and accepted sequentially under the
+[use-case documentation standard](use-cases/README.md). The first expanded
+record is
+[UC-CICD-001: End-to-End CI/CD Pipeline Setup](use-cases/devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md).
 
 ## Purpose
 

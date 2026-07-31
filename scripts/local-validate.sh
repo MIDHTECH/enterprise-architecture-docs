@@ -36,11 +36,15 @@ required_docs=(
   "docs/projects/network-engineering.md"
   "docs/projects/healthcare-ai.md"
   "docs/projects/mlops-model-platform.md"
+  "docs/use-cases/README.md"
+  "docs/use-cases/devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md"
 )
 
 for path in "${required_docs[@]}"; do
   test -f "$path"
 done
+
+./scripts/validate-use-cases.sh
 
 portfolio="docs/enterprise-project-portfolio-and-usecases.md"
 grep -q "cloud-infra-automation-platform" "$portfolio"
