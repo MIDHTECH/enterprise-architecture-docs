@@ -5,13 +5,15 @@
 The lab does not implement high availability. One standalone Rocky Linux VM
 provides friendly HTTP application URLs:
 
-Implementation status as of 2026-07-29: installed, reconciled with the live
-environment, and validated.
+Implementation status as of 2026-07-31: installed and retained as a temporary
+migration dependency. The approved target is one local NGINX instance on each
+product VM with the canonical `<product>.example.com` URL. AWX is migrated;
+all remaining routes stay here until their own sequential acceptance closes.
 
 | Identity | Address | Placement | Purpose |
 | --- | --- | --- | --- |
 | `nginx.example.com` | `192.168.1.114` | infra01 | NGINX reverse proxy |
-| `*.apps.example.com` | `192.168.1.114` | DNS service records | User-facing application URLs |
+| remaining `*.apps.example.com` records | `192.168.1.114` | DNS service records | Temporary user-facing routes for products not yet migrated |
 
 There is no second NGINX VM, Keepalived, VRRP, or floating VIP. Address
 `.132` and `.140` remain available for future expansion.
@@ -22,7 +24,7 @@ There is no second NGINX VM, Keepalived, VRRP, or floating VIP. Address
 | --- | --- | --- |
 | `http://gitlab.apps.example.com` | `192.168.1.101:80` | Active |
 | `http://jenkins.apps.example.com` | `192.168.1.102:8080` | Active |
-| `http://awx.apps.example.com` | `192.168.1.103:32000` | Active |
+| `http://awx.example.com` | local NGINX on `192.168.1.103:80` → `127.0.0.1:32000` | Migrated and accepted; `awx.apps.example.com` removed |
 | `http://headlamp.apps.example.com` | `192.168.1.107:30080` | Active |
 | `http://prometheus.apps.example.com` | `192.168.1.115:9090` | Active |
 | `http://alertmanager.apps.example.com` | `192.168.1.110:9093` | Active |
@@ -47,6 +49,13 @@ PostgreSQL, DNS, SSH, Kubernetes API, OpenTelemetry gRPC, and other non-HTTP
 protocols keep their native names and ports. Elasticsearch ports 9200/9300,
 Logstash 5044, and Splunk management/ingest ports 8089/8088/9997 remain
 restricted native endpoints. Only Kibana and the Splunk web UI are proxied.
+
+Do not remove the shared `nginx.example.com` VM or its remaining DNS records
+as a bulk change. For each product: validate its backend, install and accept
+local NGINX, move the canonical DNS record, prove a second zero-change run,
+remove only that product's `.apps` record, document rollback, and then advance
+to the next product. Retire the shared VM only after a dependency audit finds
+zero consumers.
 
 ## Provision the VM
 

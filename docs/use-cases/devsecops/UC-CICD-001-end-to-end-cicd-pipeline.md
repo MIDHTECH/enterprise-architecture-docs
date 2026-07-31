@@ -12,7 +12,7 @@ Last verified: 2026-07-31
 | Change record | `CHG-2026-002` |
 | Target | Podinfo application mirrored into on-premises GitLab, Jenkins, AWX, dedicated Jenkins agent, and Kubernetes cluster |
 | Current state | **In progress — source gates passed; runtime execution and rollback evidence pending** |
-| Current blocker | AWX proxy source is accepted; an operator must sign in to AWX so the controlled local-proxy and DNS convergence can run before `jenkins-agent01` bootstrap |
+| Current blocker | AWX direct access is accepted. Publish the updated change and incident evidence before starting the sequential `jenkins-agent01` bootstrap. |
 | Owner | Platform Delivery team |
 
 ## Purpose
@@ -153,7 +153,7 @@ repository under `/Users/midhmaclab/Documents/MIDHTECHLAB`.
 | `github.com/stefanprodan/podinfo` | `LICENSE`, `Dockerfile`, `go.mod`, `charts/podinfo`, `deploy`, `otel`, `test` | Upstream license, build, dependency, deployment, telemetry, and test source | Candidate reviewed from public repository; immutable import commit pending |
 | `midhhealth/applications/podinfo` | `UPSTREAM.md`, `LICENSE`, `.gitlab-ci.yml`, `Dockerfile`, application source, tests, and chart/values overlay | Internal build source and provenance record | GitLab project/import not yet created |
 | `midhhealth/platform-engineering/ansible-kubernetes` | `.gitlab-ci.yml` | GitLab source-validation stages | Pipeline 354 passed |
-| `midhhealth/platform-engineering/cloud-infra-automation-platform` | `ansible/playbooks/awx-local-proxy.yml`, `ansible/roles/awx_local_proxy`, and `ansible/roles/bind_dns/defaults/main.yml` | Restores the approved AWX service-local proxy and direct DNS route needed by the deployment control plane | Commit `5a7a6ade`; branch pipeline 372 and canonical-main pipeline 374 passed; runtime convergence pending |
+| `midhhealth/platform-engineering/cloud-infra-automation-platform` | `ansible/playbooks/awx-local-proxy.yml`, `ansible/roles/awx_local_proxy`, `ansible/roles/bind_dns`, and `gitlab-ci/terraform.gitlab-ci.yml` | Migrates AWX to service-local NGINX and the canonical `awx.example.com` DNS record without a shared-proxy or `.apps` dependency; avoids external package downloads when BIND is already installed and during Terraform CI bootstrap | Commit `e8873211`; branch pipeline 378 and canonical-main pipeline 380 passed; AWX sync 484, proxy jobs 485/492, and DNS jobs 502/514 accepted with clean second convergence |
 | same | `scripts/local-validate.sh` | Local entry point matching CI validation | Commit `e34bd54` |
 | same | `scripts/validate-deployment-boundary.sh` | Prevents Ansible from owning application-tier Helm deployment | Pipeline 354 passed |
 | same | `charts/platform-ingress/Chart.yaml` | Pinned ingress-nginx chart dependency | Commit `e34bd54` |
@@ -166,7 +166,7 @@ repository under `/Users/midhmaclab/Documents/MIDHTECHLAB`.
 | same | `roles/jenkins_agent/defaults/main.yml` | Pinned agent tool versions and controller URL | Commit `82adf11` |
 | same | `roles/jenkins_agent/templates/jenkins-agent.service.j2` | Persistent inbound agent service definition | Commit `82adf11` |
 | `midhhealth/enterprise-architecture/enterprise-architecture-docs` | `docs/sequential-build-change-control.md` | Active change, permitted boundary, accepted evidence, and exit criteria | `CHG-2026-002` |
-| same | `docs/sre-incident-register.md` | Failures, near misses, corrections, and validation records | INC-2026-057 and INC-2026-058 |
+| same | `docs/sre-incident-register.md` | Failures, near misses, corrections, and validation records | INC-2026-057 through INC-2026-061 |
 
 ## Jira breakdown
 
@@ -302,8 +302,9 @@ to run on a dedicated, reproducibly configured Rocky Linux VM, so that the
 Jenkins controller is not used as a permanent build executor and deployment
 tools are pinned and auditable.
 
-**Status:** Blocked — VM is provisioned; runtime bootstrap waits for the active
-AWX access-route prerequisite.
+**Status:** Ready after documentation publication — the VM is provisioned and
+the AWX access-route prerequisite is accepted through jobs 485/492 and
+502/514.
 
 **Acceptance criteria:**
 
@@ -320,6 +321,8 @@ AWX access-route prerequisite.
 **Implementation steps:**
 
 1. Restore and accept the approved AWX service-local proxy and DNS route.
+   **Completed:** AWX project update 484 selected commit `e8873211`; proxy jobs
+   485/492 and DNS jobs 502/514 passed, including clean second convergence.
 2. Create or verify the Jenkins node and obtain its controller-issued secret.
 3. Supply the secret only through the encrypted AWX launch prompt.
 4. Run the `ansible-jenkins` playbook for `jenkins-agent01`.

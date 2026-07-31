@@ -71,20 +71,27 @@ must be labeled separately. See INC-2026-045.
 
 ## Application access
 
-`nginx.example.com` is the single non-HA HTTP reverse proxy. Its root URL
-returns the current active and unavailable route catalog. Active routes include
-GitLab, Jenkins, AWX, Headlamp, Prometheus, Alertmanager, Grafana, MinIO, Loki,
-Tempo, OpenTelemetry HTTP, Kibana, and Vault. AWX uses its verified NodePort
-`32000`; Headlamp uses `30080`. The Vault upstream uses HTTPS with the
+The access tier is migrating sequentially from the shared non-HA
+`nginx.example.com` VM to NGINX running on each product VM. AWX is the first
+accepted migration: `awx.example.com` resolves directly to `192.168.1.103`,
+local NGINX forwards port 80 to NodePort `32000`, and
+`awx.apps.example.com` has been removed. AWX jobs 485/492 and DNS jobs
+502/514 prove first convergence and zero-change idempotence.
+
+`nginx.example.com` remains online temporarily for GitLab, Jenkins, Headlamp,
+Prometheus, Alertmanager, Grafana, MinIO, Loki, Tempo, OpenTelemetry HTTP,
+Kibana, and Vault. It must not be retired until each consumer is migrated and
+accepted in a separate sequential change. Headlamp uses `30080`; Vault uses
+HTTPS with the
 version-controlled backend certificate as its trust anchor. Source-restricted
 firewalld rules allow only
 approved lab-LAN consumers to reach Loki and Tempo and allow the Kubernetes
 pod CIDR to reach the OpenTelemetry receivers.
 
-Backend VM names such as `gitlab.example.com` identify service hosts.
-User-facing reverse-proxy names use the `apps.example.com` zone. For example,
-`gitlab.apps.example.com` is the accepted GitLab URL and currently redirects
-through NGINX to the GitLab sign-in route.
+The target convention uses canonical `<product>.example.com` names for both
+service identity and user access. Services not yet migrated continue to use
+their existing `*.apps.example.com` URL; for example,
+`gitlab.apps.example.com` still redirects through the shared proxy.
 
 Artifactory, SonarQube, and Splunk remain provisioned-only. Harbor is healthy
 on its native HTTPS endpoint, but its application route remains listed as

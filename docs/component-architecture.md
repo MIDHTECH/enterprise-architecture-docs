@@ -69,7 +69,7 @@ flowchart TB
     end
 
     subgraph runtime[Runtime Platforms]
-        proxy[nginx.example.com / apps URLs]
+        proxy[Service-local NGINX / canonical URLs; legacy shared proxy during migration]
         kvm[infra01 and infra02 / Rocky VMs]
         cloud[AWS / Azure / GCP]
         clusters[AKS / EKS / GKE]
@@ -165,7 +165,7 @@ flowchart TB
 | Jenkins Shared Library | Provides separate reusable contracts for AWX infrastructure operations and direct Helm release lifecycle |
 | Delivery Control Plane | GitLab validates source; Jenkins orchestrates approved changes; AWX/Ansible configure infrastructure; Helm manages Kubernetes releases |
 | Runtime Platforms | On-premises VMs/Kubernetes, cloud resources, applications, and telemetry |
-| On-premises access and compute | One standalone NGINX proxy fronts user HTTP URLs; infra01/infra02 host dedicated Rocky Linux product VMs |
+| On-premises access and compute | Product-local NGINX fronts canonical HTTP URLs; the former standalone proxy remains only for not-yet-migrated routes; infra01/infra02 host dedicated Rocky Linux product VMs |
 | Enterprise observability comparison | Three Elasticsearch nodes plus standalone Kibana, Logstash, and Splunk complement the Prometheus/Grafana path |
 
 ## Numbered Flow

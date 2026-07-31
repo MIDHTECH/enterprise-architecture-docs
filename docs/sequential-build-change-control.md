@@ -19,9 +19,9 @@ Jenkins, or AWX control plane.
 | --- | --- |
 | Change ID | CHG-2026-002 |
 | Component | Jenkins Kubernetes deployment path, `jenkins-agent01` executor, and blocking AWX access-route correction |
-| State | AWX local-proxy and direct-DNS source is on canonical main with green gates; controlled AWX runtime convergence is next |
-| Blocker | The AWX 24.6.1 login page is reachable through the temporary direct NodePort, but the operator must sign in before the approved AWX job template can be synchronized, created or verified, and launched |
-| Permitted work | Replace the AWX shared-proxy dependency with an Ansible-managed NGINX proxy on the AWX VM (`80/443` to local NodePort `32000`), point the canonical AWX hostname directly to `.103`, validate and publish that prerequisite, then configure the dedicated Jenkins agent and continue the existing Jenkins/Helm acceptance path |
+| State | AWX, the first direct-URL migration, is accepted and documented: project sync 484 selected canonical commit `e8873211`; local-proxy jobs 485/492 and DNS jobs 502/514 succeeded with second runs at `changed=0`; the authenticated portless dashboard loads at `http://awx.example.com`. The next sequential component is `jenkins-agent01`. |
+| Blocker | None for AWX. Begin `jenkins-agent01` only after this documentation revision passes CI and is published. |
+| Permitted work | Replace the AWX shared-proxy dependency with an Ansible-managed NGINX proxy on the AWX VM (`80` to local NodePort `32000`), point only the canonical AWX hostname directly to `.103`, remove only `awx.apps.example.com`, validate and publish that prerequisite, then resume the existing Jenkins/Helm acceptance path. Retain `nginx.example.com` until every remaining consumer has migrated and passed acceptance. |
 | Prohibited work | Installing ingress through Ansible, changing another application or runner before the AWX access correction is accepted, modifying the shared NGINX VM as a workaround, deploying storage or applications, or using the Jenkins controller as the permanent executor |
 | Exit criteria | Agent online with pinned Helm/kubectl toolchain; GitLab CI green; Jenkins plan and deploy green; Helm release healthy; rollback tested; second convergence clean; documentation and incidents current; related repositories clean |
 
@@ -46,6 +46,21 @@ production-profile Ansible lint. Canonical-main pipeline 374 passed for commit
 `5a7a6ade` after transient job 964 was retried as job 973; INC-2026-059 records
 the external Alpine repository failure. The AWX API at
 `127.0.0.1:32000/api/v2/ping/` returned version 24.6.1 before deployment.
+The direct-URL feature branch pipeline 378 passed all automatic gates for
+commit `e8873211` after the CI bootstrap correction in INC-2026-061.
+INC-2026-060 records the earlier no-change DNS job 461 failure and the
+installed-package-aware correction. Canonical-main pipeline 380 passed all
+automatic gates; manual Terraform, bootstrap, smoke-test, and apply jobs were
+not launched because they are outside the AWX-only change.
+AWX project sync 483 exposed a stale temporary SCM branch; INC-2026-062 records
+the correction to `main` and successful sync 484 at `e8873211`. Local-proxy
+jobs 485 and 492 succeeded on only `awx.example.com`; the second run reported
+`ok=16 changed=0 unreachable=0 failed=0`. DNS template 25 now has the explicit
+`dns.example.com` limit; jobs 502 and 514 both reported
+`ok=13 changed=0 unreachable=0 failed=0`. Authoritative queries return
+`awx.example.com -> 192.168.1.103`, no answer for the retired
+`awx.apps.example.com`, and preserve `gitlab.apps.example.com ->
+192.168.1.114`. The portless authenticated AWX dashboard is accepted.
 
 ## Completed change
 

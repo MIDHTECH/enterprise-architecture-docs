@@ -91,6 +91,10 @@ facts; they do not erase the original observation.
 | INC-2026-057 | 2026-07-29 | SEV-4 | Resolved | Jenkins source of truth | Catalog reported stale version and container deployment |
 | INC-2026-058 | 2026-07-29 | SEV-4 | Resolved | Jenkins agent CI | Agent role used `systemctl` instead of service facts |
 | INC-2026-059 | 2026-07-31 | SEV-4 | Resolved | Cloud infrastructure CI | Main Terraform validation briefly failed when Alpine package indexes were unavailable |
+| INC-2026-060 | 2026-07-31 | SEV-3 | Resolved | Authoritative DNS automation | AWX DNS job 461 attempted an unnecessary BIND package transaction while public DNS was unavailable |
+| INC-2026-061 | 2026-07-31 | SEV-4 | Resolved | Cloud infrastructure CI | Branch pipeline 377 repeated the Alpine package-index bootstrap failure before Terraform validation |
+| INC-2026-062 | 2026-07-31 | SEV-4 | Resolved | AWX cloud project SCM | Successful project sync still selected a stale temporary branch instead of canonical main |
+| INC-2026-063 | 2026-07-31 | SEV-4 | Monitoring | Administration client DNS | Direct UDP queries from the Mac to the lab resolver timed out while scoped resolution and authoritative queries from infra01 succeeded |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1920,6 +1924,139 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   internal registry backlog; keep source validation blocking.
 - Evidence/related runbook:
   [Sequential Build and Change Control](sequential-build-change-control.md)
+
+## INC-2026-060: DNS Convergence Required Unavailable Public DNS
+
+- Date: 2026-07-31
+- Severity: SEV-3
+- Status: Resolved
+- Component: `dns.example.com`, AWX `deploy-lab-dns` job 461
+- Detection/symptom: Job 461 failed at `Install BIND packages` because DNF
+  could not resolve `mirrors.rockylinux.org` for the Rocky Linux 9 AppStream
+  repository.
+- Impact: The direct `awx.example.com` DNS migration stopped before any live
+  DNS change. The recap reported `ok=2`, `changed=0`, and `failed=1` on the
+  single DNS host.
+- Timeline: The failed AWX output was inspected first. A read-only check
+  through infra01 then proved `bind` and `bind-utils` version
+  `9.16.23-40.el9_8.2` were already installed, `named` was active, and the
+  private authoritative zone answered while public recursive lookups timed
+  out.
+- Cause: The role always called DNF even when both required packages were
+  installed, creating a circular dependency on external DNS during DNS-server
+  convergence.
+- Contributing factors: Public recursion through the router and approved
+  forwarders was unavailable, while the role treated a public lookup as a
+  mandatory acceptance check for a private authoritative-zone change.
+- Resolution: The role now collects package facts and runs DNF only when a
+  required BIND package is absent. Private authoritative lookups remain
+  mandatory; public recursive validation is controlled by
+  `bind_dns_require_recursive_resolution` and defaults to false for this lab.
+- Validation: Cloud branch pipeline 378 passed layout, both Terraform
+  validations, Ansible lint, and IaC scanning for commit `e8873211`. Runtime
+  DNS convergence and idempotence remain part of CHG-2026-002 acceptance.
+- Prevention/follow-up: Make installed-state checks independent of external
+  repositories. Test authoritative service records separately from optional
+  Internet recursion.
+- Corrective automation: `bind_dns` package facts, conditional DNF, direct AWX
+  authoritative check, and optional recursive-resolution gate.
+- Evidence/related runbook:
+  [Sequential Build and Change Control](sequential-build-change-control.md)
+
+## INC-2026-061: Terraform CI Repeated Alpine Bootstrap Failure
+
+- Date: 2026-07-31
+- Severity: SEV-4
+- Status: Resolved
+- Component: `cloud-infra-automation-platform` pipeline 377,
+  `terraform_local_validate` job 987
+- Detection/symptom: Job 987 failed before Terraform ran because
+  `apk add --no-cache bash` could not fetch the Alpine indexes and reported
+  `bash (no such package)`.
+- Impact: The AWX direct-URL source gate stopped. No runtime change occurred.
+- Timeline: Pipeline 377 reproduced INC-2026-059 on the feature branch. The
+  CI definition was corrected rather than retrying the same network-dependent
+  bootstrap. Corrective branch pipeline 378 then passed all automatic gates.
+- Cause: Every Terraform job installed Bash dynamically even though the
+  formatting and validation commands can run directly in the pinned Terraform
+  image.
+- Contributing factors: The earlier incident was treated as transient and
+  retried, leaving the unnecessary package download in the pipeline.
+- Resolution: Removed the `apk add` bootstrap. The CI validation job now runs
+  `terraform init -backend=false` and `terraform validate` directly using the
+  image entrypoint shell.
+- Validation: Pipeline 378 passed `terraform_fmt`, `terraform_validate`,
+  `terraform_local_validate`, `layout_validate`, `ansible_lint`, and
+  `iac_scan` for commit `e8873211`.
+- Prevention/follow-up: CI jobs must use pinned images that already contain
+  their required shell and tools. Runtime package installation is not a
+  dependable pipeline prerequisite.
+- Corrective automation: `gitlab-ci/terraform.gitlab-ci.yml` no longer
+  installs Bash and no longer invokes the Bash-only local helper in CI.
+- Evidence/related runbook:
+  [Sequential Build and Change Control](sequential-build-change-control.md)
+
+## INC-2026-062: AWX Project Synced a Stale Temporary Branch
+
+- Date: 2026-07-31
+- Severity: SEV-4
+- Status: Resolved
+- Component: AWX project 23, `cloud-infra-automation-platform`
+- Detection/symptom: Project update 483 succeeded but reported repository
+  revision `5f844596`; the project details showed source-control branch
+  `codex/awx-local-proxy-main` instead of `main`.
+- Impact: Launching the template at that point would have used stale source
+  despite a successful status. No deployment job was launched from it.
+- Timeline: The project was synchronized after canonical-main CI passed. The
+  exact revision in update output was compared with approved commit
+  `e8873211`, exposing the drift before runtime execution.
+- Cause: The AWX project retained a temporary implementation branch from the
+  earlier local-proxy source work.
+- Contributing factors: AWX reports SCM transport success independently from
+  whether the configured branch is the approved source-of-truth branch.
+- Resolution: Changed project 23's source-control branch to `main`. Automatic
+  project update 484 succeeded at full revision
+  `e8873211d69db789de1f35b26e8e347eacbbbe67`.
+- Validation: Only after update 484 matched the GitLab-approved commit were
+  local-proxy jobs 485/492 and DNS jobs 502/514 launched.
+- Prevention/follow-up: Treat branch and full revision as mandatory pre-launch
+  evidence; a green project-sync status alone is insufficient.
+- Corrective automation: Keep project revision update on launch and add a
+  future policy check that AWX production projects use protected `main`.
+- Evidence/related runbook:
+  [Sequential Build and Change Control](sequential-build-change-control.md)
+
+## INC-2026-063: Direct Mac DNS Queries Timed Out During Acceptance
+
+- Date: 2026-07-31
+- Severity: SEV-4
+- Status: Monitoring
+- Component: macOS administration client to `dns.example.com` UDP/53
+- Detection/symptom: Three explicit `dig @192.168.1.106` queries timed out
+  from the Mac during AWX URL acceptance.
+- Impact: Raw client-to-resolver verification could not be collected from the
+  Mac. Normal scoped macOS resolution still returned `192.168.1.103`, and the
+  portless authenticated AWX dashboard loaded successfully.
+- Timeline: The same authoritative queries were repeated from infra01 and
+  returned the expected canonical, retired, and unaffected service answers.
+- Cause: Not yet isolated; likely client/network transport or firewall
+  behavior specific to direct UDP queries rather than BIND zone content.
+- Contributing factors: The Mac uses a scoped resolver path, which is not
+  identical to an explicit `dig` query directly to the server.
+- Resolution: No configuration was changed during the AWX component.
+  Acceptance used the normal macOS resolver plus independent authoritative
+  queries from infra01.
+- Validation: `dscacheutil` returned `awx.example.com -> 192.168.1.103`; the
+  browser loaded `http://awx.example.com/#/home`; infra01 queries returned
+  `.103`, no answer for `awx.apps.example.com`, and `.114` for the unaffected
+  GitLab compatibility route.
+- Prevention/follow-up: Diagnose Mac-to-DNS UDP/TCP reachability as a separate
+  network-engineering change without reopening or bypassing the accepted AWX
+  service migration.
+- Corrective automation: Add client-path DNS probes that distinguish scoped
+  OS resolution, direct UDP, direct TCP, and authoritative server checks.
+- Evidence/related runbook:
+  [Standalone NGINX Reverse-Proxy Installation](product-installation-nginx.md)
 
 ## New Incident Template
 
