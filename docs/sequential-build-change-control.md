@@ -17,15 +17,21 @@ Jenkins, or AWX control plane.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | None |
-| Component | None |
-| State | `CHG-2026-002` Jenkins prerequisite work is complete. Canonical `http://jenkins.example.com` returns HTTP 200 at `192.168.1.102:80`; `jenkins-agent01` is online through the portless WebSocket URL; proxy job 561, agent job 571, DNS job 582, and shared-route cleanup job 593 each converged with `changed=0`; authoritative DNS and CoreDNS return NXDOMAIN for `jenkins.apps.example.com`; and the live shared NGINX catalog/configuration no longer contains that route. Ingress did not start. |
-| Blocker | None for the completed Jenkins component. The next ingress change still requires a scoped secret-file kubeconfig credential, non-mutating Jenkins PLAN, explicit deployment approval, and a new active-change record. |
-| Permitted work | Read-only audits, or selecting exactly one next queue item and recording it here before mutation. |
-| Prohibited work | Starting any infrastructure component before it becomes the single active change; bypassing GitLab, AWX, or Jenkins; or treating this Jenkins acceptance as ingress deployment approval. |
-| Exit criteria | Not applicable while no change is active. |
+| Change ID | CHG-2026-003 |
+| Component | Jenkins canonical root URL post-acceptance correction |
+| State | An authenticated operator screenshot confirms canonical port-80 access and the online `jenkins-agent01` node, but Jenkins warns that its root URL is empty. Read-only live validation confirms the URL is unset. The controller has 6.0 GiB available RAM and the agent 3.1 GiB; both intentionally have no swap, so the red `0 B` monitor value is recorded as a capacity-policy observation rather than part of this change. GitLab, AWX, Jenkins, and host mutation queues are idle. |
+| Blocker | Publish a focused JCasC correction through GitLab, deploy it through AWX to only `jenkins.example.com`, verify the effective root URL and banner removal, prove agent reconnection and zero-change convergence, then publish evidence. |
+| Permitted work | Set the Jenkins root URL to `http://jenkins.example.com/` in source-controlled JCasC using the exact `jenkins_servers` inventory scope. Document the no-swap observation without configuring or suppressing it. |
+| Prohibited work | Adding swap, disabling node monitors, starting ingress or another product, running the protected full-controller GitLab deployment, bypassing AWX, or changing the accepted portless proxy/DNS/agent design. |
+| Exit criteria | Root URL effective and warning absent; canonical HTTP and agent online; focused AWX second convergence `changed=0`; incident/evidence current; related repositories clean and synchronized. |
 
 `CHG-2026-001` and `CHG-2026-002` are complete.
+
+The authenticated post-acceptance screenshots explicitly reorder the Jenkins
+root-URL defect ahead of ingress as `CHG-2026-003`. The node page also reports
+zero free swap on both nodes. Live memory validation shows no pressure and no
+configured swap, so swap policy is not inferred from a Jenkins monitor color
+and remains outside this focused correction.
 
 The ingress queue item exposed an unmet delivery prerequisite:
 `jenkins-agent01` was only provisioned. The queue is therefore explicitly
