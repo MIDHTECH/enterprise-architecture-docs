@@ -17,13 +17,13 @@ Jenkins, or AWX control plane.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | None |
-| Component | None |
-| State | Idle. `CHG-2026-006` accepted the third dedicated runner and is awaiting this documentation publication only. |
+| Change ID | `CHG-2026-007` |
+| Component | GitLab VM runner ID 2 (`ansible-jenkins-runner-01`) |
+| State | Active. Preflight found zero GitLab pending/running jobs, zero AWX jobs/updates, no conflicting infra03 operation, and three healthy dedicated runners. |
 | Blocker | None |
-| Permitted work | Publish this closure, then activate the next queued component in a separate change record after a fresh activity audit. |
-| Prohibited work | Any additional infrastructure mutation until a new active-change row is published. |
-| Exit criteria | Not applicable while idle. |
+| Permitted work | Pause only runner ID 2, remove only its runner container through AWX, preserve configuration, validate GitLab health, rollback/restore, and final idempotence. |
+| Prohibited work | Changing GitLab application services, deleting the runner identity/configuration, or changing dedicated runner IDs 3, 4, and 5. |
+| Exit criteria | ID 2 is paused and its runner container absent; rollback is proven; GitLab and the three dedicated runners remain healthy; evidence and repositories are published. |
 
 `CHG-2026-001`, `CHG-2026-002`, and `CHG-2026-003` are complete.
 
@@ -198,7 +198,7 @@ the inventory-normalization change.
 | 3 | Review and either complete or retire `gitlab-runner-infra01` | VM placement, `.137` addressing, runner scope, and rollback approved |
 | 4 | Review and either complete or retire `gitlab-runner-app01` | Infrastructure runner change closed |
 | 5 | Provision, configure, and accept `gitlab-runner-shared01` on infra03 | Completed 2026-08-01 through `CHG-2026-006` |
-| 6 | Retire the GitLab-VM runner from CI execution | All three dedicated GitLab runners accepted and canary scheduling proven |
+| 6 | Retire the GitLab-VM runner from CI execution | Active as `CHG-2026-007`; all three dedicated runners accepted |
 | 7 | Review `jenkins-agent01`, correct canonical port-80 access, and set the Jenkins root URL | Completed 2026-08-01 through `CHG-2026-003`; agent, portless URL, root URL, DNS, and route cleanup accepted |
 | 8 | Deploy and accept the single-replica Kubernetes ingress tier | Runner migration closed; agent accepted; documentation pipeline published; kubeconfig secret-file credential and non-mutating PLAN complete |
 | 9 | Deploy and accept Kubernetes persistent storage | Ingress change closed and rollback verified |
