@@ -57,8 +57,10 @@ All three are running Rocky Linux and have autostart enabled.
 19.2.0 Docker executor is project-scoped to project ID 2, locked, rejects
 untagged jobs, and has exactly `ansible,infra,terraform` tags. Canary job 1171
 ran on that runner, rollback/restore succeeded, and AWX job 645 converged with
-zero changes. `gitlab-runner-app01` remains provisioned-only.
-`jenkins-agent01` is accepted: its
+zero changes. `gitlab-runner-app01` is also accepted: instance runner ID 3 has
+exact `app,docker` tags, rejects untagged jobs, runs the pinned 19.2.0 Docker
+executor, and passed canary job 1234 plus rollback/restore and zero-change AWX
+job 665. `jenkins-agent01` is accepted: its
 WebSocket service is enabled and active, Jenkins reports one exclusive
 `kubernetes-deployer` executor online, the controller has zero executors, and
 AWX jobs 536/541 both converged with zero changes or failures.

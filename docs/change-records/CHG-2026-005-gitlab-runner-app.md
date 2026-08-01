@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-005` |
 | Type | Normal |
-| State | Implement |
+| State | Closed complete |
 | Risk | Moderate |
 | Impact | Low |
 | Priority | High |
@@ -63,7 +63,20 @@ and GitLab services unchanged.
 
 | Field | Value |
 | --- | --- |
-| Close code | Pending |
-| Closed date | Pending |
-| Implementation result | Pending |
-| Validation evidence | Pending |
+| Close code | Successful |
+| Closed date | 2026-08-01 15:51 CDT |
+| Implementation result | Existing runner ID 3 accepted on dedicated infra03 application-runner VM |
+| Validation evidence | Pipelines 426/427; AWX jobs 653, 657, 661, 665; canary job 1234; [acceptance record](../evidence/CHG-2026-005-gitlab-runner-app-acceptance.md) |
+
+## Work notes
+
+- Source revision `712f194` passed branch pipeline 426 and canonical-main
+  pipeline 427. AWX project update 649 and inventory update 650 synchronized
+  the exact revision and two-host inventory.
+- Deployment job 653 configured `.136`; GitLab reported runner ID 3 as active
+  instance type, unlocked, untagged false, version 19.2.0, and exact tags
+  `app,docker`. Coordinator verification and internal metrics passed.
+- Pipeline 428 canary job 1234 succeeded on runner ID 3.
+- Rollback job 657 paused the identity and removed only the container while
+  preserving configuration. Restore job 661 reused the identity; job 665
+  reported `changed={} failures={} dark={}`.

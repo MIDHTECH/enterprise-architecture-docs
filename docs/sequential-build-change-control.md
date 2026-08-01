@@ -17,13 +17,13 @@ Jenkins, or AWX control plane.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `CHG-2026-005` |
-| Component | `gitlab-runner-app01.example.com` (`192.168.1.136`) |
-| State | Active. Pre-change checks found zero pending/running GitLab jobs, zero active AWX jobs, and an idle Rocky 9.8 target with no Docker or runner runtime. Existing runner ID 3 is an instance runner with `app,docker` tags but has never contacted GitLab. |
-| Blocker | None. Source must pass branch and canonical CI before AWX deployment. |
-| Permitted work | Reconcile only runner ID 3 and `.136`; validate source, deploy through AWX, prove tagged scheduling, rollback/restore, zero-change convergence, and publish closure evidence. |
-| Prohibited work | Provisioning/configuring the shared runner, disabling the GitLab-VM runner, or changing any other component. |
-| Exit criteria | Runner ID 3 is a healthy version-matched instance runner with exact `app,docker` tags, untagged jobs disabled, successful canary, rollback/restore evidence, final zero-change AWX convergence, and published closure records. |
+| Change ID | None |
+| Component | None |
+| State | `CHG-2026-005` completed and accepted on 2026-08-01. No later component is authorized until its bounded record is published. |
+| Blocker | None. |
+| Permitted work | Read-only audits and preparation of the shared-runner change record. |
+| Prohibited work | Provisioning/configuring the shared runner, disabling the GitLab-VM runner, or changing any other component until the next record is active. |
+| Exit criteria | Publish the exact next active component before runtime mutation. |
 
 `CHG-2026-001`, `CHG-2026-002`, and `CHG-2026-003` are complete.
 
@@ -104,6 +104,15 @@ was removed. The preserved evidence is in
 [Jenkins Agent Acceptance](evidence/CHG-2026-002-jenkins-agent-acceptance.md).
 
 ## Completed change
+
+`CHG-2026-005` accepted `gitlab-runner-app01.example.com` on infra03 as
+instance runner ID 3 with exact `app,docker` tags and untagged execution
+disabled. Source commit `712f194` passed pipelines 426/427; canary job 1234 ran
+on runner ID 3; rollback job 657 paused the identity and preserved protected
+configuration; restore job 661 succeeded; and AWX job 665 reported zero
+changes or failures. See the
+[change record](change-records/CHG-2026-005-gitlab-runner-app.md) and
+[acceptance evidence](evidence/CHG-2026-005-gitlab-runner-app-acceptance.md).
 
 `CHG-2026-004` accepted `gitlab-runner-infra01.example.com` on infra03 as
 GitLab runner ID 4. Canonical source commit `281b35e` passed pipelines
