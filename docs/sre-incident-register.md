@@ -98,6 +98,7 @@ facts; they do not erase the original observation.
 | INC-2026-064 | 2026-08-01 | SEV-3 | Resolved | Hypervisor/control-plane reachability | Agent work paused when infra01/02 and hosted control planes were unreachable; all required endpoints recovered before mutation |
 | INC-2026-065 | 2026-08-01 | SEV-4 | Resolved | AWX ansible-jenkins SCM | Initial project sync failed because the existing AWX read-only deploy key was not enabled for the repository |
 | INC-2026-066 | 2026-08-01 | SEV-4 | Resolved | Jenkins agent acceptance | AWX installed Helm under `/usr/local/bin`, but the non-login acceptance command used PATH lookup and failed |
+| INC-2026-067 | 2026-08-01 | SEV-4 | Open | Jenkins local proxy | AWX job 550 found firewalld inactive after installing the proxy packages and stopped before opening port 80 |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2136,6 +2137,40 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   test that executes version checks with a restricted non-login PATH.
 - Evidence/related runbook:
   [Jenkins Agent Acceptance](evidence/CHG-2026-002-jenkins-agent-acceptance.md)
+
+## INC-2026-067: Jenkins Proxy Role Assumed firewalld Was Running
+
+- Date: 2026-08-01
+- Severity: SEV-4
+- Status: Open
+- Component: `ansible-jenkins` local proxy role and AWX job 550
+- Detection/symptom: Job 550 reached the permanent HTTP-service query after
+  installing NGINX and its configuration, but `firewall-cmd` returned 252 with
+  `FirewallD is not running`.
+- Impact: Initial convergence stopped at `ok=11 changed=4 failed=1`. Port 80
+  remained unavailable and the partial state was not accepted.
+- Timeline: GitLab branch pipelines 387-389 and canonical-main pipelines
+  390-392 passed. AWX inventory update 546 selected the one-host controller
+  scope, project update 549 selected `cb9fc738`, and template 30 launched job
+  550. The job stopped at the failed firewall query; no direct workaround was
+  used.
+- Cause: The new proxy role copied an earlier local-proxy firewall query but
+  did not establish the query's prerequisite that firewalld be active.
+- Contributing factors: The Jenkins service was healthy on port 8080 while
+  firewalld was inactive, so backend health validation alone could not expose
+  the missing service-state prerequisite.
+- Resolution: In progress. Reuse the repository's existing `firewalld` role
+  ahead of the local proxy role so the package and service state are explicit
+  and only `80/tcp` is managed.
+- Validation: Pending corrected GitLab CI, AWX convergence, a zero-change
+  second run, and canonical HTTP/WebSocket acceptance.
+- Prevention/follow-up: Infrastructure roles that invoke service-specific
+  clients must either own the service prerequisite or declare it through a
+  composed role/playbook.
+- Corrective automation: Retain syntax/lint gates and add the established
+  firewalld role to the proxy playbook composition.
+- Evidence/related runbook:
+  [Sequential Build and Change Control](sequential-build-change-control.md)
 
 ## New Incident Template
 
