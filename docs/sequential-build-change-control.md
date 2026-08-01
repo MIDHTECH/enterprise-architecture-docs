@@ -17,13 +17,13 @@ Jenkins, or AWX control plane.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | None |
-| Component | None |
-| State | `CHG-2026-005` completed and accepted on 2026-08-01. No later component is authorized until its bounded record is published. |
-| Blocker | None. |
-| Permitted work | Read-only audits and preparation of the shared-runner change record. |
-| Prohibited work | Provisioning/configuring the shared runner, disabling the GitLab-VM runner, or changing any other component until the next record is active. |
-| Exit criteria | Publish the exact next active component before runtime mutation. |
+| Change ID | `CHG-2026-006` |
+| Component | `gitlab-runner-shared01.example.com` (`192.168.1.139`) |
+| State | Active. Preflight found zero GitLab pending/running jobs, zero AWX jobs, no `.139` response, no existing domain, and 3.58 TiB free in the active infra03 pool. |
+| Blocker | None. VM source, guarded Terraform plan/apply, seed preparation, runner source, CI, AWX deployment, and acceptance must run sequentially. |
+| Permitted work | Provision and configure only `.139`; create one instance runner with exact `shared,validation,security` tags; validate canary, rollback/restore, and zero-change convergence. |
+| Prohibited work | Disabling the GitLab-VM runner or changing any other component until the shared runner closes. |
+| Exit criteria | The `.139` VM is Terraform-managed and accepted; the version-matched shared runner passes tagged canary, rollback/restore, and zero-change AWX convergence; evidence and repositories are published. |
 
 `CHG-2026-001`, `CHG-2026-002`, and `CHG-2026-003` are complete.
 
