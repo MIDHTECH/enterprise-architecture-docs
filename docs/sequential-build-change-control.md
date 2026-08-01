@@ -17,15 +17,27 @@ Jenkins, or AWX control plane.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | None |
-| Component | None |
-| State | `CHG-2026-003` is complete. Jenkins persists `http://jenkins.example.com/` as its root URL; authenticated `/manage/` returns HTTP 200 without the empty-URL warning; Jenkins and NGINX are active; `jenkins-agent01` is online and idle with one executor; focused job 604 converged at `changed=0 failed=0 unreachable=0`. The observed controlled restart interruption was 15 seconds. No incident or rollback occurred. |
-| Blocker | None for the completed Jenkins root-URL correction. The next change must receive a new single active record before mutation. |
-| Permitted work | Read-only audits, or selecting exactly one next queue item and recording it here before mutation. |
-| Prohibited work | Starting another infrastructure component before it becomes the single active change, or treating this correction as approval for swap, monitor, or ingress changes. |
-| Exit criteria | Not applicable while no change is active. |
+| Change ID | `CHG-2026-004` |
+| Component | `gitlab-runner-infra01.example.com` (`192.168.1.137`) |
+| State | Active. The 2026-08-01 pre-change audit found zero GitLab pending/running jobs, no active AWX work, no conflicting workstation or infra03 Git/CI/Ansible/Terraform/package/VM-provisioning process, and an idle provisioned Rocky 9.8 guest with no runner service or container. Source correction, GitLab validation, AWX deployment, and acceptance are pending; no runner runtime mutation has begun. |
+| Blocker | None for bounded source work. Runtime deployment requires a passing protected GitLab source pipeline, an AWX project sync to that exact accepted revision, and a job template limited to only `gitlab-runner-infra01.example.com`. |
+| Permitted work | Review and correct source for the infrastructure runner only; validate and publish through GitLab; configure only `.137` through AWX; verify GitLab registration, project scope, tags, a tagged canary, logs/metrics, rollback, and a second zero-change convergence; then publish acceptance evidence and close this row. |
+| Prohibited work | Configuring `gitlab-runner-app01`, provisioning/configuring `gitlab-runner-shared01`, disabling the existing GitLab-VM runner, changing `jenkins-agent01`, starting ingress, or bypassing GitLab/AWX while `CHG-2026-004` is active. |
+| Exit criteria | Runner identity is locked to the approved infrastructure project with `infra,terraform,ansible` tags and untagged jobs disabled; the pinned 19.2.0 Docker executor is healthy on `.137`; a tagged canary is assigned to it; first and second AWX runs pass with the second reporting zero unexpected changes; rollback is documented; current-state, operations, evidence, incident, and version records are current; related repositories are clean and published; and this active row is closed. |
 
 `CHG-2026-001`, `CHG-2026-002`, and `CHG-2026-003` are complete.
+
+The user approved three dedicated GitLab runners on infra03 for the
+twelve-domain platform program and explicitly rejected CI execution on the
+GitLab VM as the steady state. The sequential target topology is
+`gitlab-runner-infra01.example.com` (`.137`),
+`gitlab-runner-app01.example.com` (`.136`), and
+`gitlab-runner-shared01.example.com` (`.139`). The shared runner follows the
+same scope-based naming convention and will own shared validation/security
+work. The existing GitLab-VM runner remains only as the temporary validation
+path and will be paused after all three dedicated runners pass acceptance.
+This decision does not authorize concurrent runner changes or repurposing
+`jenkins-agent01.example.com` at `.138`.
 
 The authenticated post-acceptance screenshots explicitly reorder the Jenkins
 root-URL defect ahead of ingress as `CHG-2026-003`. The node page also reports
@@ -157,12 +169,14 @@ the inventory-normalization change.
 | 2 | Reconcile live products and all pending source-of-truth changes | GitLab, AWX, Jenkins, DNS, NGINX, Vault, Keycloak, and Harbor inspected |
 | 3 | Review and either complete or retire `gitlab-runner-infra01` | VM placement, `.137` addressing, runner scope, and rollback approved |
 | 4 | Review and either complete or retire `gitlab-runner-app01` | Infrastructure runner change closed |
-| 5 | Review `jenkins-agent01`, then correct canonical Jenkins port-80 access | Completed 2026-08-01; agent and portless URL accepted, Jenkins `.apps` DNS and shared route retired |
-| 6 | Deploy and accept the single-replica Kubernetes ingress tier | Agent accepted; documentation pipeline published; kubeconfig secret-file credential and non-mutating PLAN complete |
-| 7 | Deploy and accept Kubernetes persistent storage | Ingress change closed and rollback verified |
-| 8 | Install Artifactory | Platform storage and backup prerequisites accepted |
-| 9 | Install SonarQube | Artifactory change closed |
-| 10 | Continue remaining product and use-case queue | Previous component fully accepted |
+| 5 | Provision, configure, and accept `gitlab-runner-shared01` on infra03 | Application runner change closed; `.139` address, seed, Terraform plan, scope, and rollback approved |
+| 6 | Retire the GitLab-VM runner from CI execution | All three dedicated GitLab runners accepted and canary scheduling proven |
+| 7 | Review `jenkins-agent01`, correct canonical port-80 access, and set the Jenkins root URL | Completed 2026-08-01 through `CHG-2026-003`; agent, portless URL, root URL, DNS, and route cleanup accepted |
+| 8 | Deploy and accept the single-replica Kubernetes ingress tier | Runner migration closed; agent accepted; documentation pipeline published; kubeconfig secret-file credential and non-mutating PLAN complete |
+| 9 | Deploy and accept Kubernetes persistent storage | Ingress change closed and rollback verified |
+| 10 | Install Artifactory | Platform storage and backup prerequisites accepted |
+| 11 | Install SonarQube | Artifactory change closed |
+| 12 | Continue remaining product and use-case queue | Previous component fully accepted |
 
 The queue may be reordered only through an explicit documented decision. Do
 not use multiple tasks to work on different rows simultaneously.
