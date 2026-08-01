@@ -52,10 +52,11 @@ becomes canonical.
 
 Three infra03 guests were provisioned at `.136–.138`:
 `gitlab-runner-app01`, `gitlab-runner-infra01`, and `jenkins-agent01`.
-All three are running Rocky Linux and have autostart enabled, but no GitLab
-Runner or Jenkins Agent service is installed or running. Their placement,
-addressing, source code, and intended scope must be reconciled before any one
-of them is configured.
+All three are running Rocky Linux and have autostart enabled. The two GitLab
+Runner guests remain provisioned-only. `jenkins-agent01` is accepted: its
+WebSocket service is enabled and active, Jenkins reports one exclusive
+`kubernetes-deployer` executor online, the controller has zero executors, and
+AWX jobs 536/541 both converged with zero changes or failures.
 
 The four-node application cluster currently contains the control-plane components,
 CoreDNS, Flannel, and Headlamp. Argo CD, MetalLB, ingress-nginx, cert-manager,
@@ -142,8 +143,9 @@ storage envelope.
   `midhhealth/platform-delivery/jenkins-shared-library`
 - Kubernetes Helm delivery:
   source boundary and Jenkins job code are under CHG-2026-002. The dedicated
-  `jenkins-agent01` executor and kubeconfig credential are not yet accepted,
-  so ingress has not been deployed.
+  `jenkins-agent01` executor is accepted with Helm 4.1.0, kubectl 1.34.10,
+  Java 21.0.12, and Git 2.52.0. The kubeconfig secret-file credential and live
+  generated ingress job are not yet accepted, so ingress has not been deployed.
 - Enterprise first-slice implementation repositories:
   `midhhealth/data-and-integration/database-reliability-platform`,
   `midhhealth/reliability-operations/resilience-service-operations`,

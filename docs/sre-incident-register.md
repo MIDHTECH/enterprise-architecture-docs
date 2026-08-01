@@ -87,7 +87,7 @@ facts; they do not erase the original observation.
 | INC-2026-053 | 2026-07-29 | SEV-4 | Resolved near miss | Kubernetes delivery architecture | Planned ingress launch would have wrapped Helm in Ansible and bypassed Jenkins |
 | INC-2026-054 | 2026-07-29 | SEV-4 | Resolved | Kubernetes CI | First Helm-boundary pipeline failed role-prefix lint |
 | INC-2026-055 | 2026-07-29 | SEV-4 | Resolved near miss | Jenkins infrastructure CI | `ansible-jenkins` would deploy the controller automatically from `main` |
-| INC-2026-056 | 2026-07-29 | SEV-4 | Open | Lab DNS | `jenkins-agent01.example.com` had no authoritative record |
+| INC-2026-056 | 2026-07-29 | SEV-4 | Resolved | Lab DNS | `jenkins-agent01.example.com` had no authoritative record |
 | INC-2026-057 | 2026-07-29 | SEV-4 | Resolved | Jenkins source of truth | Catalog reported stale version and container deployment |
 | INC-2026-058 | 2026-07-29 | SEV-4 | Resolved | Jenkins agent CI | Agent role used `systemctl` instead of service facts |
 | INC-2026-059 | 2026-07-31 | SEV-4 | Resolved | Cloud infrastructure CI | Main Terraform validation briefly failed when Alpine package indexes were unavailable |
@@ -95,6 +95,9 @@ facts; they do not erase the original observation.
 | INC-2026-061 | 2026-07-31 | SEV-4 | Resolved | Cloud infrastructure CI | Branch pipeline 377 repeated the Alpine package-index bootstrap failure before Terraform validation |
 | INC-2026-062 | 2026-07-31 | SEV-4 | Resolved | AWX cloud project SCM | Successful project sync still selected a stale temporary branch instead of canonical main |
 | INC-2026-063 | 2026-07-31 | SEV-4 | Monitoring | Administration client DNS | Direct UDP queries from the Mac to the lab resolver timed out while scoped resolution and authoritative queries from infra01 succeeded |
+| INC-2026-064 | 2026-08-01 | SEV-3 | Resolved | Hypervisor/control-plane reachability | Agent work paused when infra01/02 and hosted control planes were unreachable; all required endpoints recovered before mutation |
+| INC-2026-065 | 2026-08-01 | SEV-4 | Resolved | AWX ansible-jenkins SCM | Initial project sync failed because the existing AWX read-only deploy key was not enabled for the repository |
+| INC-2026-066 | 2026-08-01 | SEV-4 | Resolved | Jenkins agent acceptance | AWX installed Helm under `/usr/local/bin`, but the non-login acceptance command used PATH lookup and failed |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1821,7 +1824,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-07-29
 - Severity: SEV-4
-- Status: Open
+- Status: Resolved
 - Component: Authoritative `example.com` DNS and
   `jenkins-agent01.example.com`
 - Detection/symptom: SSH by FQDN failed with a name-resolution error while
@@ -1831,11 +1834,12 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   agent by its required enterprise hostname.
 - Cause: The VM and inventory were created, but the canonical BIND record list
   stopped at `.135`.
-- Resolution: Pending controlled DNS convergence. Cloud source adds
-  `jenkins-agent01` at `192.168.1.138` and increments the zone serial.
-- Validation: Require GitLab CI, AWX DNS job with one expected host, a second
-  zero-change run, and authoritative forward/reverse lookup evidence before
-  resolving.
+- Resolution: Cloud commit `e8873211` added `jenkins-agent01` at
+  `192.168.1.138`; DNS jobs 502/514 applied and then cleanly reconverged the
+  bounded DNS host.
+- Validation: Normal workstation resolution, AWX inventory update 524, SSH by
+  FQDN, agent-side `getent`, and Jenkins acceptance build 1 all resolved the
+  required name to `.138`.
 - Prevention/follow-up: Provisioning acceptance must require DNS before a VM
   is handed to product automation.
 - Corrective automation: Extend inventory validation to compare provisioned VM
@@ -2057,6 +2061,81 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   OS resolution, direct UDP, direct TCP, and authoritative server checks.
 - Evidence/related runbook:
   [Standalone NGINX Reverse-Proxy Installation](product-installation-nginx.md)
+
+## INC-2026-064: Hypervisor and Control Planes Were Temporarily Unreachable
+
+- Date: 2026-08-01
+- Severity: SEV-3
+- Status: Resolved
+- Component: infra01, infra02, GitLab, Jenkins, AWX, and lab DNS
+- Detection/symptom: The required pre-change audit timed out to infra01 and
+  infra02; direct checks to GitLab, Jenkins, AWX, and DNS also failed. A check
+  from infra03 showed the infra01 neighbor state as `FAILED`.
+- Impact: `jenkins-agent01` work could not start because GitLab, AWX, and
+  Jenkins were unavailable and direct installation is prohibited.
+- Timeline: The change remained read-only. After the operator confirmed all
+  three hypervisors were up, SSH and every required control-plane endpoint
+  passed a fresh reachability check.
+- Cause: Not isolated during this change; reachability recovered without a
+  configuration change.
+- Resolution: Repeated the complete conflict and reachability audit before the
+  first mutation. No control plane was bypassed.
+- Validation: infra01/02/03 SSH, GitLab HTTP, Jenkins 8080, AWX HTTP, DNS 53,
+  and agent SSH all accepted connections.
+- Prevention/follow-up: Keep reachability as a hard pre-change gate and
+  diagnose repeat events under the existing management-network monitoring
+  work rather than inside an application change.
+- Corrective automation: Preserve cross-checks from a second hypervisor when
+  workstation reachability is ambiguous.
+- Evidence/related runbook:
+  [Sequential Build and Change Control](sequential-build-change-control.md)
+
+## INC-2026-065: AWX Deploy Key Was Not Enabled for ansible-jenkins
+
+- Date: 2026-08-01
+- Severity: SEV-4
+- Status: Resolved
+- Component: AWX project 28 and GitLab `ansible-jenkins`
+- Detection/symptom: AWX project update 522 completed the SSH handshake but
+  reported that the project was not found or accessible.
+- Impact: The validated agent role could not be selected in AWX, so inventory
+  and deployment correctly stopped before changing the VM.
+- Cause: Existing read-only deploy key 1 was enabled for the other canonical
+  automation repositories but not for `ansible-jenkins`.
+- Resolution: Enabled the existing key read-only through GitLab's authenticated
+  API. No new private key or write permission was created.
+- Validation: Project update 523 selected `82adf11`; later update 532 selected
+  corrected canonical revision `a2544ec`.
+- Prevention/follow-up: Add deploy-key authorization to repository onboarding
+  acceptance before creating an AWX project.
+- Corrective automation: Extend onboarding validation to compare required AWX
+  repositories with read-only deploy-key associations.
+- Evidence/related runbook:
+  [Jenkins Agent Acceptance](evidence/CHG-2026-002-jenkins-agent-acceptance.md)
+
+## INC-2026-066: Jenkins Agent Helm Validation Used the Wrong PATH
+
+- Date: 2026-08-01
+- Severity: SEV-4
+- Status: Resolved
+- Component: `ansible-jenkins` role and AWX job 527
+- Detection/symptom: Job 527 installed `/usr/local/bin/helm` and started the
+  agent service, then failed `helm version --short` with file-not-found.
+- Impact: Initial convergence ended with `failed=1`; the partially installed
+  agent was not accepted even though it connected to Jenkins.
+- Cause: AWX executes non-login commands with a PATH that did not include
+  `/usr/local/bin`, while the role used a PATH lookup for acceptance.
+- Resolution: Commit `a2544ec` introduced `jenkins_agent_helm_path` and used
+  the explicit path for both installation and validation.
+- Validation: Pipelines 384/385 passed. AWX jobs 536/541 each reported
+  `ok=17 changed=0 unreachable=0 failed=0`, and Jenkins acceptance build 1
+  printed Helm 4.1.0 from the dedicated agent.
+- Prevention/follow-up: Validation commands for role-managed binaries outside
+  `/usr/bin` must use the same explicit path as the installation task.
+- Corrective automation: Retain production-profile lint and add a future role
+  test that executes version checks with a restricted non-login PATH.
+- Evidence/related runbook:
+  [Jenkins Agent Acceptance](evidence/CHG-2026-002-jenkins-agent-acceptance.md)
 
 ## New Incident Template
 

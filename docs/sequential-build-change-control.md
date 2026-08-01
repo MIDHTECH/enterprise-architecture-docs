@@ -1,6 +1,6 @@
 # Sequential Build and Change Control
 
-Last verified: 2026-07-31
+Last verified: 2026-08-01
 
 ## Operating rule
 
@@ -19,10 +19,10 @@ Jenkins, or AWX control plane.
 | --- | --- |
 | Change ID | CHG-2026-002 |
 | Component | Jenkins Kubernetes deployment path, `jenkins-agent01` executor, and blocking AWX access-route correction |
-| State | AWX, the first direct-URL migration, is accepted and documented: project sync 484 selected canonical commit `e8873211`; local-proxy jobs 485/492 and DNS jobs 502/514 succeeded with second runs at `changed=0`; the authenticated portless dashboard loads at `http://awx.example.com`. The next sequential component is `jenkins-agent01`. |
-| Blocker | None for AWX. Begin `jenkins-agent01` only after this documentation revision passes CI and is published. |
-| Permitted work | Replace the AWX shared-proxy dependency with an Ansible-managed NGINX proxy on the AWX VM (`80` to local NodePort `32000`), point only the canonical AWX hostname directly to `.103`, remove only `awx.apps.example.com`, validate and publish that prerequisite, then resume the existing Jenkins/Helm acceptance path. Retain `nginx.example.com` until every remaining consumer has migrated and passed acceptance. |
-| Prohibited work | Installing ingress through Ansible, changing another application or runner before the AWX access correction is accepted, modifying the shared NGINX VM as a workaround, deploying storage or applications, or using the Jenkins controller as the permanent executor |
+| State | AWX direct access and the dedicated `jenkins-agent01` executor are accepted. Inventory commit `827a529` passed pipelines 382/383; agent correction `a2544ec` passed pipelines 384/385; AWX project update 532 selected that exact revision; jobs 536/541 both reported `changed=0`, `unreachable=0`, and `failed=0`; Jenkins reports the WebSocket node online with one exclusive `kubernetes-deployer` executor and zero controller executors. The ingress component has not started. |
+| Blocker | Publish this agent-acceptance documentation revision and require its GitLab pipeline to pass before starting the separate ingress component. The Jenkins secret-file kubeconfig credential is still absent. |
+| Permitted work | Validate and publish the `jenkins-agent01` acceptance evidence. After publication, seed the reviewed ingress Job DSL, create the scoped secret-file kubeconfig credential, and run the non-mutating Jenkins PLAN before requesting deployment approval. Retain `nginx.example.com` and the old Headlamp NodePort until ingress acceptance and rollback are complete. |
+| Prohibited work | Installing ingress through Ansible, starting storage or another product/runner, bypassing GitLab/AWX/Jenkins, deploying ingress before PLAN and explicit approval, or restoring controller executors as a permanent workaround |
 | Exit criteria | Agent online with pinned Helm/kubectl toolchain; GitLab CI green; Jenkins plan and deploy green; Helm release healthy; rollback tested; second convergence clean; documentation and incidents current; related repositories clean |
 
 `CHG-2026-001` is complete.
@@ -62,6 +62,21 @@ jobs 485 and 492 succeeded on only `awx.example.com`; the second run reported
 `awx.apps.example.com`, and preserve `gitlab.apps.example.com ->
 192.168.1.114`. The portless authenticated AWX dashboard is accepted.
 
+The agent inventory correction `827a529` passed branch pipeline 382 job 1026
+and canonical-main pipeline 383 job 1027. AWX project sync 522 then exposed a
+missing read-only deploy-key association; INC-2026-065 records the GitLab API
+correction and successful sync 523 at `82adf11`. Inventory update 524 created
+exactly one `jenkins_agents` host at `192.168.1.138`. First deployment job 527
+installed the runtime but failed its Helm version check because the AWX process
+PATH omitted `/usr/local/bin`; INC-2026-066 records correction `a2544ec`.
+Branch pipeline 384 and main pipeline 385 passed, while protected controller
+deployment job 1032 remained manual. AWX sync 532 selected `a2544ec`; jobs 536
+and 541 both completed with `ok=17 changed=0 unreachable=0 failed=0`. Jenkins
+acceptance build 1 ran on `jenkins-agent01`, recorded Helm 4.1.0, kubectl
+1.34.10, Java 21.0.12, Git 2.52.0, and canonical DNS, then the temporary job
+was removed. The preserved evidence is in
+[Jenkins Agent Acceptance](evidence/CHG-2026-002-jenkins-agent-acceptance.md).
+
 ## Completed change
 
 `CHG-2026-001` restored and audited the foundation control plane and closed
@@ -88,7 +103,7 @@ The 2026-07-29 audit found:
 | infra03 | Host stable; three recently provisioned VMs running with autostart | Unreconciled completed provisioning |
 | `gitlab-runner-app01` | `.136`, Rocky VM running; no GitLab Runner service or process | Provisioned only |
 | `gitlab-runner-infra01` | `.137`, Rocky VM running; no GitLab Runner service or process | Provisioned only |
-| `jenkins-agent01` | `.138`, Rocky VM running; no Jenkins agent service or process | Provisioned only |
+| `jenkins-agent01` | `.138`, Rocky 9.8; WebSocket agent service enabled/active; Helm 4.1.0, kubectl 1.34.10, Java 21, and Git 2.52.0; Jenkins online with one exclusive executor | Accepted; jobs 536/541 clean |
 | Harbor | `.122`; Docker and all Harbor, registry, database, Redis, portal, job-service, and Trivy containers healthy; HTTPS 200 | Installed but canonical documentation is stale |
 | Artifactory | `.123`; no product service detected | Provisioned only |
 | SonarQube | `.124`; no product service detected | Provisioned only |
@@ -110,8 +125,8 @@ the inventory-normalization change.
 | 2 | Reconcile live products and all pending source-of-truth changes | GitLab, AWX, Jenkins, DNS, NGINX, Vault, Keycloak, and Harbor inspected |
 | 3 | Review and either complete or retire `gitlab-runner-infra01` | VM placement, `.137` addressing, runner scope, and rollback approved |
 | 4 | Review and either complete or retire `gitlab-runner-app01` | Infrastructure runner change closed |
-| 5 | Review and either complete or retire `jenkins-agent01` | GitLab runner changes closed |
-| 6 | Deploy and accept the single-replica Kubernetes ingress tier | Build-execution drift reconciled; Kubernetes CI and AWX healthy |
+| 5 | Review and either complete or retire `jenkins-agent01` | Completed 2026-08-01; evidence published before row 6 starts |
+| 6 | Deploy and accept the single-replica Kubernetes ingress tier | Agent accepted; documentation pipeline published; kubeconfig secret-file credential and non-mutating PLAN complete |
 | 7 | Deploy and accept Kubernetes persistent storage | Ingress change closed and rollback verified |
 | 8 | Install Artifactory | Platform storage and backup prerequisites accepted |
 | 9 | Install SonarQube | Artifactory change closed |

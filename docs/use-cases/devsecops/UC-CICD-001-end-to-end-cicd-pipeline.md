@@ -302,9 +302,9 @@ to run on a dedicated, reproducibly configured Rocky Linux VM, so that the
 Jenkins controller is not used as a permanent build executor and deployment
 tools are pinned and auditable.
 
-**Status:** Ready after documentation publication — the VM is provisioned and
-the AWX access-route prerequisite is accepted through jobs 485/492 and
-502/514.
+**Status:** Accepted 2026-08-01 — the dedicated executor is online and its
+source, AWX deployment, idempotence, Jenkins scheduling, and toolchain evidence
+are complete.
 
 **Acceptance criteria:**
 
@@ -329,9 +329,16 @@ the AWX access-route prerequisite is accepted through jobs 485/492 and
 5. Record tool versions, service state, Jenkins node state, and the second
    convergence result.
 
-**Completed work:** The VM and DNS source record are provisioned. Commit
-`82adf11` passed pipeline 360 and correctly skipped the protected controller
-deployment job. No agent package or service installation is claimed.
+**Completed work:** Inventory commit `827a529` passed pipelines 382/383 and AWX
+inventory update 524 created exactly one `jenkins_agents` host. Agent commit
+`a2544ec` passed pipelines 384/385; protected controller job 1032 remained
+manual. AWX update 532 selected that revision, and jobs 536/541 both reported
+`ok=17 changed=0 unreachable=0 failed=0`. Jenkins reports the WebSocket node
+online with one exclusive executor and the controller at zero executors.
+Acceptance build 1 ran on `jenkins-agent01`, recorded Helm 4.1.0, kubectl
+1.34.10, Java 21.0.12, Git 2.52.0, and canonical DNS, then the temporary job
+was removed. See
+[Jenkins Agent Acceptance](../../evidence/CHG-2026-002-jenkins-agent-acceptance.md).
 
 **Validation and rollback:** Validate DNS, AWX job result, systemd state, tool
 versions, and Jenkins node labels. Roll back by disabling/removing the Jenkins
@@ -507,7 +514,7 @@ Screenshot capture procedure:
 | Application provenance | Approved Podinfo commit copied to protected internal GitLab with license and scans | Candidate chosen; exact SHA and import pending | Pending |
 | Source validation | All relevant GitLab pipelines pass | Pipelines 354, 351, 352, 360, and 358 passed | Satisfied |
 | Managed Jenkins job | Job generated from reviewed DSL | Source exists; live generated-job evidence pending | Not yet accepted |
-| Dedicated agent | Online, pinned tools, correct label, second convergence clean | VM provisioned only | Blocked |
+| Dedicated agent | Online, pinned tools, correct label, second convergence clean | Jenkins build 1 passed on the agent; AWX jobs 536/541 were clean | Satisfied |
 | Helm plan | Successful non-mutating server-side plan | Not yet run | Pending |
 | Deployment | Atomic release and all health checks pass | Not yet run | Pending |
 | Rollback | Prior revision restored and route healthy | Not yet run | Pending |
@@ -535,8 +542,9 @@ wrong executor is selected, rollback fails, or evidence contains a secret.
 
 ## Acceptance decision
 
-`UC-CICD-001` is **not yet accepted**. Its source implementation is verified,
-but the dedicated agent, Jenkins runtime builds, Helm deployment, rollback,
-second convergence, and screenshot/artifact review remain open. No later use
+`UC-CICD-001` is **not yet accepted**. Its source implementation and dedicated
+agent are verified, but the managed ingress job, secret-file kubeconfig, Helm
+PLAN/deployment, rollback, release convergence, and screenshot/artifact review
+remain open. No later use
 case should be started until this record is accepted or explicitly closed as a
 documented partial implementation under the sequential change process.
