@@ -7,8 +7,9 @@ provides friendly HTTP application URLs:
 
 Implementation status as of 2026-07-31: installed and retained as a temporary
 migration dependency. The approved target is one local NGINX instance on each
-product VM with the canonical `<product>.example.com` URL. AWX is migrated;
-all remaining routes stay here until their own sequential acceptance closes.
+product VM with the canonical `<product>.example.com` URL. AWX and Jenkins are
+migrated; all remaining routes stay here until their own sequential acceptance
+closes.
 
 | Identity | Address | Placement | Purpose |
 | --- | --- | --- | --- |
@@ -23,7 +24,7 @@ There is no second NGINX VM, Keepalived, VRRP, or floating VIP. Address
 | HTTP URL | Backend | Current result |
 | --- | --- | --- |
 | `http://gitlab.apps.example.com` | `192.168.1.101:80` | Active |
-| `http://jenkins.apps.example.com` | `192.168.1.102:8080` | Active |
+| `http://jenkins.example.com` | local NGINX on `192.168.1.102:80` → `127.0.0.1:8080` | Migrated and accepted; `.apps` DNS and shared route removed |
 | `http://awx.example.com` | local NGINX on `192.168.1.103:80` → `127.0.0.1:32000` | Migrated and accepted; `awx.apps.example.com` removed |
 | `http://headlamp.apps.example.com` | `192.168.1.107:30080` | Active |
 | `http://prometheus.apps.example.com` | `192.168.1.115:9090` | Active |
