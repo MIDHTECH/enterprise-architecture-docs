@@ -1,4 +1,7 @@
 default:
+  image:
+    name: python:3.13-slim
+    pull_policy: if-not-present
   tags:
     - shared
 
