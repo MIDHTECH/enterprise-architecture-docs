@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-006` |
 | Type | Normal |
-| State | Implement |
+| State | Closed |
 | Risk | Moderate |
 | Impact | Low |
 | Priority | High |
@@ -63,7 +63,7 @@ two accepted runners or GitLab VM.
 
 | Field | Value |
 | --- | --- |
-| Close code | Pending |
-| Closed date | Pending |
-| Implementation result | Pending |
-| Validation evidence | Pending |
+| Close code | Successful |
+| Closed date | 2026-08-01 |
+| Implementation result | Terraform created only the approved `.139` domain and volume; canonical runner source `8fb79ca` deployed instance runner ID 5 through AWX. |
+| Validation evidence | Pipelines 445/446 passed; canary pipeline 447 job 1424 ran on ID 5; rollback 696, restore 700, and zero-change convergence 704 passed. See `docs/evidence/CHG-2026-006-gitlab-runner-shared-acceptance.md`. |

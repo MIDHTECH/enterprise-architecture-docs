@@ -100,6 +100,7 @@ facts; they do not erase the original observation.
 | INC-2026-066 | 2026-08-01 | SEV-4 | Resolved | Jenkins agent acceptance | AWX installed Helm under `/usr/local/bin`, but the non-login acceptance command used PATH lookup and failed |
 | INC-2026-067 | 2026-08-01 | SEV-4 | Resolved | Jenkins local proxy | AWX job 550 found firewalld inactive; corrected source composed the established firewall role before proxy deployment |
 | INC-2026-068 | 2026-08-01 | SEV-4 | Resolved | GitLab Runner identity automation | First dedicated-runner deployment assumed an absent `root` GitLab username |
+| INC-2026-069 | 2026-08-01 | SEV-4 | Resolved | Shared GitLab runner automation | Dormant provisioning and instance-runner paths exposed role-path, image-checksum, CI-image, and nil-scope assumptions |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2205,6 +2206,43 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Corrective automation: Commits `924f54f` and `281b35e`.
 - Evidence/related runbook:
   [GitLab Infrastructure Runner Acceptance](evidence/CHG-2026-004-gitlab-runner-infra-acceptance.md)
+
+## INC-2026-069: Shared Runner Automation Exposed Dormant-Path Assumptions
+
+- Date: 2026-08-01
+- Severity: SEV-4
+- Status: Resolved
+- Component: infra03 VM provisioning and GitLab shared-runner automation
+- Detection/symptom: AWX jobs 671 and 674 stopped before VM creation because
+  the published branch lacked the repository roles path and attempted to
+  retrieve a retired Rocky checksum. AWX job 684 then stopped while creating
+  a new instance runner because the GitLab 19.2 service received a nil scope
+  key. Dedicated-runner CI also exposed an unpinned Ansible job image.
+- Impact: Deployment paused safely. No unintended domain, runner, or shared
+  component was created or changed by the failed jobs.
+- Timeline: Source corrections added `ansible.cfg`, validated and reused the
+  accepted base image, omitted scope for instance-runner creation, pinned the
+  Ansible CI image, and routed provisioning jobs to runner ID 4. Pipelines and
+  exact-revision AWX synchronization preceded each retry.
+- Cause: Previously dormant paths retained assumptions from an older branch:
+  implicit role discovery, a historical external checksum entry, a project
+  runner parameter shape reused for instance runners, and a runner-specific
+  default CI image.
+- Contributing factors: Secret-protected identity output correctly used
+  `no_log`, so GitLab service source inspection was required to identify the
+  nil-scope contract.
+- Resolution: Provisioning source commit `1b9313b` pins the Python lint image
+  and retains the accepted-base-image and roles-path corrections. Canonical
+  runner source commit `8fb79ca` adds scope only for project runners.
+- Validation: Guarded jobs 1355/1359 created only the `.139` domain/volume;
+  pipelines 445/446 and canary pipeline 447 passed; AWX jobs 692, 696, 700,
+  and zero-change job 704 passed.
+- Prevention/follow-up: Pin every CI execution image, avoid optional keys in
+  GitLab service parameter hashes, and validate cached base images before
+  consulting mutable upstream checksum catalogs.
+- Corrective automation: Commits `1b9313b` and `8fb79ca`.
+- Evidence/related runbook:
+  [GitLab Shared Runner Acceptance](evidence/CHG-2026-006-gitlab-runner-shared-acceptance.md)
 
 ## New Incident Template
 

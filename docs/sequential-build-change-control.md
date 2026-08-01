@@ -17,13 +17,13 @@ Jenkins, or AWX control plane.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `CHG-2026-006` |
-| Component | `gitlab-runner-shared01.example.com` (`192.168.1.139`) |
-| State | Active. Preflight found zero GitLab pending/running jobs, zero AWX jobs, no `.139` response, no existing domain, and 3.58 TiB free in the active infra03 pool. |
-| Blocker | None. VM source, guarded Terraform plan/apply, seed preparation, runner source, CI, AWX deployment, and acceptance must run sequentially. |
-| Permitted work | Provision and configure only `.139`; create one instance runner with exact `shared,validation,security` tags; validate canary, rollback/restore, and zero-change convergence. |
-| Prohibited work | Disabling the GitLab-VM runner or changing any other component until the shared runner closes. |
-| Exit criteria | The `.139` VM is Terraform-managed and accepted; the version-matched shared runner passes tagged canary, rollback/restore, and zero-change AWX convergence; evidence and repositories are published. |
+| Change ID | None |
+| Component | None |
+| State | Idle. `CHG-2026-006` accepted the third dedicated runner and is awaiting this documentation publication only. |
+| Blocker | None |
+| Permitted work | Publish this closure, then activate the next queued component in a separate change record after a fresh activity audit. |
+| Prohibited work | Any additional infrastructure mutation until a new active-change row is published. |
+| Exit criteria | Not applicable while idle. |
 
 `CHG-2026-001`, `CHG-2026-002`, and `CHG-2026-003` are complete.
 
@@ -104,6 +104,16 @@ was removed. The preserved evidence is in
 [Jenkins Agent Acceptance](evidence/CHG-2026-002-jenkins-agent-acceptance.md).
 
 ## Completed change
+
+`CHG-2026-006` accepted `gitlab-runner-shared01.example.com` on infra03 as
+instance runner ID 5 with exact `shared,validation,security` tags and untagged
+execution disabled. Terraform plan/apply jobs 1355/1359 created only the
+approved domain and volume; source commit `8fb79ca` passed pipelines 445/446;
+canary job 1424 ran on ID 5; rollback 696 and restore 700 passed; and AWX job
+704 reported zero changes or failures. INC-2026-069 records the safe
+pre-deployment corrections. See the
+[change record](change-records/CHG-2026-006-gitlab-runner-shared.md) and
+[acceptance evidence](evidence/CHG-2026-006-gitlab-runner-shared-acceptance.md).
 
 `CHG-2026-005` accepted `gitlab-runner-app01.example.com` on infra03 as
 instance runner ID 3 with exact `app,docker` tags and untagged execution
@@ -187,7 +197,7 @@ the inventory-normalization change.
 | 2 | Reconcile live products and all pending source-of-truth changes | GitLab, AWX, Jenkins, DNS, NGINX, Vault, Keycloak, and Harbor inspected |
 | 3 | Review and either complete or retire `gitlab-runner-infra01` | VM placement, `.137` addressing, runner scope, and rollback approved |
 | 4 | Review and either complete or retire `gitlab-runner-app01` | Infrastructure runner change closed |
-| 5 | Provision, configure, and accept `gitlab-runner-shared01` on infra03 | Application runner change closed; `.139` address, seed, Terraform plan, scope, and rollback approved |
+| 5 | Provision, configure, and accept `gitlab-runner-shared01` on infra03 | Completed 2026-08-01 through `CHG-2026-006` |
 | 6 | Retire the GitLab-VM runner from CI execution | All three dedicated GitLab runners accepted and canary scheduling proven |
 | 7 | Review `jenkins-agent01`, correct canonical port-80 access, and set the Jenkins root URL | Completed 2026-08-01 through `CHG-2026-003`; agent, portless URL, root URL, DNS, and route cleanup accepted |
 | 8 | Deploy and accept the single-replica Kubernetes ingress tier | Runner migration closed; agent accepted; documentation pipeline published; kubeconfig secret-file credential and non-mutating PLAN complete |
