@@ -17,13 +17,13 @@ Jenkins, or AWX control plane.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | None |
-| Component | None |
-| State | `CHG-2026-004` completed and accepted on 2026-08-01. No later component is authorized until a new bounded record is published. |
-| Blocker | None. |
-| Permitted work | Read-only audits and preparation of the next sequential change record. |
-| Prohibited work | Runtime mutation of another runner, the GitLab-VM runner, Jenkins, ingress, Kubernetes, or any other component until the next exact component is active. |
-| Exit criteria | Publish a new active record before starting the next queued component. |
+| Change ID | `CHG-2026-005` |
+| Component | `gitlab-runner-app01.example.com` (`192.168.1.136`) |
+| State | Active. Pre-change checks found zero pending/running GitLab jobs, zero active AWX jobs, and an idle Rocky 9.8 target with no Docker or runner runtime. Existing runner ID 3 is an instance runner with `app,docker` tags but has never contacted GitLab. |
+| Blocker | None. Source must pass branch and canonical CI before AWX deployment. |
+| Permitted work | Reconcile only runner ID 3 and `.136`; validate source, deploy through AWX, prove tagged scheduling, rollback/restore, zero-change convergence, and publish closure evidence. |
+| Prohibited work | Provisioning/configuring the shared runner, disabling the GitLab-VM runner, or changing any other component. |
+| Exit criteria | Runner ID 3 is a healthy version-matched instance runner with exact `app,docker` tags, untagged jobs disabled, successful canary, rollback/restore evidence, final zero-change AWX convergence, and published closure records. |
 
 `CHG-2026-001`, `CHG-2026-002`, and `CHG-2026-003` are complete.
 
