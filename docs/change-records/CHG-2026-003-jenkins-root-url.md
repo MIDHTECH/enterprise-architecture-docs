@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-003` |
 | Type | Normal |
-| State | Implement |
+| State | Closed |
 | Risk | Low |
 | Impact | Low |
 | Priority | Moderate |
@@ -19,6 +19,8 @@
 | Planned start | 2026-08-01 after GitLab branch/main validation |
 | Planned duration | 15 minutes after AWX launch |
 | Expected outage | One controlled Jenkins restart; less than five minutes |
+| Actual start | 2026-08-01 18:16:49 UTC |
+| Actual end | 2026-08-01 18:20:14 UTC, including second convergence |
 | Implementation owner | Codex infrastructure task under sequential change control |
 
 ## Short description
@@ -106,8 +108,8 @@ fails unless the canonical login returns HTTP 200.
 - AWX processes exactly `jenkins.example.com`.
 - Jenkins and controller-local NGINX services are active.
 - `http://jenkins.example.com/manage/` loads through port 80.
-- Authenticated Jenkins API/Groovy reports
-  `http://jenkins.example.com/` as the configured root URL.
+- Persisted Jenkins location configuration reports
+  `http://jenkins.example.com/` as the effective root URL after restart.
 - The empty-Jenkins-URL administrative warning is absent.
 - Jenkins queue is empty and the built-in controller remains at zero
   executors.
@@ -135,10 +137,10 @@ fails unless the canonical login returns HTTP 200.
 | --- | --- |
 | Requester authorization | Authenticated screenshots supplied 2026-08-01 |
 | Sequential change approval | Active record set to `CHG-2026-003` |
-| Peer/code gate | GitLab branch pipeline pending final record |
-| Canonical source gate | GitLab main pipeline pending final record |
-| Deployment authority | Existing scoped AWX control plane |
-| Outage gate | Queue/build audit required immediately before launch |
+| Peer/code gate | Pipelines 403-405 passed; automation pipeline 404 jobs 1093/1094 passed |
+| Canonical source gate | Pipelines 406/407 passed; protected deploy job 1099 remained manual |
+| Deployment authority | AWX project update 598 selected `44bd7e9`; focused template 31 used inventory 2/project 28/credential 1 |
+| Outage gate | GitLab/AWX active work 0; Jenkins queue 0; both nodes idle immediately before launch |
 
 ## Work notes
 
@@ -147,16 +149,30 @@ fails unless the canonical login returns HTTP 200.
 - 2026-08-01: Live audit confirmed the root URL is unset; controller has
   6.0 GiB available RAM and agent has 3.1 GiB; neither has configured swap.
 - 2026-08-01: GitLab, AWX, Jenkins, and host mutation queues were idle.
-- 2026-08-01: Focused source commit and validation initiated; runtime evidence
-  remains pending.
+- 2026-08-01: Automation commit `44bd7e9` passed branch pipeline 404 and
+  canonical-main pipeline 407. The protected full-controller job remained
+  manual and unstarted.
+- 2026-08-01: ServiceNow-style record commit `e0ce25e` passed branch pipeline
+  405 and canonical-main pipeline 406.
+- 2026-08-01: AWX project update 598 selected exact revision `44bd7e9` and
+  focused template 31 resolved to exactly `jenkins.example.com`.
+- 2026-08-01: Job 599 completed at `ok=10 changed=2 failed=0 unreachable=0`.
+  Jenkins stopped at 18:17:05 UTC and systemd reported it started at 18:17:20
+  UTC, an observed 15-second service interruption.
+- 2026-08-01: Authenticated `/manage/` returned HTTP 200 without the empty-URL
+  warning. Persisted Jenkins configuration reports
+  `http://jenkins.example.com/`; Jenkins and NGINX are active; the agent is
+  online, idle, and retains its one executor and accepted labels.
+- 2026-08-01: Job 604 completed at
+  `ok=9 changed=0 failed=0 unreachable=0`. No incident or rollback occurred.
 
 ## Closure information
 
 | Field | Value |
 | --- | --- |
-| Close code | Pending |
-| Closed by | Pending |
-| Closed date | Pending |
-| Actual outage | Pending |
-| Implementation result | Pending |
-| Validation evidence | Pending |
+| Close code | Successful |
+| Closed by | Codex infrastructure task |
+| Closed date | 2026-08-01 |
+| Actual outage | 15 seconds during the controlled Jenkins restart |
+| Implementation result | Canonical root URL configured through JCasC; warning removed; agent reconnected; no other Jenkins or OS setting changed |
+| Validation evidence | GitLab pipelines 403-407; AWX update 598; template 31; jobs 599/604; authenticated management-page and node validation |
