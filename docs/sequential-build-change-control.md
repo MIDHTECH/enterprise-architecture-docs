@@ -18,12 +18,12 @@ Jenkins, or AWX control plane.
 | Field | Current value |
 | --- | --- |
 | Change ID | CHG-2026-002 |
-| Component | Jenkins Kubernetes deployment path, `jenkins-agent01` executor, and blocking AWX access-route correction |
-| State | AWX direct access and the dedicated `jenkins-agent01` executor are accepted. Inventory commit `827a529` passed pipelines 382/383; agent correction `a2544ec` passed pipelines 384/385; AWX project update 532 selected that exact revision; jobs 536/541 both reported `changed=0`, `unreachable=0`, and `failed=0`; Jenkins reports the WebSocket node online with one exclusive `kubernetes-deployer` executor and zero controller executors. The ingress component has not started. |
-| Blocker | Publish this agent-acceptance documentation revision and require its GitLab pipeline to pass before starting the separate ingress component. The Jenkins secret-file kubeconfig credential is still absent. |
-| Permitted work | Validate and publish the `jenkins-agent01` acceptance evidence. After publication, seed the reviewed ingress Job DSL, create the scoped secret-file kubeconfig credential, and run the non-mutating Jenkins PLAN before requesting deployment approval. Retain `nginx.example.com` and the old Headlamp NodePort until ingress acceptance and rollback are complete. |
+| Component | Jenkins Kubernetes deployment path, accepted `jenkins-agent01` executor, and canonical portless Jenkins access correction |
+| State | AWX direct access and the dedicated `jenkins-agent01` executor are accepted. Inventory commit `827a529` passed pipelines 382/383; agent correction `a2544ec` passed pipelines 384/385; AWX project update 532 selected that exact revision; jobs 536/541 both reported `changed=0`, `unreachable=0`, and `failed=0`; Jenkins reports the WebSocket node online with one exclusive `kubernetes-deployer` executor and zero controller executors. Documentation commit `5344177` passed pipeline 386. A read-only audit then confirmed that `jenkins.example.com:8080` is healthy but port 80 refuses connections. The ingress component has not started. |
+| Blocker | Correct and accept canonical `http://jenkins.example.com` access through GitLab and AWX before ingress starts. The Jenkins secret-file kubeconfig credential is still absent. |
+| Permitted work | Add the single-host `jenkins_servers` inventory scope; publish and deploy a controller-local NGINX proxy from port 80 to the established port-8080 backend; move `jenkins-agent01` to the portless WebSocket URL; prove a clean second convergence; then retire only `jenkins.apps.example.com`. After this correction closes, seed the reviewed ingress Job DSL, create the scoped secret-file kubeconfig credential, and run the non-mutating Jenkins PLAN before requesting deployment approval. |
 | Prohibited work | Installing ingress through Ansible, starting storage or another product/runner, bypassing GitLab/AWX/Jenkins, deploying ingress before PLAN and explicit approval, or restoring controller executors as a permanent workaround |
-| Exit criteria | Agent online with pinned Helm/kubectl toolchain; GitLab CI green; Jenkins plan and deploy green; Helm release healthy; rollback tested; second convergence clean; documentation and incidents current; related repositories clean |
+| Exit criteria | Portless Jenkins login and WebSocket agent accepted; `jenkins.apps.example.com` retired; second proxy and agent convergence clean; documentation and incidents current; related repositories clean. The later ingress exit criteria remain Jenkins plan and deploy green, Helm release healthy, and rollback tested. |
 
 `CHG-2026-001` is complete.
 
@@ -33,6 +33,14 @@ reordered to complete row 5 before row 6. GitLab CI remains the source
 validation gate. Jenkins owns deployment orchestration and approval. Helm owns
 Kubernetes releases. AWX and Ansible own only VM, operating-system, firewall,
 container-runtime, and Kubernetes-cluster configuration.
+
+After the agent acceptance was published, the user explicitly reordered the
+same Jenkins component once more: canonical Jenkins access on port 80 must be
+accepted before ingress work. The bounded correction keeps Jenkins on its
+existing port-8080 backend, adds an NGINX frontend only on the Jenkins VM,
+updates the inbound agent to `http://jenkins.example.com`, and removes the
+legacy `jenkins.apps.example.com` DNS record only after runtime acceptance.
+This is not authorization to modify another product or start ingress.
 
 Accepted source evidence: ingress correction pipeline 354, Jenkins shared
 library pipeline 351, Jenkins Job DSL pipeline 352, Jenkins agent correction
@@ -125,7 +133,7 @@ the inventory-normalization change.
 | 2 | Reconcile live products and all pending source-of-truth changes | GitLab, AWX, Jenkins, DNS, NGINX, Vault, Keycloak, and Harbor inspected |
 | 3 | Review and either complete or retire `gitlab-runner-infra01` | VM placement, `.137` addressing, runner scope, and rollback approved |
 | 4 | Review and either complete or retire `gitlab-runner-app01` | Infrastructure runner change closed |
-| 5 | Review and either complete or retire `jenkins-agent01` | Completed 2026-08-01; evidence published before row 6 starts |
+| 5 | Review `jenkins-agent01`, then correct canonical Jenkins port-80 access | Agent accepted 2026-08-01; portless controller and agent URL must be accepted and the Jenkins `.apps` record retired before row 6 starts |
 | 6 | Deploy and accept the single-replica Kubernetes ingress tier | Agent accepted; documentation pipeline published; kubeconfig secret-file credential and non-mutating PLAN complete |
 | 7 | Deploy and accept Kubernetes persistent storage | Ingress change closed and rollback verified |
 | 8 | Install Artifactory | Platform storage and backup prerequisites accepted |
