@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-004` |
 | Type | Normal |
-| State | Implement |
+| State | Closed complete |
 | Risk | Moderate |
 | Impact | Low |
 | Priority | High |
@@ -19,8 +19,8 @@
 | Planned start | 2026-08-01 after GitLab branch/main validation |
 | Planned duration | 45 minutes after AWX launch |
 | Expected outage | None for GitLab; new runner remains unavailable until accepted |
-| Actual start | Pending |
-| Actual end | Pending |
+| Actual start | 2026-08-01 13:28 CDT |
+| Actual end | 2026-08-01 15:02 CDT |
 | Implementation owner | Codex infrastructure task under sequential change control |
 
 ## Short description
@@ -147,9 +147,9 @@ protected configuration.
 | Sequential change approval | `CHG-2026-004` active for only `.137` |
 | Pre-change activity gate | GitLab pending/running 0; AWX active 0; workstation, infra03, and target mutation processes 0 |
 | Capacity gate | infra03 has 238 GiB available RAM and 3.58 TiB available VM-pool capacity |
-| Review/source gate | Branch pipelines 410/411 pending completion |
-| Canonical source gate | Pending |
-| Deployment authority | Pending AWX project sync and focused template evidence |
+| Review/source gate | Branch pipelines 411, 415, 417, and 420 passed; pipeline 410 was superseded |
+| Canonical source gate | Main pipelines 416, 418, and 421 passed; accepted revision `281b35e` |
+| Deployment authority | AWX project 23, inventory 5, deploy template 33, rollback template 34; final sync 641 selected `281b35e` |
 
 ## Work notes
 
@@ -162,14 +162,27 @@ protected configuration.
   three-runner topology; this change remains limited to `.137`.
 - 2026-08-01: Local source checks passed repository layout, production Ansible
   lint, deploy/rollback syntax, host-list, YAML, and whitespace validation.
+- 2026-08-01: Initial AWX job 617 failed before creating an identity because
+  the source assumed a `root` GitLab username. INC-2026-068 records the
+  correction to configured administrator `gitlab-admin` and the improved
+  service-error handling. No target-host mutation occurred in that job.
+- 2026-08-01: AWX job 625 created runner ID 4 and configured `.137`. GitLab
+  reported project type, active/locked true, untagged false, version 19.2.0,
+  and exact tags `ansible,infra,terraform`. Coordinator verification, internal
+  metrics, and logs passed.
+- 2026-08-01: Canary pipeline 419 job 1171 succeeded on runner ID 4.
+- 2026-08-01: Rollback job 629 paused runner ID 4 and removed the container
+  while preserving protected configuration. Restore job 633 reused the same
+  identity. A final idempotence correction passed pipelines 420/421, and AWX
+  job 645 reported `changed=0 failures=0 dark=0`.
 
 ## Closure information
 
 | Field | Value |
 | --- | --- |
-| Close code | Pending |
-| Closed by | Pending |
-| Closed date | Pending |
-| Actual outage | Pending |
-| Implementation result | Pending |
-| Validation evidence | Pending |
+| Close code | Successful |
+| Closed by | Codex infrastructure task under sequential change control |
+| Closed date | 2026-08-01 |
+| Actual outage | None; the legacy GitLab-VM runner remained available |
+| Implementation result | Dedicated infrastructure runner accepted on infra03 as runner ID 4 |
+| Validation evidence | Pipelines 420/421; AWX jobs 625, 629, 633, 645; canary job 1171; [acceptance record](../evidence/CHG-2026-004-gitlab-runner-infra-acceptance.md) |

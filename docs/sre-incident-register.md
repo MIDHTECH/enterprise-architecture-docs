@@ -99,6 +99,7 @@ facts; they do not erase the original observation.
 | INC-2026-065 | 2026-08-01 | SEV-4 | Resolved | AWX ansible-jenkins SCM | Initial project sync failed because the existing AWX read-only deploy key was not enabled for the repository |
 | INC-2026-066 | 2026-08-01 | SEV-4 | Resolved | Jenkins agent acceptance | AWX installed Helm under `/usr/local/bin`, but the non-login acceptance command used PATH lookup and failed |
 | INC-2026-067 | 2026-08-01 | SEV-4 | Resolved | Jenkins local proxy | AWX job 550 found firewalld inactive; corrected source composed the established firewall role before proxy deployment |
+| INC-2026-068 | 2026-08-01 | SEV-4 | Resolved | GitLab Runner identity automation | First dedicated-runner deployment assumed an absent `root` GitLab username |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2174,6 +2175,36 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   firewalld role to the proxy playbook composition.
 - Evidence/related runbook:
   [Jenkins Portless Acceptance](evidence/CHG-2026-002-jenkins-portless-acceptance.md)
+
+## INC-2026-068: Runner Identity Automation Assumed the Wrong Administrator
+
+- Date: 2026-08-01
+- Severity: SEV-4
+- Status: Resolved
+- Component: GitLab runner identity role and AWX job 617
+- Detection/symptom: Job 617 failed its first GitLab-side task after the
+  protected Rails command could not find username `root`.
+- Impact: The dedicated infrastructure runner was not created and `.137` was
+  not mutated. GitLab CI remained available through the legacy runner.
+- Timeline: Job 617 failed safely. A rollback-only Rails diagnostic exposed
+  the missing username. The source was changed to configurable administrator
+  `gitlab-admin`, service errors were handled correctly, and pipelines
+  417/418 passed before job 625 deployed the runner. A later idempotence
+  correction passed pipelines 420/421 and job 645 converged cleanly.
+- Cause: Automation assumed GitLab's administrator retained the default
+  username instead of using the environment's configured administrator.
+- Contributing factors: `no_log` correctly protected the runner token but also
+  censored the first task's exception in AWX output.
+- Resolution: Added `gitlab_runner_creator_username`, defaulted it to the live
+  configured `gitlab-admin` account, corrected service-error access, and made
+  reconciliation compare desired attributes before writing.
+- Validation: Runner ID 4 is online with exact project scope and tags; canary
+  job 1171 passed; rollback/restore passed; AWX job 645 reported zero changes.
+- Prevention/follow-up: Treat administrative identities as inventory data and
+  use rollback-only diagnostics when secret-protected tasks fail.
+- Corrective automation: Commits `924f54f` and `281b35e`.
+- Evidence/related runbook:
+  [GitLab Infrastructure Runner Acceptance](evidence/CHG-2026-004-gitlab-runner-infra-acceptance.md)
 
 ## New Incident Template
 

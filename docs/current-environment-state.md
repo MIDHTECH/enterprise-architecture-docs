@@ -52,8 +52,13 @@ becomes canonical.
 
 Three infra03 guests were provisioned at `.136–.138`:
 `gitlab-runner-app01`, `gitlab-runner-infra01`, and `jenkins-agent01`.
-All three are running Rocky Linux and have autostart enabled. The two GitLab
-Runner guests remain provisioned-only. `jenkins-agent01` is accepted: its
+All three are running Rocky Linux and have autostart enabled.
+`gitlab-runner-infra01` is accepted as runner ID 4: the pinned GitLab Runner
+19.2.0 Docker executor is project-scoped to project ID 2, locked, rejects
+untagged jobs, and has exactly `ansible,infra,terraform` tags. Canary job 1171
+ran on that runner, rollback/restore succeeded, and AWX job 645 converged with
+zero changes. `gitlab-runner-app01` remains provisioned-only.
+`jenkins-agent01` is accepted: its
 WebSocket service is enabled and active, Jenkins reports one exclusive
 `kubernetes-deployer` executor online, the controller has zero executors, and
 AWX jobs 536/541 both converged with zero changes or failures.

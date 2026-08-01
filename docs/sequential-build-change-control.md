@@ -17,13 +17,13 @@ Jenkins, or AWX control plane.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `CHG-2026-004` |
-| Component | `gitlab-runner-infra01.example.com` (`192.168.1.137`) |
-| State | Active. The 2026-08-01 pre-change audit found zero GitLab pending/running jobs, no active AWX work, no conflicting workstation or infra03 Git/CI/Ansible/Terraform/package/VM-provisioning process, and an idle provisioned Rocky 9.8 guest with no runner service or container. Source correction, GitLab validation, AWX deployment, and acceptance are pending; no runner runtime mutation has begun. |
-| Blocker | None for bounded source work. Runtime deployment requires a passing protected GitLab source pipeline, an AWX project sync to that exact accepted revision, and a job template limited to only `gitlab-runner-infra01.example.com`. |
-| Permitted work | Review and correct source for the infrastructure runner only; validate and publish through GitLab; configure only `.137` through AWX; verify GitLab registration, project scope, tags, a tagged canary, logs/metrics, rollback, and a second zero-change convergence; then publish acceptance evidence and close this row. |
-| Prohibited work | Configuring `gitlab-runner-app01`, provisioning/configuring `gitlab-runner-shared01`, disabling the existing GitLab-VM runner, changing `jenkins-agent01`, starting ingress, or bypassing GitLab/AWX while `CHG-2026-004` is active. |
-| Exit criteria | Runner identity is locked to the approved infrastructure project with `infra,terraform,ansible` tags and untagged jobs disabled; the pinned 19.2.0 Docker executor is healthy on `.137`; a tagged canary is assigned to it; first and second AWX runs pass with the second reporting zero unexpected changes; rollback is documented; current-state, operations, evidence, incident, and version records are current; related repositories are clean and published; and this active row is closed. |
+| Change ID | None |
+| Component | None |
+| State | `CHG-2026-004` completed and accepted on 2026-08-01. No later component is authorized until a new bounded record is published. |
+| Blocker | None. |
+| Permitted work | Read-only audits and preparation of the next sequential change record. |
+| Prohibited work | Runtime mutation of another runner, the GitLab-VM runner, Jenkins, ingress, Kubernetes, or any other component until the next exact component is active. |
+| Exit criteria | Publish a new active record before starting the next queued component. |
 
 `CHG-2026-001`, `CHG-2026-002`, and `CHG-2026-003` are complete.
 
@@ -104,6 +104,15 @@ was removed. The preserved evidence is in
 [Jenkins Agent Acceptance](evidence/CHG-2026-002-jenkins-agent-acceptance.md).
 
 ## Completed change
+
+`CHG-2026-004` accepted `gitlab-runner-infra01.example.com` on infra03 as
+GitLab runner ID 4. Canonical source commit `281b35e` passed pipelines
+420/421; canary job 1171 ran on runner ID 4; rollback job 629 paused the
+identity, removed only the container, and preserved configuration; restore job
+633 succeeded; and AWX job 645 reported zero changes or failures. INC-2026-068
+records the corrected administrator-username assumption. See the
+[ServiceNow-style change record](change-records/CHG-2026-004-gitlab-runner-infra.md)
+and [acceptance evidence](evidence/CHG-2026-004-gitlab-runner-infra-acceptance.md).
 
 `CHG-2026-003` set the canonical Jenkins root URL through focused JCasC
 reconciliation. Automation commit `44bd7e9` passed pipelines 404/407; AWX
