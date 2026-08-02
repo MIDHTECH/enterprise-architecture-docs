@@ -17,15 +17,23 @@ Jenkins, or AWX control plane.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | None |
-| Component | None |
-| State | Idle. `CHG-2026-007` retired the GitLab-VM runner after rollback proof and final zero-change convergence. |
-| Blocker | None |
-| Permitted work | Publish this closure. A later component requires a new active record and activity audit. |
-| Prohibited work | Any additional infrastructure mutation until a new active-change row is published. |
-| Exit criteria | Not applicable while idle. |
+| Change ID | `CHG-2026-008` |
+| Component | AWX execution plane: only `awx-execution.example.com` and its Receptor registration |
+| State | Planning and pre-deployment validation; documentation and source CI must pass before runtime mutation. |
+| Blocker | Canonical `ansible-awx` source is not published; exact install-bundle pins and the 8-versus-16 GiB capacity decision are pending. |
+| Permitted work | Publish the focused change record, create and validate source automation, inspect the generated install bundle, then run the controlled canary/rollback/restore sequence. |
+| Prohibited work | Ingress, storage, product, SSO, EDA, HA, or another VM/component change; direct execution-node installation is also prohibited. |
+| Exit criteria | Node Ready in its bounded group; canary, rollback, restore, final zero-change convergence, runtime/security acceptance, evidence, and repository publication complete. |
 
 `CHG-2026-001`, `CHG-2026-002`, and `CHG-2026-003` are complete.
+
+On 2026-08-02 the user directed work to begin on the already documented
+AAP-like AWX goal. `CHG-2026-008` therefore reorders only the AWX execution
+plane ahead of Kubernetes ingress. The existing architecture and use cases are
+not being recreated. Readiness checks found AWX healthy and idle,
+`awx-execution.example.com` running at `192.168.1.121`, Harbor healthy, and no
+conflicting activity on infra01/02/03. Runtime onboarding remains gated on
+published source, exact dependency pins, and the infra02 capacity decision.
 
 The user approved three dedicated GitLab runners on infra03 for the
 twelve-domain platform program and explicitly rejected CI execution on the
@@ -211,11 +219,12 @@ the inventory-normalization change.
 | 5 | Provision, configure, and accept `gitlab-runner-shared01` on infra03 | Completed 2026-08-01 through `CHG-2026-006` |
 | 6 | Retire the GitLab-VM runner from CI execution | Completed 2026-08-01 through `CHG-2026-007` |
 | 7 | Review `jenkins-agent01`, correct canonical port-80 access, and set the Jenkins root URL | Completed 2026-08-01 through `CHG-2026-003`; agent, portless URL, root URL, DNS, and route cleanup accepted |
-| 8 | Deploy and accept the single-replica Kubernetes ingress tier | Runner migration closed; agent accepted; documentation pipeline published; kubeconfig secret-file credential and non-mutating PLAN complete |
-| 9 | Deploy and accept Kubernetes persistent storage | Ingress change closed and rollback verified |
-| 10 | Install Artifactory | Platform storage and backup prerequisites accepted |
-| 11 | Install SonarQube | Artifactory change closed |
-| 12 | Continue remaining product and use-case queue | Previous component fully accepted |
+| 8 | Establish and accept `awx-execution.example.com` as the bounded AWX execution plane | Active as `CHG-2026-008`; VM exists, source/dependency/capacity gates pending |
+| 9 | Deploy and accept the single-replica Kubernetes ingress tier | AWX execution-plane change closed; runner migration closed; agent accepted; documentation pipeline published; kubeconfig secret-file credential and non-mutating PLAN complete |
+| 10 | Deploy and accept Kubernetes persistent storage | Ingress change closed and rollback verified |
+| 11 | Install Artifactory | Platform storage and backup prerequisites accepted |
+| 12 | Install SonarQube | Artifactory change closed |
+| 13 | Continue remaining product and use-case queue | Previous component fully accepted |
 
 The queue may be reordered only through an explicit documented decision. Do
 not use multiple tasks to work on different rows simultaneously.
