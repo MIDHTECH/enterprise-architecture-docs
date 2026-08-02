@@ -2235,8 +2235,9 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   and retains the accepted-base-image and roles-path corrections. Canonical
   runner source commit `8fb79ca` adds scope only for project runners.
 - Validation: Guarded jobs 1355/1359 created only the `.139` domain/volume;
-  pipelines 445/446 and canary pipeline 447 passed; AWX jobs 692, 696, 700,
-  and zero-change job 704 passed.
+  every automatic job in final provisioning pipeline 448 passed; pipelines
+  445/446 and canary pipeline 447 passed; AWX jobs 692, 696, 700, and
+  zero-change job 704 passed.
 - Prevention/follow-up: Pin every CI execution image, avoid optional keys in
   GitLab service parameter hashes, and validate cached base images before
   consulting mutable upstream checksum catalogs.

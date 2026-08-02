@@ -7,6 +7,9 @@ Accepted 2026-08-01 for `gitlab-runner-shared01.example.com`
   1355 ran on dedicated runner ID 4 and proved exactly two creates: the shared
   libvirt domain and its 60 GiB volume, with no updates or deletes. Apply job
   1359 applied that exact artifact on ID 4.
+- Final provisioning source revision `1b9313b` passed every automatic job in
+  pipeline 448 on dedicated runner ID 4; guarded plan/apply jobs remained
+  manual because the accepted VM already matched Terraform state.
 - The persistent, autostarted VM reports Rocky Linux 9.8, 2 vCPU, 4 GiB RAM,
   a 59 GiB root filesystem, hostname
   `gitlab-runner-shared01.example.com`, and completed cloud-init.
