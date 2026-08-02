@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case implements **Backup, Restore, Disaster Recovery and HA Testing** as a traceable IaC capability. Its operational trigger is: a scheduled recovery exercise, new service onboarding, backup change, or incident requires restoration. Every outcome must be reproducible from reviewed source, bounded during execution, observable, idempotent, recoverable, and evidenced.
+A successful backup job does not prove that a service can recover. The design starts with dependencies and recovery objectives, then exercises restore, failover, integrity, application health, and return to normal.
 
 ## Expected outcome
 
-Prove recoverability, failover, service continuity and restoration evidence. Operators can trace the request to an immutable Git revision, review PLAN/CHECK, execute one canary, expand only through health gates, prove repeat convergence, recover through a tested path, and hand off evidence without relying on console memory.
+An isolated exercise restores the named service, proves data consistency and consumer health, and measures actual RPO and RTO. Gaps become owned backlog work.
 
 ## Trigger and actors
 
@@ -45,6 +45,12 @@ Prove recoverability, failover, service continuity and restoration evidence. Ope
 **In scope:** Backup policy, include/exclude, encryption, retention, immutability, job monitoring, restore canary, integrity/application validation, failover/failback, RPO/RTO, and evidence.
 
 **Excluded:** Backup success without restore, copying secrets into Git, destructive production drills without isolation, and assuming VM snapshots replace application-consistent backup.
+
+## Architecture diagram
+
+![UC-LNX-023 Backup, Restore, Disaster Recovery and HA Testing architecture](../../assets/use-cases/UC-LNX-023/UC-LNX-023-architecture.svg)
+
+Recovery policy and backup integrity checks lead into an isolated restore or failover, ending with measured RPO/RTO and service evidence.
 
 ## IaC delivery model
 
@@ -94,7 +100,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-023-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need variables, roles/modules, tests, pipeline gates, and an operating contract for Backup, Restore, Disaster Recovery and HA Testing so runtime work does not depend on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for Backup, Restore, Disaster Recovery and HA Testing in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress only where supporting source is listed; the full source gate is not accepted.
 
@@ -118,7 +124,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-023-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need an approved PLAN/CHECK and canary-first APPLY for Backup, Restore, Disaster Recovery and HA Testing so unsafe behavior stops before fleet expansion.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying Backup, Restore, Disaster Recovery and HA Testing. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no runtime acceptance is claimed.
 
@@ -142,7 +148,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-023-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeat convergence, runtime health, recovery proof, and an evidence package for Backup, Restore, Disaster Recovery and HA Testing so the capability is supportable and auditable.
+**Description:** Operations accepts Backup, Restore, Disaster Recovery and HA Testing only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 

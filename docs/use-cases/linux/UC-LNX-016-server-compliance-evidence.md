@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case implements **Server Compliance Evidence** as reviewed desired state with operational evidence. Its trigger is: scheduled evidence collection, audit request, control change, or exception review. The outcome must be reproducible from Git, bounded during execution, observable at runtime, idempotent on repeat, and recoverable without hidden console state.
+Compliance evidence should be reproducible operational data, not handpicked screenshots. Versioned controls and collection logic let an auditor trace a result back to both the rule and the machine.
 
 ## Expected outcome
 
-Auditable operating-system and service posture. An engineer can trace the request to an immutable revision, review PLAN/CHECK output, execute a canary through the approved control plane, expand safely, prove zero unexpected change, recover, and hand the control to operations.
+A read-only run marks each control pass, fail, not applicable, or approved exception for the named fleet. The report identifies its Git revision and collection job without changing a host.
 
 ## Trigger and actors
 
@@ -46,13 +46,19 @@ Auditable operating-system and service posture. An engineer can trace the reques
 
 **Excluded:** Claiming certification, storing secrets/PHI, screenshots without underlying artifacts, and treating a passing playbook as control effectiveness.
 
+## Architecture diagram
+
+![UC-LNX-016 Server Compliance Evidence architecture](../../assets/use-cases/UC-LNX-016/UC-LNX-016-architecture.svg)
+
+Versioned controls drive read-only collection, results and exceptions are normalized, and the signed report links findings to source and host evidence.
+
 ## IaC delivery model
 
 | Layer | Responsibility |
 | --- | --- |
 | GitLab | Source of truth, merge request, protected branch, CI gates, immutable SHA, and artifacts |
 | Jenkins | Manual PLAN/CHECK/APPLY/ROLLBACK selection, approval, concurrency control, and evidence aggregation |
-| Terraform/image automation | Infrastructure lifecycle only when the use case changes VM, image, volume, or network resources |
+| Terraform/image automation | Infrastructure lifecycle only when the change affects VM, image, volume, or network resources |
 | AWX and Ansible | OS desired state, check mode, inventory limit, serial rollout, and per-host events |
 | Observability/evidence | Health gates, logs, metrics, incidents, expected-versus-observed result, and acceptance |
 
@@ -94,7 +100,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-016-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need variables, roles/modules, tests, pipeline gates, and an operating contract for Server Compliance Evidence so runtime work never depends on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for Server Compliance Evidence in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress where supporting source is listed; the complete source gate is not accepted.
 
@@ -118,7 +124,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-016-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need approved PLAN/CHECK and canary-first APPLY for Server Compliance Evidence so unsafe behavior stops before fleet expansion.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying Server Compliance Evidence. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no live acceptance is claimed.
 
@@ -142,7 +148,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-016-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeat convergence, runtime health, recovery proof, and an evidence package for Server Compliance Evidence so the capability can be supported and audited.
+**Description:** Operations accepts Server Compliance Evidence only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 
@@ -214,7 +220,7 @@ Primary scenario: **The dashboard shows 100 percent compliance even though sever
 1. **Question:** Explain the end-to-end IaC architecture for Server Compliance Evidence.
    **Answer signals:** Separate source validation, approval/orchestration, infrastructure ownership, AWX/Ansible desired state, runtime health, convergence, evidence, and recovery.
 
-2. **Question:** How would you model this use case so repeated execution is safe?
+2. **Question:** How would you model server compliance collection so repeated execution stays safe?
    **Answer signals:** compliance_profile, evidence_run_id, evidence_retention, exception_record; stable identities, declarative state, handlers only on change, bounded targets, and explicit exclusions.
 
 3. **Question:** What must be visible in a GitLab pipeline before runtime approval?

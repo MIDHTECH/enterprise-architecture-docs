@@ -99,12 +99,23 @@ if [[ "${#LINUX_USE_CASE_FILES[@]}" -ne "$declared_linux_count" ]]; then
 fi
 
 linux_required_headings=(
+  "## Architecture diagram"
   "## IaC delivery model"
   "## End-to-end implementation"
   "## Validation, idempotence, and rollback"
   "## Troubleshooting guide"
   "## Interview preparation"
 )
+
+LINUX_ARCHITECTURE_FILES=()
+while IFS= read -r line; do
+  LINUX_ARCHITECTURE_FILES+=("$line")
+done < <(find docs/assets/use-cases -type f -name 'UC-LNX-*-architecture.svg' -print | sort)
+
+if [[ "${#LINUX_ARCHITECTURE_FILES[@]}" -ne "$declared_linux_count" ]]; then
+  echo "Linux architecture count ${#LINUX_ARCHITECTURE_FILES[@]} does not match canonical count $declared_linux_count." >&2
+  exit 1
+fi
 
 for document in "${LINUX_USE_CASE_FILES[@]}"; do
   for heading in "${linux_required_headings[@]}"; do
@@ -123,6 +134,43 @@ for document in "${LINUX_USE_CASE_FILES[@]}"; do
   interview_question_count="$(grep -c '^[0-9][0-9]*\. \*\*Question:' "$document" || true)"
   if [[ "$interview_question_count" -lt 9 ]]; then
     echo "$document: must contain at least nine interview questions." >&2
+    exit 1
+  fi
+
+  use_case_id="$(basename "$document" | cut -d- -f1-3)"
+  architecture_file="docs/assets/use-cases/$use_case_id/$use_case_id-architecture.svg"
+  architecture_link="../../assets/use-cases/$use_case_id/$use_case_id-architecture.svg"
+
+  if [[ ! -f "$architecture_file" ]]; then
+    echo "$document: missing architecture SVG: $architecture_file" >&2
+    exit 1
+  fi
+
+  architecture_link_count="$(grep -Foc "($architecture_link)" "$document" || true)"
+  if [[ "$architecture_link_count" -ne 1 ]]; then
+    echo "$document: must link its architecture SVG exactly once." >&2
+    exit 1
+  fi
+
+  python3 - "$architecture_file" <<'PY'
+import sys
+import xml.etree.ElementTree as ET
+
+path = sys.argv[1]
+root = ET.parse(path).getroot()
+namespace = {"svg": "http://www.w3.org/2000/svg"}
+title = root.find("svg:title", namespace)
+description = root.find("svg:desc", namespace)
+if root.attrib.get("role") != "img" or root.attrib.get("aria-labelledby") != "title desc":
+    raise SystemExit(f"{path}: SVG must expose role=img and aria-labelledby='title desc'")
+if title is None or title.attrib.get("id") != "title" or not (title.text or "").strip():
+    raise SystemExit(f"{path}: SVG must contain a non-empty title with id=title")
+if description is None or description.attrib.get("id") != "desc" or not (description.text or "").strip():
+    raise SystemExit(f"{path}: SVG must contain a non-empty desc with id=desc")
+PY
+
+  if grep -Eqi '\b(this|the) use case\b|as a .*,? i need' "$document"; then
+    echo "$document: contains template-like wording; write in a direct engineering voice." >&2
     exit 1
   fi
 

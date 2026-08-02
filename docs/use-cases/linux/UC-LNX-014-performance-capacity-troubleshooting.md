@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case implements **Performance and Capacity Troubleshooting** as reviewed desired state with operational evidence. Its trigger is: an alert, incident, trend, or capacity review indicates a resource risk. The outcome must be reproducible from Git, bounded during execution, observable at runtime, idempotent on repeat, and recoverable without hidden console state.
+Good performance work preserves evidence before tuning begins. Metrics, logs, workload context, baselines, and diagnostic commands help the team identify a bottleneck instead of choosing a convenient guess.
 
 ## Expected outcome
 
-CPU, memory, disk and network diagnosis. An engineer can trace the request to an immutable revision, review PLAN/CHECK output, execute a canary through the approved control plane, expand safely, prove zero unexpected change, recover, and hand the control to operations.
+An engineer reproduces the symptom on a bounded target, identifies the constrained resource, tests one change, and measures the result. Persistent tuning is reviewed as code with a reversal threshold.
 
 ## Trigger and actors
 
@@ -46,13 +46,19 @@ CPU, memory, disk and network diagnosis. An engineer can trace the request to an
 
 **Excluded:** Unmeasured sysctl tuning, permanent emergency commands, application code optimization, and capacity purchases without workload evidence.
 
+## Architecture diagram
+
+![UC-LNX-014 Performance and Capacity Troubleshooting architecture](../../assets/use-cases/UC-LNX-014/UC-LNX-014-architecture.svg)
+
+An alert or capacity trend triggers evidence capture and layer-by-layer diagnosis, followed by a bounded tuning experiment against the original baseline.
+
 ## IaC delivery model
 
 | Layer | Responsibility |
 | --- | --- |
 | GitLab | Source of truth, merge request, protected branch, CI gates, immutable SHA, and artifacts |
 | Jenkins | Manual PLAN/CHECK/APPLY/ROLLBACK selection, approval, concurrency control, and evidence aggregation |
-| Terraform/image automation | Infrastructure lifecycle only when the use case changes VM, image, volume, or network resources |
+| Terraform/image automation | Infrastructure lifecycle only when the change affects VM, image, volume, or network resources |
 | AWX and Ansible | OS desired state, check mode, inventory limit, serial rollout, and per-host events |
 | Observability/evidence | Health gates, logs, metrics, incidents, expected-versus-observed result, and acceptance |
 
@@ -94,7 +100,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-014-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need variables, roles/modules, tests, pipeline gates, and an operating contract for Performance and Capacity Troubleshooting so runtime work never depends on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for Performance and Capacity Troubleshooting in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress where supporting source is listed; the complete source gate is not accepted.
 
@@ -118,7 +124,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-014-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need approved PLAN/CHECK and canary-first APPLY for Performance and Capacity Troubleshooting so unsafe behavior stops before fleet expansion.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying Performance and Capacity Troubleshooting. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no live acceptance is claimed.
 
@@ -142,7 +148,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-014-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeat convergence, runtime health, recovery proof, and an evidence package for Performance and Capacity Troubleshooting so the capability can be supported and audited.
+**Description:** Operations accepts Performance and Capacity Troubleshooting only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 
@@ -214,7 +220,7 @@ Primary scenario: **CPU is low but application latency rises while disk utilizat
 1. **Question:** Explain the end-to-end IaC architecture for Performance and Capacity Troubleshooting.
    **Answer signals:** Separate source validation, approval/orchestration, infrastructure ownership, AWX/Ansible desired state, runtime health, convergence, evidence, and recovery.
 
-2. **Question:** How would you model this use case so repeated execution is safe?
+2. **Question:** How would you model performance and capacity work so repeated execution stays safe?
    **Answer signals:** diagnostic_window, capacity_thresholds, tuning_profile, canary_workload_probe; stable identities, declarative state, handlers only on change, bounded targets, and explicit exclusions.
 
 3. **Question:** What must be visible in a GitLab pipeline before runtime approval?

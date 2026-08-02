@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case turns **AWX and Ansible Configuration Management** into a repeatable engineering capability rather than a collection of console actions. The operational trigger is: a reviewed desired-state revision is selected for check or apply. Source review, non-mutating validation, controlled execution, runtime verification, repeat convergence, recovery, and evidence are all part of the delivered outcome.
+AWX should execute reviewed automation, not become another place where configuration is invented. Inventory, variables, roles, credentials, limits, and approvals all point back to the exact desired state in Git.
 
 ## Expected outcome
 
-Idempotent configuration through version-controlled roles. An engineer can select an immutable Git revision, review the exact plan or Ansible check result, execute against a bounded canary, expand only after health checks pass, prove a second zero-change convergence, and recover through the documented path. Definition or source presence alone is not acceptance.
+An engineer runs check mode on a named canary, reviews changed tasks, approves a bounded rollout, and repeats the same job with no unexplained changes. Host events preserve what happened on every machine.
 
 ## Trigger and actors
 
@@ -47,13 +47,19 @@ Idempotent configuration through version-controlled roles. An engineer can selec
 
 **Excluded:** Terraform-owned VM creation, manual AWX-only edits, application Helm releases, and secrets committed to Git.
 
+## Architecture diagram
+
+![UC-LNX-005 AWX and Ansible Configuration Management architecture](../../assets/use-cases/UC-LNX-005/UC-LNX-005-architecture.svg)
+
+Reviewed inventory and roles flow through GitLab and Jenkins into an AWX canary, expand by cohort, and return job events and health evidence.
+
 ## IaC delivery model
 
 | Layer | Ownership and control |
 | --- | --- |
 | GitLab | Authoritative source, merge request, protected branch, validation pipeline, immutable SHA, and artifacts |
 | Jenkins | Operator-selected PLAN/CHECK/APPLY/ROLLBACK action, approval boundary, concurrency control, and evidence aggregation |
-| Terraform/image automation | Owns VM, image, volume, network, and other infrastructure lifecycle only when this use case needs those resources |
+| Terraform/image automation | Owns VM, image, volume, network, and other infrastructure lifecycle only when the change touches those resources |
 | AWX and Ansible | Own operating-system desired state, inventory targeting, check mode, serial rollout, and per-host job events |
 | Observability and evidence | Health gates, logs, metrics, alerts, expected-versus-observed result, incident links, and acceptance record |
 
@@ -95,7 +101,7 @@ The table under **End-to-end implementation** is the implementation map required
 
 ### STORY-LNX-005-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need the variables, roles/modules, tests, pipeline gates, and operating contract for AWX and Ansible Configuration Management in Git so that no runtime change depends on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for AWX and Ansible Configuration Management in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress; bounded supporting source exists, but the full use-case source gate is not accepted.
 
@@ -119,7 +125,7 @@ The table under **End-to-end implementation** is the implementation map required
 
 ### STORY-LNX-005-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need an approved PLAN/CHECK followed by a canary-first APPLY for AWX and Ansible Configuration Management so that failures stop before they affect the fleet.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying AWX and Ansible Configuration Management. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no runtime acceptance is claimed.
 
@@ -143,7 +149,7 @@ The table under **End-to-end implementation** is the implementation map required
 
 ### STORY-LNX-005-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeated convergence, runtime health, recovery proof, and an evidence package for AWX and Ansible Configuration Management so that operations can support and audit the control.
+**Description:** Operations accepts AWX and Ansible Configuration Management only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 
@@ -215,7 +221,7 @@ Primary scenario: **AWX reports changed on every run even though the host config
 1. **Question:** Explain the end-to-end IaC architecture for AWX and Ansible Configuration Management.
    **Answer signals:** Separate GitLab source gates, Jenkins approval, Terraform/image ownership where applicable, AWX/Ansible desired state, canary rollout, evidence, and rollback.
 
-2. **Question:** Which variables and boundaries make this use case idempotent and reusable?
+2. **Question:** Which inputs and target boundaries make AWX and Ansible configuration management safe to repeat and reuse?
    **Answer signals:** awx_inventory_name, awx_job_template, ansible_limit, confirm_apply; immutable inputs, explicit target limits, deterministic tasks, and no hidden UI state.
 
 3. **Question:** What would you require before approving the first production APPLY?

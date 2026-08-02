@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case turns **Ubuntu and Rocky Linux Installation Standards** into a repeatable engineering capability rather than a collection of console actions. The operational trigger is: a supported os release or hardened image revision is approved for build. Source review, non-mutating validation, controlled execution, runtime verification, repeat convergence, recovery, and evidence are all part of the delivered outcome.
+A reliable server build starts before Ansible connects to it. Installation media, checksums, unattended-install files, hardening choices, and admission tests stay together so another engineer can rebuild the image and explain what went into it.
 
 ## Expected outcome
 
-Reproducible supported operating-system builds. An engineer can select an immutable Git revision, review the exact plan or Ansible check result, execute against a bounded canary, expand only after health checks pass, prove a second zero-change convergence, and recover through the documented path. Definition or source presence alone is not acceptance.
+The team can rebuild a signed Rocky or Ubuntu image from one reviewed commit, boot it in isolation, verify the baseline, and publish it only when admission passes. A repeat build produces the same manifest without remembered console steps.
 
 ## Trigger and actors
 
@@ -47,13 +47,19 @@ Reproducible supported operating-system builds. An engineer can select an immuta
 
 **Excluded:** Physical bare-metal imaging, desktop images, unreviewed public cloud marketplace images, and product installation.
 
+## Architecture diagram
+
+![UC-LNX-001 Ubuntu and Rocky Linux Installation Standards architecture](../../assets/use-cases/UC-LNX-001/UC-LNX-001-architecture.svg)
+
+Approved OS policy and installation media move through Packer, Terraform, and Ansible, ending with a tested canary image and release evidence.
+
 ## IaC delivery model
 
 | Layer | Ownership and control |
 | --- | --- |
 | GitLab | Authoritative source, merge request, protected branch, validation pipeline, immutable SHA, and artifacts |
 | Jenkins | Operator-selected PLAN/CHECK/APPLY/ROLLBACK action, approval boundary, concurrency control, and evidence aggregation |
-| Terraform/image automation | Owns VM, image, volume, network, and other infrastructure lifecycle only when this use case needs those resources |
+| Terraform/image automation | Owns VM, image, volume, network, and other infrastructure lifecycle only when the change touches those resources |
 | AWX and Ansible | Own operating-system desired state, inventory targeting, check mode, serial rollout, and per-host job events |
 | Observability and evidence | Health gates, logs, metrics, alerts, expected-versus-observed result, incident links, and acceptance record |
 
@@ -95,7 +101,7 @@ The table under **End-to-end implementation** is the implementation map required
 
 ### STORY-LNX-001-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need the variables, roles/modules, tests, pipeline gates, and operating contract for Ubuntu and Rocky Linux Installation Standards in Git so that no runtime change depends on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for Ubuntu and Rocky Linux Installation Standards in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress; bounded supporting source exists, but the full use-case source gate is not accepted.
 
@@ -119,7 +125,7 @@ The table under **End-to-end implementation** is the implementation map required
 
 ### STORY-LNX-001-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need an approved PLAN/CHECK followed by a canary-first APPLY for Ubuntu and Rocky Linux Installation Standards so that failures stop before they affect the fleet.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying Ubuntu and Rocky Linux Installation Standards. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no runtime acceptance is claimed.
 
@@ -143,7 +149,7 @@ The table under **End-to-end implementation** is the implementation map required
 
 ### STORY-LNX-001-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeated convergence, runtime health, recovery proof, and an evidence package for Ubuntu and Rocky Linux Installation Standards so that operations can support and audit the control.
+**Description:** Operations accepts Ubuntu and Rocky Linux Installation Standards only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 
@@ -215,7 +221,7 @@ Primary scenario: **The canary boots but cloud-init never reaches done.**
 1. **Question:** Explain the end-to-end IaC architecture for Ubuntu and Rocky Linux Installation Standards.
    **Answer signals:** Separate GitLab source gates, Jenkins approval, Terraform/image ownership where applicable, AWX/Ansible desired state, canary rollout, evidence, and rollback.
 
-2. **Question:** Which variables and boundaries make this use case idempotent and reusable?
+2. **Question:** Which inputs and target boundaries make Ubuntu and Rocky Linux installation standards safe to repeat and reuse?
    **Answer signals:** linux_image_family, linux_image_version, linux_image_sha256, linux_image_cis_profile; immutable inputs, explicit target limits, deterministic tasks, and no hidden UI state.
 
 3. **Question:** What would you require before approving the first production APPLY?

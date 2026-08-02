@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case implements **Configuration-Drift Detection** as reviewed desired state with operational evidence. Its trigger is: scheduled drift scan, failed convergence, incident, or unexpected host change. The outcome must be reproducible from Git, bounded during execution, observable at runtime, idempotent on repeat, and recoverable without hidden console state.
+Drift is useful information before it becomes an automatic repair. Check-mode scans classify expected exceptions and send unexplained differences through triage instead of erasing their evidence.
 
 ## Expected outcome
 
-Desired-state comparison and remediation. An engineer can trace the request to an immutable revision, review PLAN/CHECK output, execute a canary through the approved control plane, expand safely, prove zero unexpected change, recover, and hand the control to operations.
+Every difference carries a host, control, desired value, timestamp, and owner. Approved remediation reaches a canary first, and a clean follow-up scan proves convergence.
 
 ## Trigger and actors
 
@@ -46,13 +46,19 @@ Desired-state comparison and remediation. An engineer can trace the request to a
 
 **Excluded:** Blind auto-remediation of high-risk drift, application data comparison, and accepting console changes without source reconciliation.
 
+## Architecture diagram
+
+![UC-LNX-015 Configuration-Drift Detection architecture](../../assets/use-cases/UC-LNX-015/UC-LNX-015-architecture.svg)
+
+Reviewed desired state is compared with live facts, differences are classified, and only approved remediation reaches a canary before closure.
+
 ## IaC delivery model
 
 | Layer | Responsibility |
 | --- | --- |
 | GitLab | Source of truth, merge request, protected branch, CI gates, immutable SHA, and artifacts |
 | Jenkins | Manual PLAN/CHECK/APPLY/ROLLBACK selection, approval, concurrency control, and evidence aggregation |
-| Terraform/image automation | Infrastructure lifecycle only when the use case changes VM, image, volume, or network resources |
+| Terraform/image automation | Infrastructure lifecycle only when the change affects VM, image, volume, or network resources |
 | AWX and Ansible | OS desired state, check mode, inventory limit, serial rollout, and per-host events |
 | Observability/evidence | Health gates, logs, metrics, incidents, expected-versus-observed result, and acceptance |
 
@@ -94,7 +100,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-015-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need variables, roles/modules, tests, pipeline gates, and an operating contract for Configuration-Drift Detection so runtime work never depends on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for Configuration-Drift Detection in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress where supporting source is listed; the complete source gate is not accepted.
 
@@ -118,7 +124,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-015-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need approved PLAN/CHECK and canary-first APPLY for Configuration-Drift Detection so unsafe behavior stops before fleet expansion.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying Configuration-Drift Detection. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no live acceptance is claimed.
 
@@ -142,7 +148,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-015-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeat convergence, runtime health, recovery proof, and an evidence package for Configuration-Drift Detection so the capability can be supported and audited.
+**Description:** Operations accepts Configuration-Drift Detection only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 
@@ -214,7 +220,7 @@ Primary scenario: **The scheduled scan reports hundreds of changes caused only b
 1. **Question:** Explain the end-to-end IaC architecture for Configuration-Drift Detection.
    **Answer signals:** Separate source validation, approval/orchestration, infrastructure ownership, AWX/Ansible desired state, runtime health, convergence, evidence, and recovery.
 
-2. **Question:** How would you model this use case so repeated execution is safe?
+2. **Question:** How would you model configuration-drift detection so repeated execution stays safe?
    **Answer signals:** drift_control_id, drift_severity, drift_remediation_mode, drift_exception_expiry; stable identities, declarative state, handlers only on change, bounded targets, and explicit exclusions.
 
 3. **Question:** What must be visible in a GitLab pipeline before runtime approval?
