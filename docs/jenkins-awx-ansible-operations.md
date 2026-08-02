@@ -242,3 +242,44 @@ If a job reports `runner_configuration_error` for an invalid pull policy,
 fix the runner allowlist and wait for its configuration hot reload before
 retrying. If an `always` pull fails while the image is cached, do not delete
 the cache; use the approved cached-first policy. See INC-2026-042.
+
+## AAP-Like AWX Execution Boundary
+
+The existing platform architecture and use cases remain authoritative.
+`CHG-2026-008` adds only a separated execution plane:
+
+```text
+GitLab source and CI
+        |
+Jenkins approval/orchestration
+        |
+AWX 24.6.1 control plane on awx.example.com
+        |
+Receptor mutual TLS
+        |
+awx-execution.example.com
+        |
+Approved managed hosts and APIs
+```
+
+The control plane keeps the UI, API, scheduling, workflow, RBAC, and
+credential-use boundary. The execution node runs only dispatched jobs in a
+versioned execution environment. Its first instance group is
+`lab-infrastructure` and is limited to a read-only canary until rollback,
+restore, and idempotence pass.
+
+The AWX-generated install bundle is authoritative for the Receptor version,
+certificate authority, node identity, and peer configuration. Record its exact
+versions and checksums in the change evidence; never commit generated private
+keys. Execution-environment images will later be built in GitLab CI, scanned,
+stored in Harbor, and selected in AWX by immutable digest.
+
+The current execution VM is available at `192.168.1.121` with Rocky Linux 9.8,
+4 vCPU, 8 GiB RAM, 60 GB OS, and 50 GB data storage. SSH, DNS, UTC/NTP,
+SELinux, firewalld, and the guest agent pass. Podman and Receptor are not yet
+installed, and TCP 27199 remains closed. The target 16 GiB profile requires a
+fresh infra02 capacity decision before any resize.
+
+See
+[CHG-2026-008](change-records/CHG-2026-008-awx-execution-plane.md) for the
+scope, gates, rollback, and acceptance contract.
