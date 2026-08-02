@@ -296,6 +296,23 @@ Podman packages, and the complete hashed Python runtime closure. AWX instance
 3 remains disabled and has run no jobs until the controlled deployment gate
 passes.
 
+Controlled-runtime revision `6d7887fa` provides these bounded playbooks:
+
+| Playbook | Purpose |
+| --- | --- |
+| `execution-node-preflight.yml` | Revalidate identity, Rocky 9, and the explicit 8 GiB `lab-canary` profile without mutation |
+| `execution-node-install.yml` | Preserve rollback state, validate the injected bundle, and install the loopback Receptor plus NGINX edge |
+| `execution-node-validate.yml` | Prove exact versions, certificates, services, listeners, firewall policy, and control-plane reachability |
+| `execution-node-canary.yml` | Run a read-only execution-environment identity canary on the bounded instance group |
+| `execution-node-remove.yml` | Restore the recorded package, account, SELinux, firewall, and proxy boundary |
+| `execution-node-restore.yml` | Reinstall the same reviewed bundle identity after rollback |
+
+Run them in this order: preflight, install, validation, canary, removal,
+rollback absence checks, restore, validation, then a second install requiring
+zero unexpected changes. Never pass bundle PEM material as source or ordinary
+extra variables; use only the dedicated encrypted AWX custom credential whose
+base64 injectors are hash-checked by the install playbook.
+
 See
 [CHG-2026-008](change-records/CHG-2026-008-awx-execution-plane.md) for the
 scope, gates, rollback, and acceptance contract.
