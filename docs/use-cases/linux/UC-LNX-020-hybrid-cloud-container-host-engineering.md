@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case implements **Hybrid-Cloud and Container Host Engineering** as a traceable IaC capability. Its operational trigger is: a new linux node class or runtime baseline is needed across on-premises or cloud environments. Every outcome must be reproducible from reviewed source, bounded during execution, observable, idempotent, recoverable, and evidenced.
+A container host still needs a dependable operating system. Provider provisioning stays separate from a shared baseline for kernel, runtime, storage, network, security, observability, and node lifecycle.
 
 ## Expected outcome
 
-Secure Linux hosts for cloud VMs, Docker/Podman, Kubernetes and hybrid workloads. Operators can trace the request to an immutable Git revision, review PLAN/CHECK, execute one canary, expand only through health gates, prove repeat convergence, recover through a tested path, and hand off evidence without relying on console memory.
+The same node class can be created on a supported on-premises or cloud target, join the workload platform, pass admission checks, and be replaced without manual repair.
 
 ## Trigger and actors
 
@@ -45,6 +45,12 @@ Secure Linux hosts for cloud VMs, Docker/Podman, Kubernetes and hybrid workloads
 **In scope:** Image and bootstrap parity, cloud metadata/identity, container runtime, cgroups, storage/network prerequisites, kernel modules/sysctls, node hardening, labels, telemetry, and conformance.
 
 **Excluded:** Application container deployment, Kubernetes add-ons, cloud IAM design beyond host attachment, and snowflake images.
+
+## Architecture diagram
+
+![UC-LNX-020 Hybrid-Cloud and Container Host Engineering architecture](../../assets/use-cases/UC-LNX-020/UC-LNX-020-architecture.svg)
+
+A shared node specification branches through provider provisioning, converges on one container-host baseline, and finishes with platform admission and health evidence.
 
 ## IaC delivery model
 
@@ -94,7 +100,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-020-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need variables, roles/modules, tests, pipeline gates, and an operating contract for Hybrid-Cloud and Container Host Engineering so runtime work does not depend on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for Hybrid-Cloud and Container Host Engineering in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress only where supporting source is listed; the full source gate is not accepted.
 
@@ -118,7 +124,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-020-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need an approved PLAN/CHECK and canary-first APPLY for Hybrid-Cloud and Container Host Engineering so unsafe behavior stops before fleet expansion.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying Hybrid-Cloud and Container Host Engineering. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no runtime acceptance is claimed.
 
@@ -142,7 +148,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-020-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeat convergence, runtime health, recovery proof, and an evidence package for Hybrid-Cloud and Container Host Engineering so the capability is supportable and auditable.
+**Description:** Operations accepts Hybrid-Cloud and Container Host Engineering only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 

@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case implements **Git-Based Linux Change Validation** as a traceable IaC capability. Its operational trigger is: any linux inventory, variable, role, playbook, pipeline, or runbook change is proposed. Every outcome must be reproducible from reviewed source, bounded during execution, observable, idempotent, recoverable, and evidenced.
+Git helps only when a proposed Linux change can be understood before it reaches a host. Review, source tests, policy, plan output, approval, canary execution, rollback, and evidence stay tied to one revision.
 
 ## Expected outcome
 
-Peer-reviewed source, CI checks, staged rollout, rollback and auditable change evidence. Operators can trace the request to an immutable Git revision, review PLAN/CHECK, execute one canary, expand only through health gates, prove repeat convergence, recover through a tested path, and hand off evidence without relying on console memory.
+A reviewer sees what changes, why it is safe, which tests ran, and which recovery path is ready. The same SHA reaches runtime, and the merge record links the operating result.
 
 ## Trigger and actors
 
@@ -45,6 +45,12 @@ Peer-reviewed source, CI checks, staged rollout, rollback and auditable change e
 **In scope:** Branch/MR policy, CODEOWNERS, pipeline includes, tagged runners, lint/tests, inventory/schema checks, secret/policy scanning, artifact plan/check, approvals, AWX revision, canary, convergence, rollback, and evidence.
 
 **Excluded:** Direct main commits, untagged runner dependence, manual AWX source edits, pipeline-success-as-runtime-acceptance, and emergency changes left unreconciled.
+
+## Architecture diagram
+
+![UC-LNX-024 Git-Based Linux Change Validation architecture](../../assets/use-cases/UC-LNX-024/UC-LNX-024-architecture.svg)
+
+A merge request passes source and policy gates, approved orchestration, canary and cohort execution, then feeds runtime and recovery proof back to the record.
 
 ## IaC delivery model
 
@@ -94,7 +100,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-024-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need variables, roles/modules, tests, pipeline gates, and an operating contract for Git-Based Linux Change Validation so runtime work does not depend on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for Git-Based Linux Change Validation in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress only where supporting source is listed; the full source gate is not accepted.
 
@@ -118,7 +124,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-024-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need an approved PLAN/CHECK and canary-first APPLY for Git-Based Linux Change Validation so unsafe behavior stops before fleet expansion.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying Git-Based Linux Change Validation. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no runtime acceptance is claimed.
 
@@ -142,7 +148,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-024-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeat convergence, runtime health, recovery proof, and an evidence package for Git-Based Linux Change Validation so the capability is supportable and auditable.
+**Description:** Operations accepts Git-Based Linux Change Validation only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 

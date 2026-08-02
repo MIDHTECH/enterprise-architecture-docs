@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case implements **Package Repository Management** as reviewed desired state with operational evidence. Its trigger is: a repository, signing key, mirror, package stream, or exception must change. The outcome must be reproducible from Git, bounded during execution, observable at runtime, idempotent on repeat, and recoverable without hidden console state.
+Every installed package inherits trust from its repository and signing key. Definitions, priorities, streams, keys, and exceptions therefore live in reviewed code with owners and expiry dates.
 
 ## Expected outcome
 
-Approved and pinned software sources. An engineer can trace the request to an immutable revision, review PLAN/CHECK output, execute a canary through the approved control plane, expand safely, prove zero unexpected change, recover, and hand the control to operations.
+A canary resolves only approved sources, rejects untrusted metadata, and gets the intended version without silently changing other streams. The fleet can return to its previous repository definitions.
 
 ## Trigger and actors
 
@@ -46,13 +46,19 @@ Approved and pinned software sources. An engineer can trace the request to an im
 
 **Excluded:** Unreviewed curl-pipe-shell installs, credentials in repo files, public moving sources without provenance, and application dependency management.
 
+## Architecture diagram
+
+![UC-LNX-013 Package Repository Management architecture](../../assets/use-cases/UC-LNX-013/UC-LNX-013-architecture.svg)
+
+Repository policy and signed metadata pass through configuration and resolution tests before package provenance is recorded for the fleet.
+
 ## IaC delivery model
 
 | Layer | Responsibility |
 | --- | --- |
 | GitLab | Source of truth, merge request, protected branch, CI gates, immutable SHA, and artifacts |
 | Jenkins | Manual PLAN/CHECK/APPLY/ROLLBACK selection, approval, concurrency control, and evidence aggregation |
-| Terraform/image automation | Infrastructure lifecycle only when the use case changes VM, image, volume, or network resources |
+| Terraform/image automation | Infrastructure lifecycle only when the change affects VM, image, volume, or network resources |
 | AWX and Ansible | OS desired state, check mode, inventory limit, serial rollout, and per-host events |
 | Observability/evidence | Health gates, logs, metrics, incidents, expected-versus-observed result, and acceptance |
 
@@ -94,7 +100,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-013-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need variables, roles/modules, tests, pipeline gates, and an operating contract for Package Repository Management so runtime work never depends on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for Package Repository Management in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress where supporting source is listed; the complete source gate is not accepted.
 
@@ -118,7 +124,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-013-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need approved PLAN/CHECK and canary-first APPLY for Package Repository Management so unsafe behavior stops before fleet expansion.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying Package Repository Management. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no live acceptance is claimed.
 
@@ -142,7 +148,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-013-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeat convergence, runtime health, recovery proof, and an evidence package for Package Repository Management so the capability can be supported and audited.
+**Description:** Operations accepts Package Repository Management only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 
@@ -214,7 +220,7 @@ Primary scenario: **After adding an internal mirror, dnf selects an older packag
 1. **Question:** Explain the end-to-end IaC architecture for Package Repository Management.
    **Answer signals:** Separate source validation, approval/orchestration, infrastructure ownership, AWX/Ansible desired state, runtime health, convergence, evidence, and recovery.
 
-2. **Question:** How would you model this use case so repeated execution is safe?
+2. **Question:** How would you model package repository management so repeated execution stays safe?
    **Answer signals:** repository_id, repository_baseurl, repository_gpg_fingerprint, repository_priority_pin; stable identities, declarative state, handlers only on change, bounded targets, and explicit exclusions.
 
 3. **Question:** What must be visible in a GitLab pipeline before runtime approval?

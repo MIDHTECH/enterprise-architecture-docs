@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case turns **Server Build and Retirement** into a repeatable engineering capability rather than a collection of console actions. The operational trigger is: a service owner requests a new server or an owner-approved retirement. Source review, non-mutating validation, controlled execution, runtime verification, repeat convergence, recovery, and evidence are all part of the delivered outcome.
+A server needs a controlled beginning and an equally controlled end. One lifecycle record keeps ownership, monitoring, backup, data disposition, access removal, and decommission evidence from getting lost between teams.
 
 ## Expected outcome
 
-Approved creation, handoff, backup and decommission workflow. An engineer can select an immutable Git revision, review the exact plan or Ansible check result, execute against a bounded canary, expand only after health checks pass, prove a second zero-change convergence, and recover through the documented path. Definition or source presence alone is not acceptance.
+A build reaches handoff only after baseline, monitoring, backup, and owner checks pass. Retirement clears dependencies and retention obligations, then records how access, data, DNS, inventory, and compute were removed.
 
 ## Trigger and actors
 
@@ -47,13 +47,19 @@ Approved creation, handoff, backup and decommission workflow. An engineer can se
 
 **Excluded:** Emergency break-glass recovery, undocumented deletion, and application data disposal without owner approval.
 
+## Architecture diagram
+
+![UC-LNX-004 Server Build and Retirement architecture](../../assets/use-cases/UC-LNX-004/UC-LNX-004-architecture.svg)
+
+The owner-approved request flows through build or retirement orchestration and closes with either service handoff or verified decommission evidence.
+
 ## IaC delivery model
 
 | Layer | Ownership and control |
 | --- | --- |
 | GitLab | Authoritative source, merge request, protected branch, validation pipeline, immutable SHA, and artifacts |
 | Jenkins | Operator-selected PLAN/CHECK/APPLY/ROLLBACK action, approval boundary, concurrency control, and evidence aggregation |
-| Terraform/image automation | Owns VM, image, volume, network, and other infrastructure lifecycle only when this use case needs those resources |
+| Terraform/image automation | Owns VM, image, volume, network, and other infrastructure lifecycle only when the change touches those resources |
 | AWX and Ansible | Own operating-system desired state, inventory targeting, check mode, serial rollout, and per-host job events |
 | Observability and evidence | Health gates, logs, metrics, alerts, expected-versus-observed result, incident links, and acceptance record |
 
@@ -95,7 +101,7 @@ The table under **End-to-end implementation** is the implementation map required
 
 ### STORY-LNX-004-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need the variables, roles/modules, tests, pipeline gates, and operating contract for Server Build and Retirement in Git so that no runtime change depends on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for Server Build and Retirement in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress; bounded supporting source exists, but the full use-case source gate is not accepted.
 
@@ -119,7 +125,7 @@ The table under **End-to-end implementation** is the implementation map required
 
 ### STORY-LNX-004-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need an approved PLAN/CHECK followed by a canary-first APPLY for Server Build and Retirement so that failures stop before they affect the fleet.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying Server Build and Retirement. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no runtime acceptance is claimed.
 
@@ -143,7 +149,7 @@ The table under **End-to-end implementation** is the implementation map required
 
 ### STORY-LNX-004-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeated convergence, runtime health, recovery proof, and an evidence package for Server Build and Retirement so that operations can support and audit the control.
+**Description:** Operations accepts Server Build and Retirement only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 
@@ -215,7 +221,7 @@ Primary scenario: **A retirement plan removes the VM but leaves its DNS record, 
 1. **Question:** Explain the end-to-end IaC architecture for Server Build and Retirement.
    **Answer signals:** Separate GitLab source gates, Jenkins approval, Terraform/image ownership where applicable, AWX/Ansible desired state, canary rollout, evidence, and rollback.
 
-2. **Question:** Which variables and boundaries make this use case idempotent and reusable?
+2. **Question:** Which inputs and target boundaries make server build and retirement safe to repeat and reuse?
    **Answer signals:** server_lifecycle_state, server_owner, retention_ticket, backup_restore_evidence_id; immutable inputs, explicit target limits, deterministic tasks, and no hidden UI state.
 
 3. **Question:** What would you require before approving the first production APPLY?

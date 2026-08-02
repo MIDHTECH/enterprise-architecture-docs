@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case implements **DNS, NTP and Host Networking** as reviewed desired state with operational evidence. Its trigger is: a host, resolver, route, interface, or time-source requirement changes. The outcome must be reproducible from Git, bounded during execution, observable at runtime, idempotent on repeat, and recoverable without hidden console state.
+DNS, time, routes, and interfaces form one dependency chain even when different teams own them. The workflow validates that chain and protects the management path before applying network state.
 
 ## Expected outcome
 
-Consistent infrastructure service configuration. An engineer can trace the request to an immutable revision, review PLAN/CHECK output, execute a canary through the approved control plane, expand safely, prove zero unexpected change, recover, and hand the control to operations.
+The canary keeps management access, resolves forward and reverse records, follows intended routes, and stays within the allowed clock offset. Failure restores the previous known-good profile.
 
 ## Trigger and actors
 
@@ -46,13 +46,19 @@ Consistent infrastructure service configuration. An engineer can trace the reque
 
 **Excluded:** Network appliance firmware, Kubernetes CNI policy, unreviewed DNS UI edits, and changing management routes without console recovery.
 
+## Architecture diagram
+
+![UC-LNX-011 DNS, NTP and Host Networking architecture](../../assets/use-cases/UC-LNX-011/UC-LNX-011-architecture.svg)
+
+Authoritative DNS, IP, route, and time inputs become host state through a connectivity-safe canary and resolution, reachability, and clock checks.
+
 ## IaC delivery model
 
 | Layer | Responsibility |
 | --- | --- |
 | GitLab | Source of truth, merge request, protected branch, CI gates, immutable SHA, and artifacts |
 | Jenkins | Manual PLAN/CHECK/APPLY/ROLLBACK selection, approval, concurrency control, and evidence aggregation |
-| Terraform/image automation | Infrastructure lifecycle only when the use case changes VM, image, volume, or network resources |
+| Terraform/image automation | Infrastructure lifecycle only when the change affects VM, image, volume, or network resources |
 | AWX and Ansible | OS desired state, check mode, inventory limit, serial rollout, and per-host events |
 | Observability/evidence | Health gates, logs, metrics, incidents, expected-versus-observed result, and acceptance |
 
@@ -94,7 +100,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-011-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need variables, roles/modules, tests, pipeline gates, and an operating contract for DNS, NTP and Host Networking so runtime work never depends on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for DNS, NTP and Host Networking in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress where supporting source is listed; the complete source gate is not accepted.
 
@@ -118,7 +124,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-011-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need approved PLAN/CHECK and canary-first APPLY for DNS, NTP and Host Networking so unsafe behavior stops before fleet expansion.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying DNS, NTP and Host Networking. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no live acceptance is claimed.
 
@@ -142,7 +148,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-011-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeat convergence, runtime health, recovery proof, and an evidence package for DNS, NTP and Host Networking so the capability can be supported and audited.
+**Description:** Operations accepts DNS, NTP and Host Networking only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 
@@ -214,7 +220,7 @@ Primary scenario: **The host is reachable by IP after the change, but TLS and Ke
 1. **Question:** Explain the end-to-end IaC architecture for DNS, NTP and Host Networking.
    **Answer signals:** Separate source validation, approval/orchestration, infrastructure ownership, AWX/Ansible desired state, runtime health, convergence, evidence, and recovery.
 
-2. **Question:** How would you model this use case so repeated execution is safe?
+2. **Question:** How would you model DNS, NTP, and host networking so repeated execution stays safe?
    **Answer signals:** host_fqdn_ipv4, dns_servers, network_routes, chrony_sources; stable identities, declarative state, handlers only on change, bounded targets, and explicit exclusions.
 
 3. **Question:** What must be visible in a GitLab pipeline before runtime approval?

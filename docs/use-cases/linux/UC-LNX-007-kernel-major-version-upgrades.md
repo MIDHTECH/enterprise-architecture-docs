@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case turns **Kernel and Major-Version Upgrades** into a repeatable engineering capability rather than a collection of console actions. The operational trigger is: a supported kernel stream or os major version is approved after compatibility review. Source review, non-mutating validation, controlled execution, runtime verification, repeat convergence, recovery, and evidence are all part of the delivered outcome.
+Kernel and major-version upgrades need more proof than routine patching. Application, driver, storage, boot, and agent compatibility are rehearsed on a representative host before production is touched.
 
 ## Expected outcome
 
-Rehearsed upgrade and rollback workflow. An engineer can select an immutable Git revision, review the exact plan or Ansible check result, execute against a bounded canary, expand only after health checks pass, prove a second zero-change convergence, and recover through the documented path. Definition or source presence alone is not acceptance.
+A canary boots the approved version, rejoins monitoring, and passes service checks without manual repair. The team also proves the previous boot entry or replacement path within the recovery window.
 
 ## Trigger and actors
 
@@ -47,13 +47,19 @@ Rehearsed upgrade and rollback workflow. An engineer can select an immutable Git
 
 **Excluded:** In-place production experiments, unsupported cross-distribution conversion, and upgrades without restore proof.
 
+## Architecture diagram
+
+![UC-LNX-007 Kernel and Major-Version Upgrades architecture](../../assets/use-cases/UC-LNX-007/UC-LNX-007-architecture.svg)
+
+Compatibility inputs and the approved target pass through rehearsal and a controlled reboot, ending with service health and rollback proof.
+
 ## IaC delivery model
 
 | Layer | Ownership and control |
 | --- | --- |
 | GitLab | Authoritative source, merge request, protected branch, validation pipeline, immutable SHA, and artifacts |
 | Jenkins | Operator-selected PLAN/CHECK/APPLY/ROLLBACK action, approval boundary, concurrency control, and evidence aggregation |
-| Terraform/image automation | Owns VM, image, volume, network, and other infrastructure lifecycle only when this use case needs those resources |
+| Terraform/image automation | Owns VM, image, volume, network, and other infrastructure lifecycle only when the change touches those resources |
 | AWX and Ansible | Own operating-system desired state, inventory targeting, check mode, serial rollout, and per-host job events |
 | Observability and evidence | Health gates, logs, metrics, alerts, expected-versus-observed result, incident links, and acceptance record |
 
@@ -95,7 +101,7 @@ The table under **End-to-end implementation** is the implementation map required
 
 ### STORY-LNX-007-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need the variables, roles/modules, tests, pipeline gates, and operating contract for Kernel and Major-Version Upgrades in Git so that no runtime change depends on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for Kernel and Major-Version Upgrades in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress; bounded supporting source exists, but the full use-case source gate is not accepted.
 
@@ -119,7 +125,7 @@ The table under **End-to-end implementation** is the implementation map required
 
 ### STORY-LNX-007-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need an approved PLAN/CHECK followed by a canary-first APPLY for Kernel and Major-Version Upgrades so that failures stop before they affect the fleet.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying Kernel and Major-Version Upgrades. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no runtime acceptance is claimed.
 
@@ -143,7 +149,7 @@ The table under **End-to-end implementation** is the implementation map required
 
 ### STORY-LNX-007-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeated convergence, runtime health, recovery proof, and an evidence package for Kernel and Major-Version Upgrades so that operations can support and audit the control.
+**Description:** Operations accepts Kernel and Major-Version Upgrades only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 
@@ -215,7 +221,7 @@ Primary scenario: **The upgraded host boots, but a vendor kernel module and moni
 1. **Question:** Explain the end-to-end IaC architecture for Kernel and Major-Version Upgrades.
    **Answer signals:** Separate GitLab source gates, Jenkins approval, Terraform/image ownership where applicable, AWX/Ansible desired state, canary rollout, evidence, and rollback.
 
-2. **Question:** Which variables and boundaries make this use case idempotent and reusable?
+2. **Question:** Which inputs and target boundaries make kernel and major-version upgrades safe to repeat and reuse?
    **Answer signals:** upgrade_target_release, upgrade_strategy, upgrade_canary_limit, upgrade_rollback_artifact; immutable inputs, explicit target limits, deterministic tasks, and no hidden UI state.
 
 3. **Question:** What would you require before approving the first production APPLY?

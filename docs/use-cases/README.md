@@ -46,9 +46,16 @@ page must additionally contain:
 4. at least three independently testable Jira stories covering source/design,
    controlled execution, and acceptance/rollback;
 5. production-like failure modes and troubleshooting order; and
-6. at least nine interview questions spanning implementation, architecture,
+6. one purpose-built SVG architecture diagram that shows the actual source,
+   approval, execution, runtime, evidence, and recovery path for that page; and
+7. at least nine interview questions spanning implementation, architecture,
    design tradeoffs, troubleshooting, security, rollback, and behavioral
    ownership, with answer signals rather than memorized scripts.
+
+Write as an experienced engineer explaining real work to another engineer.
+Avoid stock openings such as `This use case...` and formulaic Jira prose such
+as `As a ..., I need ...`. Story descriptions must still make the owner, need,
+operational value, and boundary clear, but they should read naturally.
 
 Documentation may describe planned paths needed for the end state, but it must
 label them `Planned`. A path, job, pipeline, screenshot, or outcome must never

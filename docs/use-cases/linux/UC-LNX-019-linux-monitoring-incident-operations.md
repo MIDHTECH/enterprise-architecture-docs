@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case implements **Linux Monitoring and Incident Operations** as a traceable IaC capability. Its operational trigger is: a host signal breaches an actionable threshold or an operator declares an incident. Every outcome must be reproducible from reviewed source, bounded during execution, observable, idempotent, recoverable, and evidenced.
+Monitoring earns its cost when an alert leads the on-call engineer to the right action. Metrics, logs, thresholds, ownership, runbooks, incident timelines, and durable fixes belong to one operating loop.
 
 ## Expected outcome
 
-Host metrics, logs, alerts, on-call triage, RCA and durable corrective actions. Operators can trace the request to an immutable Git revision, review PLAN/CHECK, execute one canary, expand only through health gates, prove repeat convergence, recover through a tested path, and hand off evidence without relying on console memory.
+A representative fault creates one actionable alert with correct severity, owner, context, and runbook. Recovery clears it without hiding the cause, and the corrective change returns through Git.
 
 ## Trigger and actors
 
@@ -46,6 +46,12 @@ Host metrics, logs, alerts, on-call triage, RCA and durable corrective actions. 
 
 **Excluded:** Alerting on every metric, screenshots as sole evidence, untested paging routes, and permanent console fixes during incidents.
 
+## Architecture diagram
+
+![UC-LNX-019 Linux Monitoring and Incident Operations architecture](../../assets/use-cases/UC-LNX-019/UC-LNX-019-architecture.svg)
+
+Host signals pass through alert rules and triage into incident response, then recovery evidence and a durable Git correction close the loop.
+
 ## IaC delivery model
 
 | Layer | Responsibility |
@@ -56,7 +62,7 @@ Host metrics, logs, alerts, on-call triage, RCA and durable corrective actions. 
 | AWX and Ansible | OS desired state, inventory limit, check mode, serial rollout, job events |
 | Observability/evidence | Health, logs, metrics, expected-versus-observed, incidents, acceptance |
 
-Current-source reality: The Linux repository collects capacity evidence; separate observability repositories operate fleet telemetry, but this use case is not integrated end to end.
+Current-source reality: The Linux repository collects capacity evidence, and separate observability repositories operate fleet telemetry; the two paths are not yet integrated end to end.
 
 ## End-to-end implementation
 
@@ -94,7 +100,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-019-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need variables, roles/modules, tests, pipeline gates, and an operating contract for Linux Monitoring and Incident Operations so runtime work does not depend on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for Linux Monitoring and Incident Operations in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress only where supporting source is listed; the full source gate is not accepted.
 
@@ -110,7 +116,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 2. Deploy exporters/log agents through Ansible with TLS/credentials references and resource limits.
 3. Create dashboards and alerts as code; test rule syntax, labels, routing, missing-data behavior, and known failure fixtures.
 
-**Completed work:** The Linux repository collects capacity evidence; separate observability repositories operate fleet telemetry, but this use case is not integrated end to end.
+**Completed work:** The Linux repository collects capacity evidence, and separate observability repositories operate fleet telemetry; the two paths are not yet integrated end to end.
 
 **Validation and rollback:** Validate without runtime mutation; revert source and regenerate artifacts from the prior accepted revision if incorrect.
 
@@ -118,7 +124,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-019-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need an approved PLAN/CHECK and canary-first APPLY for Linux Monitoring and Incident Operations so unsafe behavior stops before fleet expansion.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying Linux Monitoring and Incident Operations. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no runtime acceptance is claimed.
 
@@ -142,7 +148,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-019-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeat convergence, runtime health, recovery proof, and an evidence package for Linux Monitoring and Incident Operations so the capability is supportable and auditable.
+**Description:** Operations accepts Linux Monitoring and Incident Operations only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 
@@ -182,7 +188,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 | Area | Expected | Current observation | Decision |
 | --- | --- | --- | --- |
-| Source | Complete IaC and pipeline for Linux Monitoring and Incident Operations | The Linux repository collects capacity evidence; separate observability repositories operate fleet telemetry, but this use case is not integrated end to end. | Not yet code complete |
+| Source | Complete IaC and pipeline for Linux Monitoring and Incident Operations | The Linux repository collects capacity evidence, and separate observability repositories operate fleet telemetry; the two paths are not yet integrated end to end. | Not yet code complete |
 | Runtime | Approved canary/cohort execution | No accepted use-case run | Pending |
 | Idempotence | Identical second run has zero unexpected change | No accepted convergence proof | Pending |
 | Recovery | Recovery exercised and timed | No accepted recovery artifact | Pending |

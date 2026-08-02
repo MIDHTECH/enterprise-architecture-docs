@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case implements **Filesystem, LVM and Storage Management** as reviewed desired state with operational evidence. Its trigger is: a reviewed request adds, grows, mounts, migrates, or recovers storage. The outcome must be reproducible from Git, bounded during execution, observable at runtime, idempotent on repeat, and recoverable without hidden console state.
+Storage work is safe only when device, filesystem, mount, owner, capacity forecast, and recovery method agree. Ambiguous devices and destructive operations stop for a separate decision.
 
 ## Expected outcome
 
-Capacity, mount, ownership and recovery standards. An engineer can trace the request to an immutable revision, review PLAN/CHECK output, execute a canary through the approved control plane, expand safely, prove zero unexpected change, recover, and hand the control to operations.
+A named host receives the intended volume, filesystem, mount options, ownership, and monitoring without affecting unrelated storage. Recovery proves that data can be restored or remounted.
 
 ## Trigger and actors
 
@@ -46,13 +46,19 @@ Capacity, mount, ownership and recovery standards. An engineer can trace the req
 
 **Excluded:** Destructive shrink without rebuild, undocumented mkfs, SAN administration, and application-level data migration without owner procedures.
 
+## Architecture diagram
+
+![UC-LNX-010 Filesystem, LVM and Storage Management architecture](../../assets/use-cases/UC-LNX-010/UC-LNX-010-architecture.svg)
+
+An approved capacity request resolves to a specific device, passes through LVM and filesystem controls, and closes with mount, capacity, and recovery evidence.
+
 ## IaC delivery model
 
 | Layer | Responsibility |
 | --- | --- |
 | GitLab | Source of truth, merge request, protected branch, CI gates, immutable SHA, and artifacts |
 | Jenkins | Manual PLAN/CHECK/APPLY/ROLLBACK selection, approval, concurrency control, and evidence aggregation |
-| Terraform/image automation | Infrastructure lifecycle only when the use case changes VM, image, volume, or network resources |
+| Terraform/image automation | Infrastructure lifecycle only when the change affects VM, image, volume, or network resources |
 | AWX and Ansible | OS desired state, check mode, inventory limit, serial rollout, and per-host events |
 | Observability/evidence | Health gates, logs, metrics, incidents, expected-versus-observed result, and acceptance |
 
@@ -94,7 +100,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-010-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need variables, roles/modules, tests, pipeline gates, and an operating contract for Filesystem, LVM and Storage Management so runtime work never depends on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for Filesystem, LVM and Storage Management in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress where supporting source is listed; the complete source gate is not accepted.
 
@@ -118,7 +124,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-010-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need approved PLAN/CHECK and canary-first APPLY for Filesystem, LVM and Storage Management so unsafe behavior stops before fleet expansion.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying Filesystem, LVM and Storage Management. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no live acceptance is claimed.
 
@@ -142,7 +148,7 @@ The implementation map above is authoritative for this detail page. `Existing` p
 
 ### STORY-LNX-010-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeat convergence, runtime health, recovery proof, and an evidence package for Filesystem, LVM and Storage Management so the capability can be supported and audited.
+**Description:** Operations accepts Filesystem, LVM and Storage Management only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 
@@ -214,7 +220,7 @@ Primary scenario: **A new disk appears as a different /dev name after reboot and
 1. **Question:** Explain the end-to-end IaC architecture for Filesystem, LVM and Storage Management.
    **Answer signals:** Separate source validation, approval/orchestration, infrastructure ownership, AWX/Ansible desired state, runtime health, convergence, evidence, and recovery.
 
-2. **Question:** How would you model this use case so repeated execution is safe?
+2. **Question:** How would you model filesystem and LVM changes so repeated execution stays safe?
    **Answer signals:** storage_device_id, storage_vg_lv, storage_filesystem, storage_mount_options; stable identities, declarative state, handlers only on change, bounded targets, and explicit exclusions.
 
 3. **Question:** What must be visible in a GitLab pipeline before runtime approval?

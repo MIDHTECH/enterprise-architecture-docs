@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case implements **Linux Automation and Tooling Development** as a traceable IaC capability. Its operational trigger is: a repeated operational task needs a reusable, testable interface instead of copy-paste commands. Every outcome must be reproducible from reviewed source, bounded during execution, observable, idempotent, recoverable, and evidenced.
+A repeated shell command becomes platform software when others depend on it. Bash and Python tools need clear inputs, safe defaults, structured output, tests, packaging, versioning, and an owner.
 
 ## Expected outcome
 
-Tested Bash/Python utilities, APIs and reusable operational automation. Operators can trace the request to an immutable Git revision, review PLAN/CHECK, execute one canary, expand only through health gates, prove repeat convergence, recover through a tested path, and hand off evidence without relying on console memory.
+An engineer installs a pinned release, uses dry-run mode, understands exit codes and logs, and sees the same behavior in CI and on a canary. Failures stop safely and rollback keeps the prior release.
 
 ## Trigger and actors
 
@@ -45,6 +45,12 @@ Tested Bash/Python utilities, APIs and reusable operational automation. Operator
 **In scope:** Bash/Python standards, CLI/API design, input validation, packaging, tests, logging, dry run, privilege boundary, versioning, release artifacts, and deprecation.
 
 **Excluded:** One-off unreviewed scripts, embedded credentials, mutable downloads, and tools that bypass Terraform/Ansible ownership.
+
+## Architecture diagram
+
+![UC-LNX-018 Linux Automation and Tooling Development architecture](../../assets/use-cases/UC-LNX-018/UC-LNX-018-architecture.svg)
+
+An operational need becomes a tested CLI or API through source review, integration gates, a dry-run canary, and versioned release telemetry.
 
 ## IaC delivery model
 
@@ -94,7 +100,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-018-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need variables, roles/modules, tests, pipeline gates, and an operating contract for Linux Automation and Tooling Development so runtime work does not depend on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for Linux Automation and Tooling Development in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress only where supporting source is listed; the full source gate is not accepted.
 
@@ -118,7 +124,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-018-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need an approved PLAN/CHECK and canary-first APPLY for Linux Automation and Tooling Development so unsafe behavior stops before fleet expansion.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying Linux Automation and Tooling Development. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no runtime acceptance is claimed.
 
@@ -142,7 +148,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-018-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeat convergence, runtime health, recovery proof, and an evidence package for Linux Automation and Tooling Development so the capability is supportable and auditable.
+**Description:** Operations accepts Linux Automation and Tooling Development only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 

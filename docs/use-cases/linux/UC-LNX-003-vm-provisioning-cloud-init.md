@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case turns **VM Provisioning with cloud-init** into a repeatable engineering capability rather than a collection of console actions. The operational trigger is: an approved vm request has capacity, dns, ip, ownership, and lifecycle metadata. Source review, non-mutating validation, controlled execution, runtime verification, repeat convergence, recovery, and evidence are all part of the delivered outcome.
+Provisioning is not finished when a VM powers on. Ownership, addressing, DNS, image, SSH bootstrap, and expiry details must travel from Git to a reachable host without anyone repairing cloud-init by hand.
 
 ## Expected outcome
 
-Repeatable identity, network and SSH bootstrap. An engineer can select an immutable Git revision, review the exact plan or Ansible check result, execute against a bounded canary, expand only after health checks pass, prove a second zero-change convergence, and recover through the documented path. Definition or source presence alone is not acceptance.
+An approved request creates one VM with the intended identity and network, cloud-init completes once, and Ansible reaches it through the expected account. Reapplying the revision leaves both VM and bootstrap state unchanged.
 
 ## Trigger and actors
 
@@ -47,13 +47,19 @@ Repeatable identity, network and SSH bootstrap. An engineer can select an immuta
 
 **Excluded:** Long-term OS configuration in cloud-init, embedded secrets, product installation, and DHCP-created identity drift.
 
+## Architecture diagram
+
+![UC-LNX-003 VM Provisioning with cloud-init architecture](../../assets/use-cases/UC-LNX-003/UC-LNX-003-architecture.svg)
+
+Request metadata and IPAM decisions drive Terraform and cloud-init, followed by DNS, SSH, and inventory checks before handoff.
+
 ## IaC delivery model
 
 | Layer | Ownership and control |
 | --- | --- |
 | GitLab | Authoritative source, merge request, protected branch, validation pipeline, immutable SHA, and artifacts |
 | Jenkins | Operator-selected PLAN/CHECK/APPLY/ROLLBACK action, approval boundary, concurrency control, and evidence aggregation |
-| Terraform/image automation | Owns VM, image, volume, network, and other infrastructure lifecycle only when this use case needs those resources |
+| Terraform/image automation | Owns VM, image, volume, network, and other infrastructure lifecycle only when the change touches those resources |
 | AWX and Ansible | Own operating-system desired state, inventory targeting, check mode, serial rollout, and per-host job events |
 | Observability and evidence | Health gates, logs, metrics, alerts, expected-versus-observed result, incident links, and acceptance record |
 
@@ -95,7 +101,7 @@ The table under **End-to-end implementation** is the implementation map required
 
 ### STORY-LNX-003-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need the variables, roles/modules, tests, pipeline gates, and operating contract for VM Provisioning with cloud-init in Git so that no runtime change depends on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for VM Provisioning with cloud-init in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress; bounded supporting source exists, but the full use-case source gate is not accepted.
 
@@ -119,7 +125,7 @@ The table under **End-to-end implementation** is the implementation map required
 
 ### STORY-LNX-003-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need an approved PLAN/CHECK followed by a canary-first APPLY for VM Provisioning with cloud-init so that failures stop before they affect the fleet.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying VM Provisioning with cloud-init. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no runtime acceptance is claimed.
 
@@ -143,7 +149,7 @@ The table under **End-to-end implementation** is the implementation map required
 
 ### STORY-LNX-003-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeated convergence, runtime health, recovery proof, and an evidence package for VM Provisioning with cloud-init so that operations can support and audit the control.
+**Description:** Operations accepts VM Provisioning with cloud-init only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 
@@ -215,7 +221,7 @@ Primary scenario: **The VM is running but SSH presents a different host key and 
 1. **Question:** Explain the end-to-end IaC architecture for VM Provisioning with cloud-init.
    **Answer signals:** Separate GitLab source gates, Jenkins approval, Terraform/image ownership where applicable, AWX/Ansible desired state, canary rollout, evidence, and rollback.
 
-2. **Question:** Which variables and boundaries make this use case idempotent and reusable?
+2. **Question:** Which inputs and target boundaries make VM provisioning with cloud-init safe to repeat and reuse?
    **Answer signals:** vm_fqdn, vm_ipv4_and_mac, cloud_init_image_id, bootstrap_public_key_id; immutable inputs, explicit target limits, deterministic tasks, and no hidden UI state.
 
 3. **Question:** What would you require before approving the first production APPLY?

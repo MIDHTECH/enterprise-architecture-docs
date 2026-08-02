@@ -17,11 +17,11 @@ Last verified: 2026-08-02
 
 ## Purpose
 
-This use case implements **Enterprise Identity Integration** as a traceable IaC capability. Its operational trigger is: a host cohort or role needs centrally governed identity and access. Every outcome must be reproducible from reviewed source, bounded during execution, observable, idempotent, recoverable, and evidenced.
+Central identity helps only when hosts fail predictably during directory, DNS, time, or certificate trouble. Enrollment, SSSD, PAM, group mappings, trust, offline behavior, and emergency access are tested together.
 
 ## Expected outcome
 
-LDAP, Kerberos, Active Directory, SSO, PAM and certificate-based host access. Operators can trace the request to an immutable Git revision, review PLAN/CHECK, execute one canary, expand only through health gates, prove repeat convergence, recover through a tested path, and hand off evidence without relying on console memory.
+Approved groups receive intended access, unauthorized users are denied, and authentication stays observable during dependency failures. Enrollment rolls back cleanly and cached access follows policy.
 
 ## Trigger and actors
 
@@ -45,6 +45,12 @@ LDAP, Kerberos, Active Directory, SSO, PAM and certificate-based host access. Op
 **In scope:** DNS/time prerequisites, realm discovery/join, SSSD, Kerberos, PAM/NSS, group-to-sudo mapping, SSH certificates, host certificates, offline cache, revocation, and evidence.
 
 **Excluded:** Directory schema redesign, hard-coded join passwords, broad domain-admin access, and removing local break glass before recovery proof.
+
+## Architecture diagram
+
+![UC-LNX-021 Enterprise Identity Integration architecture](../../assets/use-cases/UC-LNX-021/UC-LNX-021-architecture.svg)
+
+Directory and role policy become SSSD, Kerberos, PAM, and certificate configuration, followed by positive, negative, outage, and recovery tests.
 
 ## IaC delivery model
 
@@ -94,7 +100,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-021-001: Implement and validate the source model
 
-**Description:** As a Linux platform engineer, I need variables, roles/modules, tests, pipeline gates, and an operating contract for Enterprise Identity Integration so runtime work does not depend on undocumented console state.
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for Enterprise Identity Integration in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
 
 **Status:** In progress only where supporting source is listed; the full source gate is not accepted.
 
@@ -118,7 +124,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-021-002: Execute the bounded canary and rollout
 
-**Description:** As an operator, I need an approved PLAN/CHECK and canary-first APPLY for Enterprise Identity Integration so unsafe behavior stops before fleet expansion.
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying Enterprise Identity Integration. Failed health or negative tests stop the run, and expansion requires explicit approval.
 
 **Status:** Planned; no runtime acceptance is claimed.
 
@@ -142,7 +148,7 @@ The implementation map above distinguishes observed `Existing` paths from `Plann
 
 ### STORY-LNX-021-003: Prove convergence, recovery, and handoff
 
-**Description:** As an SRE, I need repeat convergence, runtime health, recovery proof, and an evidence package for Enterprise Identity Integration so the capability is supportable and auditable.
+**Description:** Operations accepts Enterprise Identity Integration only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
 
 **Status:** Planned; blocked until the canary story succeeds.
 
