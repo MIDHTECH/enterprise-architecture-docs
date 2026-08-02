@@ -255,9 +255,11 @@ Jenkins approval/orchestration
         |
 AWX 24.6.1 control plane on awx.example.com
         |
-Receptor mutual TLS
+Receptor mutual TLS to awx-execution.example.com:443
         |
-awx-execution.example.com
+NGINX stream TLS passthrough on the execution VM
+        |
+Receptor on 127.0.0.1:27199 only
         |
 Approved managed hosts and APIs
 ```
@@ -268,6 +270,12 @@ versioned execution environment. Its first instance group is
 `lab-infrastructure` and is limited to a read-only canary until rollback,
 restore, and idempotence pass.
 
+VM services must not expose backend host ports. They are published by
+canonical hostname through NGINX on the service VM. For this execution plane,
+only NGINX listens on the network-facing TCP 443 socket. It passes the mutual
+TLS stream unchanged to Receptor on `127.0.0.1:27199`. Firewalld must not open
+27199, and Receptor must not bind the VM address or `0.0.0.0`.
+
 The AWX-generated install bundle is authoritative for the Receptor version,
 certificate authority, node identity, and peer configuration. Record its exact
 versions and checksums in the change evidence; never commit generated private
@@ -276,9 +284,17 @@ stored in Harbor, and selected in AWX by immutable digest.
 
 The current execution VM is available at `192.168.1.121` with Rocky Linux 9.8,
 4 vCPU, 8 GiB RAM, 60 GB OS, and 50 GB data storage. SSH, DNS, UTC/NTP,
-SELinux, firewalld, and the guest agent pass. Podman and Receptor are not yet
-installed, and TCP 27199 remains closed. The target 16 GiB profile requires a
-fresh infra02 capacity decision before any resize.
+SELinux, firewalld, and the guest agent pass. The approved bounded profile is
+`lab-canary`; it is not a production sizing claim and does not authorize a
+resize. Podman, Receptor, and the change-owned NGINX stream configuration are
+not yet installed, and TCP 443 and 27199 remain closed.
+
+The canonical automation repository is
+`midhhealth/platform-delivery/ansible-awx`. It pins the AWX-generated bundle,
+Receptor 1.4.8, `ansible.receptor` 2.0.3, exact Rocky NGINX/stream-module and
+Podman packages, and the complete hashed Python runtime closure. AWX instance
+3 remains disabled and has run no jobs until the controlled deployment gate
+passes.
 
 See
 [CHG-2026-008](change-records/CHG-2026-008-awx-execution-plane.md) for the

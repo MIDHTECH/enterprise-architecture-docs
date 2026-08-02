@@ -13,16 +13,21 @@ Read-only inspection is allowed while a change is blocked. A direct manual
 installation is not an acceptable workaround for an unavailable GitLab,
 Jenkins, or AWX control plane.
 
+Never expose a VM service by publishing its backend host port. Install NGINX
+on the service VM and expose the service by its canonical hostname. Backend
+listeners must remain loopback-only or otherwise private to the approved proxy
+boundary; firewalld must admit only the documented NGINX frontend.
+
 ## Active change
 
 | Field | Current value |
 | --- | --- |
 | Change ID | `CHG-2026-008` |
 | Component | AWX execution plane: only `awx-execution.example.com` and its Receptor registration |
-| State | Planning and pre-deployment validation; documentation and source CI must pass before runtime mutation. |
-| Blocker | Canonical `ansible-awx` source is not published; exact install-bundle pins and the 8-versus-16 GiB capacity decision are pending. |
-| Permitted work | Publish the focused change record, create and validate source automation, inspect the generated install bundle, then run the controlled canary/rollback/restore sequence. |
-| Prohibited work | Ingress, storage, product, SSO, EDA, HA, or another VM/component change; direct execution-node installation is also prohibited. |
+| State | Pre-deployment source and architecture publication; runtime mutation remains gated. |
+| Blocker | The hostname-only NGINX/Receptor design must pass documentation CI, source main pipeline 483 must pass, and install/rollback automation must be reviewed before deployment. |
+| Permitted work | Publish the NGINX hostname boundary, complete reviewed install/rollback source, then run the controlled canary/rollback/restore sequence through AWX. |
+| Prohibited work | Ingress, storage, product, SSO, EDA, HA, or another VM/component change; direct installation or direct exposure of Receptor port 27199 is prohibited. |
 | Exit criteria | Node Ready in its bounded group; canary, rollback, restore, final zero-change convergence, runtime/security acceptance, evidence, and repository publication complete. |
 
 `CHG-2026-001`, `CHG-2026-002`, and `CHG-2026-003` are complete.
@@ -32,8 +37,19 @@ AAP-like AWX goal. `CHG-2026-008` therefore reorders only the AWX execution
 plane ahead of Kubernetes ingress. The existing architecture and use cases are
 not being recreated. Readiness checks found AWX healthy and idle,
 `awx-execution.example.com` running at `192.168.1.121`, Harbor healthy, and no
-conflicting activity on infra01/02/03. Runtime onboarding remains gated on
-published source, exact dependency pins, and the infra02 capacity decision.
+conflicting activity on infra01/02/03. The canonical private `ansible-awx`
+project is now published; source pipelines 480 through 482 passed and merge
+request !2 produced main revision `0741093f` for pipeline 483. The approved
+capacity decision is an explicitly non-production 8 GiB `lab-canary` with no
+resize. AWX instance 2 was deprovisioned before use; disabled instance 3 has
+run no jobs and records only `awx-execution.example.com:443`. Runtime
+onboarding remains gated on documentation publication and reviewed
+installation automation.
+
+The execution-plane exposure boundary is NGINX stream TLS passthrough on TCP
+443, addressed only as `awx-execution.example.com`. Receptor binds only
+`127.0.0.1:27199`; that backend port is not opened in firewalld and is not an
+AWX topology address.
 
 The user approved three dedicated GitLab runners on infra03 for the
 twelve-domain platform program and explicitly rejected CI execution on the
@@ -219,7 +235,7 @@ the inventory-normalization change.
 | 5 | Provision, configure, and accept `gitlab-runner-shared01` on infra03 | Completed 2026-08-01 through `CHG-2026-006` |
 | 6 | Retire the GitLab-VM runner from CI execution | Completed 2026-08-01 through `CHG-2026-007` |
 | 7 | Review `jenkins-agent01`, correct canonical port-80 access, and set the Jenkins root URL | Completed 2026-08-01 through `CHG-2026-003`; agent, portless URL, root URL, DNS, and route cleanup accepted |
-| 8 | Establish and accept `awx-execution.example.com` as the bounded AWX execution plane | Active as `CHG-2026-008`; VM exists, source/dependency/capacity gates pending |
+| 8 | Establish and accept `awx-execution.example.com` as the bounded AWX execution plane | Active as `CHG-2026-008`; VM and source exist, 8 GiB lab-canary approved, hostname-only NGINX design awaiting publication and controlled runtime acceptance |
 | 9 | Deploy and accept the single-replica Kubernetes ingress tier | AWX execution-plane change closed; runner migration closed; agent accepted; documentation pipeline published; kubeconfig secret-file credential and non-mutating PLAN complete |
 | 10 | Deploy and accept Kubernetes persistent storage | Ingress change closed and rollback verified |
 | 11 | Install Artifactory | Platform storage and backup prerequisites accepted |
