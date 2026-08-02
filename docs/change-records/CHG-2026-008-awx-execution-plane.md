@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-008` |
 | Type | Normal |
-| State | Planning / pre-deployment |
+| State | Closed |
 | Risk | Moderate |
 | Impact | Low |
 | Priority | High |
@@ -50,9 +50,10 @@ bind a non-loopback address or receive a firewall opening.
   and a 50 GB `/data` disk.
 - SSH, authoritative DNS, UTC/NTP, SELinux enforcing, firewalld, and
   qemu-guest-agent passed.
-- Podman, Receptor, and the change-owned NGINX stream configuration are absent.
-  TCP 443 and 27199 remain closed. The VM is available but remains
-  provisioned-only.
+- Pre-deployment inspection found Podman, Receptor, and the change-owned NGINX
+  stream configuration absent, with TCP 443 and 27199 closed. The accepted
+  implementation now exposes only NGINX on hostname TCP 443 and retains
+  Receptor only on loopback TCP 27199.
 - Harbor and all reported registry components are healthy for a later
   execution-environment supply-chain change.
 - The private canonical source project
@@ -63,8 +64,9 @@ bind a non-loopback address or receive a firewall opening.
   passed branch pipeline 487 and merged as `6d7887fa`; main pipeline 488 also
   passed for install, validation, canary, removal, and restore.
 - AWX instance 2, which used a direct port, was deprovisioned before any job
-  ran. Replacement instance 3 is disabled, has never run a job, and records
-  only `awx-execution.example.com:443` as its Receptor address.
+  ran. Replacement instance 3 records only
+  `awx-execution.example.com:443`; final acceptance reports it enabled,
+  `ready`, at capacity 76, and associated only with `lab-infrastructure`.
 
 The current 8 GiB VM is approved only for the bounded, non-production
 `lab-canary` profile. AAP-like production sizing still targets 16 GiB RAM and
@@ -150,7 +152,7 @@ invalidated private keys.
 
 | Field | Value |
 | --- | --- |
-| Close code | Pending |
-| Closed date | Pending |
-| Implementation result | Pending |
-| Validation evidence | Pending |
+| Close code | Successful |
+| Closed date | 2026-08-02 |
+| Implementation result | Canonical revision `7b931558` installed the pinned Receptor and isolated runner behind product-local NGINX on hostname TCP 443. Receptor remains loopback-only on 27199, instance 3 is Ready only in `lab-infrastructure`, and no VM resize or direct backend exposure occurred. |
+| Validation evidence | Main pipeline 500 passed; project update 740 selected the exact revision; install 741, validation 742, canary 743, removal 744, restore 745, post-restore validation/canary 746/747, zero-change install 748, and final validation 749 passed. See `docs/evidence/CHG-2026-008-awx-execution-plane-acceptance.md`. |
