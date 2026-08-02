@@ -500,30 +500,30 @@ fleet targets, evidence flow, and operational feedback loop.
 
 | Use case | Coverage target |
 | --- | --- |
-| Ubuntu and Rocky Linux Installation Standards | Reproducible supported operating-system builds |
-| KVM and libvirt Virtualization | Managed hypervisor, network, storage-pool and domain lifecycle |
-| VM Provisioning with cloud-init | Repeatable identity, network and SSH bootstrap |
-| Server Build and Retirement | Approved creation, handoff, backup and decommission workflow |
-| AWX and Ansible Configuration Management | Idempotent configuration through version-controlled roles |
-| Operating-System Patching | Assessed, scheduled and evidenced security updates |
-| Kernel and Major-Version Upgrades | Rehearsed upgrade and rollback workflow |
-| SELinux and Firewall Management | Enforced host security controls |
-| systemd Service Management | Standard service ownership, health and recovery |
-| Filesystem, LVM and Storage Management | Capacity, mount, ownership and recovery standards |
-| DNS, NTP and Host Networking | Consistent infrastructure service configuration |
-| SSH, sudo and Service Accounts | Least-privilege administrative access |
-| Package Repository Management | Approved and pinned software sources |
-| Performance and Capacity Troubleshooting | CPU, memory, disk and network diagnosis |
-| Configuration-Drift Detection | Desired-state comparison and remediation |
-| Server Compliance Evidence | Auditable operating-system and service posture |
-| Break-Glass Recovery | Console, boot, filesystem and access recovery |
-| Linux Automation and Tooling Development | Tested Bash/Python utilities, APIs and reusable operational automation |
-| Linux Monitoring and Incident Operations | Host metrics, logs, alerts, on-call triage, RCA and durable corrective actions |
-| Hybrid-Cloud and Container Host Engineering | Secure Linux hosts for cloud VMs, Docker/Podman, Kubernetes and hybrid workloads |
-| Enterprise Identity Integration | LDAP, Kerberos, Active Directory, SSO, PAM and certificate-based host access |
-| Vulnerability Remediation Lifecycle | Scan, prioritize, remediate, verify and document CIS, STIG, FIPS and organizational findings |
-| Backup, Restore, Disaster Recovery and HA Testing | Prove recoverability, failover, service continuity and restoration evidence |
-| Git-Based Linux Change Validation | Peer-reviewed source, CI checks, staged rollout, rollback and auditable change evidence |
+| [Ubuntu and Rocky Linux Installation Standards](use-cases/linux/UC-LNX-001-os-installation-standards.md) | Reproducible supported operating-system builds |
+| [KVM and libvirt Virtualization](use-cases/linux/UC-LNX-002-kvm-libvirt-virtualization.md) | Managed hypervisor, network, storage-pool and domain lifecycle |
+| [VM Provisioning with cloud-init](use-cases/linux/UC-LNX-003-vm-provisioning-cloud-init.md) | Repeatable identity, network and SSH bootstrap |
+| [Server Build and Retirement](use-cases/linux/UC-LNX-004-server-build-retirement.md) | Approved creation, handoff, backup and decommission workflow |
+| [AWX and Ansible Configuration Management](use-cases/linux/UC-LNX-005-awx-ansible-configuration-management.md) | Idempotent configuration through version-controlled roles |
+| [Operating-System Patching](use-cases/linux/UC-LNX-006-operating-system-patching.md) | Assessed, scheduled and evidenced security updates |
+| [Kernel and Major-Version Upgrades](use-cases/linux/UC-LNX-007-kernel-major-version-upgrades.md) | Rehearsed upgrade and rollback workflow |
+| [SELinux and Firewall Management](use-cases/linux/UC-LNX-008-selinux-firewall-management.md) | Enforced host security controls |
+| [systemd Service Management](use-cases/linux/UC-LNX-009-systemd-service-management.md) | Standard service ownership, health and recovery |
+| [Filesystem, LVM and Storage Management](use-cases/linux/UC-LNX-010-filesystem-lvm-storage-management.md) | Capacity, mount, ownership and recovery standards |
+| [DNS, NTP and Host Networking](use-cases/linux/UC-LNX-011-dns-ntp-host-networking.md) | Consistent infrastructure service configuration |
+| [SSH, sudo and Service Accounts](use-cases/linux/UC-LNX-012-ssh-sudo-service-accounts.md) | Least-privilege administrative access |
+| [Package Repository Management](use-cases/linux/UC-LNX-013-package-repository-management.md) | Approved and pinned software sources |
+| [Performance and Capacity Troubleshooting](use-cases/linux/UC-LNX-014-performance-capacity-troubleshooting.md) | CPU, memory, disk and network diagnosis |
+| [Configuration-Drift Detection](use-cases/linux/UC-LNX-015-configuration-drift-detection.md) | Desired-state comparison and remediation |
+| [Server Compliance Evidence](use-cases/linux/UC-LNX-016-server-compliance-evidence.md) | Auditable operating-system and service posture |
+| [Break-Glass Recovery](use-cases/linux/UC-LNX-017-break-glass-recovery.md) | Console, boot, filesystem and access recovery |
+| [Linux Automation and Tooling Development](use-cases/linux/UC-LNX-018-linux-automation-tooling-development.md) | Tested Bash/Python utilities, APIs and reusable operational automation |
+| [Linux Monitoring and Incident Operations](use-cases/linux/UC-LNX-019-linux-monitoring-incident-operations.md) | Host metrics, logs, alerts, on-call triage, RCA and durable corrective actions |
+| [Hybrid-Cloud and Container Host Engineering](use-cases/linux/UC-LNX-020-hybrid-cloud-container-host-engineering.md) | Secure Linux hosts for cloud VMs, Docker/Podman, Kubernetes and hybrid workloads |
+| [Enterprise Identity Integration](use-cases/linux/UC-LNX-021-enterprise-identity-integration.md) | LDAP, Kerberos, Active Directory, SSO, PAM and certificate-based host access |
+| [Vulnerability Remediation Lifecycle](use-cases/linux/UC-LNX-022-vulnerability-remediation-lifecycle.md) | Scan, prioritize, remediate, verify and document CIS, STIG, FIPS and organizational findings |
+| [Backup, Restore, Disaster Recovery and HA Testing](use-cases/linux/UC-LNX-023-backup-restore-disaster-recovery-ha-testing.md) | Prove recoverability, failover, service continuity and restoration evidence |
+| [Git-Based Linux Change Validation](use-cases/linux/UC-LNX-024-git-based-linux-change-validation.md) | Peer-reviewed source, CI checks, staged rollout, rollback and auditable change evidence |
 
 ## Enterprise Database Engineering and Reliability Platform
 
@@ -861,6 +861,7 @@ rollback path.
 | 2026-07-27 | Add AI and ML platform domains | Reflect healthcare platform demand for production AI, RAG, agents, MLOps, model governance, drift monitoring and regulated AI operations | Adds approved planned domains for `healthcare-ai-platform` and `mlops-model-platform`; does not save individual job-posting details or authorize new runtime capacity. |
 | 2026-07-27 | Add AI/ML edge and high-memory capacity direction | Separate developer inference from heavier backend workloads | Plans `midh-ai-edge-01` as a Mac Studio M1 AI/ML development and edge-inference node; infra03 is now available as a 256 GB Linux/KVM host for data, observability, AI/ML backend, and resilience workloads. |
 | 2026-08-02 | Calibrate the Linux systems backlog against 25 recent full-time roles requiring fewer than seven years of experience | Preserve strong traditional Linux coverage while reflecting current expectations for automation, observability, security, hybrid infrastructure, identity, incident response and tested recovery | Expands the defined Linux portfolio from 17 to 24 use cases and the enterprise total from 217 to 224. This changes backlog scope only; it does not claim implementation, runtime acceptance, new infrastructure or product installation. |
+| 2026-08-02 | Expand every Linux use case into an end-to-end IaC implementation page | Make each approved outcome implementable, reviewable, operable and useful for realistic interview preparation without duplicating the canonical portfolio list | Links every canonical Linux row to a detailed record covering current versus planned source, GitLab CI, Jenkins approval, Terraform/image and AWX/Ansible boundaries, canary rollout, idempotence, recovery, evidence, Jira stories, troubleshooting and interview answer signals. The pages are specifications, not implementation-completion claims. |
 
 ## Recommended Implementation Order
 
