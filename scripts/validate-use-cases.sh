@@ -179,6 +179,11 @@ PY
     echo "$document: canonical portfolio does not link this detail page." >&2
     exit 1
   fi
+
+  if ! grep -Fq "($relative_path#architecture-diagram)" "$portfolio"; then
+    echo "$document: canonical portfolio does not link directly to its architecture diagram." >&2
+    exit 1
+  fi
 done
 
 echo "Detailed use-case documentation validation passed (${#USE_CASE_FILES[@]} document(s))."
