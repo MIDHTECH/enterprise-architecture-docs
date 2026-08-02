@@ -101,6 +101,11 @@ facts; they do not erase the original observation.
 | INC-2026-067 | 2026-08-01 | SEV-4 | Resolved | Jenkins local proxy | AWX job 550 found firewalld inactive; corrected source composed the established firewall role before proxy deployment |
 | INC-2026-068 | 2026-08-01 | SEV-4 | Resolved | GitLab Runner identity automation | First dedicated-runner deployment assumed an absent `root` GitLab username |
 | INC-2026-069 | 2026-08-01 | SEV-4 | Resolved | Shared GitLab runner automation | Dormant provisioning and instance-runner paths exposed role-path, image-checksum, CI-image, and nil-scope assumptions |
+| INC-2026-070 | 2026-08-02 | SEV-4 | Resolved | AWX controller-object reconciliation | Initial job templates omitted the project-relative `playbooks/` path |
+| INC-2026-071 | 2026-08-02 | SEV-4 | Resolved | AWX inventory reconciliation | The reconciler attempted an unsupported PATCH on nested inventory child endpoints |
+| INC-2026-072 | 2026-08-02 | SEV-4 | Resolved | AWX execution scheduling | Controller-side templates were bound to the non-executing control-plane group and could not obtain capacity |
+| INC-2026-073 | 2026-08-02 | SEV-4 | Resolved | GitLab shared runner | One source-validation job could not clone GitLab during a transient HTTP connectivity failure |
+| INC-2026-074 | 2026-08-02 | SEV-4 | Resolved | AWX execution runtime lock | The first install omitted Python 3.9 conditional hashes for `importlib-metadata` and `zipp` |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2244,6 +2249,135 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Corrective automation: Commits `1b9313b` and `8fb79ca`.
 - Evidence/related runbook:
   [GitLab Shared Runner Acceptance](evidence/CHG-2026-006-gitlab-runner-shared-acceptance.md)
+
+## INC-2026-070: AWX Templates Used Non-Project-Relative Playbook Paths
+
+- Date: 2026-08-02
+- Severity: SEV-4
+- Status: Resolved
+- Component: `ansible-awx` controller-object reconciler
+- Detection/symptom: The first reconciler attempt at main revision `4053cf88`
+  stopped before creating usable job templates because each playbook value
+  omitted the repository-relative `playbooks/` prefix.
+- Impact: Runtime deployment did not start and the execution VM was unchanged.
+- Cause: The controller contract used playbook filenames rather than paths
+  relative to the synchronized AWX project root.
+- Resolution: Commit `34b415f` added the required paths and a focused
+  controller-contract test. Merge request !5 passed branch pipeline 493 and
+  main pipeline 494, producing main revision `18334d1e`.
+- Validation: Later reconciliation created templates 47 through 52 with the
+  expected project-relative playbooks; final jobs 741 through 749 all selected
+  canonical revision `7b931558`.
+- Prevention/follow-up: Keep project-relative playbook uniqueness and path
+  checks in repository CI.
+- Corrective automation: `scripts/check_controller_contract.py` and corrected
+  template constants in `scripts/reconcile_awx_objects.py`.
+- Evidence/related runbook:
+  [AWX Execution Plane Acceptance](evidence/CHG-2026-008-awx-execution-plane-acceptance.md)
+
+## INC-2026-071: AWX Inventory Children Rejected Nested PATCH Reconciliation
+
+- Date: 2026-08-02
+- Severity: SEV-4
+- Status: Resolved
+- Component: AWX inventory 10 reconciliation
+- Detection/symptom: The corrected reconciler reached inventory children and
+  failed when it attempted to PATCH a host through a nested inventory endpoint.
+- Impact: Controller reconciliation stopped safely; no deployment job or VM
+  mutation occurred.
+- Cause: AWX 24.6.1 permits nested inventory endpoints for association and
+  listing but requires group and host mutation through their global endpoints.
+- Resolution: Commit `bfd23ec` reconciled groups and hosts globally and kept
+  nested endpoints only for exact association. Merge request !6 passed branch
+  pipeline 495 and main pipeline 496, producing revision `c93c3d1f`.
+- Validation: Reconciliation created inventory 10, execution host 88, and
+  localhost 89 exactly once; the final read-only object audit passed.
+- Prevention/follow-up: Retain the endpoint-contract test for AWX inventory
+  children and associations.
+- Corrective automation: Global `groups` and `hosts` reconciliation plus the
+  bounded association test.
+- Evidence/related runbook:
+  [AWX Execution Plane Acceptance](evidence/CHG-2026-008-awx-execution-plane-acceptance.md)
+
+## INC-2026-072: Controller Job Template Had No Executing Capacity
+
+- Date: 2026-08-02
+- Severity: SEV-4
+- Status: Resolved
+- Component: AWX job template scheduling
+- Detection/symptom: Preflight job 736 remained pending with `not enough
+  capacity` and never started because the controller-side templates were bound
+  to the non-executing `controlplane` instance group.
+- Impact: No task reached `awx-execution.example.com`; job 736 was canceled
+  without VM mutation.
+- Cause: The source treated the AWX control-plane group as an execution group.
+  Accepted controller jobs in this installation use the `default` container
+  group.
+- Resolution: Commit `e46788e` bound preflight, install, validate, remove, and
+  restore only to container group ID 2 (`default`), retained the canary only on
+  `lab-infrastructure`, and prohibited instance-group fallback. Merge request
+  !7 passed branch pipeline 497 and main pipeline 498 at `11d68675`.
+- Validation: Preflight 738 passed; controller jobs 741, 742, and 744 through
+  749 ran without capacity errors; canaries 743 and 747 ran specifically on
+  `awx-execution.example.com`.
+- Prevention/follow-up: Keep the group identity, container-group flag, exact
+  association, and no-fallback checks in controller CI and pre-launch audit.
+- Corrective automation: Controller contract and exact job-template instance
+  group reconciliation.
+- Evidence/related runbook:
+  [AWX Execution Plane Acceptance](evidence/CHG-2026-008-awx-execution-plane-acceptance.md)
+
+## INC-2026-073: Shared Runner Briefly Could Not Clone GitLab
+
+- Date: 2026-08-02
+- Severity: SEV-4
+- Status: Resolved
+- Component: `ansible-awx` branch pipeline 497, shared-runner job 1589
+- Detection/symptom: The first pipeline attempt could not clone the project
+  over HTTP because the runner temporarily could not connect to GitLab. The
+  source/layout validation itself had no reported defect.
+- Impact: Merge request !7 remained gated; no AWX reconciliation or runtime
+  change used the unaccepted revision.
+- Cause: Transient internal GitLab HTTP connectivity from the shared runner.
+- Resolution: Retried only the failed clone job after service connectivity
+  recovered. Replacement job 1592 passed and pipeline 497 completed green.
+- Validation: Main pipeline 498 passed the same revision, and later pipelines
+  499/500 also completed successfully.
+- Prevention/follow-up: Retry a clone-only transport failure only after
+  confirming source validation is still gated; do not weaken CI or bypass the
+  published revision requirement.
+- Corrective automation: None; this was a transient transport event.
+- Evidence/related runbook:
+  [AWX Execution Plane Acceptance](evidence/CHG-2026-008-awx-execution-plane-acceptance.md)
+
+## INC-2026-074: Python 3.9 Conditional Dependencies Were Missing Hashes
+
+- Date: 2026-08-02
+- Severity: SEV-4
+- Status: Resolved
+- Component: AWX execution-node hashed Python runtime, install job 739
+- Detection/symptom: Install job 739 stopped at the hashed runtime task because
+  Python 3.9 selected `importlib-metadata<6.3,>=4.6`, but the requirements file
+  did not pin or hash that package and its `zipp` dependency.
+- Impact: The VM contained only partial pre-runtime preparation. Receptor and
+  the NGINX stream configuration had not started, instance 3 remained disabled,
+  and no backend port was exposed.
+- Cause: The initial dependency closure was resolved from a newer workstation
+  interpreter instead of the target Linux CPython 3.9 environment.
+- Resolution: Commit `b63e109` pinned `importlib-metadata==6.2.1` and
+  `zipp==3.23.1` with reviewed SHA-256 hashes, recorded the Python 3.9
+  conditional pins in the bundle manifest, and made CI require them. Merge
+  request !8 passed branch pipeline 499 and main pipeline 500 at `7b931558`.
+- Validation: A target-platform `pip download --require-hashes` resolved all
+  13 wheels. Install job 741 passed; rollback/restore passed; final install 748
+  reported zero changes and no failures; final validation 749 passed.
+- Prevention/follow-up: Resolve and verify dependency locks against every
+  supported target Python/platform tuple, including environment-marker-only
+  packages.
+- Corrective automation: Python 3.9 conditional manifest contract and complete
+  hashed runtime requirements.
+- Evidence/related runbook:
+  [AWX Execution Plane Acceptance](evidence/CHG-2026-008-awx-execution-plane-acceptance.md)
 
 ## New Incident Template
 

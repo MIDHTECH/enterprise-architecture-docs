@@ -26,7 +26,8 @@ Implementation and acceptance counts are maintained separately in
 ## Live on-premises infrastructure
 
 The following state combines the directly verified platform baseline with the
-accepted runner and Jenkins changes completed through 2026-08-01:
+accepted runner, Jenkins, and AWX execution-plane changes completed through
+2026-08-02:
 
 | Layer | Verified state |
 | --- | --- |
@@ -37,11 +38,12 @@ accepted runner and Jenkins changes completed through 2026-08-01:
 | Product roles | At least 23 runtime roles directly verified; Harbor is installed; Vault 2.0.3 is active, unsealed, and accepted through NGINX; Keycloak still awaits revalidation |
 | Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready |
 | AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
-| AWX inventories | 38 records across four inventories: 31 product, three physical foundation, four intentional Kubernetes RBAC records, and zero Demo hosts; 34 distinct names |
+| AWX execution plane | AWX 24.6.1 instance 3 on `awx-execution.example.com` is Ready at capacity 76 only in `lab-infrastructure`; NGINX exposes hostname TCP 443 and Receptor remains loopback-only on 27199 |
+| AWX inventories | 50 records across nine populated inventories plus the empty Demo inventory; 39 distinct names. Purpose-specific delivery inventories remain isolated, and `awx-execution-plane` contains only the execution node and canary localhost. |
 | Git repositories | AWX inventory, Kubernetes ingress, and cloud-infrastructure corrections are published; incident documentation is updated as each sequential change closes |
 
 The directly verified provisioned-only product VMs include `governance`,
-`backup`, `awx-execution`, `artifactory`, `sonarqube`, and `splunk`.
+`backup`, `artifactory`, `sonarqube`, and `splunk`.
 PostgreSQL 18 is active on `postgres.example.com`. Harbor 2.15.0 is active on
 `harbor.example.com`: all ten Harbor, registry, database, Redis, portal,
 job-service, and Trivy containers are healthy, the health API is healthy, and
@@ -75,6 +77,14 @@ container is absent from `gitlab.example.com`. Retirement, rollback restore,
 final retirement, and zero-change convergence passed through AWX jobs 713,
 717, 721, and 725. CI execution therefore remains off the GitLab application
 VM.
+
+`awx-execution.example.com` is accepted as the bounded non-production
+execution plane. AWX instance 3 is enabled and Ready only in
+`lab-infrastructure`; canaries 743 and 747 executed there. NGINX stream TLS
+passthrough is the only network-facing socket on TCP 443, while Receptor 1.4.8
+binds only `127.0.0.1:27199` with no backend firewall opening. Removal 744,
+restore 745, zero-change install 748, and final validation 749 passed at
+canonical source revision `7b931558`.
 
 The four-node application cluster currently contains the control-plane components,
 CoreDNS, Flannel, and Headlamp. Argo CD, MetalLB, ingress-nginx, cert-manager,
@@ -200,7 +210,8 @@ Node Exporter 1.11.1 is installed on managed platform hosts.
 ## Application and telemetry readiness audit
 
 The readiness baseline was collected directly through 2026-07-29 and includes
-the accepted Jenkins and GitLab Runner changes completed through 2026-08-01:
+the accepted Jenkins, GitLab Runner, and AWX execution-plane changes completed
+through 2026-08-02:
 
 | Capability | Live evidence | Readiness |
 | --- | --- | --- |
@@ -217,6 +228,7 @@ the accepted Jenkins and GitLab Runner changes completed through 2026-08-01:
 | Headlamp name resolution | BIND, the Mac split resolver, and Kubernetes CoreDNS return `192.168.1.114`; normal application URL returns HTTP 200 | Accepted through AWX jobs 398 and 402 |
 | Vault secrets service | Vault 2.0.3 reports initialized, unsealed, active, and HTTP 200 through the verified NGINX TLS upstream; NGINX convergence job 421 reported `changed=0`, `unreachable=0`, and `failed=0` | Accepted through AWX jobs 417 and 421 |
 | AWX inventory boundaries | Product VMs are canonical in `production`; infra01/02/03 are isolated in `cloud-infra-production`; the four Kubernetes records remain a deliberate cluster RBAC boundary | Accepted through sync job 425 and DNS/NGINX jobs 433, 438, 443, and 448 |
+| AWX execution boundary | Instance 3 is Ready only in `lab-infrastructure`; canaries ran on `awx-execution.example.com`; NGINX TCP 443 is reachable and direct Receptor TCP 27199 is not | Accepted through jobs 741-749 and CHG-2026-008 |
 
 The platform can deploy and exercise stateless test applications through
 ClusterIP or NodePort and can accept their logs, metrics, and traces. The

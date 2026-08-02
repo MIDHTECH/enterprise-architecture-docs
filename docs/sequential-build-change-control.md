@@ -22,20 +22,20 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `CHG-2026-008` |
-| Component | AWX execution plane: only `awx-execution.example.com` and its Receptor registration |
-| State | Pre-deployment runtime publication and AWX object configuration; VM mutation remains gated. |
-| Blocker | This evidence revision must pass; then the project, inventory, encrypted bundle credential, templates, and bounded instance group must be reconciled and synchronized before deployment. |
-| Permitted work | Publish the runtime evidence, reconcile only the CHG-2026-008 AWX objects, repeat the activity audit, then run the controlled canary/rollback/restore sequence through AWX. |
-| Prohibited work | Ingress, storage, product, SSO, EDA, HA, or another VM/component change; direct installation or direct exposure of Receptor port 27199 is prohibited. |
-| Exit criteria | Node Ready in its bounded group; canary, rollback, restore, final zero-change convergence, runtime/security acceptance, evidence, and repository publication complete. |
+| Change ID | None |
+| Component | None |
+| State | Idle; `CHG-2026-008` is accepted and closed. |
+| Blocker | None |
+| Permitted work | Read-only audit or explicit activation of the next queued component. |
+| Prohibited work | Starting more than one component or exposing a VM backend port directly remains prohibited. |
+| Exit criteria | Record the next explicit component here before any mutation. |
 
-`CHG-2026-001`, `CHG-2026-002`, and `CHG-2026-003` are complete.
+`CHG-2026-001` through `CHG-2026-008` are complete.
 
 On 2026-08-02 the user directed work to begin on the already documented
-AAP-like AWX goal. `CHG-2026-008` therefore reorders only the AWX execution
-plane ahead of Kubernetes ingress. The existing architecture and use cases are
-not being recreated. Readiness checks found AWX healthy and idle,
+AAP-like AWX goal. `CHG-2026-008` therefore reordered only the AWX execution
+plane ahead of Kubernetes ingress. The existing architecture and use cases
+were not recreated. Readiness checks found AWX healthy and idle,
 `awx-execution.example.com` running at `192.168.1.121`, Harbor healthy, and no
 conflicting activity on infra01/02/03. The canonical private `ansible-awx`
 project is now published; source pipelines 480 through 483 passed and merge
@@ -43,10 +43,10 @@ request !2 produced main revision `0741093f`. Controlled-runtime merge request
 !3 passed branch pipeline 487 and main pipeline 488 at revision `6d7887fa`.
 The approved
 capacity decision is an explicitly non-production 8 GiB `lab-canary` with no
-resize. AWX instance 2 was deprovisioned before use; disabled instance 3 has
-run no jobs and records only `awx-execution.example.com:443`. Runtime
-onboarding remains gated on this evidence publication, AWX object
-reconciliation, and a fresh activity audit.
+resize. AWX instance 2 was deprovisioned before use; replacement instance 3
+records only `awx-execution.example.com:443`. Runtime onboarding passed the
+publication, exact-revision reconciliation, activity audit, install,
+validation, canary, rollback, restore, and idempotence gates.
 
 The execution-plane exposure boundary is NGINX stream TLS passthrough on TCP
 443, addressed only as `awx-execution.example.com`. Receptor binds only
@@ -131,6 +131,17 @@ was removed. The preserved evidence is in
 
 ## Completed change
 
+`CHG-2026-008` accepted AWX instance 3 on
+`awx-execution.example.com` as the bounded `lab-infrastructure` execution
+plane. Canonical revision `7b931558` passed main pipeline 500 and AWX project
+update 740. Install/validation/canary jobs 741-743 passed; removal 744 and
+restore 745 proved rollback; post-restore validation/canary 746-747 passed;
+install 748 reported zero changes; and final validation 749 passed. The node is
+Ready at capacity 76. NGINX alone exposes hostname TCP 443, while Receptor is
+loopback-only on 27199 with no backend firewall opening. See the
+[change record](change-records/CHG-2026-008-awx-execution-plane.md) and
+[acceptance evidence](evidence/CHG-2026-008-awx-execution-plane-acceptance.md).
+
 `CHG-2026-007` retired legacy GitLab runner ID 2 from the GitLab VM. Source
 commit `244e418` passed pipelines 455/456; AWX retire job 713 paused the exact
 identity and removed only its container; restore job 717 proved rollback with
@@ -203,10 +214,10 @@ The latest accepted state, reconciled on 2026-08-02, is:
 | infra01 and guests | Host recovered after a full reboot; bridge and 17/17 domains are up with expected IPv4 addresses. STP is disabled; one controlled canary reboot passed. | Monitoring under INC-2026-046 |
 | GitLab | Backend redirects normally; `gitlab.apps.example.com` proxies to the sign-in route; no visible CI workload process | Recovered; INC-2026-047 resolved |
 | Jenkins | Jenkins backend remains active on port 8080 behind controller-local NGINX; canonical `http://jenkins.example.com` returns HTTP 200 on port 80; `jenkins-agent01` is online through that URL; the legacy `.apps` DNS and shared route are absent | Accepted and idle |
-| AWX | API and `awx.apps.example.com` return HTTP 200; AWX 24.6.1 control heartbeat is current with capacity 30; no visible Ansible Runner workload | Healthy and idle |
+| AWX | Canonical `awx.example.com` and API are healthy on AWX 24.6.1; execution instance 3 is Ready at capacity 76 only in `lab-infrastructure`; no active jobs remain | Controller and execution plane accepted and idle |
 | Application Kubernetes | Explicit context `kubernetes-admin@kubernetes`; server 1.34.10; control plane plus three workers Ready; no non-running pods or active Jobs | Healthy and idle |
 | NGINX routes | The catalog advertises 13 active routes and five intentional unavailable routes. All active routes returned expected non-5xx UI, redirect, authentication, or API responses; Vault health is HTTP 200 and unsealed. | Healthy; jobs 417 and 421 accepted |
-| infra02 | 14/14 VMs running; no Ansible, Terraform, VM-build, or package-change process except routine `dnf makecache` on Logstash | Stable |
+| infra02 | 14/14 VMs running; `awx-execution.example.com` is accepted with hostname-only NGINX TCP 443 and loopback Receptor; no conflicting change process remains | Stable |
 | infra03 | Host stable; four build-execution VMs running with autostart | Accepted placement |
 | `gitlab-runner-app01` | `.136`, runner ID 3, pinned Runner 19.2.0 Docker executor, exact `app,docker` tags, untagged execution disabled | Accepted; canary 1234 and jobs 657/661/665 passed |
 | `gitlab-runner-infra01` | `.137`, runner ID 4, pinned Runner 19.2.0 Docker executor, exact `ansible,infra,terraform` tags, untagged execution disabled | Accepted; canary 1171 and jobs 629/633/645 passed |
@@ -218,7 +229,7 @@ The latest accepted state, reconciled on 2026-08-02, is:
 | SonarQube | `.124`; no product service detected | Provisioned only |
 | PostgreSQL | `.125`; PostgreSQL 18 service active | Installed |
 | Workstation activity | No running Git publication, SSH administration, Ansible, Terraform, kubectl, libvirt, or image-build process | No conflicting active process |
-| GitLab/AWX/Jenkins | Recovered with infra01; GitLab pipelines and bounded AWX jobs were audited, and Jenkins remained healthy and idle | Audit complete |
+| GitLab/AWX/Jenkins | GitLab main pipeline 500 passed; AWX jobs 741-749 completed the bounded execution-plane acceptance; Jenkins remained healthy and idle | Audit and CHG-2026-008 complete |
 
 Older documentation clones contain Harbor, Vault, and Keycloak installation
 artifacts. Those files are preserved but are not canonical until live state,
@@ -237,7 +248,7 @@ the inventory-normalization change.
 | 5 | Provision, configure, and accept `gitlab-runner-shared01` on infra03 | Completed 2026-08-01 through `CHG-2026-006` |
 | 6 | Retire the GitLab-VM runner from CI execution | Completed 2026-08-01 through `CHG-2026-007` |
 | 7 | Review `jenkins-agent01`, correct canonical port-80 access, and set the Jenkins root URL | Completed 2026-08-01 through `CHG-2026-003`; agent, portless URL, root URL, DNS, and route cleanup accepted |
-| 8 | Establish and accept `awx-execution.example.com` as the bounded AWX execution plane | Active as `CHG-2026-008`; VM and source exist, 8 GiB lab-canary approved, hostname-only NGINX design awaiting publication and controlled runtime acceptance |
+| 8 | Establish and accept `awx-execution.example.com` as the bounded AWX execution plane | Completed 2026-08-02 through `CHG-2026-008`; hostname-only NGINX, canary, rollback/restore, and zero-change convergence accepted |
 | 9 | Deploy and accept the single-replica Kubernetes ingress tier | AWX execution-plane change closed; runner migration closed; agent accepted; documentation pipeline published; kubeconfig secret-file credential and non-mutating PLAN complete |
 | 10 | Deploy and accept Kubernetes persistent storage | Ingress change closed and rollback verified |
 | 11 | Install Artifactory | Platform storage and backup prerequisites accepted |

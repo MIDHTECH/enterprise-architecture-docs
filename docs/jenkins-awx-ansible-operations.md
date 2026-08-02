@@ -282,21 +282,22 @@ versions and checksums in the change evidence; never commit generated private
 keys. Execution-environment images will later be built in GitLab CI, scanned,
 stored in Harbor, and selected in AWX by immutable digest.
 
-The current execution VM is available at `192.168.1.121` with Rocky Linux 9.8,
+The accepted execution VM is available at `192.168.1.121` with Rocky Linux 9.8,
 4 vCPU, 8 GiB RAM, 60 GB OS, and 50 GB data storage. SSH, DNS, UTC/NTP,
 SELinux, firewalld, and the guest agent pass. The approved bounded profile is
 `lab-canary`; it is not a production sizing claim and does not authorize a
-resize. Podman, Receptor, and the change-owned NGINX stream configuration are
-not yet installed, and TCP 443 and 27199 remain closed.
+resize. NGINX and Receptor are enabled and active. NGINX alone accepts the
+hostname edge on TCP 443; Receptor remains on `127.0.0.1:27199`, and firewalld
+does not admit that backend port.
 
 The canonical automation repository is
 `midhhealth/platform-delivery/ansible-awx`. It pins the AWX-generated bundle,
 Receptor 1.4.8, `ansible.receptor` 2.0.3, exact Rocky NGINX/stream-module and
 Podman packages, and the complete hashed Python runtime closure. AWX instance
-3 remains disabled and has run no jobs until the controlled deployment gate
-passes.
+3 is enabled, `ready`, has capacity 76, and belongs only to
+`lab-infrastructure` after rollback, restore, and idempotence acceptance.
 
-Controlled-runtime revision `6d7887fa` provides these bounded playbooks:
+Accepted revision `7b931558` provides these bounded playbooks:
 
 | Playbook | Purpose |
 | --- | --- |
@@ -312,6 +313,12 @@ rollback absence checks, restore, validation, then a second install requiring
 zero unexpected changes. Never pass bundle PEM material as source or ordinary
 extra variables; use only the dedicated encrypted AWX custom credential whose
 base64 injectors are hash-checked by the install playbook.
+
+The accepted sequence used preflight 738, install/validation/canary 741-743,
+removal/restore 744-745, post-restore validation/canary 746-747, zero-change
+install 748, and final validation 749. Temporary generated bundle material was
+overwrite-deleted after acceptance. See the linked evidence for exact source,
+controller-object, listener, and incident records.
 
 See
 [CHG-2026-008](change-records/CHG-2026-008-awx-execution-plane.md) for the
