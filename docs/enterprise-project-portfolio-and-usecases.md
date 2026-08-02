@@ -498,32 +498,32 @@ the selected playbook. `playbooks/site.yml` requires `CONFIRM_APPLY=true`.
 This diagram shows the Linux systems architecture, control boundaries, existing
 fleet targets, evidence flow, and operational feedback loop.
 
-| Use case | Coverage target |
-| --- | --- |
-| [Ubuntu and Rocky Linux Installation Standards](use-cases/linux/UC-LNX-001-os-installation-standards.md) | Reproducible supported operating-system builds |
-| [KVM and libvirt Virtualization](use-cases/linux/UC-LNX-002-kvm-libvirt-virtualization.md) | Managed hypervisor, network, storage-pool and domain lifecycle |
-| [VM Provisioning with cloud-init](use-cases/linux/UC-LNX-003-vm-provisioning-cloud-init.md) | Repeatable identity, network and SSH bootstrap |
-| [Server Build and Retirement](use-cases/linux/UC-LNX-004-server-build-retirement.md) | Approved creation, handoff, backup and decommission workflow |
-| [AWX and Ansible Configuration Management](use-cases/linux/UC-LNX-005-awx-ansible-configuration-management.md) | Idempotent configuration through version-controlled roles |
-| [Operating-System Patching](use-cases/linux/UC-LNX-006-operating-system-patching.md) | Assessed, scheduled and evidenced security updates |
-| [Kernel and Major-Version Upgrades](use-cases/linux/UC-LNX-007-kernel-major-version-upgrades.md) | Rehearsed upgrade and rollback workflow |
-| [SELinux and Firewall Management](use-cases/linux/UC-LNX-008-selinux-firewall-management.md) | Enforced host security controls |
-| [systemd Service Management](use-cases/linux/UC-LNX-009-systemd-service-management.md) | Standard service ownership, health and recovery |
-| [Filesystem, LVM and Storage Management](use-cases/linux/UC-LNX-010-filesystem-lvm-storage-management.md) | Capacity, mount, ownership and recovery standards |
-| [DNS, NTP and Host Networking](use-cases/linux/UC-LNX-011-dns-ntp-host-networking.md) | Consistent infrastructure service configuration |
-| [SSH, sudo and Service Accounts](use-cases/linux/UC-LNX-012-ssh-sudo-service-accounts.md) | Least-privilege administrative access |
-| [Package Repository Management](use-cases/linux/UC-LNX-013-package-repository-management.md) | Approved and pinned software sources |
-| [Performance and Capacity Troubleshooting](use-cases/linux/UC-LNX-014-performance-capacity-troubleshooting.md) | CPU, memory, disk and network diagnosis |
-| [Configuration-Drift Detection](use-cases/linux/UC-LNX-015-configuration-drift-detection.md) | Desired-state comparison and remediation |
-| [Server Compliance Evidence](use-cases/linux/UC-LNX-016-server-compliance-evidence.md) | Auditable operating-system and service posture |
-| [Break-Glass Recovery](use-cases/linux/UC-LNX-017-break-glass-recovery.md) | Console, boot, filesystem and access recovery |
-| [Linux Automation and Tooling Development](use-cases/linux/UC-LNX-018-linux-automation-tooling-development.md) | Tested Bash/Python utilities, APIs and reusable operational automation |
-| [Linux Monitoring and Incident Operations](use-cases/linux/UC-LNX-019-linux-monitoring-incident-operations.md) | Host metrics, logs, alerts, on-call triage, RCA and durable corrective actions |
-| [Hybrid-Cloud and Container Host Engineering](use-cases/linux/UC-LNX-020-hybrid-cloud-container-host-engineering.md) | Secure Linux hosts for cloud VMs, Docker/Podman, Kubernetes and hybrid workloads |
-| [Enterprise Identity Integration](use-cases/linux/UC-LNX-021-enterprise-identity-integration.md) | LDAP, Kerberos, Active Directory, SSO, PAM and certificate-based host access |
-| [Vulnerability Remediation Lifecycle](use-cases/linux/UC-LNX-022-vulnerability-remediation-lifecycle.md) | Scan, prioritize, remediate, verify and document CIS, STIG, FIPS and organizational findings |
-| [Backup, Restore, Disaster Recovery and HA Testing](use-cases/linux/UC-LNX-023-backup-restore-disaster-recovery-ha-testing.md) | Prove recoverability, failover, service continuity and restoration evidence |
-| [Git-Based Linux Change Validation](use-cases/linux/UC-LNX-024-git-based-linux-change-validation.md) | Peer-reviewed source, CI checks, staged rollout, rollback and auditable change evidence |
+| Use case | Coverage target | Architecture |
+| --- | --- | --- |
+| [Ubuntu and Rocky Linux Installation Standards](use-cases/linux/UC-LNX-001-os-installation-standards.md) | Reproducible supported operating-system builds | [View diagram](use-cases/linux/UC-LNX-001-os-installation-standards.md#architecture-diagram) |
+| [KVM and libvirt Virtualization](use-cases/linux/UC-LNX-002-kvm-libvirt-virtualization.md) | Managed hypervisor, network, storage-pool and domain lifecycle | [View diagram](use-cases/linux/UC-LNX-002-kvm-libvirt-virtualization.md#architecture-diagram) |
+| [VM Provisioning with cloud-init](use-cases/linux/UC-LNX-003-vm-provisioning-cloud-init.md) | Repeatable identity, network and SSH bootstrap | [View diagram](use-cases/linux/UC-LNX-003-vm-provisioning-cloud-init.md#architecture-diagram) |
+| [Server Build and Retirement](use-cases/linux/UC-LNX-004-server-build-retirement.md) | Approved creation, handoff, backup and decommission workflow | [View diagram](use-cases/linux/UC-LNX-004-server-build-retirement.md#architecture-diagram) |
+| [AWX and Ansible Configuration Management](use-cases/linux/UC-LNX-005-awx-ansible-configuration-management.md) | Idempotent configuration through version-controlled roles | [View diagram](use-cases/linux/UC-LNX-005-awx-ansible-configuration-management.md#architecture-diagram) |
+| [Operating-System Patching](use-cases/linux/UC-LNX-006-operating-system-patching.md) | Assessed, scheduled and evidenced security updates | [View diagram](use-cases/linux/UC-LNX-006-operating-system-patching.md#architecture-diagram) |
+| [Kernel and Major-Version Upgrades](use-cases/linux/UC-LNX-007-kernel-major-version-upgrades.md) | Rehearsed upgrade and rollback workflow | [View diagram](use-cases/linux/UC-LNX-007-kernel-major-version-upgrades.md#architecture-diagram) |
+| [SELinux and Firewall Management](use-cases/linux/UC-LNX-008-selinux-firewall-management.md) | Enforced host security controls | [View diagram](use-cases/linux/UC-LNX-008-selinux-firewall-management.md#architecture-diagram) |
+| [systemd Service Management](use-cases/linux/UC-LNX-009-systemd-service-management.md) | Standard service ownership, health and recovery | [View diagram](use-cases/linux/UC-LNX-009-systemd-service-management.md#architecture-diagram) |
+| [Filesystem, LVM and Storage Management](use-cases/linux/UC-LNX-010-filesystem-lvm-storage-management.md) | Capacity, mount, ownership and recovery standards | [View diagram](use-cases/linux/UC-LNX-010-filesystem-lvm-storage-management.md#architecture-diagram) |
+| [DNS, NTP and Host Networking](use-cases/linux/UC-LNX-011-dns-ntp-host-networking.md) | Consistent infrastructure service configuration | [View diagram](use-cases/linux/UC-LNX-011-dns-ntp-host-networking.md#architecture-diagram) |
+| [SSH, sudo and Service Accounts](use-cases/linux/UC-LNX-012-ssh-sudo-service-accounts.md) | Least-privilege administrative access | [View diagram](use-cases/linux/UC-LNX-012-ssh-sudo-service-accounts.md#architecture-diagram) |
+| [Package Repository Management](use-cases/linux/UC-LNX-013-package-repository-management.md) | Approved and pinned software sources | [View diagram](use-cases/linux/UC-LNX-013-package-repository-management.md#architecture-diagram) |
+| [Performance and Capacity Troubleshooting](use-cases/linux/UC-LNX-014-performance-capacity-troubleshooting.md) | CPU, memory, disk and network diagnosis | [View diagram](use-cases/linux/UC-LNX-014-performance-capacity-troubleshooting.md#architecture-diagram) |
+| [Configuration-Drift Detection](use-cases/linux/UC-LNX-015-configuration-drift-detection.md) | Desired-state comparison and remediation | [View diagram](use-cases/linux/UC-LNX-015-configuration-drift-detection.md#architecture-diagram) |
+| [Server Compliance Evidence](use-cases/linux/UC-LNX-016-server-compliance-evidence.md) | Auditable operating-system and service posture | [View diagram](use-cases/linux/UC-LNX-016-server-compliance-evidence.md#architecture-diagram) |
+| [Break-Glass Recovery](use-cases/linux/UC-LNX-017-break-glass-recovery.md) | Console, boot, filesystem and access recovery | [View diagram](use-cases/linux/UC-LNX-017-break-glass-recovery.md#architecture-diagram) |
+| [Linux Automation and Tooling Development](use-cases/linux/UC-LNX-018-linux-automation-tooling-development.md) | Tested Bash/Python utilities, APIs and reusable operational automation | [View diagram](use-cases/linux/UC-LNX-018-linux-automation-tooling-development.md#architecture-diagram) |
+| [Linux Monitoring and Incident Operations](use-cases/linux/UC-LNX-019-linux-monitoring-incident-operations.md) | Host metrics, logs, alerts, on-call triage, RCA and durable corrective actions | [View diagram](use-cases/linux/UC-LNX-019-linux-monitoring-incident-operations.md#architecture-diagram) |
+| [Hybrid-Cloud and Container Host Engineering](use-cases/linux/UC-LNX-020-hybrid-cloud-container-host-engineering.md) | Secure Linux hosts for cloud VMs, Docker/Podman, Kubernetes and hybrid workloads | [View diagram](use-cases/linux/UC-LNX-020-hybrid-cloud-container-host-engineering.md#architecture-diagram) |
+| [Enterprise Identity Integration](use-cases/linux/UC-LNX-021-enterprise-identity-integration.md) | LDAP, Kerberos, Active Directory, SSO, PAM and certificate-based host access | [View diagram](use-cases/linux/UC-LNX-021-enterprise-identity-integration.md#architecture-diagram) |
+| [Vulnerability Remediation Lifecycle](use-cases/linux/UC-LNX-022-vulnerability-remediation-lifecycle.md) | Scan, prioritize, remediate, verify and document CIS, STIG, FIPS and organizational findings | [View diagram](use-cases/linux/UC-LNX-022-vulnerability-remediation-lifecycle.md#architecture-diagram) |
+| [Backup, Restore, Disaster Recovery and HA Testing](use-cases/linux/UC-LNX-023-backup-restore-disaster-recovery-ha-testing.md) | Prove recoverability, failover, service continuity and restoration evidence | [View diagram](use-cases/linux/UC-LNX-023-backup-restore-disaster-recovery-ha-testing.md#architecture-diagram) |
+| [Git-Based Linux Change Validation](use-cases/linux/UC-LNX-024-git-based-linux-change-validation.md) | Peer-reviewed source, CI checks, staged rollout, rollback and auditable change evidence | [View diagram](use-cases/linux/UC-LNX-024-git-based-linux-change-validation.md#architecture-diagram) |
 
 ## Enterprise Database Engineering and Reliability Platform
 
