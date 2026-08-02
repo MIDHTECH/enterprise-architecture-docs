@@ -83,4 +83,54 @@ for document in "${USE_CASE_FILES[@]}"; do
   ' "$document"
 done
 
+LINUX_USE_CASE_FILES=()
+while IFS= read -r line; do
+  LINUX_USE_CASE_FILES+=("$line")
+done < <(find docs/use-cases/linux -type f -name 'UC-LNX-*.md' -print | sort)
+
+portfolio="docs/enterprise-project-portfolio-and-usecases.md"
+declared_linux_count="$({
+  awk -F'|' '/^\| 6\. Linux Systems Engineering \| [0-9]+ \|$/ { print $3 }' "$portfolio"
+} | tr -d ' ')"
+
+if [[ "${#LINUX_USE_CASE_FILES[@]}" -ne "$declared_linux_count" ]]; then
+  echo "Linux detail-page count ${#LINUX_USE_CASE_FILES[@]} does not match canonical count $declared_linux_count." >&2
+  exit 1
+fi
+
+linux_required_headings=(
+  "## IaC delivery model"
+  "## End-to-end implementation"
+  "## Validation, idempotence, and rollback"
+  "## Troubleshooting guide"
+  "## Interview preparation"
+)
+
+for document in "${LINUX_USE_CASE_FILES[@]}"; do
+  for heading in "${linux_required_headings[@]}"; do
+    if ! grep -Fqx "$heading" "$document"; then
+      echo "$document: missing Linux IaC heading: $heading" >&2
+      exit 1
+    fi
+  done
+
+  linux_story_count="$(grep -c '^### STORY-LNX-' "$document" || true)"
+  if [[ "$linux_story_count" -lt 3 ]]; then
+    echo "$document: must contain at least three end-to-end Linux Jira stories." >&2
+    exit 1
+  fi
+
+  interview_question_count="$(grep -c '^[0-9][0-9]*\. \*\*Question:' "$document" || true)"
+  if [[ "$interview_question_count" -lt 9 ]]; then
+    echo "$document: must contain at least nine interview questions." >&2
+    exit 1
+  fi
+
+  relative_path="${document#docs/}"
+  if ! grep -Fq "($relative_path)" "$portfolio"; then
+    echo "$document: canonical portfolio does not link this detail page." >&2
+    exit 1
+  fi
+done
+
 echo "Detailed use-case documentation validation passed (${#USE_CASE_FILES[@]} document(s))."

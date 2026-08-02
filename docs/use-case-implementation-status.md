@@ -3,9 +3,10 @@
 Last verified: 2026-08-02
 
 Detailed use cases are expanded and accepted sequentially under the
-[use-case documentation standard](use-cases/README.md). The first expanded
-record is
-[UC-CICD-001: End-to-End CI/CD Pipeline Setup](use-cases/devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md).
+[use-case documentation standard](use-cases/README.md). The canonical Linux
+portfolio rows now link to end-to-end IaC implementation specifications. Those
+pages define source, execution, validation, recovery, evidence, and interview
+expectations; they do not promote the use cases beyond their evidenced state.
 
 ## Purpose
 
@@ -72,5 +73,6 @@ For every use case promoted to `Runtime verified` or `Accepted`, record:
 6. failure and rollback validation;
 7. reviewing engineer and follow-up work.
 
-The portfolio total and this status document must be updated together whenever
-a use case is added, removed, or accepted.
+Additions and removals are recorded only in the canonical portfolio, with the
+matching detail-page link created or retired in the same change. This status
+document changes only when implementation or acceptance evidence changes.

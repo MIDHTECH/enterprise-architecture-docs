@@ -1,6 +1,6 @@
 # Use-Case Documentation Standard
 
-Last verified: 2026-07-31
+Last verified: 2026-08-02
 
 This directory turns the enterprise portfolio into work that an engineer can
 implement, test, operate, and audit. The portfolio summary remains in
@@ -26,6 +26,34 @@ Every use-case document must contain:
 8. actual versus expected results and an honest completion decision;
 9. screenshot and artifact references; and
 10. operational, incident, security, and follow-up notes.
+
+## Linux end-to-end IaC contract
+
+Every `UC-LNX-*` page is an implementation specification as well as a training
+record. The portfolio table remains the only authoritative list and count; the
+detailed pages explain how the approved scope will be delivered. Each Linux
+page must additionally contain:
+
+1. an IaC delivery model that assigns infrastructure lifecycle to Terraform or
+   libvirt automation, bootstrap to image/cloud-init source, operating-system
+   desired state to Ansible, source gates to GitLab CI, approval/orchestration
+   to Jenkins, and controlled execution to AWX;
+2. an honest current-state statement that distinguishes existing source,
+   planned source, code-complete work, runtime verification, and acceptance;
+3. concrete inventory variables, repository paths, execution stages, canary
+   limits, validation commands, expected evidence, idempotence checks, and a
+   rollback or recovery path;
+4. at least three independently testable Jira stories covering source/design,
+   controlled execution, and acceptance/rollback;
+5. production-like failure modes and troubleshooting order; and
+6. at least nine interview questions spanning implementation, architecture,
+   design tradeoffs, troubleshooting, security, rollback, and behavioral
+   ownership, with answer signals rather than memorized scripts.
+
+Documentation may describe planned paths needed for the end state, but it must
+label them `Planned`. A path, job, pipeline, screenshot, or outcome must never
+be presented as existing or successful until it is verified in the named
+repository or runtime environment.
 
 ## Jira story contract
 

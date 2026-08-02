@@ -35,3 +35,21 @@ instead of maintaining a second list.
 Portfolio definition does not promote a use case to runtime verified or
 accepted, and it does not authorize new VMs, products, cloud resources, or
 production capacity.
+
+## End-to-End IaC Delivery Contract
+
+Every detailed Linux use-case page follows the same controlled path:
+
+| Stage | Required ownership and evidence |
+| --- | --- |
+| Source | GitLab merge request, protected branch, immutable revision, schemas, lint, tests, policy and secret checks |
+| Plan | Terraform plan or Ansible check mode with exact inventory, variables, target limit and change impact |
+| Approval | Jenkins selects PLAN/CHECK/APPLY/ROLLBACK; mutation requires explicit confirmation and an approved change |
+| Infrastructure | Terraform and image/cloud-init automation own VM, image, volume and network lifecycle |
+| Operating system | AWX and Ansible own Linux desired state, serial/canary rollout and per-host execution events |
+| Runtime | Service health, logs, metrics, alerts, security posture and consumer access are verified |
+| Acceptance | Identical second convergence, exercised rollback/recovery, sanitized artifacts, incident links and owner/SRE sign-off |
+
+The [Linux detailed-page standard](../use-cases/README.md#linux-end-to-end-iac-contract)
+enforces this content. The canonical portfolio table links to each page without
+creating another use-case list here.
