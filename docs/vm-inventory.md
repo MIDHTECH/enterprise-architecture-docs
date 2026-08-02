@@ -1,5 +1,7 @@
 # Canonical VM Inventory
 
+Last verified: 2026-08-02
+
 This document is the source of truth for Rocky Linux 9 virtual machines in the
 MidhHealth enterprise platform environment. The physical hypervisors run Ubuntu
 26.04 LTS with GNOME, KVM/QEMU, libvirt, cloud-init tooling, and Ansible.
@@ -9,8 +11,9 @@ MidhHealth enterprise platform environment. The physical hypervisors run Ubuntu
 - A standalone product uses its product name: `gitlab.example.com`.
 - Numeric suffixes are used only for members of a cluster:
   `k8s-worker01.example.com`.
-- The lab does not implement HA. The standalone reverse proxy is
-  `nginx.example.com`; clients use `*.apps.example.com` through that VM.
+- The lab does not implement HA. Products not yet migrated use
+  `*.apps.example.com` through the standalone `nginx.example.com` VM; accepted
+  product-local routes such as Jenkins and AWX use canonical product names.
 - The libvirt domain name, operating-system hostname, DNS record, monitoring
   target, and configuration-management inventory name must match.
 - `example.com` is an internal split-DNS training zone. Public certificates
@@ -22,7 +25,7 @@ MidhHealth enterprise platform environment. The physical hypervisors run Ubuntu
 | --- | --- | --- | --- |
 | `infra01.example.com` | `192.168.1.38/24` | Ubuntu 26.04 LTS Desktop | KVM compute host A |
 | `infra02.example.com` | `192.168.1.169/24` | Ubuntu 26.04 LTS Desktop | KVM compute host B |
-| `infra03.example.com` | `192.168.1.186/24` | Ubuntu 26.04 LTS Desktop | KVM compute host C; ready for approved VM placement |
+| `infra03.example.com` | `192.168.1.186/24` | Ubuntu 26.04 LTS Desktop | KVM compute host C; four build-execution VMs accepted |
 
 The default gateway is `192.168.1.1`. The authoritative lab resolver is
 `192.168.1.106`; router DNS advertisement remains a documented follow-up. VM
@@ -35,7 +38,8 @@ RAM, and approximately 921 GiB available in its persistent `lab-images` pool.
 KVM acceleration, QEMU 10.2.1, libvirt 12.0.0, Ansible 2.20.1, Chrony, Cockpit,
 the default NAT network, and the post-upgrade reboot are validated. The
 `eno1`-to-`br0` cutover preserved `.186` and reserved MAC
-`b8:ca:3a:95:ea:b0`; no VMs are assigned to infra03 yet.
+`b8:ca:3a:95:ea:b0`. Four build-execution VMs are assigned to infra03 and run
+with autostart.
 
 The `.141–.160` block was verified clear of consumer leases on 2026-07-28.
 The persistent `lab-bridge` network, internal DNS, gateway connectivity,
@@ -53,13 +57,14 @@ unchanged during migration.
 
 ## Address and MAC Allocation
 
-Addresses `.101–.118` except `.109` are allocated to infra01 and
-`.121–.135` except `.132` to infra02. The expansion block `.141–.160` is
+Addresses `.101–.118` except `.109` are allocated to infra01,
+`.121–.135` except `.132` to infra02, and `.136–.139` to infra03. Address
+`.140` remains reserved for expansion. The expansion block `.141–.160` is
 reserved for future infra03 VMs using deterministic MAC addresses
 `52:54:00:03:01:41–60`; no VM placements are assigned there yet.
 Address `.109` remains occupied by a
 non-lab LAN device and is not assigned to a VM.
-Addresses `.119–.120`, `.132`, and `.136–.140` remain reserved for expansion. MAC
+Addresses `.119–.120`, `.132`, and `.140` remain reserved for expansion. MAC
 addresses are persistent configuration and must not be regenerated during a VM
 rebuild.
 
@@ -96,6 +101,10 @@ rebuild.
 | `elasticsearch02.example.com` | infra02 | `192.168.1.133` | `52:54:00:02:01:33` |
 | `elasticsearch03.example.com` | infra02 | `192.168.1.134` | `52:54:00:02:01:34` |
 | `logstash.example.com` | infra02 | `192.168.1.135` | `52:54:00:02:01:35` |
+| `gitlab-runner-app01.example.com` | infra03 | `192.168.1.136` | `52:54:00:03:01:36` |
+| `gitlab-runner-infra01.example.com` | infra03 | `192.168.1.137` | `52:54:00:03:01:37` |
+| `jenkins-agent01.example.com` | infra03 | `192.168.1.138` | `52:54:00:03:01:38` |
+| `gitlab-runner-shared01.example.com` | infra03 | `192.168.1.139` | `52:54:00:03:01:39` |
 
 ## infra01 Placement
 
@@ -148,6 +157,19 @@ infra02 is capacity constrained. Preserve memory for Ubuntu, libvirt,
 filesystem cache, image builds, and recovery operations. No additional VM is
 approved without a capacity review. Monitor memory and disk latency during
 indexing exercises.
+
+## infra03 Placement
+
+| VM FQDN | Product or role | vCPU | RAM | OS disk |
+| --- | --- | ---: | ---: | ---: |
+| `gitlab-runner-app01.example.com` | Application and container GitLab Runner | 2 | 4 GB | 60 GB |
+| `gitlab-runner-infra01.example.com` | Infrastructure automation GitLab Runner | 2 | 2 GB | 40 GB |
+| `jenkins-agent01.example.com` | Exclusive Kubernetes deployment executor | 2 | 4 GB | 60 GB |
+| `gitlab-runner-shared01.example.com` | Shared validation and security GitLab Runner | 2 | 4 GB | 60 GB |
+
+All four domains are running and enabled for autostart. The three GitLab
+runners use pinned Runner 19.2.0 Docker executors and reject untagged jobs.
+The Jenkins agent connects by WebSocket to the canonical controller URL.
 
 ## Logging Platform VM Build Status
 
@@ -203,7 +225,7 @@ inventory.
 | VM | Preferred installation method |
 | --- | --- |
 | `gitlab.example.com` | Vendor-supported Docker Compose using GitLab Omnibus |
-| `jenkins.example.com` | Docker Compose with persistent Jenkins home |
+| `jenkins.example.com` | Native Jenkins RPM/systemd backend on port 8080 with product-local NGINX on port 80 |
 | `awx.example.com` | AWX Operator on a dedicated single-node k3s installation |
 | `awx-execution.example.com` | AWX receptor/execution node with a versioned execution-environment image |
 | `vault.example.com` | Native systemd service or a hardened single-product Compose deployment |
@@ -227,6 +249,10 @@ inventory.
 | `kibana.example.com` | Native Elastic package managed by Ansible |
 | `logstash.example.com` | Native Elastic package managed by Ansible |
 | `splunk.example.com` | Native Splunk Enterprise package managed by Ansible |
+| `gitlab-runner-app01.example.com` | Pinned GitLab Runner Docker container managed by Ansible through AWX |
+| `gitlab-runner-infra01.example.com` | Pinned GitLab Runner Docker container managed by Ansible through AWX |
+| `gitlab-runner-shared01.example.com` | Pinned GitLab Runner Docker container managed by Ansible through AWX |
+| `jenkins-agent01.example.com` | Native Java WebSocket agent service managed by Ansible through AWX |
 | Kubernetes nodes | Native containerd, kubelet, kubeadm, and kubectl |
 
 Each Compose project must live under `/opt/midhtech/<product>/`, use an

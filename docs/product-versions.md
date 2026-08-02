@@ -1,6 +1,6 @@
 # Product Version Catalog
 
-This catalog pins the on-premises platform baseline as of 28 July 2026.
+This catalog pins the on-premises platform baseline as of 2 August 2026.
 Container images must use the full version shown here or a later approved patch
 within the same release line. Never deploy `latest`.
 
@@ -27,7 +27,7 @@ and tested before deployment.
 | Product | Target version | Deployment | Upgrade authority |
 | --- | --- | --- | --- |
 | GitLab CE | 19.2, latest patch | GitLab Omnibus container on `gitlab.example.com` | [GitLab upgrade paths](https://docs.gitlab.com/update/upgrade_paths/) |
-| GitLab Runner | 19.2.0 | Docker executors on accepted `gitlab-runner-infra01.example.com` and `gitlab-runner-app01.example.com`; temporary legacy executor remains on `gitlab.example.com` until the three-runner migration closes | Upgrade with GitLab compatibility validation |
+| GitLab Runner | 19.2.0 | Docker executors on accepted `gitlab-runner-infra01.example.com`, `gitlab-runner-app01.example.com`, and `gitlab-runner-shared01.example.com`; legacy runner ID 2 on `gitlab.example.com` is paused and its container is retired | Upgrade with GitLab compatibility validation |
 | Terraform CI | 1.13.5 | `hashicorp/terraform` container | Pin the image and provider lock files |
 | Ansible Core CI | 2.21.2 | Python CI container | Pin with repository requirements |
 | ansible-lint | 26.6.0 | Python CI container | Raise the enforced profile as legacy findings are remediated |

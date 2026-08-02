@@ -1,6 +1,6 @@
 # Current Environment State
 
-Last verified: 2026-07-29
+Last verified: 2026-08-02
 
 ## Enterprise project portfolio
 
@@ -25,14 +25,15 @@ Implementation and acceptance counts are maintained separately in
 
 ## Live on-premises infrastructure
 
-The following state was verified directly through 2026-07-29:
+The following state combines the directly verified platform baseline with the
+accepted runner and Jenkins changes completed through 2026-08-01:
 
 | Layer | Verified state |
 | --- | --- |
 | `infra01.example.com` | Ubuntu 26.04 LTS host reachable after a full reboot; KVM/libvirt, `br0`, and 17/17 autostart domains are up with expected IPv4 addresses; STP is disabled and canary recovery passed |
 | `infra02.example.com` | Ubuntu 26.04 LTS, `br0` active, 14/14 domains running, and no active change process |
-| `infra03.example.com` | Ubuntu 26.04 LTS, `br0` active, three new build-execution domains running with autostart |
-| Virtual machines | 34 domains in the latest inventory: 17 on infra01, 14 on infra02, and 3 on infra03; all domains are running and all infra01 guests recovered expected IPv4 addresses |
+| `infra03.example.com` | Ubuntu 26.04 LTS, `br0` active, four build-execution domains running with autostart |
+| Virtual machines | 35 domains in the latest accepted inventory: 17 on infra01, 14 on infra02, and 4 on infra03; all domains are running and all infra01 guests recovered expected IPv4 addresses |
 | Product roles | At least 23 runtime roles directly verified; Harbor is installed; Vault 2.0.3 is active, unsealed, and accepted through NGINX; Keycloak still awaits revalidation |
 | Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready |
 | AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
@@ -50,9 +51,10 @@ native HTTPS returns 200. Vault 2.0.3 is active on
 still requires separate revalidation before its older installation claim
 becomes canonical.
 
-Three infra03 guests were provisioned at `.136–.138`:
-`gitlab-runner-app01`, `gitlab-runner-infra01`, and `jenkins-agent01`.
-All three are running Rocky Linux and have autostart enabled.
+Four infra03 guests were provisioned at `.136–.139`:
+`gitlab-runner-app01`, `gitlab-runner-infra01`, `jenkins-agent01`, and
+`gitlab-runner-shared01`. All four are running Rocky Linux and have autostart
+enabled.
 `gitlab-runner-infra01` is accepted as runner ID 4: the pinned GitLab Runner
 19.2.0 Docker executor is project-scoped to project ID 2, locked, rejects
 untagged jobs, and has exactly `ansible,infra,terraform` tags. Canary job 1171
@@ -60,10 +62,19 @@ ran on that runner, rollback/restore succeeded, and AWX job 645 converged with
 zero changes. `gitlab-runner-app01` is also accepted: instance runner ID 3 has
 exact `app,docker` tags, rejects untagged jobs, runs the pinned 19.2.0 Docker
 executor, and passed canary job 1234 plus rollback/restore and zero-change AWX
-job 665. `jenkins-agent01` is accepted: its
+job 665. `gitlab-runner-shared01` is accepted as instance runner ID 5 with
+exact `shared,validation,security` tags, untagged execution disabled, and the
+pinned 19.2.0 Docker executor. Canary job 1424, rollback/restore, and
+zero-change AWX job 704 passed. `jenkins-agent01` is accepted: its
 WebSocket service is enabled and active, Jenkins reports one exclusive
 `kubernetes-deployer` executor online, the controller has zero executors, and
 AWX jobs 536/541 both converged with zero changes or failures.
+
+Legacy GitLab runner ID 2 (`ansible-jenkins-runner-01`) is paused and its
+container is absent from `gitlab.example.com`. Retirement, rollback restore,
+final retirement, and zero-change convergence passed through AWX jobs 713,
+717, 721, and 725. CI execution therefore remains off the GitLab application
+VM.
 
 The four-node application cluster currently contains the control-plane components,
 CoreDNS, Flannel, and Headlamp. Argo CD, MetalLB, ingress-nginx, cert-manager,
@@ -188,11 +199,12 @@ Node Exporter 1.11.1 is installed on managed platform hosts.
 
 ## Application and telemetry readiness audit
 
-The following readiness evidence was collected directly through 2026-07-29:
+The readiness baseline was collected directly through 2026-07-29 and includes
+the accepted Jenkins and GitLab Runner changes completed through 2026-08-01:
 
 | Capability | Live evidence | Readiness |
 | --- | --- | --- |
-| Hypervisor capacity | infra01 has 17/17, infra02 has 14/14, and infra03 has 3/3 domains running; infra01 bridge correction and one controlled guest reboot passed | Monitoring under INC-2026-046 |
+| Hypervisor capacity | infra01 has 17/17, infra02 has 14/14, and infra03 has 4/4 domains running; infra01 bridge correction and one controlled guest reboot passed | Monitoring under INC-2026-046 |
 | Kubernetes base | Explicit `kubernetes-admin@kubernetes` context reports server 1.34.10, 4/4 nodes Ready, no non-running pods, and no active Jobs | Accepted after infra01 recovery |
 | Persistent Kubernetes applications | No StorageClass and no PVCs | Blocked until storage is installed and tested |
 | Kubernetes application ingress | No IngressClass or ingress controller; Headlamp is exposed by NodePort | Blocked for standard application URLs |

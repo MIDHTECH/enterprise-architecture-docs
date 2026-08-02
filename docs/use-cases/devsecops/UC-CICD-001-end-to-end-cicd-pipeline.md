@@ -1,6 +1,6 @@
 # UC-CICD-001: End-to-End CI/CD Pipeline Setup
 
-Last verified: 2026-07-31
+Last verified: 2026-08-02
 
 ## Use-case record
 
@@ -11,8 +11,8 @@ Last verified: 2026-07-31
 | Primary roles | Application developer, DevOps engineer, platform engineer, SRE, security reviewer |
 | Change record | `CHG-2026-002` |
 | Target | Podinfo application mirrored into on-premises GitLab, Jenkins, AWX, dedicated Jenkins agent, and Kubernetes cluster |
-| Current state | **In progress — source gates passed; runtime execution and rollback evidence pending** |
-| Current blocker | AWX direct access is accepted. Publish the updated change and incident evidence before starting the sequential `jenkins-agent01` bootstrap. |
+| Current state | **In progress — source gates and the dedicated Jenkins agent are accepted; managed ingress-job runtime execution and rollback evidence remain pending** |
+| Current blocker | The managed Jenkins ingress job and protected secret-file kubeconfig are not yet accepted; Helm PLAN must pass before deployment begins. |
 | Owner | Platform Delivery team |
 
 ## Purpose
@@ -353,7 +353,7 @@ node and running the controlled agent-removal playbook; preserve job logs.
 reviewed revision, so that rendered resources and cluster compatibility can be
 reviewed before any release state changes.
 
-**Status:** Pending STORY-CICD-003.
+**Status:** Ready after accepted STORY-CICD-003; live Jenkins PLAN remains pending.
 
 **Acceptance criteria:**
 

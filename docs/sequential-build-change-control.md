@@ -1,6 +1,6 @@
 # Sequential Build and Change Control
 
-Last verified: 2026-08-01
+Last verified: 2026-08-02
 
 ## Operating rule
 
@@ -33,11 +33,11 @@ GitLab VM as the steady state. The sequential target topology is
 `gitlab-runner-infra01.example.com` (`.137`),
 `gitlab-runner-app01.example.com` (`.136`), and
 `gitlab-runner-shared01.example.com` (`.139`). The shared runner follows the
-same scope-based naming convention and will own shared validation/security
-work. The existing GitLab-VM runner remains only as the temporary validation
-path and will be paused after all three dedicated runners pass acceptance.
-This decision does not authorize concurrent runner changes or repurposing
-`jenkins-agent01.example.com` at `.138`.
+same scope-based naming convention and owns shared validation/security work.
+All three dedicated runners are accepted. Legacy runner ID 2 on the GitLab VM
+is paused and its container is retired, so CI execution no longer competes
+with the GitLab application. `jenkins-agent01.example.com` at `.138` remains
+the dedicated Jenkins executor and is not a GitLab runner.
 
 The authenticated post-acceptance screenshots explicitly reorder the Jenkins
 root-URL defect ahead of ingress as `CHG-2026-003`. The node page also reports
@@ -170,7 +170,7 @@ INC-2026-052 near miss are resolved.
 
 ## Activity audit
 
-The 2026-07-29 audit found:
+The latest accepted state, reconciled on 2026-08-02, is:
 
 | Area | Evidence | Classification |
 | --- | --- | --- |
@@ -181,9 +181,11 @@ The 2026-07-29 audit found:
 | Application Kubernetes | Explicit context `kubernetes-admin@kubernetes`; server 1.34.10; control plane plus three workers Ready; no non-running pods or active Jobs | Healthy and idle |
 | NGINX routes | The catalog advertises 13 active routes and five intentional unavailable routes. All active routes returned expected non-5xx UI, redirect, authentication, or API responses; Vault health is HTTP 200 and unsealed. | Healthy; jobs 417 and 421 accepted |
 | infra02 | 14/14 VMs running; no Ansible, Terraform, VM-build, or package-change process except routine `dnf makecache` on Logstash | Stable |
-| infra03 | Host stable; three recently provisioned VMs running with autostart | Unreconciled completed provisioning |
-| `gitlab-runner-app01` | `.136`, Rocky VM running; no GitLab Runner service or process | Provisioned only |
-| `gitlab-runner-infra01` | `.137`, Rocky VM running; no GitLab Runner service or process | Provisioned only |
+| infra03 | Host stable; four build-execution VMs running with autostart | Accepted placement |
+| `gitlab-runner-app01` | `.136`, runner ID 3, pinned Runner 19.2.0 Docker executor, exact `app,docker` tags, untagged execution disabled | Accepted; canary 1234 and jobs 657/661/665 passed |
+| `gitlab-runner-infra01` | `.137`, runner ID 4, pinned Runner 19.2.0 Docker executor, exact `ansible,infra,terraform` tags, untagged execution disabled | Accepted; canary 1171 and jobs 629/633/645 passed |
+| `gitlab-runner-shared01` | `.139`, runner ID 5, pinned Runner 19.2.0 Docker executor, exact `security,shared,validation` tags, untagged execution disabled | Accepted; canary 1424 and jobs 696/700/704 passed |
+| GitLab-VM runner | Runner ID 2 is paused; its container is absent while protected configuration is preserved for controlled rollback | Retired; jobs 713/717/721/725 passed |
 | `jenkins-agent01` | `.138`, Rocky 9.8; WebSocket agent service enabled/active; Helm 4.1.0, kubectl 1.34.10, Java 21, and Git 2.52.0; Jenkins online with one exclusive executor | Accepted; jobs 536/541 clean |
 | Harbor | `.122`; Docker and all Harbor, registry, database, Redis, portal, job-service, and Trivy containers healthy; HTTPS 200 | Installed but canonical documentation is stale |
 | Artifactory | `.123`; no product service detected | Provisioned only |
@@ -204,8 +206,8 @@ the inventory-normalization change.
 | ---: | --- | --- |
 | 1 | Restore infra01 management connectivity and finish control-plane activity audit | Physical console and bridge evidence available |
 | 2 | Reconcile live products and all pending source-of-truth changes | GitLab, AWX, Jenkins, DNS, NGINX, Vault, Keycloak, and Harbor inspected |
-| 3 | Review and either complete or retire `gitlab-runner-infra01` | VM placement, `.137` addressing, runner scope, and rollback approved |
-| 4 | Review and either complete or retire `gitlab-runner-app01` | Infrastructure runner change closed |
+| 3 | Review and either complete or retire `gitlab-runner-infra01` | Completed 2026-08-01 through `CHG-2026-004` |
+| 4 | Review and either complete or retire `gitlab-runner-app01` | Completed 2026-08-01 through `CHG-2026-005` |
 | 5 | Provision, configure, and accept `gitlab-runner-shared01` on infra03 | Completed 2026-08-01 through `CHG-2026-006` |
 | 6 | Retire the GitLab-VM runner from CI execution | Completed 2026-08-01 through `CHG-2026-007` |
 | 7 | Review `jenkins-agent01`, correct canonical port-80 access, and set the Jenkins root URL | Completed 2026-08-01 through `CHG-2026-003`; agent, portless URL, root URL, DNS, and route cleanup accepted |
