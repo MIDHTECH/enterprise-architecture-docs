@@ -43,6 +43,7 @@ For MidhHealth, that translates into practical work:
 | AI roles are moving from experiments to production systems with RAG, agents, responsible AI, evaluation, and auditability | Start with constrained assistants for knowledge retrieval, claims or care-operation support, and incident summarization; require prompt/version tracking, human review, and safety checks before workflow integration |
 | MLOps roles emphasize model registries, CI/CT/CD, serving, monitoring, drift, rollback, and governance evidence | Promote models like software: every candidate has data lineage, validation results, deployment evidence, telemetry, rollback path, and an owner |
 | Cloud/platform roles still need CI/CD, IaC, Kubernetes, security, cost controls, and operational support | Keep the platform boring in the best way: repeatable builds, protected branches, review gates, secrets out of Git, and visible deployment evidence |
+| Early-to-mid-career Linux roles combine core administration with automation, observability, security, hybrid infrastructure, and incident ownership | Treat Bash/Python tooling, monitoring and RCA, identity integration, vulnerability remediation, container and cloud host operations, and tested recovery as first-class Linux engineering work |
 
 The goal is not to claim that every tool is installed today. The goal is to
 define work that a healthcare platform team can operate, audit, and convert into
@@ -516,6 +517,13 @@ fleet targets, evidence flow, and operational feedback loop.
 | Configuration-Drift Detection | Desired-state comparison and remediation |
 | Server Compliance Evidence | Auditable operating-system and service posture |
 | Break-Glass Recovery | Console, boot, filesystem and access recovery |
+| Linux Automation and Tooling Development | Tested Bash/Python utilities, APIs and reusable operational automation |
+| Linux Monitoring and Incident Operations | Host metrics, logs, alerts, on-call triage, RCA and durable corrective actions |
+| Hybrid-Cloud and Container Host Engineering | Secure Linux hosts for cloud VMs, Docker/Podman, Kubernetes and hybrid workloads |
+| Enterprise Identity Integration | LDAP, Kerberos, Active Directory, SSO, PAM and certificate-based host access |
+| Vulnerability Remediation Lifecycle | Scan, prioritize, remediate, verify and document CIS, STIG, FIPS and organizational findings |
+| Backup, Restore, Disaster Recovery and HA Testing | Prove recoverability, failover, service continuity and restoration evidence |
+| Git-Based Linux Change Validation | Peer-reviewed source, CI checks, staged rollout, rollback and auditable change evidence |
 
 ## Enterprise Database Engineering and Reliability Platform
 
@@ -832,14 +840,14 @@ rollback path.
 | 3. Kubernetes with GitOps | 13 |
 | 4. Observability and SRE | 16 |
 | 5. Governance and Operations | 19 |
-| 6. Linux Systems Engineering | 17 |
+| 6. Linux Systems Engineering | 24 |
 | 7. Database Engineering and Reliability | 19 |
 | 8. Resilience and Service Operations | 20 |
 | 9. Data Engineering and Integration | 25 |
 | 10. Network Engineering and Automation | 31 |
 | 11. Healthcare AI Platform | 15 |
 | 12. MLOps Model Platform | 15 |
-| **Total** | **217** |
+| **Total** | **224** |
 
 ## Portfolio Decision Record
 
@@ -852,6 +860,7 @@ rollback path.
 | 2026-07-27 | Start database, resilience, data, and network first implementation slices | Complete the approved specialist domain starts without expanding infrastructure | Adds safe Ansible evidence playbooks, GitLab CI validation, runbooks, engineering coverage, and Jenkins/AWX catalog registration for those teams. |
 | 2026-07-27 | Add AI and ML platform domains | Reflect healthcare platform demand for production AI, RAG, agents, MLOps, model governance, drift monitoring and regulated AI operations | Adds approved planned domains for `healthcare-ai-platform` and `mlops-model-platform`; does not save individual job-posting details or authorize new runtime capacity. |
 | 2026-07-27 | Add AI/ML edge and high-memory capacity direction | Separate developer inference from heavier backend workloads | Plans `midh-ai-edge-01` as a Mac Studio M1 AI/ML development and edge-inference node; infra03 is now available as a 256 GB Linux/KVM host for data, observability, AI/ML backend, and resilience workloads. |
+| 2026-08-02 | Calibrate the Linux systems backlog against 25 recent full-time roles requiring fewer than seven years of experience | Preserve strong traditional Linux coverage while reflecting current expectations for automation, observability, security, hybrid infrastructure, identity, incident response and tested recovery | Expands the defined Linux portfolio from 17 to 24 use cases and the enterprise total from 217 to 224. This changes backlog scope only; it does not claim implementation, runtime acceptance, new infrastructure or product installation. |
 
 ## Recommended Implementation Order
 

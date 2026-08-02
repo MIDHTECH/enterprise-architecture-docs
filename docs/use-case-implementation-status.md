@@ -1,6 +1,6 @@
 # Use-Case Implementation Status
 
-Last verified: 2026-07-31
+Last verified: 2026-08-02
 
 Detailed use cases are expanded and accepted sequentially under the
 [use-case documentation standard](use-cases/README.md). The first expanded
@@ -17,7 +17,7 @@ not by itself make an enterprise use case complete.
 
 | State | Required evidence |
 | --- | --- |
-| Defined | Use case exists in the 217-use-case portfolio |
+| Defined | Use case exists in the canonical portfolio |
 | Scaffolded | Repository structure or design exists, but no executable outcome |
 | Implemented in code | Executable script, playbook, pipeline, or policy exists and passes repository validation |
 | Runtime verified | Automation ran against the intended environment and produced current evidence |
@@ -27,12 +27,13 @@ not by itself make an enterprise use case complete.
 
 | Measure | Count | Interpretation |
 | --- | ---: | --- |
-| Defined portfolio use cases | 217 | Approved enterprise scope across 12 projects |
 | Explicitly implemented first slices | 10 | Code exists for the bounded automation listed below |
 | Fully accepted portfolio use cases | Not yet centrally evidenced | Do not infer acceptance from infrastructure or repository presence |
 
-The previous `30 of 187` statement is retired. The portfolio expanded to 217
-and no complete acceptance ledger supported that earlier count.
+Defined scope and counts are maintained only in the
+[canonical portfolio](enterprise-project-portfolio-and-usecases.md). This
+status document intentionally does not duplicate them. Definition does not
+imply implementation.
 
 ## Explicitly implemented first slices
 
@@ -50,7 +51,12 @@ and no complete acceptance ledger supported that earlier count.
 | Centralized Rocky Linux fleet logging | `ansible-observability` | Accepted on 31/31 VMs through encrypted Filebeat, Logstash, and inventory-based Elasticsearch verification |
 
 Linux systems, database reliability, resilience, data engineering, and network
-engineering contain executable first-slice playbooks. They remain
+engineering contain executable first-slice playbooks. The Linux portfolio now
+includes market-calibrated additions, but they remain defined backlog until
+corresponding code and passing validation exist. The existing Linux first slice
+also remains below `implemented in code`: live GitLab main pipeline 250 failed
+because all three validation jobs had no matching runner, and no successful
+repository pipeline is recorded. The other executable specialist slices remain
 `implemented in code` until Jenkins/AWX execution records and acceptance
 evidence are added. Healthcare AI and MLOps remain repository scaffolds.
 
