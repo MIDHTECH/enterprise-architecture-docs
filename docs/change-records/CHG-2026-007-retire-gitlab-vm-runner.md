@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-007` |
 | Type | Normal |
-| State | Implement |
+| State | Closed |
 | Risk | Moderate |
 | Impact | Low |
 | Priority | High |
@@ -58,7 +58,7 @@ Do not register a new identity or replace the configuration.
 
 | Field | Value |
 | --- | --- |
-| Close code | Pending |
-| Closed date | Pending |
-| Implementation result | Pending |
-| Validation evidence | Pending |
+| Close code | Successful |
+| Closed date | 2026-08-01 |
+| Implementation result | Canonical source `244e418` paused only runner ID 2 and removed only its runner container through AWX; preserved configuration remains available for rollback. |
+| Validation evidence | Pipelines 455/456 passed; retire 713, restore 717, final retire 721, and zero-change job 725 passed. See `docs/evidence/CHG-2026-007-gitlab-vm-runner-retirement-acceptance.md`. |

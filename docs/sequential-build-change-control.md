@@ -17,13 +17,13 @@ Jenkins, or AWX control plane.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `CHG-2026-007` |
-| Component | GitLab VM runner ID 2 (`ansible-jenkins-runner-01`) |
-| State | Active. Preflight found zero GitLab pending/running jobs, zero AWX jobs/updates, no conflicting infra03 operation, and three healthy dedicated runners. |
+| Change ID | None |
+| Component | None |
+| State | Idle. `CHG-2026-007` retired the GitLab-VM runner after rollback proof and final zero-change convergence. |
 | Blocker | None |
-| Permitted work | Pause only runner ID 2, remove only its runner container through AWX, preserve configuration, validate GitLab health, rollback/restore, and final idempotence. |
-| Prohibited work | Changing GitLab application services, deleting the runner identity/configuration, or changing dedicated runner IDs 3, 4, and 5. |
-| Exit criteria | ID 2 is paused and its runner container absent; rollback is proven; GitLab and the three dedicated runners remain healthy; evidence and repositories are published. |
+| Permitted work | Publish this closure. A later component requires a new active record and activity audit. |
+| Prohibited work | Any additional infrastructure mutation until a new active-change row is published. |
+| Exit criteria | Not applicable while idle. |
 
 `CHG-2026-001`, `CHG-2026-002`, and `CHG-2026-003` are complete.
 
@@ -104,6 +104,15 @@ was removed. The preserved evidence is in
 [Jenkins Agent Acceptance](evidence/CHG-2026-002-jenkins-agent-acceptance.md).
 
 ## Completed change
+
+`CHG-2026-007` retired legacy GitLab runner ID 2 from the GitLab VM. Source
+commit `244e418` passed pipelines 455/456; AWX retire job 713 paused the exact
+identity and removed only its container; restore job 717 proved rollback with
+the same ID and pinned Runner 19.2.0 image; final retirement 721 succeeded; and
+job 725 reported zero changes or failures. The three dedicated infra03 runners
+remain active and GitLab remains HTTP 200. See the
+[change record](change-records/CHG-2026-007-retire-gitlab-vm-runner.md) and
+[acceptance evidence](evidence/CHG-2026-007-gitlab-vm-runner-retirement-acceptance.md).
 
 `CHG-2026-006` accepted `gitlab-runner-shared01.example.com` on infra03 as
 instance runner ID 5 with exact `shared,validation,security` tags and untagged
@@ -198,7 +207,7 @@ the inventory-normalization change.
 | 3 | Review and either complete or retire `gitlab-runner-infra01` | VM placement, `.137` addressing, runner scope, and rollback approved |
 | 4 | Review and either complete or retire `gitlab-runner-app01` | Infrastructure runner change closed |
 | 5 | Provision, configure, and accept `gitlab-runner-shared01` on infra03 | Completed 2026-08-01 through `CHG-2026-006` |
-| 6 | Retire the GitLab-VM runner from CI execution | Active as `CHG-2026-007`; all three dedicated runners accepted |
+| 6 | Retire the GitLab-VM runner from CI execution | Completed 2026-08-01 through `CHG-2026-007` |
 | 7 | Review `jenkins-agent01`, correct canonical port-80 access, and set the Jenkins root URL | Completed 2026-08-01 through `CHG-2026-003`; agent, portless URL, root URL, DNS, and route cleanup accepted |
 | 8 | Deploy and accept the single-replica Kubernetes ingress tier | Runner migration closed; agent accepted; documentation pipeline published; kubeconfig secret-file credential and non-mutating PLAN complete |
 | 9 | Deploy and accept Kubernetes persistent storage | Ingress change closed and rollback verified |
