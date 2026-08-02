@@ -97,21 +97,25 @@ that can be reviewed later.
 
 ## Enterprise Linux Systems Platform
 
-**Target problem:** Linux lifecycle, KVM, patching, storage, DNS, identity, and
-system services need consistent automation and operational evidence.
+**Target problem:** Enterprise Linux operations need consistent automation,
+security, reliability, and operational evidence.
 
-**Target design:** Reusable Ansible roles and AWX workflows manage Rocky Linux
-hosts, hypervisor services, baselines, patch windows, storage, recovery, and
-validation.
+**Target design:** Reusable automation and controlled workflows manage Linux
+hosts and produce reviewable operational evidence. The complete scope is
+maintained in the
+[canonical portfolio](enterprise-project-portfolio-and-usecases.md#enterprise-linux-systems-engineering-platform).
 
 **Current implementation:** `linux-systems-platform` has Ansible inventory,
-roles, playbooks, runbooks, GitLab CI validation, and a Jenkins/AWX launcher
-path through `projects/run-ansible-playbook`. The launcher requires
-`CONFIRM_APPLY` before running `playbooks/site.yml`.
+roles, playbooks, runbooks, a GitLab CI validation definition, and a Jenkins/AWX
+launcher path through `projects/run-ansible-playbook`. The launcher requires
+`CONFIRM_APPLY` before running `playbooks/site.yml`. A successful repository
+pipeline and Jenkins/AWX runtime acceptance are still pending.
 
 **Scope boundary:** This is an active first implementation slice against the
 existing VM fleet. It does not claim new VM capacity or unrelated product
-installation.
+installation. Market-calibrated additions remain defined backlog until code,
+pipeline, Jenkins/AWX, idempotence, rollback, and acceptance evidence exist;
+their definitions are not repeated here.
 
 ## Enterprise Database Reliability Platform
 

@@ -133,21 +133,21 @@ operations model.
 
 ### Enterprise Linux Systems Platform
 
-**Project:** Active first implementation slice for Linux lifecycle, KVM,
-patching, storage, DNS, identity, and core system services against the existing
-VM fleet.
+**Project:** Active first Linux systems implementation slice against the
+existing VM fleet. Authoritative use-case scope is maintained only in the
+[enterprise portfolio](enterprise-project-portfolio-and-usecases.md#enterprise-linux-systems-engineering-platform).
 
 **Team:** Linux systems engineer, virtualization engineer, Ansible/AWX
 engineer, network engineer, security engineer, and SRE.
 
-**Architecture contribution:** Defined and implemented source-controlled
-roles, inventories, maintenance workflows, validation, and evidence for host
-operations.
+**Architecture contribution:** Provides source-controlled host automation and
+operational evidence. The original first-slice source is executable but still
+awaits a passing repository pipeline; newer portfolio items remain defined
+backlog.
 
 **Operating narrative:** The first Linux systems slice uses reusable Ansible
-roles and AWX workflows. The architecture connects host baseline, patching,
-storage, DNS, virtualization, recovery, and compliance evidence without adding
-new VM capacity.
+roles and controlled Jenkins/AWX workflows to produce reviewable host evidence
+without adding new VM capacity. Detailed use cases are not repeated here.
 
 **Jenkins/AWX workflow:** The project is launched through
 `projects/run-ansible-playbook`, which lets operators select the project,

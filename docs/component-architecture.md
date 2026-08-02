@@ -154,7 +154,7 @@ flowchart TB
 | Kubernetes GitOps | Manages cluster desired state, policies, namespaces, ingress, and application manifests |
 | Observability/SRE | Provides dashboards, alerts, SLOs, incident runbooks, and RCA evidence |
 | Governance Automation | Enforces IAM, secrets, compliance, backups, cost, certificates, and remediation |
-| Linux Systems Platform | Active first slice for Linux lifecycle, baseline, patching, storage, DNS/NTP, drift, compliance evidence, and recovery runbooks against the existing VM fleet |
+| Linux Systems Platform | Active first slice against the existing VM fleet; authoritative scope is maintained only in the [enterprise portfolio](enterprise-project-portfolio-and-usecases.md#enterprise-linux-systems-engineering-platform) |
 | Database Reliability Platform | Active first slice for database readiness, security, performance, backup, recovery, and lifecycle evidence |
 | Resilience and Service Operations | Active first slice for service catalog, SLO, incident, exercise, and readiness evidence |
 | Data Engineering Platform | Active first slice for source inventory, quality, orchestration, lineage, and access governance evidence |

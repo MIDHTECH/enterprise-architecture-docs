@@ -18,7 +18,7 @@ against the existing VM fleet. They do not imply new product installation. A
 separate capacity plan now tracks a third memory-optimized Linux server and a
 Mac Studio M1 AI/ML edge development node.
 
-The authoritative scope and all 217 use cases are maintained in
+The authoritative scope and use-case counts are maintained only in
 [Enterprise Project Portfolio and Use Case Coverage](enterprise-project-portfolio-and-usecases.md).
 Implementation and acceptance counts are maintained separately in
 [Use-Case Implementation Status](use-case-implementation-status.md).

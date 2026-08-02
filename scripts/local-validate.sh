@@ -59,7 +59,6 @@ grep -q "data-engineering-platform" "$portfolio"
 grep -q "network-engineering-platform" "$portfolio"
 grep -q "healthcare-ai-platform" "$portfolio"
 grep -q "mlops-model-platform" "$portfolio"
-grep -Fq '| **Total** | **217** |' "$portfolio"
 use_case_count="$(
   awk '
     /^## Enterprise / { in_domain=1; in_table=0; next }
@@ -70,7 +69,26 @@ use_case_count="$(
     END { print count+0 }
   ' "$portfolio"
 )"
-test "$use_case_count" -eq 217
+test "$use_case_count" -gt 0
+declared_total="$({
+  awk -F'|' '/^\| \*\*Total\*\* \| \*\*[0-9]+\*\* \|$/ { print $3 }' "$portfolio"
+} | tr -d ' *')"
+test "$declared_total" = "$use_case_count"
+
+linux_use_case_count="$({
+  awk '
+    /^## Enterprise Linux Systems Engineering Platform/ { in_domain=1; in_table=0; next }
+    /^## Enterprise / { if (in_domain) exit }
+    in_domain && /^\| Use case / { in_table=1; next }
+    in_domain && in_table && /^\| ---/ { next }
+    in_domain && in_table && /^\| [^|-]/ { count++ }
+    END { print count+0 }
+  ' "$portfolio"
+})"
+declared_linux_count="$({
+  awk -F'|' '/^\| 6\. Linux Systems Engineering \| [0-9]+ \|$/ { print $3 }' "$portfolio"
+} | tr -d ' ')"
+test "$declared_linux_count" = "$linux_use_case_count"
 grep -q "elasticsearch01.example.com" docs/vm-inventory.md
 grep -q "elasticsearch03.example.com" docs/vm-inventory.md
 grep -q "splunk.example.com" docs/vm-inventory.md
@@ -93,7 +111,6 @@ grep -q "Helm | 4.1.0" docs/product-versions.md
 grep -q "Chart 4.15.0; controller 1.15.1" docs/product-versions.md
 grep -q "midhhealth/ai-and-ml-platform/healthcare-ai-platform" docs/gitlab-organization-model.md
 grep -q "midhhealth/ai-and-ml-platform/mlops-model-platform" docs/gitlab-organization-model.md
-grep -q "| Defined portfolio use cases | 217 |" docs/use-case-implementation-status.md
 grep -q "| Explicitly implemented first slices | 10 |" docs/use-case-implementation-status.md
 
 if grep -R --line-number --exclude='sre-incident-register.md' \
