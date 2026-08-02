@@ -59,7 +59,9 @@ bind a non-loopback address or receive a firewall opening.
   `midhhealth/platform-delivery/ansible-awx` now exists. Bootstrap merge
   request !1 passed branch pipeline 480 and main pipeline 481. Dependency and
   hostname-boundary merge request !2 passed branch pipeline 482 and merged as
-  `0741093f`; main pipeline 483 is the publication gate for that revision.
+  `0741093f`; main pipeline 483 passed. Controlled-runtime merge request !3
+  passed branch pipeline 487 and merged as `6d7887fa`; main pipeline 488 also
+  passed for install, validation, canary, removal, and restore.
 - AWX instance 2, which used a direct port, was deprovisioned before any job
   ran. Replacement instance 3 is disabled, has never run a job, and records
   only `awx-execution.example.com:443` as its Receptor address.
@@ -110,6 +112,12 @@ VM.
 5. Stop if the source revision, capacity, certificate identity, controller
    state, hostname, listener address, or required dependency differs from the
    reviewed evidence.
+
+The implementation source preserves pre-change package, account, firewall,
+SELinux, and container-policy state; isolates the hashed Python worker runtime;
+checks every injected bundle artifact against its reviewed SHA-256 value; and
+refuses rollback if the Receptor binary identity changed. Runtime mutation may
+start only after the documentation pipeline for this evidence revision passes.
 
 ## Backout plan
 

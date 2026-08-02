@@ -24,9 +24,9 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | --- | --- |
 | Change ID | `CHG-2026-008` |
 | Component | AWX execution plane: only `awx-execution.example.com` and its Receptor registration |
-| State | Pre-deployment source and architecture publication; runtime mutation remains gated. |
-| Blocker | The hostname-only NGINX/Receptor design must pass documentation CI, source main pipeline 483 must pass, and install/rollback automation must be reviewed before deployment. |
-| Permitted work | Publish the NGINX hostname boundary, complete reviewed install/rollback source, then run the controlled canary/rollback/restore sequence through AWX. |
+| State | Pre-deployment runtime publication and AWX object configuration; VM mutation remains gated. |
+| Blocker | This evidence revision must pass; then the project, inventory, encrypted bundle credential, templates, and bounded instance group must be reconciled and synchronized before deployment. |
+| Permitted work | Publish the runtime evidence, reconcile only the CHG-2026-008 AWX objects, repeat the activity audit, then run the controlled canary/rollback/restore sequence through AWX. |
 | Prohibited work | Ingress, storage, product, SSO, EDA, HA, or another VM/component change; direct installation or direct exposure of Receptor port 27199 is prohibited. |
 | Exit criteria | Node Ready in its bounded group; canary, rollback, restore, final zero-change convergence, runtime/security acceptance, evidence, and repository publication complete. |
 
@@ -38,13 +38,15 @@ plane ahead of Kubernetes ingress. The existing architecture and use cases are
 not being recreated. Readiness checks found AWX healthy and idle,
 `awx-execution.example.com` running at `192.168.1.121`, Harbor healthy, and no
 conflicting activity on infra01/02/03. The canonical private `ansible-awx`
-project is now published; source pipelines 480 through 482 passed and merge
-request !2 produced main revision `0741093f` for pipeline 483. The approved
+project is now published; source pipelines 480 through 483 passed and merge
+request !2 produced main revision `0741093f`. Controlled-runtime merge request
+!3 passed branch pipeline 487 and main pipeline 488 at revision `6d7887fa`.
+The approved
 capacity decision is an explicitly non-production 8 GiB `lab-canary` with no
 resize. AWX instance 2 was deprovisioned before use; disabled instance 3 has
 run no jobs and records only `awx-execution.example.com:443`. Runtime
-onboarding remains gated on documentation publication and reviewed
-installation automation.
+onboarding remains gated on this evidence publication, AWX object
+reconciliation, and a fresh activity audit.
 
 The execution-plane exposure boundary is NGINX stream TLS passthrough on TCP
 443, addressed only as `awx-execution.example.com`. Receptor binds only
