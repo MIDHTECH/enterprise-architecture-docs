@@ -112,8 +112,18 @@ build 44 successfully on `jenkins-agent01`, generating
 passed on `jenkins-agent01`. Runtime validation found Jenkins active with zero
 restarts, HTTP 200, the controller at zero executors, the dedicated agent
 online, an empty queue, and exactly the two older scripts still unapproved.
-INC-2026-076 is resolved and this change has returned to gate 4. The credential,
-PLAN, and all ingress runtime resources remain absent.
+INC-2026-076 is resolved and this change returned to gate 4. The folder-scoped
+secret-file credential `kubernetes-production-kubeconfig` was then created;
+the mode-0600 workstation and control-plane temporary files were securely
+removed and their absence verified. PLAN build 1 used exact source revision
+`e34bd5477472a6d21c6a5d1933a0d95b5c3ebc55`, `ACTION=PLAN`,
+`CONFIRM_CHANGE=false`, and ran on `jenkins-agent01`. It failed before checkout
+because the existing Jenkins `gitlab-scm` SSH key does not have access to
+`midhhealth/platform-engineering/ansible-kubernetes`. The Helm stage was
+skipped, no kubeconfig content was printed, and all ingress runtime resources
+remain absent. GitLab lists the matching `Jenkins SCM read-only` deploy key as
+privately accessible but disabled for this project. INC-2026-077 records the
+safe prerequisite failure.
 
 ## Implementation gates
 
@@ -127,20 +137,23 @@ PLAN, and all ingress runtime resources remain absent.
    `kubernetes-production-kubeconfig` from the application-cluster kubeconfig.
    Never print, paste into parameters, commit, or retain a workstation copy of
    its content.
-5. Run `ACTION=PLAN`, `CONFIRM_CHANGE=false` on
+5. Confirm the existing `Jenkins SCM read-only` deploy key is enabled read-only
+   for `midhhealth/platform-engineering/ansible-kubernetes`. Do not create a
+   second key or grant write access.
+6. Run `ACTION=PLAN`, `CONFIRM_CHANGE=false` on
    `jenkins-agent01.example.com`. Require the intended context, four-node set,
    server-side Helm dry run, locked chart, and no secret output.
-6. Run the reviewed Ansible prerequisite playbook only if PLAN and live
+7. Run the reviewed Ansible prerequisite playbook only if PLAN and live
    firewall inspection show it is required. The scope is the documented
    Kubernetes nodes and source-restricted NodePort rule only.
-7. Run `ACTION=DEPLOY`, `CONFIRM_CHANGE=true` through Jenkins. Require atomic
+8. Run `ACTION=DEPLOY`, `CONFIRM_CHANGE=true` through Jenkins. Require atomic
    Helm wait and runtime acceptance.
-8. Repeat DEPLOY from the same revision and require no unexpected rollout,
+9. Repeat DEPLOY from the same revision and require no unexpected rollout,
    replacement, or value drift.
-9. Run an explicit known-good Helm rollback through the same Jenkins job,
+10. Run an explicit known-good Helm rollback through the same Jenkins job,
    validate the retained Headlamp NodePort 30080 recovery path, then restore
    the accepted release and validate again.
-10. Publish runtime evidence and incidents before closing the active change.
+11. Publish runtime evidence and incidents before closing the active change.
 
 ## Acceptance
 
