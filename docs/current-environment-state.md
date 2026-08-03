@@ -211,9 +211,9 @@ storage envelope.
   accepted dedicated runners. INC-2026-079 tracks validation through merge
   and main CI. Kubernetes main revision `d206ab3f` passed pipeline 530 and
   Jenkins-library main revision `d4fc707c` passed pipeline 531. Cloud revision
-  `de148bf` adds a staged DNS playbook that publishes the new canonical record
-  while preserving the legacy rollback route until final cutover; its CI and
-  merge remain pending.
+  `660b6ca` adds a staged DNS playbook that publishes the new canonical record
+  at zone serial `2026080301` while preserving the legacy rollback route;
+  final cutover advances to `2026080302`. Its CI and merge remain pending.
 - Enterprise first-slice implementation repositories:
   `midhhealth/data-and-integration/database-reliability-platform`,
   `midhhealth/reliability-operations/resilience-service-operations`,

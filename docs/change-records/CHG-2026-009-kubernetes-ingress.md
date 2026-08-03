@@ -207,12 +207,13 @@ cutover; they must be retired after the new path passes acceptance.
    that no Headlamp backend host port remains exposed.
 14. Publish runtime evidence and incidents before closing the active change.
 
-The staged DNS path is deliberate: cloud revision `de148bf` keeps the existing
+The staged DNS path is deliberate: cloud revision `660b6ca` keeps the existing
 legacy record only when `headlamp-dns-publish.yml` explicitly enables the
 transition flag. The normal `dns.yml` default is final-state false and removes
-that record at cutover. The shared-proxy role's final state already omits the
-Headlamp route, but that role is not reconciled until the new canonical path
-passes deployment, rollback, and restore.
+that record at cutover. The staged zone uses serial `2026080301`; final removal
+advances it to `2026080302`. The shared-proxy role's final state already omits
+the Headlamp route, but that role is not reconciled until the new canonical
+path passes deployment, rollback, and restore.
 
 Gates 1 through 6 document the superseded implementation and remain useful
 audit evidence only. The correction restarts at source review; no DEPLOY is
