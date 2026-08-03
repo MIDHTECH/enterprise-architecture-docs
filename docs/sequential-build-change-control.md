@@ -22,13 +22,30 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | None |
-| Component | None |
-| State | Idle. `CHG-2026-009` closed successfully on 2026-08-03. |
-| Blocker | None |
-| Permitted work | Read-only audits, or open the next documented change after its pre-change activity check and change record are accepted. |
-| Prohibited work | Starting Kubernetes storage or another component before this closeout merge and canonical-main pipeline pass; any NodePort, hostPort, or backend-port LAN exposure. |
-| Exit criteria | Not applicable while idle. |
+| Change ID | `CHG-2026-010` |
+| Component | Longhorn-backed Kubernetes persistent storage on the three dedicated worker data disks, including source-managed host prerequisites, Jenkins Helm delivery, and bounded persistence acceptance |
+| State | Active at the architecture, source, and non-mutating PLAN gate; no Longhorn resource, StorageClass, PV, or PVC has been created. |
+| Blocker | Source automation, CI, the AWX prerequisite job, Jenkins storage job, and a server-side Helm PLAN are not yet accepted. The required `iscsi-initiator-utils` package and active `iscsid` service are absent on all four Kubernetes nodes. |
+| Permitted work | Publish this gate; implement and validate only CHG-2026-010 prerequisite, Helm, Jenkins, acceptance, rollback, and evidence source; then run the reviewed AWX and Jenkins gates sequentially. |
+| Prohibited work | Direct workstation Helm or `kubectl apply`; Longhorn data on the control plane or root disks; V2 Data Engine; NodePort, hostPort, LoadBalancer, or ingress exposure; deleting accepted PVC data; configuring a backup target without a separately reviewed secret boundary; storage for Artifactory or another product before this change closes. |
+| Exit criteria | Exact source and PLAN accepted; prerequisites converge; Longhorn 1.12.0 V1 is healthy on worker-only `/data/longhorn`; default Retain StorageClass and three replicas validated; data survives pod recreation, deploy convergence, rollback, and restore; negative exposure and control-plane-disk checks pass; incidents, evidence, source, and documentation are published. |
+
+`CHG-2026-010` began only after the CHG-2026-009 closeout merge and a new
+read-only conflict audit. GitLab reported zero active pipelines and no
+pending/running builds; Jenkins had an empty queue and no running-build
+markers; AWX had zero active unified jobs; infra01/02/03 retained 17/14/4
+running domains with no Git, Ansible, Terraform, package, image-build,
+libvirt, Helm, or kubectl mutator; and the application cluster had four Ready
+Kubernetes 1.34.10 nodes, no active Jobs, and no non-running pods.
+
+The bounded storage target is stable Longhorn 1.12.0 using only the V1 Data
+Engine. Each worker has an empty, persistent, XFS `ftype=1` 150 GiB disk
+mounted at `/data` with approximately 149 GiB free. The control plane's 50 GiB
+`/data` disk is explicitly excluded. Longhorn receives three replicas, Retain
+reclaim policy, `WaitForFirstConsumer`, best-effort locality, worker-only
+labels, and `/data/longhorn`. The UI and manager remain ClusterIP-only. The
+backup target stays unset in this component; remote backup credentials and
+MinIO bucket policy require a separate reviewed boundary before Artifactory.
 
 `CHG-2026-009` is accepted and closed. Kubernetes and cloud source enforce
 ClusterIP-only/private backends, worker01-local NGINX, canonical DNS, and
@@ -321,7 +338,7 @@ the inventory-normalization change.
 | 7 | Review `jenkins-agent01`, correct canonical port-80 access, and set the Jenkins root URL | Completed 2026-08-01 through `CHG-2026-003`; agent, portless URL, root URL, DNS, and route cleanup accepted |
 | 8 | Establish and accept `awx-execution.example.com` as the bounded AWX execution plane | Completed 2026-08-02 through `CHG-2026-008`; hostname-only NGINX, canary, rollback/restore, and zero-change convergence accepted |
 | 9 | Deploy and accept the single-replica Kubernetes ingress tier | Completed 2026-08-03 through `CHG-2026-009`; worker01-local NGINX, ClusterIP-only ingress, rollback/restore, legacy retirement, and zero-change convergence accepted |
-| 10 | Deploy and accept Kubernetes persistent storage | Next; requires a new active change and fresh conflict audit |
+| 10 | Deploy and accept Kubernetes persistent storage | Active as `CHG-2026-010`; architecture and pre-change audit accepted, source and PLAN pending |
 | 11 | Install Artifactory | Platform storage and backup prerequisites accepted |
 | 12 | Install SonarQube | Artifactory change closed |
 | 13 | Continue remaining product and use-case queue | Previous component fully accepted |
