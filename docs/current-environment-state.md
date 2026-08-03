@@ -190,10 +190,15 @@ storage envelope.
   `kubernetes-production-kubeconfig` now exists and its temporary source files
   were securely removed after upload. PLAN build 1 ran on `jenkins-agent01`
   with exact source `e34bd547`, but failed safely before checkout because the
-  existing `Jenkins SCM read-only` deploy key is not enabled for
-  `ansible-kubernetes`. The Helm stage did not run and the cluster still has no
-  ingress runtime resources. INC-2026-077 is open while that bounded read-only
-  GitLab access prerequisite is corrected.
+  existing `Jenkins SCM read-only` deploy key was not enabled for
+  `ansible-kubernetes`. GitLab's idempotent enable service joined that existing
+  key read-only (`can_push=false`), and PLAN build 2 then succeeded from exact
+  source `e34bd547` on the dedicated agent with server-side dry run and hidden
+  secrets. Context `kubernetes-admin@kubernetes`, all four v1.34.10 nodes
+  Ready, Headlamp NodePort 30080, and zero post-run ingress objects are
+  verified. INC-2026-075 and INC-2026-077 are resolved. The source-restricted
+  TCP 30081 firewalld rule is absent on all four nodes, so the reviewed
+  prerequisite playbook and DEPLOY remain gated for operator authorization.
 - Enterprise first-slice implementation repositories:
   `midhhealth/data-and-integration/database-reliability-platform`,
   `midhhealth/reliability-operations/resilience-service-operations`,
