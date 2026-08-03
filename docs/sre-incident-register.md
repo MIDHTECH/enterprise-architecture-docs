@@ -110,6 +110,7 @@ facts; they do not erase the original observation.
 | INC-2026-076 | 2026-08-03 | SEV-3 | Resolved | Jenkins Configuration as Code | Production job 1617 deployed an unsupported freestyle label method; merge request !15 and protected jobs 1624/1625 restored and converged Jenkins |
 | INC-2026-077 | 2026-08-03 | SEV-4 | Resolved | Jenkins ingress source checkout | PLAN build 1 ran on the dedicated agent but GitLab denied the existing Jenkins deploy key before source checkout |
 | INC-2026-078 | 2026-08-03 | SEV-4 | Open | Kubernetes ingress exposure design | Pre-deployment review found that the accepted PLAN still depended on shared `nginx.example.com` and NodePorts, contrary to the permanent product-local NGINX rule |
+| INC-2026-079 | 2026-08-03 | SEV-4 | Open | CHG-2026-009 source CI routing | Corrected branch pipelines initially remained pending because jobs lacked tags after retirement of the legacy untagged runner |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2552,6 +2553,48 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Evidence/related runbook:
   [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md),
   [superseded PLAN evidence](evidence/CHG-2026-009-kubernetes-ingress-plan.md)
+
+## INC-2026-079: Corrected Ingress Source Had No Eligible CI Runner
+
+- Date: 2026-08-03
+- Severity: SEV-4
+- Status: Open
+- Component: CHG-2026-009 GitLab source-validation pipelines
+- Detection/symptom: Corrected branch pipelines 522-524 remained pending and
+  the GitLab administrator job view showed `Runner: None` for their automatic
+  jobs.
+- Impact: Source review could not complete. No deployment, DNS, NGINX,
+  firewall, Helm, or Kubernetes runtime action occurred.
+- Timeline: Documentation pipeline 520 and main pipeline 521 passed on the
+  accepted tagged runner. The implementation branches then created pipelines
+  522-524 with no eligible runner. Inspection showed the dedicated runners
+  healthy with untagged execution disabled. Revisions `8b169e0` and `37027a3`
+  added explicit routing. Cloud inspection found its branch ten commits behind
+  current main; revision `e98e793` incorporated main and retained the one
+  canonical `infra` default.
+- Cause: Kubernetes and Jenkins-library repositories retained pre-retirement
+  jobs with no tags. The cloud correction branch was cut from stale local main
+  that predated accepted runner routing. The legacy GitLab-VM runner had masked
+  the untagged dependency.
+- Contributing factors: Repository validation checked build content but did
+  not assert that each job declared a tag matching the accepted runner model.
+- Resolution: In progress. Kubernetes and Jenkins-library validation now use
+  the instance runner's `validation` tag. The cloud/DNS branch incorporates
+  current main and its project-runner `infra` tag. Validators assert these
+  tags remain.
+- Validation: GitLab assigned pipeline 526 work to
+  `gitlab-runner-shared01.example.com` runner ID 5 and pipeline 528 work to
+  `gitlab-runner-infra01.example.com` runner ID 4 before the cloud branch
+  reconciliation triggered replacement CI. Final branch pipelines, merge, and
+  canonical-main CI remain pending.
+- Prevention/follow-up: Keep explicit runner-tag contracts in every repository
+  and never restore untagged execution merely to clear a queue.
+- Corrective automation: Extend enterprise CI governance to compare job tags
+  with the accepted runner inventory before a legacy runner is retired.
+- Evidence/related runbook:
+  [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md),
+  [shared runner acceptance](change-records/CHG-2026-006-gitlab-runner-shared.md),
+  [infrastructure runner acceptance](change-records/CHG-2026-004-gitlab-runner-infra.md)
 
 ## New Incident Template
 
