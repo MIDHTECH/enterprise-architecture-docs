@@ -106,7 +106,7 @@ facts; they do not erase the original observation.
 | INC-2026-072 | 2026-08-02 | SEV-4 | Resolved | AWX execution scheduling | Controller-side templates were bound to the non-executing control-plane group and could not obtain capacity |
 | INC-2026-073 | 2026-08-02 | SEV-4 | Resolved | GitLab shared runner | One source-validation job could not clone GitLab during a transient HTTP connectivity failure |
 | INC-2026-074 | 2026-08-02 | SEV-4 | Resolved | AWX execution runtime lock | The first install omitted Python 3.9 conditional hashes for `importlib-metadata` and `zipp` |
-| INC-2026-075 | 2026-08-03 | SEV-4 | Open | Kubernetes ingress delivery prerequisites | Queue state claimed Jenkins credential and PLAN completion, but live Jenkins had neither the generated job nor credential |
+| INC-2026-075 | 2026-08-03 | SEV-4 | Open | Kubernetes ingress delivery prerequisites | Live reconciliation found the job and credential absent, then exposed an unlabeled seed that could not use the exclusive agent |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2394,16 +2394,24 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   IngressClass, or cluster mutation occurred.
 - Timeline: Source pipelines 351, 352, and 354 passed four days earlier. The
   enterprise seed job subsequently checked out exact jobs revision `950cc4f`,
-  but build 43 stopped at `script not yet approved for use`. Six reviewed Job
-  DSL scripts remain pending approval.
+  but build 43 stopped at `script not yet approved for use`. On 2026-08-03 the
+  four hashes matching current source were approved and two stale variants
+  were left unapproved. Build 44 then queued because the only agent is
+  label-restricted and the seed had no assigned label; it was cancelled before
+  execution.
 - Cause: Documentation promoted intended prerequisite state to completed state
   after source CI, without requiring live Jenkins object and PLAN evidence.
 - Contributing factors: The protected Jenkins configuration step was not part
-  of automatic GitLab validation, and seed failure did not change the queue
-  entry.
-- Resolution: Pending. Publish CHG-2026-009 at the prerequisite gate, approve
-  only the exact reviewed Job DSL, reconcile the existing seed, create the
-  scoped secret-file credential through Jenkins, and accept PLAN before DEPLOY.
+  of automatic GitLab validation, seed failure did not change the queue entry,
+  and the source-managed seed definition did not declare the label required by
+  the exclusive agent policy.
+- Resolution: Pending. Revisions `467e0005` and `c480cd28` in
+  `ansible-jenkins` merge request !14 assign the seed to the existing
+  `kubernetes-deployer` label, keep controller executors disabled, and target
+  the healthy instance runner using its existing `shared` tag. Pipeline 505
+  exposed the missing tag and executed no validation job. Require replacement
+  CI, merge, protected deployment, idempotence, successful seed reconciliation,
+  scoped credential creation, and accepted PLAN before DEPLOY.
 - Validation: Require the generated job, correct secret-file credential type,
   build agent `jenkins-agent01.example.com`, exact source revision, successful
   server-side Helm dry run, and zero secret output.

@@ -24,9 +24,9 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | --- | --- |
 | Change ID | `CHG-2026-009` |
 | Component | Single-replica Kubernetes ingress tier: Jenkins delivery objects, `platform-ingress` Helm release, and only its documented cluster prerequisites |
-| State | Active at the pre-deployment Jenkins prerequisite gate; no ingress runtime resources have been created. |
-| Blocker | Live audit found the generated `projects/deploy-kubernetes-ingress` job and secret-file credential `kubernetes-production-kubeconfig` absent. Six reviewed Job DSL scripts await Jenkins approval, so the documented PLAN has not run. |
-| Permitted work | Publish this gate, approve only the exact reviewed Job DSL at accepted source revisions, reconcile the seed job, create the scoped secret-file credential without exposing kubeconfig content, run PLAN, then perform the reviewed DEPLOY/rollback/restore/idempotence sequence through Jenkins and Helm. |
+| State | Active at the pre-deployment Jenkins prerequisite gate; four current Job DSL scripts are approved, the blocked seed queue item was cancelled, and no ingress runtime resources have been created. |
+| Blocker | Seed build 44 could not start because the only Jenkins agent is label-restricted while the Ansible/JCasC-managed seed had no assigned label. Two stale Job DSL variants remain deliberately unapproved; the generated ingress job and secret-file credential remain absent, and PLAN has not run. |
+| Permitted work | Review, merge, and deploy only the source-controlled `ansible-jenkins` seed-label correction through its protected production job; require the seed to reconcile on `jenkins-agent01`, then create the scoped secret-file credential without exposing kubeconfig content, run PLAN, and perform the reviewed DEPLOY/rollback/restore/idempotence sequence through Jenkins and Helm. |
 | Prohibited work | Direct Helm or `kubectl apply` from a workstation, AWX, or Ansible; Jenkins-controller execution; storage or another product change; direct LAN exposure of NodePorts 30081/30444; removal of Headlamp NodePort 30080. |
 | Exit criteria | Exact source and PLAN accepted; release and one replica healthy; ingress class, restricted NodePorts, and Headlamp host route validated; explicit Helm rollback and restore proven; second convergence clean; incidents, evidence, source, and documentation published. |
 
@@ -48,6 +48,17 @@ the script-approval gate, the generated ingress job is absent, and credential
 `kubernetes-production-kubeconfig` is absent. INC-2026-075 records the drift.
 No PLAN or cluster mutation occurred. CHG-2026-009 therefore starts at the
 Jenkins prerequisite gate and does not authorize a control-plane bypass.
+
+The operator approved only the four Job DSL hashes that exactly matched the
+reviewed source. Jenkins retained the two older hashes unapproved. Seed build
+44 then remained queued because `jenkins-agent01` is intentionally reserved
+for label-matched work while the Ansible/JCasC seed definition had no label;
+the queue item was cancelled without executing. The controlled correction is
+`ansible-jenkins` merge request !14: revision `467e0005` assigns the seed to
+the existing `kubernetes-deployer` label while keeping controller executors at
+zero, and revision `c480cd28` targets the healthy instance runner with the
+existing `shared` tag after pipeline 505 exposed the missing CI tag. No live
+Jenkins configuration or cluster mutation was made.
 
 On 2026-08-02 the user directed work to begin on the already documented
 AAP-like AWX goal. `CHG-2026-008` therefore reordered only the AWX execution

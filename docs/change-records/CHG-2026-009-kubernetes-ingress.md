@@ -83,13 +83,28 @@ The live audit proved otherwise:
 This discrepancy is INC-2026-075. It is a safe prerequisite failure, not
 authorization to create a freestyle workaround or edit Jenkins files directly.
 
+On 2026-08-03, the operator approved exactly the four pending Job DSL hashes
+that matched the current reviewed files. The two older `run-ansible-playbook`
+variants remain unapproved. Seed build 44 was then queued but could not start:
+the only Jenkins agent is intentionally restricted to label-matched jobs and
+the Ansible/JCasC-managed seed had no assigned label. Build 44 was cancelled
+before execution. Source revisions `467e000555eac89eb1c6cf6256625d945f431757`
+and `c480cd28994f663eb4b1dc40d33af6d78a656522` in
+`midhhealth/platform-delivery/ansible-jenkins` merge request !14 add the
+existing `kubernetes-deployer` label to the seed, validate that setting, and
+target the healthy instance runner with its existing `shared` tag. Pipeline
+505 exposed the missing CI tag and did not execute. The correction must pass
+CI, review, protected deployment, seed reconciliation, and idempotence before
+the credential or PLAN gate can proceed.
+
 ## Implementation gates
 
 1. Publish this change record and require documentation CI to pass.
 2. Reconfirm the exact three source revisions and zero conflicting activity.
-3. Approve only the reviewed pending Job DSL scripts, then rerun the existing
-   enterprise seed job and require it to generate the exact ingress job on the
-   accepted jobs revision.
+3. Approve only the reviewed pending Job DSL scripts. Apply the source-managed
+   seed label through the protected `ansible-jenkins` production job, require
+   idempotence, then rerun the enterprise seed and require it to generate the
+   exact ingress job on the accepted jobs revision.
 4. Create Jenkins secret-file credential
    `kubernetes-production-kubeconfig` from the application-cluster kubeconfig.
    Never print, paste into parameters, commit, or retain a workstation copy of
