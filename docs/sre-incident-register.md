@@ -104,7 +104,7 @@ facts; they do not erase the original observation.
 | INC-2026-070 | 2026-08-02 | SEV-4 | Resolved | AWX controller-object reconciliation | Initial job templates omitted the project-relative `playbooks/` path |
 | INC-2026-071 | 2026-08-02 | SEV-4 | Resolved | AWX inventory reconciliation | The reconciler attempted an unsupported PATCH on nested inventory child endpoints |
 | INC-2026-072 | 2026-08-02 | SEV-4 | Resolved | AWX execution scheduling | Controller-side templates were bound to the non-executing control-plane group and could not obtain capacity |
-| INC-2026-073 | 2026-08-02 | SEV-4 | Monitoring | GitLab shared runner | Transient HTTP clone failures recurred during CHG-2026-010 documentation-main validation |
+| INC-2026-073 | 2026-08-02 | SEV-4 | Resolved | GitLab shared runner | Transient checkout failure recovered; recovery branch and canonical-main validation passed |
 | INC-2026-074 | 2026-08-02 | SEV-4 | Resolved | AWX execution runtime lock | The first install omitted Python 3.9 conditional hashes for `importlib-metadata` and `zipp` |
 | INC-2026-075 | 2026-08-03 | SEV-4 | Resolved | Kubernetes ingress delivery prerequisites | Live reconciliation found the job and credential absent, then exposed an unlabeled seed that could not use the exclusive agent |
 | INC-2026-076 | 2026-08-03 | SEV-3 | Resolved | Jenkins Configuration as Code | Production job 1617 deployed an unsupported freestyle label method; merge request !15 and protected jobs 1624/1625 restored and converged Jenkins |
@@ -1069,7 +1069,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-07-29
 - Severity: SEV-4
-- Status: Monitoring
+- Status: Resolved
 - Component: Copper9100 workstation-to-lab-VM management path
 - Detection/symptom: Direct SSH and ICMP from the Mac intermittently timed out
   to AWX, GitLab, infra01, infra02, and observability guests. During the same
@@ -2359,11 +2359,12 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   started. GitLab runner ID 5 was otherwise healthy and returned the failed
   trace normally. No Kubernetes source, host, package, Helm release, or cluster
   resource changed.
-- Current recovery: Five canonical probes from runner ID 5 initially showed
+- Recurrence resolution: Five canonical probes from runner ID 5 initially showed
   one DNS failure followed by four HTTP 200 responses. Recovery branch
-  `a696ea4` then cloned successfully and pipeline 557 passed job 1751. Keep
-  CHG-2026-010 source work gated and this incident in Monitoring until the
-  recovery merge and its canonical-main validation also pass.
+  `a696ea4` then cloned successfully and pipeline 557 passed job 1751. Recovery
+  merge request !21 passed branch pipeline 558, merged as `d8d14dca`, and its
+  canonical-main pipeline 559 passed job 1753. CHG-2026-010 source work may
+  proceed through its documented source gate.
 - Prevention/follow-up: Retry a clone-only transport failure only after
   confirming source validation is still gated; do not weaken CI or bypass the
   published revision requirement.
