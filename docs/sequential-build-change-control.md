@@ -22,15 +22,32 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | None |
-| Component | None |
-| State | Idle; `CHG-2026-008` is accepted and closed. |
-| Blocker | None |
-| Permitted work | Read-only audit or explicit activation of the next queued component. |
-| Prohibited work | Starting more than one component or exposing a VM backend port directly remains prohibited. |
-| Exit criteria | Record the next explicit component here before any mutation. |
+| Change ID | `CHG-2026-009` |
+| Component | Single-replica Kubernetes ingress tier: Jenkins delivery objects, `platform-ingress` Helm release, and only its documented cluster prerequisites |
+| State | Active at the pre-deployment Jenkins prerequisite gate; no ingress runtime resources have been created. |
+| Blocker | Live audit found the generated `projects/deploy-kubernetes-ingress` job and secret-file credential `kubernetes-production-kubeconfig` absent. Six reviewed Job DSL scripts await Jenkins approval, so the documented PLAN has not run. |
+| Permitted work | Publish this gate, approve only the exact reviewed Job DSL at accepted source revisions, reconcile the seed job, create the scoped secret-file credential without exposing kubeconfig content, run PLAN, then perform the reviewed DEPLOY/rollback/restore/idempotence sequence through Jenkins and Helm. |
+| Prohibited work | Direct Helm or `kubectl apply` from a workstation, AWX, or Ansible; Jenkins-controller execution; storage or another product change; direct LAN exposure of NodePorts 30081/30444; removal of Headlamp NodePort 30080. |
+| Exit criteria | Exact source and PLAN accepted; release and one replica healthy; ingress class, restricted NodePorts, and Headlamp host route validated; explicit Helm rollback and restore proven; second convergence clean; incidents, evidence, source, and documentation published. |
 
 `CHG-2026-001` through `CHG-2026-008` are complete.
+
+On 2026-08-03 the user directed the documented queue to continue with the
+single-replica Kubernetes ingress tier. The required read-only audit found
+GitLab with zero active pipelines, AWX with zero active jobs, Jenkins healthy
+with an empty queue, infra01/02/03 at 17/14/4 running VMs with no conflicting
+mutator, and the application cluster at Kubernetes 1.34.10 with all four nodes
+Ready, zero active Jobs, zero non-running pods, and no IngressClass, Ingress,
+or `ingress-nginx` namespace.
+
+Canonical source revisions and pipelines are accepted: `ansible-kubernetes`
+`e34bd54` in pipeline 354, `jenkins-jobs` `950cc4f` in pipeline 352, and
+`jenkins-shared-library` `b23d3a4` in pipeline 351. Live Jenkins state differs
+from the earlier queue entry: the seed checked out `950cc4f` but stopped at
+the script-approval gate, the generated ingress job is absent, and credential
+`kubernetes-production-kubeconfig` is absent. INC-2026-075 records the drift.
+No PLAN or cluster mutation occurred. CHG-2026-009 therefore starts at the
+Jenkins prerequisite gate and does not authorize a control-plane bypass.
 
 On 2026-08-02 the user directed work to begin on the already documented
 AAP-like AWX goal. `CHG-2026-008` therefore reordered only the AWX execution
@@ -249,7 +266,7 @@ the inventory-normalization change.
 | 6 | Retire the GitLab-VM runner from CI execution | Completed 2026-08-01 through `CHG-2026-007` |
 | 7 | Review `jenkins-agent01`, correct canonical port-80 access, and set the Jenkins root URL | Completed 2026-08-01 through `CHG-2026-003`; agent, portless URL, root URL, DNS, and route cleanup accepted |
 | 8 | Establish and accept `awx-execution.example.com` as the bounded AWX execution plane | Completed 2026-08-02 through `CHG-2026-008`; hostname-only NGINX, canary, rollback/restore, and zero-change convergence accepted |
-| 9 | Deploy and accept the single-replica Kubernetes ingress tier | AWX execution-plane change closed; runner migration closed; agent accepted; documentation pipeline published; kubeconfig secret-file credential and non-mutating PLAN complete |
+| 9 | Deploy and accept the single-replica Kubernetes ingress tier | Active as `CHG-2026-009`; source pipelines 351/352/354 passed, but live Jenkins job/credential reconciliation and PLAN remain gated |
 | 10 | Deploy and accept Kubernetes persistent storage | Ingress change closed and rollback verified |
 | 11 | Install Artifactory | Platform storage and backup prerequisites accepted |
 | 12 | Install SonarQube | Artifactory change closed |
