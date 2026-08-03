@@ -2405,11 +2405,13 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   of automatic GitLab validation, seed failure did not change the queue entry,
   and the source-managed seed definition did not declare the label required by
   the exclusive agent policy.
-- Resolution: Pending. Source revision `467e0005` in `ansible-jenkins` merge
-  request !14 assigns the seed to the existing `kubernetes-deployer` label and
-  keeps controller executors disabled. Require CI, merge, protected deployment,
-  idempotence, successful seed reconciliation, scoped credential creation, and
-  accepted PLAN before DEPLOY.
+- Resolution: Pending. Revisions `467e0005` and `c480cd28` in
+  `ansible-jenkins` merge request !14 assign the seed to the existing
+  `kubernetes-deployer` label, keep controller executors disabled, and target
+  the healthy instance runner using its existing `shared` tag. Pipeline 505
+  exposed the missing tag and executed no validation job. Require replacement
+  CI, merge, protected deployment, idempotence, successful seed reconciliation,
+  scoped credential creation, and accepted PLAN before DEPLOY.
 - Validation: Require the generated job, correct secret-file credential type,
   build agent `jenkins-agent01.example.com`, exact source revision, successful
   server-side Helm dry run, and zero secret output.

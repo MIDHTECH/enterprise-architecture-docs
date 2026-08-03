@@ -54,9 +54,11 @@ reviewed source. Jenkins retained the two older hashes unapproved. Seed build
 44 then remained queued because `jenkins-agent01` is intentionally reserved
 for label-matched work while the Ansible/JCasC seed definition had no label;
 the queue item was cancelled without executing. The controlled correction is
-`ansible-jenkins` revision `467e0005` in merge request !14, which assigns the
-seed to the existing `kubernetes-deployer` label while keeping controller
-executors at zero. No live UI configuration or cluster mutation was made.
+`ansible-jenkins` merge request !14: revision `467e0005` assigns the seed to
+the existing `kubernetes-deployer` label while keeping controller executors at
+zero, and revision `c480cd28` targets the healthy instance runner with the
+existing `shared` tag after pipeline 505 exposed the missing CI tag. No live
+Jenkins configuration or cluster mutation was made.
 
 On 2026-08-02 the user directed work to begin on the already documented
 AAP-like AWX goal. `CHG-2026-008` therefore reordered only the AWX execution

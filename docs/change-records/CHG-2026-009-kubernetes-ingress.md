@@ -88,11 +88,14 @@ that matched the current reviewed files. The two older `run-ansible-playbook`
 variants remain unapproved. Seed build 44 was then queued but could not start:
 the only Jenkins agent is intentionally restricted to label-matched jobs and
 the Ansible/JCasC-managed seed had no assigned label. Build 44 was cancelled
-before execution. Source revision `467e000555eac89eb1c6cf6256625d945f431757`
-in `midhhealth/platform-delivery/ansible-jenkins` merge request !14 adds the
-existing `kubernetes-deployer` label to the seed and validates that setting.
-It must pass CI, review, protected deployment, seed reconciliation, and
-idempotence before the credential or PLAN gate can proceed.
+before execution. Source revisions `467e000555eac89eb1c6cf6256625d945f431757`
+and `c480cd28994f663eb4b1dc40d33af6d78a656522` in
+`midhhealth/platform-delivery/ansible-jenkins` merge request !14 add the
+existing `kubernetes-deployer` label to the seed, validate that setting, and
+target the healthy instance runner with its existing `shared` tag. Pipeline
+505 exposed the missing CI tag and did not execute. The correction must pass
+CI, review, protected deployment, seed reconciliation, and idempotence before
+the credential or PLAN gate can proceed.
 
 ## Implementation gates
 
