@@ -129,8 +129,9 @@ exited 128. The archived trace proves the repository validation script never
 started. This recurrence is tracked in `INC-2026-073`; all source, AWX,
 Jenkins, package, Helm, and Kubernetes mutations remain gated. Five canonical
 runner probes observed one DNS failure followed by four HTTP 200 responses;
-recovery branch `a696ea4` then passed pipeline 557. Source work may begin only
-after the recovery record merges and its canonical-main validation passes.
+recovery branch `a696ea4` then passed pipeline 557. Recovery merge request !21
+passed branch pipeline 558, merged as `d8d14dca`, and canonical-main pipeline
+559 passed job 1753. `INC-2026-073` is resolved and the source gate is open.
 
 ## Acceptance criteria
 
