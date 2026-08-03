@@ -174,8 +174,12 @@ storage envelope.
   `jenkins-agent01` executor is accepted with Helm 4.1.0, kubectl 1.34.10,
   Java 21.0.12, and Git 2.52.0. The 2026-08-03 live audit found the kubeconfig
   secret-file credential and generated ingress job absent after the seed
-  stopped at its script-approval gate. INC-2026-075 records the corrected
-  state; ingress has not been deployed.
+  stopped at its script-approval gate. Four exact current scripts are now
+  approved and two stale variants remain unapproved. Seed build 44 was
+  cancelled without execution after it exposed the missing label on the
+  Ansible/JCasC-managed seed; controlled correction `467e0005` is under review
+  in `ansible-jenkins` merge request !14. INC-2026-075 records the corrected
+  state; the credential, PLAN, and ingress runtime remain absent.
 - Enterprise first-slice implementation repositories:
   `midhhealth/data-and-integration/database-reliability-platform`,
   `midhhealth/reliability-operations/resilience-service-operations`,
