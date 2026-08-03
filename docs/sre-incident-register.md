@@ -108,6 +108,7 @@ facts; they do not erase the original observation.
 | INC-2026-074 | 2026-08-02 | SEV-4 | Resolved | AWX execution runtime lock | The first install omitted Python 3.9 conditional hashes for `importlib-metadata` and `zipp` |
 | INC-2026-075 | 2026-08-03 | SEV-4 | Open | Kubernetes ingress delivery prerequisites | Live reconciliation found the job and credential absent, then exposed an unlabeled seed that could not use the exclusive agent |
 | INC-2026-076 | 2026-08-03 | SEV-3 | Resolved | Jenkins Configuration as Code | Production job 1617 deployed an unsupported freestyle label method; merge request !15 and protected jobs 1624/1625 restored and converged Jenkins |
+| INC-2026-077 | 2026-08-03 | SEV-4 | Open | Jenkins ingress source checkout | PLAN build 1 ran on the dedicated agent but GitLab denied the existing Jenkins deploy key before source checkout |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2462,6 +2463,45 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   an isolated Jenkins test instance.
 - Corrective automation: Extend the protected preflight to load the rendered
   JCasC Job DSL against the deployed plugin set before restarting production.
+- Evidence/related runbook:
+  [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md)
+
+## INC-2026-077: Jenkins Deploy Key Was Not Enabled for Ingress Source
+
+- Date: 2026-08-03
+- Severity: SEV-4
+- Status: Open
+- Component: Jenkins Kubernetes ingress source checkout
+- Detection/symptom: Jenkins PLAN build 1 started on `jenkins-agent01` and
+  loaded the accepted shared-library revision, but GitLab rejected the
+  `gitlab-scm` SSH credential while cloning
+  `midhhealth/platform-engineering/ansible-kubernetes`.
+- Impact: The reviewed PLAN could not reach source validation or the Helm
+  server-side dry run. The Helm stage was skipped, and no namespace,
+  IngressClass, Ingress, release, or other cluster resource changed.
+- Timeline: The folder-scoped kubeconfig credential was created and its two
+  temporary copies were securely removed. Build 1 then used exact source
+  `e34bd547`, `ACTION=PLAN`, and `CONFIRM_CHANGE=false`; checkout returned Git
+  status 128 and the pipeline finished FAILURE before Helm.
+- Cause: The existing private deploy key `Jenkins SCM read-only`, used by the
+  Jenkins `gitlab-scm` credential, is privately accessible in GitLab but is not
+  enabled on the `ansible-kubernetes` project.
+- Contributing factors: Source CI validated the repository and pipeline code,
+  but the runtime prerequisite gate did not verify per-project deploy-key
+  enablement before the first PLAN.
+- Resolution: Pending. Enable only the existing read-only Jenkins deploy key
+  for `ansible-kubernetes`; do not create a replacement key or permit writes.
+  Then rerun PLAN from the same accepted revision.
+- Validation: Require successful SSH checkout at exact revision `e34bd547`,
+  execution on `jenkins-agent01`, four expected Ready nodes, successful
+  server-side Helm dry run, no kubeconfig content in output, and no cluster
+  mutation.
+- Prevention/follow-up: Extend the Jenkins prerequisite contract to perform an
+  authenticated read-only `git ls-remote` against every deployment source
+  before enabling the manual PLAN action.
+- Corrective automation: Add source-access preflight validation to the
+  generated deployment job or its shared library without granting write
+  access.
 - Evidence/related runbook:
   [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md)
 

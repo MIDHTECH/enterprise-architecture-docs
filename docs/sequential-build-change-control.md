@@ -24,9 +24,9 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | --- | --- |
 | Change ID | `CHG-2026-009` |
 | Component | Single-replica Kubernetes ingress tier: Jenkins delivery objects, `platform-ingress` Helm release, and only its documented cluster prerequisites |
-| State | Active at the Jenkins credential and PLAN gate. Jenkins service recovery, labeled seed reconciliation, and idempotence are accepted; no ingress runtime resources have been created. |
-| Blocker | Credential `kubernetes-production-kubeconfig` and an accepted Jenkins `ACTION=PLAN` run are still absent. The generated `projects/deploy-kubernetes-ingress` job now exists and is idle. |
-| Permitted work | Create only the scoped Jenkins secret-file kubeconfig credential, run the reviewed ingress job with `ACTION=PLAN` and `CONFIRM_CHANGE=false` on `jenkins-agent01`, inspect any documented cluster/firewall prerequisites, and publish the resulting evidence before requesting DEPLOY. |
+| State | Active at the Jenkins source-access and PLAN gate. The scoped kubeconfig credential exists, but PLAN build 1 failed safely during source checkout; no Helm stage or ingress runtime resource ran. |
+| Blocker | The existing private deploy key `Jenkins SCM read-only` is not enabled on `midhhealth/platform-engineering/ansible-kubernetes`, so Jenkins credential `gitlab-scm` cannot read the accepted source revision. An accepted `ACTION=PLAN` run is still absent. |
+| Permitted work | Publish INC-2026-077, enable only the existing read-only Jenkins deploy key for `ansible-kubernetes`, rerun the reviewed job with `ACTION=PLAN` and `CONFIRM_CHANGE=false` on `jenkins-agent01`, inspect documented cluster/firewall prerequisites, and publish the resulting evidence before requesting DEPLOY. |
 | Prohibited work | Direct Helm or `kubectl apply` from a workstation, AWX, or Ansible; Jenkins-controller execution; storage or another product change; direct LAN exposure of NodePorts 30081/30444; removal of Headlamp NodePort 30080. |
 | Exit criteria | Exact source and PLAN accepted; release and one replica healthy; ingress class, restricted NodePorts, and Headlamp host route validated; explicit Helm rollback and restore proven; second convergence clean; incidents, evidence, source, and documentation published. |
 
@@ -73,8 +73,16 @@ then passed with `changed=0`, and seed build 45 succeeded on the same agent.
 Post-recovery checks found Jenkins active with zero restarts, HTTP 200, zero
 controller executors, the dedicated agent online, an empty queue, and exactly
 the two older scripts still pending approval. INC-2026-076 is resolved. Work
-may now continue only with the credential and PLAN gate; no ingress runtime
-resource has been created.
+then created the folder-scoped secret-file credential
+`kubernetes-production-kubeconfig`; both temporary kubeconfig copies were
+securely removed after upload. PLAN build 1 ran on `jenkins-agent01` with exact
+source `e34bd547`, `ACTION=PLAN`, and `CONFIRM_CHANGE=false`, but GitLab denied
+the `gitlab-scm` SSH key before checkout. The Helm stage was skipped and no
+cluster resource changed. GitLab shows the existing `Jenkins SCM read-only`
+deploy key as privately accessible but not enabled for `ansible-kubernetes`.
+INC-2026-077 records the new prerequisite failure. Work may continue only with
+that bounded read-only access correction and a new PLAN; DEPLOY remains
+prohibited.
 
 On 2026-08-02 the user directed work to begin on the already documented
 AAP-like AWX goal. `CHG-2026-008` therefore reordered only the AWX execution
