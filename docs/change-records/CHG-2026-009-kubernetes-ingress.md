@@ -125,6 +125,26 @@ remain absent. GitLab lists the matching `Jenkins SCM read-only` deploy key as
 privately accessible but disabled for this project. INC-2026-077 records the
 safe prerequisite failure.
 
+GitLab's own idempotent `Projects::EnableDeployKeyService` joined existing
+deploy key 2 to project 14 and validation reported `can_push=false`; no new key
+or write permission was created. PLAN build 2 then succeeded on
+`jenkins-agent01` using the same exact parameters. It checked out `e34bd547`,
+reported Helm 4.1.0 and kubectl 1.34.10, reached
+`https://k8s-control.example.com:6443`, linted and rendered ingress-nginx chart
+4.15.0/controller 1.15.1 with the locked image digest, and completed
+`helm upgrade --dry-run=server --hide-secret`. The rendered service has only
+NodePorts 30081/30444 and one controller replica. Console inspection found no
+kubeconfig certificate, key, or token fields. Independent post-run validation
+confirmed context `kubernetes-admin@kubernetes`, all four expected v1.34.10
+nodes Ready, zero ingress namespace/class/object, and retained Headlamp
+NodePort 30080. INC-2026-075 and INC-2026-077 are resolved.
+
+Firewalld is running on all four nodes, but none has the required rule allowing
+TCP 30081 only from `nginx.example.com` (`192.168.1.114`). No 30081 or 30444
+listener exists before deployment. The reviewed prerequisite playbook is
+therefore required and remains stopped with DEPLOY pending explicit operator
+authorization.
+
 ## Implementation gates
 
 1. Publish this change record and require documentation CI to pass.
@@ -154,6 +174,12 @@ safe prerequisite failure.
    validate the retained Headlamp NodePort 30080 recovery path, then restore
    the accepted release and validate again.
 11. Publish runtime evidence and incidents before closing the active change.
+
+Gates 1 through 6 are accepted through Jenkins PLAN build 2 and the linked
+evidence. Gate 7 is required by the live firewall inspection and is awaiting
+operator authorization together with gate 8 DEPLOY.
+
+Evidence: [Kubernetes Ingress PLAN](../evidence/CHG-2026-009-kubernetes-ingress-plan.md)
 
 ## Acceptance
 

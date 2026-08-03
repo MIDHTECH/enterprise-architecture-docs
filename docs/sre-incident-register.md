@@ -106,9 +106,9 @@ facts; they do not erase the original observation.
 | INC-2026-072 | 2026-08-02 | SEV-4 | Resolved | AWX execution scheduling | Controller-side templates were bound to the non-executing control-plane group and could not obtain capacity |
 | INC-2026-073 | 2026-08-02 | SEV-4 | Resolved | GitLab shared runner | One source-validation job could not clone GitLab during a transient HTTP connectivity failure |
 | INC-2026-074 | 2026-08-02 | SEV-4 | Resolved | AWX execution runtime lock | The first install omitted Python 3.9 conditional hashes for `importlib-metadata` and `zipp` |
-| INC-2026-075 | 2026-08-03 | SEV-4 | Open | Kubernetes ingress delivery prerequisites | Live reconciliation found the job and credential absent, then exposed an unlabeled seed that could not use the exclusive agent |
+| INC-2026-075 | 2026-08-03 | SEV-4 | Resolved | Kubernetes ingress delivery prerequisites | Live reconciliation found the job and credential absent, then exposed an unlabeled seed that could not use the exclusive agent |
 | INC-2026-076 | 2026-08-03 | SEV-3 | Resolved | Jenkins Configuration as Code | Production job 1617 deployed an unsupported freestyle label method; merge request !15 and protected jobs 1624/1625 restored and converged Jenkins |
-| INC-2026-077 | 2026-08-03 | SEV-4 | Open | Jenkins ingress source checkout | PLAN build 1 ran on the dedicated agent but GitLab denied the existing Jenkins deploy key before source checkout |
+| INC-2026-077 | 2026-08-03 | SEV-4 | Resolved | Jenkins ingress source checkout | PLAN build 1 ran on the dedicated agent but GitLab denied the existing Jenkins deploy key before source checkout |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2386,7 +2386,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-08-03
 - Severity: SEV-4
-- Status: Open
+- Status: Resolved
 - Component: Kubernetes ingress Jenkins delivery prerequisites
 - Detection/symptom: The sequential queue said the kubeconfig secret-file
   credential and non-mutating PLAN were complete. The required live audit found
@@ -2407,13 +2407,12 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   of automatic GitLab validation, seed failure did not change the queue entry,
   and the source-managed seed definition did not declare the label required by
   the exclusive agent policy.
-- Resolution: Pending. Revisions `467e0005` and `c480cd28` in
-  `ansible-jenkins` merge request !14 assign the seed to the existing
-  `kubernetes-deployer` label, keep controller executors disabled, and target
-  the healthy instance runner using its existing `shared` tag. Pipeline 505
-  exposed the missing tag and executed no validation job. Require replacement
-  CI, merge, protected deployment, idempotence, successful seed reconciliation,
-  scoped credential creation, and accepted PLAN before DEPLOY.
+- Resolution: Merge request !15 and protected jobs 1624/1625 restored and
+  converged the source-managed seed on `jenkins-agent01`; seed builds 44/45
+  generated the ingress job. The folder-scoped kubeconfig credential was
+  created without retaining either temporary copy. Existing Jenkins deploy key
+  2 was enabled read-only for the source project, and PLAN build 2 succeeded at
+  exact revision `e34bd547` without cluster mutation.
 - Validation: Require the generated job, correct secret-file credential type,
   build agent `jenkins-agent01.example.com`, exact source revision, successful
   server-side Helm dry run, and zero secret output.
@@ -2424,7 +2423,8 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   checks job existence, credential ID/type, agent label, and last successful
   PLAN before an ingress DEPLOY can be enabled.
 - Evidence/related runbook:
-  [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md)
+  [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md),
+  [PLAN evidence](evidence/CHG-2026-009-kubernetes-ingress-plan.md)
 
 ## INC-2026-076: Jenkins JCasC Seed Label Method Prevented Startup
 
@@ -2470,7 +2470,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-08-03
 - Severity: SEV-4
-- Status: Open
+- Status: Resolved
 - Component: Jenkins Kubernetes ingress source checkout
 - Detection/symptom: Jenkins PLAN build 1 started on `jenkins-agent01` and
   loaded the accepted shared-library revision, but GitLab rejected the
@@ -2489,13 +2489,15 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Contributing factors: Source CI validated the repository and pipeline code,
   but the runtime prerequisite gate did not verify per-project deploy-key
   enablement before the first PLAN.
-- Resolution: Pending. Enable only the existing read-only Jenkins deploy key
-  for `ansible-kubernetes`; do not create a replacement key or permit writes.
-  Then rerun PLAN from the same accepted revision.
-- Validation: Require successful SSH checkout at exact revision `e34bd547`,
-  execution on `jenkins-agent01`, four expected Ready nodes, successful
-  server-side Helm dry run, no kubeconfig content in output, and no cluster
-  mutation.
+- Resolution: GitLab's idempotent `Projects::EnableDeployKeyService` joined
+  existing deploy key 2 to project 14. Validation reported
+  `before_enabled=false`, `after_enabled=true`, and `can_push=false`; no
+  replacement key was created. Jenkins PLAN build 2 then checked out exact
+  revision `e34bd547` and completed successfully.
+- Validation: Build 2 ran on `jenkins-agent01`, checked out exact revision
+  `e34bd547`, completed the server-side Helm dry run, printed no kubeconfig
+  certificate/key/token fields, and finished SUCCESS. Independent validation
+  confirmed all four expected nodes Ready and zero ingress runtime resources.
 - Prevention/follow-up: Extend the Jenkins prerequisite contract to perform an
   authenticated read-only `git ls-remote` against every deployment source
   before enabling the manual PLAN action.
@@ -2503,7 +2505,8 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   generated deployment job or its shared library without granting write
   access.
 - Evidence/related runbook:
-  [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md)
+  [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md),
+  [PLAN evidence](evidence/CHG-2026-009-kubernetes-ingress-plan.md)
 
 ## New Incident Template
 

@@ -24,9 +24,9 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | --- | --- |
 | Change ID | `CHG-2026-009` |
 | Component | Single-replica Kubernetes ingress tier: Jenkins delivery objects, `platform-ingress` Helm release, and only its documented cluster prerequisites |
-| State | Active at the Jenkins source-access and PLAN gate. The scoped kubeconfig credential exists, but PLAN build 1 failed safely during source checkout; no Helm stage or ingress runtime resource ran. |
-| Blocker | The existing private deploy key `Jenkins SCM read-only` is not enabled on `midhhealth/platform-engineering/ansible-kubernetes`, so Jenkins credential `gitlab-scm` cannot read the accepted source revision. An accepted `ACTION=PLAN` run is still absent. |
-| Permitted work | Publish INC-2026-077, enable only the existing read-only Jenkins deploy key for `ansible-kubernetes`, rerun the reviewed job with `ACTION=PLAN` and `CONFIRM_CHANGE=false` on `jenkins-agent01`, inspect documented cluster/firewall prerequisites, and publish the resulting evidence before requesting DEPLOY. |
+| State | Active at the source-restricted firewall and DEPLOY approval gate. Jenkins PLAN build 2 is accepted; no ingress runtime resource has been created. |
+| Blocker | Firewalld inspection found no rule admitting TCP 30081 only from `nginx.example.com` (`192.168.1.114`) on the four Kubernetes nodes. The reviewed prerequisite playbook and `ACTION=DEPLOY` still require explicit operator authorization. |
+| Permitted work | Publish PLAN build 2 and firewall evidence, request operator authorization, then run only the reviewed Ansible source-restricted firewall prerequisite and Jenkins `ACTION=DEPLOY` with `CONFIRM_CHANGE=true`; retain Headlamp NodePort 30080 and validate every acceptance gate. |
 | Prohibited work | Direct Helm or `kubectl apply` from a workstation, AWX, or Ansible; Jenkins-controller execution; storage or another product change; direct LAN exposure of NodePorts 30081/30444; removal of Headlamp NodePort 30080. |
 | Exit criteria | Exact source and PLAN accepted; release and one replica healthy; ingress class, restricted NodePorts, and Headlamp host route validated; explicit Helm rollback and restore proven; second convergence clean; incidents, evidence, source, and documentation published. |
 
@@ -81,8 +81,18 @@ the `gitlab-scm` SSH key before checkout. The Helm stage was skipped and no
 cluster resource changed. GitLab shows the existing `Jenkins SCM read-only`
 deploy key as privately accessible but not enabled for `ansible-kubernetes`.
 INC-2026-077 records the new prerequisite failure. Work may continue only with
-that bounded read-only access correction and a new PLAN; DEPLOY remains
-prohibited.
+that bounded read-only access correction and a new PLAN. GitLab's idempotent
+`Projects::EnableDeployKeyService` then joined deploy key 2 to project 14 with
+`can_push=false`; no replacement key was created. PLAN build 2 checked out
+exact source `e34bd547`, ran on `jenkins-agent01`, used
+`--dry-run=server --hide-secret`, rendered the pinned chart and images, and
+finished SUCCESS. Independent post-run validation found context
+`kubernetes-admin@kubernetes`, all four v1.34.10 nodes Ready, Headlamp NodePort
+30080 retained, and zero ingress namespace, class, or object. INC-2026-075 and
+INC-2026-077 are resolved. Firewalld inspection found the required
+source-restricted TCP 30081 rule absent on all four nodes, so the change is now
+stopped for authorization before the reviewed prerequisite playbook and
+DEPLOY.
 
 On 2026-08-02 the user directed work to begin on the already documented
 AAP-like AWX goal. `CHG-2026-008` therefore reordered only the AWX execution
