@@ -182,6 +182,11 @@ storage envelope.
   `c480cd28` are under review in `ansible-jenkins` merge request !14.
   INC-2026-075 records the corrected state; the credential, PLAN, and ingress
   runtime remain absent.
+  Protected production job 1617 subsequently failed because Jenkins Job DSL
+  rejected `assignedNode` for the managed freestyle seed. Jenkins is restarting
+  on the invalid JCasC and ingress work is stopped. Recovery `b19b64bd` is under
+  review in `ansible-jenkins` merge request !15; INC-2026-076 records the
+  service incident.
 - Enterprise first-slice implementation repositories:
   `midhhealth/data-and-integration/database-reliability-platform`,
   `midhhealth/reliability-operations/resilience-service-operations`,

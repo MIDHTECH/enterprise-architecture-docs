@@ -107,6 +107,7 @@ facts; they do not erase the original observation.
 | INC-2026-073 | 2026-08-02 | SEV-4 | Resolved | GitLab shared runner | One source-validation job could not clone GitLab during a transient HTTP connectivity failure |
 | INC-2026-074 | 2026-08-02 | SEV-4 | Resolved | AWX execution runtime lock | The first install omitted Python 3.9 conditional hashes for `importlib-metadata` and `zipp` |
 | INC-2026-075 | 2026-08-03 | SEV-4 | Open | Kubernetes ingress delivery prerequisites | Live reconciliation found the job and credential absent, then exposed an unlabeled seed that could not use the exclusive agent |
+| INC-2026-076 | 2026-08-03 | SEV-3 | Open | Jenkins Configuration as Code | Production job 1617 deployed an unsupported freestyle label method and Jenkins entered a restart loop before seed reconciliation |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2421,6 +2422,42 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Corrective automation: Add a read-only Jenkins prerequisite contract that
   checks job existence, credential ID/type, agent label, and last successful
   PLAN before an ingress DEPLOY can be enabled.
+- Evidence/related runbook:
+  [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md)
+
+## INC-2026-076: Jenkins JCasC Seed Label Method Prevented Startup
+
+- Date: 2026-08-03
+- Severity: SEV-3
+- Status: Open
+- Component: Jenkins Configuration as Code and enterprise seed
+- Detection/symptom: Protected production job 1617 failed its restart handler.
+  Jenkins journal reported that `FreeStyleJob.assignedNode()` does not exist and
+  systemd repeatedly attempted startup.
+- Impact: Jenkins and its agent control plane are unavailable. The enterprise
+  seed did not run, and CHG-2026-009 remains blocked before credential creation
+  or PLAN. No ingress or Kubernetes resource was created.
+- Timeline: Merge request !14 passed branch pipeline 507 and main validation
+  pipeline 509 at revision `c560f6e7`. Manual production job 1617 updated the
+  managed JCasC file, restarted Jenkins, and failed after the unsupported Job
+  DSL method prevented Configuration as Code initialization.
+- Cause: The seed label was expressed with `assignedNode`, which is not a
+  supported method on the installed Job DSL `FreeStyleJob` type.
+- Contributing factors: Ansible syntax and lint validate YAML/Jinja structure
+  but do not execute the installed Jenkins Job DSL API during source CI.
+- Resolution: Pending. Revision `b19b64bd` in `ansible-jenkins` merge request
+  !15 replaces only the unsupported call with the supported `label` method.
+  Recovery must use branch CI, merge review, main CI, and the same protected
+  production job; no direct live-file edit is authorized.
+- Validation: Require Jenkins active and HTTP healthy, controller executors at
+  zero, `jenkins-agent01` online, seed execution on the labeled agent, generated
+  ingress job existence, two stale approvals still unapproved, and a clean
+  second production convergence.
+- Prevention/follow-up: Add a Jenkins Job DSL compilation check using the
+  installed plugin API before JCasC deployment, or validate managed scripts in
+  an isolated Jenkins test instance.
+- Corrective automation: Extend the protected preflight to load the rendered
+  JCasC Job DSL against the deployed plugin set before restarting production.
 - Evidence/related runbook:
   [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md)
 

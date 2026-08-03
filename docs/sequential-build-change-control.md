@@ -24,9 +24,9 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | --- | --- |
 | Change ID | `CHG-2026-009` |
 | Component | Single-replica Kubernetes ingress tier: Jenkins delivery objects, `platform-ingress` Helm release, and only its documented cluster prerequisites |
-| State | Active at the pre-deployment Jenkins prerequisite gate; four current Job DSL scripts are approved, the blocked seed queue item was cancelled, and no ingress runtime resources have been created. |
-| Blocker | Seed build 44 could not start because the only Jenkins agent is label-restricted while the Ansible/JCasC-managed seed had no assigned label. Two stale Job DSL variants remain deliberately unapproved; the generated ingress job and secret-file credential remain absent, and PLAN has not run. |
-| Permitted work | Review, merge, and deploy only the source-controlled `ansible-jenkins` seed-label correction through its protected production job; require the seed to reconcile on `jenkins-agent01`, then create the scoped secret-file credential without exposing kubeconfig content, run PLAN, and perform the reviewed DEPLOY/rollback/restore/idempotence sequence through Jenkins and Helm. |
+| State | Active in Jenkins service recovery; protected production job 1617 failed while loading the seed-label JCasC, Jenkins is restarting, and no ingress runtime resources have been created. |
+| Blocker | Job DSL rejected `assignedNode` for `FreeStyleJob`, so Jenkins could not complete startup. Recovery revision `b19b64bd` in `ansible-jenkins` merge request !15 replaces it with the supported `label` DSL and is awaiting CI/review/deployment. The generated ingress job, secret-file credential, and PLAN remain absent. |
+| Permitted work | Review, merge, and deploy only the source-controlled `ansible-jenkins` recovery through its protected production job; require Jenkins health, seed reconciliation on `jenkins-agent01`, and an idempotent second run before returning to credential creation, PLAN, and the reviewed ingress sequence. |
 | Prohibited work | Direct Helm or `kubectl apply` from a workstation, AWX, or Ansible; Jenkins-controller execution; storage or another product change; direct LAN exposure of NodePorts 30081/30444; removal of Headlamp NodePort 30080. |
 | Exit criteria | Exact source and PLAN accepted; release and one replica healthy; ingress class, restricted NodePorts, and Headlamp host route validated; explicit Helm rollback and restore proven; second convergence clean; incidents, evidence, source, and documentation published. |
 
@@ -59,6 +59,15 @@ the existing `kubernetes-deployer` label while keeping controller executors at
 zero, and revision `c480cd28` targets the healthy instance runner with the
 existing `shared` tag after pipeline 505 exposed the missing CI tag. No live
 Jenkins configuration or cluster mutation was made.
+
+Protected production job 1617 then applied the reviewed JCasC but failed while
+restarting Jenkins. Runtime evidence showed Job DSL does not implement
+`assignedNode` for `FreeStyleJob`; Jenkins entered a restart loop before the
+seed ran. INC-2026-076 records the service incident. Recovery revision
+`b19b64bd` in `ansible-jenkins` merge request !15 replaces only that method
+with the supported `label` DSL. Ingress work remains stopped until the same
+protected pipeline restores Jenkins, reconciles the seed, and passes a second
+idempotence run.
 
 On 2026-08-02 the user directed work to begin on the already documented
 AAP-like AWX goal. `CHG-2026-008` therefore reordered only the AWX execution

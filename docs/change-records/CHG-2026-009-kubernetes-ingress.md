@@ -97,6 +97,16 @@ target the healthy instance runner with its existing `shared` tag. Pipeline
 CI, review, protected deployment, seed reconciliation, and idempotence before
 the credential or PLAN gate can proceed.
 
+Protected production job 1617 at merged main revision `c560f6e7` changed only
+the managed JCasC file, then failed when Jenkins rejected `assignedNode` on a
+`FreeStyleJob`. Jenkins entered a restart loop before seed reconciliation; no
+ingress job, credential, PLAN, or cluster resource was created. INC-2026-076
+tracks the service incident. Recovery revision
+`b19b64bd1f1571a0627de4edb04ebcdaa927d683` in `ansible-jenkins` merge request
+!15 uses the supported `label` DSL. It must pass branch and main CI, the
+protected production job, Jenkins runtime checks, successful seed generation,
+and a second idempotent deployment before this change returns to gate 4.
+
 ## Implementation gates
 
 1. Publish this change record and require documentation CI to pass.
