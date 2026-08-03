@@ -24,8 +24,8 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | --- | --- |
 | Change ID | `CHG-2026-010` |
 | Component | Longhorn-backed Kubernetes persistent storage on the three dedicated worker data disks, including source-managed host prerequisites, Jenkins Helm delivery, and bounded persistence acceptance |
-| State | Active at the architecture, source, and non-mutating PLAN gate; no Longhorn resource, StorageClass, PV, or PVC has been created. |
-| Blocker | Source automation, CI, the AWX prerequisite job, Jenkins storage job, and a server-side Helm PLAN are not yet accepted. The required `iscsi-initiator-utils` package and active `iscsid` service are absent on all four Kubernetes nodes. |
+| State | Active at the published architecture gate; documentation merge request !20 merged as `fd75fd47`, canonical-main pipeline 556 failed before validation, and recovery branch `a696ea4` passed pipeline 557. No Longhorn resource, StorageClass, PV, or PVC has been created. |
+| Blocker | Merge the `INC-2026-073` recovery record and require its canonical-main pipeline to pass before opening source automation. The AWX prerequisite job, Jenkins storage job, and server-side Helm PLAN are not yet accepted. The required `iscsi-initiator-utils` package and active `iscsid` service are absent on all four Kubernetes nodes. |
 | Permitted work | Publish this gate; implement and validate only CHG-2026-010 prerequisite, Helm, Jenkins, acceptance, rollback, and evidence source; then run the reviewed AWX and Jenkins gates sequentially. |
 | Prohibited work | Direct workstation Helm or `kubectl apply`; Longhorn data on the control plane or root disks; V2 Data Engine; NodePort, hostPort, LoadBalancer, or ingress exposure; deleting accepted PVC data; configuring a backup target without a separately reviewed secret boundary; storage for Artifactory or another product before this change closes. |
 | Exit criteria | Exact source and PLAN accepted; prerequisites converge; Longhorn 1.12.0 V1 is healthy on worker-only `/data/longhorn`; default Retain StorageClass and three replicas validated; data survives pod recreation, deploy convergence, rollback, and restore; negative exposure and control-plane-disk checks pass; incidents, evidence, source, and documentation are published. |
@@ -37,6 +37,16 @@ markers; AWX had zero active unified jobs; infra01/02/03 retained 17/14/4
 running domains with no Git, Ansible, Terraform, package, image-build,
 libvirt, Helm, or kubectl mutator; and the application cluster had four Ready
 Kubernetes 1.34.10 nodes, no active Jobs, and no non-running pods.
+
+Documentation merge request !20 passed branch pipeline 555 and merged as
+`fd75fd47`. The resulting main pipeline 556 did not reach its validation
+script: shared-runner job 1750 failed during source checkout because
+`gitlab.example.com:80` was unreachable for 34.816 seconds. This is recorded
+as a monitored recurrence of `INC-2026-073`. The source and runtime gates stay
+closed. Five runner probes observed one DNS failure followed by four HTTP 200
+responses, and recovery branch `a696ea4` passed pipeline 557. Source may open
+only after the recovery record merges and its canonical-main validation is
+green.
 
 The bounded storage target is stable Longhorn 1.12.0 using only the V1 Data
 Engine. Each worker has an empty, persistent, XFS `ftype=1` 150 GiB disk

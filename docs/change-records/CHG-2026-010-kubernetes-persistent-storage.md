@@ -120,6 +120,18 @@ mounted and the V2 engine is unnecessary for this bounded platform slice.
 12. Publish runtime evidence, incidents, current state, runbooks, exact source
     revisions, CI, Jenkins, AWX, and Helm history before closing the change.
 
+### Documentation gate status
+
+Merge request !20 passed branch pipeline 555 and merged as `fd75fd47`.
+Canonical-main pipeline 556 then failed before validation: shared-runner job
+1750 could not connect to `gitlab.example.com:80` during `get_sources` and
+exited 128. The archived trace proves the repository validation script never
+started. This recurrence is tracked in `INC-2026-073`; all source, AWX,
+Jenkins, package, Helm, and Kubernetes mutations remain gated. Five canonical
+runner probes observed one DNS failure followed by four HTTP 200 responses;
+recovery branch `a696ea4` then passed pipeline 557. Source work may begin only
+after the recovery record merges and its canonical-main validation passes.
+
 ## Acceptance criteria
 
 1. Longhorn reports version 1.12.0 and only the V1 Data Engine is enabled.
