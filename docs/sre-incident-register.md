@@ -110,7 +110,8 @@ facts; they do not erase the original observation.
 | INC-2026-076 | 2026-08-03 | SEV-3 | Resolved | Jenkins Configuration as Code | Production job 1617 deployed an unsupported freestyle label method; merge request !15 and protected jobs 1624/1625 restored and converged Jenkins |
 | INC-2026-077 | 2026-08-03 | SEV-4 | Resolved | Jenkins ingress source checkout | PLAN build 1 ran on the dedicated agent but GitLab denied the existing Jenkins deploy key before source checkout |
 | INC-2026-078 | 2026-08-03 | SEV-4 | Open | Kubernetes ingress exposure design | Pre-deployment review found that the accepted PLAN still depended on shared `nginx.example.com` and NodePorts, contrary to the permanent product-local NGINX rule |
-| INC-2026-079 | 2026-08-03 | SEV-4 | Open | CHG-2026-009 source CI routing | Corrected branch pipelines initially remained pending because jobs lacked tags after retirement of the legacy untagged runner |
+| INC-2026-079 | 2026-08-03 | SEV-4 | Resolved | CHG-2026-009 source CI routing | Corrected branch pipelines initially remained pending because jobs lacked tags after retirement of the legacy untagged runner |
+| INC-2026-080 | 2026-08-03 | SEV-4 | Resolved | Jenkins jobs-as-code CI portability | Routed pipeline 544 failed because the minimal Rocky runner image does not include `find` |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2558,7 +2559,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-08-03
 - Severity: SEV-4
-- Status: Open
+- Status: Resolved
 - Component: CHG-2026-009 GitLab source-validation pipelines
 - Detection/symptom: Corrected branch pipelines 522-524 remained pending and
   the GitLab administrator job view showed `Runner: None` for their automatic
@@ -2578,17 +2579,17 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   the untagged dependency.
 - Contributing factors: Repository validation checked build content but did
   not assert that each job declared a tag matching the accepted runner model.
-- Resolution: In progress. Kubernetes and Jenkins-library validation now use
+- Resolution: Kubernetes, Jenkins-library, and Jenkins-jobs validation now use
   the instance runner's `validation` tag. The cloud/DNS branch incorporates
   current main and its project-runner `infra` tag. Revision `de148bf` also
   provides a staged canonical-DNS playbook so final source can remove the
   shared route without sacrificing rollback during deployment. Validators
   assert the runner and transition contracts remain.
-- Validation: GitLab assigned pipeline 526 work to
-  `gitlab-runner-shared01.example.com` runner ID 5 and pipeline 528 work to
-  `gitlab-runner-infra01.example.com` runner ID 4 before the cloud branch
-  reconciliation triggered replacement CI. Final branch pipelines, merge, and
-  canonical-main CI remain pending.
+- Validation: GitLab assigned Kubernetes pipeline 526 and Jenkins-library
+  pipelines 527/540 to `gitlab-runner-shared01.example.com` runner ID 5.
+  Cloud pipelines 537/543 used `gitlab-runner-infra01.example.com` runner ID
+  4. Corrected main pipelines 530, 542, 543, and 546 passed for Kubernetes,
+  Jenkins shared library, cloud/DNS, and Jenkins jobs-as-code respectively.
 - Prevention/follow-up: Keep explicit runner-tag contracts in every repository
   and never restore untagged execution merely to clear a queue.
 - Corrective automation: Extend enterprise CI governance to compare job tags
@@ -2597,6 +2598,40 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md),
   [shared runner acceptance](change-records/CHG-2026-006-gitlab-runner-shared.md),
   [infrastructure runner acceptance](change-records/CHG-2026-004-gitlab-runner-infra.md)
+
+## INC-2026-080: Jobs-as-Code CI Assumed an Unavailable Find Utility
+
+- Date: 2026-08-03
+- Severity: SEV-4
+- Status: Resolved
+- Component: `midhhealth/platform-delivery/jenkins-jobs` source validation
+- Detection/symptom: After revision `257092f` correctly routed pipeline 544
+  to the accepted shared runner, job 1738 failed at
+  `scripts/validate-job-dsl.sh` with `find: command not found`.
+- Impact: The jobs-as-code merge stopped before review completion. No Jenkins
+  seed, AWX synchronization, DNS, NGINX, firewall, Helm, or Kubernetes runtime
+  action occurred.
+- Timeline: The untagged predecessor pipeline 541 remained pending. Pipeline
+  544 then ran on runner ID 5 and exposed the utility dependency. Revision
+  `2ef21f0` replaced `find | wc | tr` with Bash `nullglob` and an array count;
+  branch pipeline 545 and main pipeline 546 passed.
+- Cause: Local validation ran on a workstation with GNU/BSD userland tools,
+  while the repository's default `rockylinux:9-minimal` CI image omits
+  `findutils`.
+- Contributing factors: The validation script used an external pipeline for a
+  simple shell glob count and CI did not previously execute after the legacy
+  untagged runner was retired.
+- Resolution: Keep the minimal image and use Bash-native file discovery; do
+  not add a package transaction for this structural check.
+- Validation: Local validation passed, branch pipeline 545 passed on
+  `gitlab-runner-shared01.example.com`, and main pipeline 546 passed at merge
+  revision `50c222b2`.
+- Prevention/follow-up: Prefer shell built-ins in minimal-image validation and
+  require branch plus canonical-main CI before seed execution.
+- Corrective automation: The validator now asserts the accepted runner tag,
+  uses `nullglob`, and rejects direct AWX/Jenkins backend-port URLs.
+- Evidence/related runbook:
+  [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md)
 
 ## New Incident Template
 

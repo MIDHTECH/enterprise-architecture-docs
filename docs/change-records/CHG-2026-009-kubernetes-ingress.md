@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-009` |
 | Type | Normal |
-| State | Architecture and source-correction gate |
+| State | Corrected source accepted; control-path gate |
 | Risk | Moderate |
 | Impact | Low |
 | Priority | High |
@@ -58,19 +58,41 @@ accepted instance runner's `validation` tag. Cloud revision `e98e793`
 incorporates current main and retains its single canonical `infra` default.
 Replacement work is routed to `gitlab-runner-shared01.example.com` and
 `gitlab-runner-infra01.example.com`. INC-2026-079 records the safe CI-only
-failure. No manual job or runtime deployment was launched.
+failure and is resolved by the accepted main pipelines. No manual job or
+runtime deployment was launched.
 
-## Accepted source
+The final control-path review found that AWX had only the original Kubernetes
+preflight/install templates. Kubernetes project 13 still referenced the old
+`cloud-team` source at revision `cc466bc`, while cloud project 23 was at
+revision `244e418`; neither matched the corrected deployment source. The
+source-managed correction adds Jenkins job
+`projects/configure-headlamp-edge`. Each confirmed build reconciles the exact
+application project, inventory project/source, and one bounded job template,
+waits for synchronization, launches it through AWX, and waits for completion.
+The five allowed actions are `PUBLISH_DNS`, `INSTALL_EDGE`, `FINALIZE_DNS`,
+`REMOVE_SHARED_PROXY`, and `CUTOVER_HEADLAMP`. Jenkins reaches AWX only at
+`http://awx.example.com` through the product-local NGINX frontend; direct
+backend port 32000 is not a pipeline parameter default.
+
+The first jobs-as-code replacement pipeline was correctly routed but failed
+because the minimal Rocky CI image does not contain `find`. Revision
+`2ef21f0` replaced that dependency with a Bash glob. Branch pipeline 545 and
+main pipeline 546 passed. INC-2026-080 records this safe CI portability
+failure; no Jenkins or runtime object changed during the failed pipeline.
+
+## Accepted corrected source
 
 | Repository | Revision | GitLab pipeline | State |
 | --- | --- | ---: | --- |
-| `midhhealth/platform-engineering/ansible-kubernetes` | `e34bd5477472a6d21c6a5d1933a0d95b5c3ebc55` | 354 | Passed |
-| `midhhealth/platform-delivery/jenkins-jobs` | `950cc4f89cba54b12fe64af90db5e90bd7d430fa` | 352 | Passed |
-| `midhhealth/platform-delivery/jenkins-shared-library` | `b23d3a4e9ae0db9f398f77554e7559acad839088` | 351 | Passed |
+| `midhhealth/platform-engineering/ansible-kubernetes` | `d206ab3f5696455e0c5d816eef9bb420ed2b3cd2` | 530 | Passed |
+| `midhhealth/platform-engineering/cloud-infra-automation-platform` | `ffb11dc3eb218509b6647a5a68d09bedb25e3445` | 543 | Passed |
+| `midhhealth/platform-delivery/jenkins-shared-library` | `e9790766ef56559230ba46370f99565c620fd1b8` | 542 | Passed |
+| `midhhealth/platform-delivery/jenkins-jobs` | `50c222b210422c718dc02ee53c6a569de6315e91` | 546 | Passed |
 
-These revisions and PLAN build 2 are retained as audit evidence but are
-superseded for deployment. Corrected source revisions and a new PLAN are
-required. The corrected chart retains ingress-nginx 4.15.0 and controller
+The original accepted revisions `e34bd547`, `950cc4f`, and `b23d3a4`, plus
+PLAN build 2, remain audit evidence but are superseded for deployment. A new
+PLAN from the table above is required. The corrected chart retains
+ingress-nginx 4.15.0 and controller
 1.15.1 by digest, uses one controller replica and a ClusterIP-only Service, and
 manages Headlamp with ingress class `nginx` and host
 `headlamp.example.com`.
@@ -185,29 +207,35 @@ cutover; they must be retired after the new path passes acceptance.
 6. Run `ACTION=PLAN`, `CONFIRM_CHANGE=false` on
    `jenkins-agent01.example.com`. Require the intended context, four-node set,
    server-side Helm dry run, locked chart, and no secret output.
-7. Publish corrected Ansible, Helm, Jenkins-library, DNS, and shared-proxy
-   source. Require CI and review for each exact revision. The corrected
-   prerequisite installs local NGINX only on `k8s-worker01.example.com`, opens
-   only HTTP 80, and never opens a NodePort.
-8. Run a new `ACTION=PLAN`, `CONFIRM_CHANGE=false` from the corrected exact
+7. Publish corrected Ansible, Helm, Jenkins-library, Jenkins jobs-as-code,
+   DNS, and shared-proxy source. Require CI and review for each exact revision.
+   This gate is complete at the revisions in **Accepted corrected source**.
+8. Run the enterprise Jenkins seed from jobs revision `50c222b2`; require
+   `projects/configure-headlamp-edge` to match source and prove a second seed
+   run makes no unexpected job-definition change.
+9. Run a new `ACTION=PLAN`, `CONFIRM_CHANGE=false` from the corrected exact
    revisions. Require a ClusterIP-only service and the
    `headlamp.example.com` Ingress host. PLAN build 2 is not deployable.
-9. Run `headlamp-dns-publish.yml` through the controlled DNS path to add
+10. Run `PUBLISH_DNS` and then `INSTALL_EDGE` through the source-managed
+   `projects/configure-headlamp-edge` Jenkins job. Require AWX to synchronize
+   the exact accepted project revisions. This adds
    `headlamp.example.com -> 192.168.1.108` while retaining the legacy record,
-   then apply the reviewed local-NGINX prerequisite through AWX.
-10. Run `ACTION=DEPLOY`, `CONFIRM_CHANGE=true` through Jenkins. Require atomic
+   installs NGINX only on `k8s-worker01.example.com`, opens only HTTP 80, and
+   never opens a NodePort.
+11. Run `ACTION=DEPLOY`, `CONFIRM_CHANGE=true` through Jenkins. Require atomic
    Helm wait and runtime acceptance.
-11. Repeat DEPLOY from the same revision and require no unexpected rollout,
+12. Repeat DEPLOY from the same revision and require no unexpected rollout,
    replacement, or value drift.
-12. Run an explicit known-good Helm rollback through the same Jenkins job,
+13. Run an explicit known-good Helm rollback through the same Jenkins job,
    validate the still-retained legacy recovery path, then restore the accepted
    release and validate again.
-13. Remove the legacy `headlamp.apps.example.com` record and shared-proxy route,
-   remove Headlamp NodePort 30080 through reviewed Kubernetes source, and prove
-   that no Headlamp backend host port remains exposed.
-14. Publish runtime evidence and incidents before closing the active change.
+14. Run `FINALIZE_DNS`, `REMOVE_SHARED_PROXY`, and `CUTOVER_HEADLAMP` through
+   `projects/configure-headlamp-edge`. Require the legacy
+   `headlamp.apps.example.com` record, shared-proxy route, Headlamp NodePort
+   30080, and its firewall admission to be absent.
+15. Publish runtime evidence and incidents before closing the active change.
 
-The staged DNS path is deliberate: cloud revision `660b6ca` keeps the existing
+The staged DNS path is deliberate: cloud main revision `ffb11dc3` keeps the existing
 legacy record only when `headlamp-dns-publish.yml` explicitly enables the
 transition flag. The normal `dns.yml` default is final-state false and removes
 that record at cutover. The staged zone uses serial `2026080301`; final removal
@@ -216,8 +244,9 @@ the Headlamp route, but that role is not reconciled until the new canonical
 path passes deployment, rollback, and restore.
 
 Gates 1 through 6 document the superseded implementation and remain useful
-audit evidence only. The correction restarts at source review; no DEPLOY is
-authorized until gates 7 through 9 and a new PLAN are accepted.
+audit evidence only. Corrected source gate 7 is complete. No DEPLOY is
+authorized until the source-managed Jenkins job, a new PLAN, and the staged
+DNS/local-NGINX prerequisites in gates 8 through 10 are accepted.
 
 Evidence: [Kubernetes Ingress PLAN](../evidence/CHG-2026-009-kubernetes-ingress-plan.md)
 

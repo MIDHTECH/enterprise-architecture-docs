@@ -1,6 +1,6 @@
 # Sequential Build and Change Control
 
-Last verified: 2026-08-02
+Last verified: 2026-08-03
 
 ## Operating rule
 
@@ -24,11 +24,21 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | --- | --- |
 | Change ID | `CHG-2026-009` |
 | Component | Single-replica Kubernetes ingress tier: Jenkins delivery objects, `platform-ingress` Helm release, and only its documented cluster prerequisites |
-| State | Active at the architecture and source-correction gate. Jenkins PLAN build 2 proved the earlier source but is superseded; no ingress runtime resource has been created. |
-| Blocker | Kubernetes revision `d206ab3f` passed main pipeline 530 and Jenkins-library revision `d4fc707c` passed main pipeline 531. Cloud/DNS revision `660b6ca` adds a staged canonical-name playbook and monotonic transition/final zone serials while retaining the legacy route until acceptance; its replacement CI must pass and merge. INC-2026-078 and INC-2026-079 remain open. |
-| Permitted work | Correct and publish only CHG-2026-009 documentation and source: install NGINX on `k8s-worker01.example.com`, expose `headlamp.example.com` on HTTP 80, use a ClusterIP ingress service, update DNS, remove the legacy shared-proxy route at cutover, and produce a new Jenkins PLAN. |
+| State | Corrected source accepted; active at the source-managed Jenkins control-path and new-PLAN gate. Jenkins PLAN build 2 is superseded and no ingress runtime resource has been created. |
+| Blocker | Corrected main revisions `d206ab3f` (Kubernetes/pipeline 530), `ffb11dc3` (cloud/DNS/pipeline 543), `e9790766` (shared library/pipeline 542), and `50c222b2` (jobs-as-code/pipeline 546) are accepted. The enterprise seed must reconcile `projects/configure-headlamp-edge`, then a new ClusterIP-only PLAN and staged DNS/local-NGINX prerequisites must pass. INC-2026-078 remains open; INC-2026-079 and INC-2026-080 are resolved. |
+| Permitted work | Reconcile the source-managed Jenkins job, produce a new PLAN, then advance only the documented CHG-2026-009 AWX actions: staged DNS, local NGINX on `k8s-worker01.example.com`, controlled Helm delivery, rollback/restore, and final legacy-route/NodePort retirement. |
 | Prohibited work | Direct Helm or `kubectl apply` from a workstation, AWX, or Ansible; Jenkins-controller execution; storage or another product change; any NodePort or backend-port LAN exposure; `nginx.example.com` as the Headlamp edge; DEPLOY from superseded PLAN build 2. |
 | Exit criteria | Corrected exact source and new PLAN accepted; local NGINX and DNS reconciled; release and one replica healthy; ClusterIP-only ingress service and `headlamp.example.com` route validated; legacy shared route and Headlamp NodePort retired; rollback/restore and idempotence proven; incidents, evidence, source, and documentation published. |
+
+Corrected source is now canonical. The Kubernetes and cloud repositories
+enforce ClusterIP-only/private backends, product-local NGINX, canonical DNS,
+and staged legacy retirement. Jenkins shared-library main `e9790766` adds the
+five-action `headlampEdgeAwxPipeline` and removes the direct AWX backend-port
+default. Jobs-as-code main `50c222b2` adds the manual-only
+`projects/configure-headlamp-edge` job and canonical portless Jenkins/AWX URLs.
+The existing AWX projects remain intentionally unreconciled until that Jenkins
+job is seeded: live Kubernetes project 13 and cloud project 23 still report
+older SCM revisions, and no new Headlamp-edge template has been created.
 
 `CHG-2026-001` through `CHG-2026-008` are complete.
 
@@ -311,7 +321,7 @@ the inventory-normalization change.
 | 6 | Retire the GitLab-VM runner from CI execution | Completed 2026-08-01 through `CHG-2026-007` |
 | 7 | Review `jenkins-agent01`, correct canonical port-80 access, and set the Jenkins root URL | Completed 2026-08-01 through `CHG-2026-003`; agent, portless URL, root URL, DNS, and route cleanup accepted |
 | 8 | Establish and accept `awx-execution.example.com` as the bounded AWX execution plane | Completed 2026-08-02 through `CHG-2026-008`; hostname-only NGINX, canary, rollback/restore, and zero-change convergence accepted |
-| 9 | Deploy and accept the single-replica Kubernetes ingress tier | Active as `CHG-2026-009`; source pipelines 351/352/354 passed, but live Jenkins job/credential reconciliation and PLAN remain gated |
+| 9 | Deploy and accept the single-replica Kubernetes ingress tier | Active as `CHG-2026-009`; corrected source pipelines 530/542/543/546 passed, but Jenkins seed reconciliation, new PLAN, and runtime gates remain |
 | 10 | Deploy and accept Kubernetes persistent storage | Ingress change closed and rollback verified |
 | 11 | Install Artifactory | Platform storage and backup prerequisites accepted |
 | 12 | Install SonarQube | Artifactory change closed |
