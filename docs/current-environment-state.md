@@ -174,19 +174,21 @@ storage envelope.
   `jenkins-agent01` executor is accepted with Helm 4.1.0, kubectl 1.34.10,
   Java 21.0.12, and Git 2.52.0. The 2026-08-03 live audit found the kubeconfig
   secret-file credential and generated ingress job absent after the seed
-  stopped at its script-approval gate. Four exact current scripts are now
-  approved and two stale variants remain unapproved. Seed build 44 was
-  cancelled without execution after it exposed the missing label on the
-  Ansible/JCasC-managed seed. Pipeline 505 then exposed the missing `shared`
-  runner tag without executing; controlled corrections `467e0005` and
-  `c480cd28` are under review in `ansible-jenkins` merge request !14.
-  INC-2026-075 records the corrected state; the credential, PLAN, and ingress
-  runtime remain absent.
-  Protected production job 1617 subsequently failed because Jenkins Job DSL
-  rejected `assignedNode` for the managed freestyle seed. Jenkins is restarting
-  on the invalid JCasC and ingress work is stopped. Recovery `b19b64bd` is under
-  review in `ansible-jenkins` merge request !15; INC-2026-076 records the
-  service incident.
+  stopped at its script-approval gate. Four exact current scripts were
+  approved and two stale variants remain unapproved. The initial seed queue
+  item was cancelled before execution after it exposed the missing label on
+  the Ansible/JCasC-managed seed. Pipeline 505 then exposed the missing
+  `shared` runner tag without executing. The resulting correction and the
+  follow-up Job DSL fix passed branch/main CI and merged through merge requests
+  !14 and !15. Protected production job 1624 restored Jenkins; seed build 44
+  succeeded on `jenkins-agent01` and generated
+  `projects/deploy-kubernetes-ingress`. Idempotence job 1625 passed with
+  `changed=0`, and seed build 45 also succeeded on the dedicated agent.
+  Jenkins is active, returns HTTP 200, has zero controller executors and an
+  empty queue, and retains exactly the two stale scripts unapproved.
+  INC-2026-076 is resolved. Credential `kubernetes-production-kubeconfig`,
+  PLAN, and ingress runtime resources remain absent, so CHG-2026-009 is at the
+  controlled credential and PLAN gate.
 - Enterprise first-slice implementation repositories:
   `midhhealth/data-and-integration/database-reliability-platform`,
   `midhhealth/reliability-operations/resilience-service-operations`,
