@@ -170,10 +170,12 @@ storage envelope.
   `midhhealth/platform-delivery/jenkins-jobs` and backed by
   `midhhealth/platform-delivery/jenkins-shared-library`
 - Kubernetes Helm delivery:
-  source boundary and Jenkins job code are under CHG-2026-002. The dedicated
+  source boundary and Jenkins job code are activated under CHG-2026-009. The dedicated
   `jenkins-agent01` executor is accepted with Helm 4.1.0, kubectl 1.34.10,
-  Java 21.0.12, and Git 2.52.0. The kubeconfig secret-file credential and live
-  generated ingress job are not yet accepted, so ingress has not been deployed.
+  Java 21.0.12, and Git 2.52.0. The 2026-08-03 live audit found the kubeconfig
+  secret-file credential and generated ingress job absent after the seed
+  stopped at its script-approval gate. INC-2026-075 records the corrected
+  state; ingress has not been deployed.
 - Enterprise first-slice implementation repositories:
   `midhhealth/data-and-integration/database-reliability-platform`,
   `midhhealth/reliability-operations/resilience-service-operations`,

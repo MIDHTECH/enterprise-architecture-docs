@@ -106,6 +106,7 @@ facts; they do not erase the original observation.
 | INC-2026-072 | 2026-08-02 | SEV-4 | Resolved | AWX execution scheduling | Controller-side templates were bound to the non-executing control-plane group and could not obtain capacity |
 | INC-2026-073 | 2026-08-02 | SEV-4 | Resolved | GitLab shared runner | One source-validation job could not clone GitLab during a transient HTTP connectivity failure |
 | INC-2026-074 | 2026-08-02 | SEV-4 | Resolved | AWX execution runtime lock | The first install omitted Python 3.9 conditional hashes for `importlib-metadata` and `zipp` |
+| INC-2026-075 | 2026-08-03 | SEV-4 | Open | Kubernetes ingress delivery prerequisites | Queue state claimed Jenkins credential and PLAN completion, but live Jenkins had neither the generated job nor credential |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2378,6 +2379,42 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   hashed runtime requirements.
 - Evidence/related runbook:
   [AWX Execution Plane Acceptance](evidence/CHG-2026-008-awx-execution-plane-acceptance.md)
+
+## INC-2026-075: Ingress Queue Overstated Jenkins Prerequisite Readiness
+
+- Date: 2026-08-03
+- Severity: SEV-4
+- Status: Open
+- Component: Kubernetes ingress Jenkins delivery prerequisites
+- Detection/symptom: The sequential queue said the kubeconfig secret-file
+  credential and non-mutating PLAN were complete. The required live audit found
+  no `projects/deploy-kubernetes-ingress` job and no Jenkins credential with ID
+  `kubernetes-production-kubeconfig`.
+- Impact: CHG-2026-009 cannot run PLAN or DEPLOY. No ingress resource, namespace,
+  IngressClass, or cluster mutation occurred.
+- Timeline: Source pipelines 351, 352, and 354 passed four days earlier. The
+  enterprise seed job subsequently checked out exact jobs revision `950cc4f`,
+  but build 43 stopped at `script not yet approved for use`. Six reviewed Job
+  DSL scripts remain pending approval.
+- Cause: Documentation promoted intended prerequisite state to completed state
+  after source CI, without requiring live Jenkins object and PLAN evidence.
+- Contributing factors: The protected Jenkins configuration step was not part
+  of automatic GitLab validation, and seed failure did not change the queue
+  entry.
+- Resolution: Pending. Publish CHG-2026-009 at the prerequisite gate, approve
+  only the exact reviewed Job DSL, reconcile the existing seed, create the
+  scoped secret-file credential through Jenkins, and accept PLAN before DEPLOY.
+- Validation: Require the generated job, correct secret-file credential type,
+  build agent `jenkins-agent01.example.com`, exact source revision, successful
+  server-side Helm dry run, and zero secret output.
+- Prevention/follow-up: Queue prerequisites must cite live object IDs/builds,
+  not source availability alone. A failed protected configuration step must
+  leave the next runtime gate explicitly blocked.
+- Corrective automation: Add a read-only Jenkins prerequisite contract that
+  checks job existence, credential ID/type, agent label, and last successful
+  PLAN before an ingress DEPLOY can be enabled.
+- Evidence/related runbook:
+  [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md)
 
 ## New Incident Template
 
