@@ -200,20 +200,21 @@ storage envelope.
   superseded: review found that its shared `nginx.example.com` dependency and
   NodePorts 30081/30444 contradict the permanent product-local NGINX and
   no-host-port rule. INC-2026-078 records the safe pre-deployment correction.
-  CHG-2026-009 is back at source review for a ClusterIP-only controller,
-  NGINX HTTP 80 on `k8s-worker01.example.com`, and
+  CHG-2026-009 corrected source is now accepted for a ClusterIP-only
+  controller, NGINX HTTP 80 on `k8s-worker01.example.com`, and
   `headlamp.example.com -> 192.168.1.108`. No DEPLOY is authorized from the
-  old PLAN. Initial corrected pipelines 522-524 remained pending because their
-  Kubernetes/library jobs lacked tags and the cloud branch was ten commits
-  behind current tagged main after retirement of the legacy untagged runner.
-  Explicit `validation` routing in revisions `8b169e0` and `37027a3`, plus
-  cloud reconciliation revision `e98e793`, assigned replacement work to the
-  accepted dedicated runners. INC-2026-079 tracks validation through merge
-  and main CI. Kubernetes main revision `d206ab3f` passed pipeline 530 and
-  Jenkins-library main revision `d4fc707c` passed pipeline 531. Cloud revision
-  `660b6ca` adds a staged DNS playbook that publishes the new canonical record
-  at zone serial `2026080301` while preserving the legacy rollback route;
-  final cutover advances to `2026080302`. Its CI and merge remain pending.
+  old PLAN. Kubernetes main `d206ab3f` passed pipeline 530; cloud/DNS main
+  `ffb11dc3` passed pipeline 543; Jenkins shared-library main `e9790766`
+  passed pipeline 542; and jobs-as-code main `50c222b2` passed pipeline 546.
+  The cloud source stages serial `2026080301` while preserving the rollback
+  record and advances final cutover to `2026080302`. The Jenkins sources add
+  manual job `projects/configure-headlamp-edge`, five bounded AWX actions, and
+  canonical `http://awx.example.com` access without direct port 32000. The
+  Jenkins seed has not run yet, live AWX Kubernetes/cloud projects still show
+  older revisions, and no new AWX template, DNS record, NGINX package,
+  firewall rule, Helm release, or Kubernetes object has been created.
+  INC-2026-079 and INC-2026-080 are resolved; INC-2026-078 remains open until
+  runtime acceptance and legacy-route retirement.
 - Enterprise first-slice implementation repositories:
   `midhhealth/data-and-integration/database-reliability-platform`,
   `midhhealth/reliability-operations/resilience-service-operations`,
