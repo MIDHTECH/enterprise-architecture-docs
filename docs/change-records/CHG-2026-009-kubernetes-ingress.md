@@ -49,13 +49,14 @@ not part of the corrected target architecture. INC-2026-078 records the design
 defect and the required source reset.
 
 The first corrected branch pipelines 522-524 then remained pending with no
-runner assigned. The repositories still assumed untagged execution even
-though the accepted dedicated runners intentionally disable it. Corrective
-revisions `8b169e0` (`ansible-kubernetes`) and `37027a3`
-(`jenkins-shared-library`) use the accepted instance runner's `validation`
-tag; `df4b329` (`cloud-infra-automation-platform`) uses the accepted
-project runner's `infra` tag. Replacement pipelines 526-528 are routed to
-`gitlab-runner-shared01.example.com` and
+runner assigned. Kubernetes and Jenkins-library jobs still assumed untagged
+execution even though the accepted dedicated runners intentionally disable it.
+The cloud branch was also ten commits behind current main, which already
+contained canonical `infra` routing. Corrective revisions `8b169e0`
+(`ansible-kubernetes`) and `37027a3` (`jenkins-shared-library`) use the
+accepted instance runner's `validation` tag. Cloud revision `e98e793`
+incorporates current main and retains its single canonical `infra` default.
+Replacement work is routed to `gitlab-runner-shared01.example.com` and
 `gitlab-runner-infra01.example.com`. INC-2026-079 records the safe CI-only
 failure. No manual job or runtime deployment was launched.
 

@@ -204,10 +204,12 @@ storage envelope.
   NGINX HTTP 80 on `k8s-worker01.example.com`, and
   `headlamp.example.com -> 192.168.1.108`. No DEPLOY is authorized from the
   old PLAN. Initial corrected pipelines 522-524 remained pending because their
-  jobs lacked tags after retirement of the legacy untagged runner. Explicit
-  `validation` and `infra` routing in revisions `8b169e0`, `37027a3`, and
-  `df4b329` assigned replacement pipelines 526-528 to the accepted dedicated
-  runners. INC-2026-079 tracks validation through merge and main CI.
+  Kubernetes/library jobs lacked tags and the cloud branch was ten commits
+  behind current tagged main after retirement of the legacy untagged runner.
+  Explicit `validation` routing in revisions `8b169e0` and `37027a3`, plus
+  cloud reconciliation revision `e98e793`, assigned replacement work to the
+  accepted dedicated runners. INC-2026-079 tracks validation through merge
+  and main CI.
 - Enterprise first-slice implementation repositories:
   `midhhealth/data-and-integration/database-reliability-platform`,
   `midhhealth/reliability-operations/resilience-service-operations`,

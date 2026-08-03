@@ -2566,22 +2566,27 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Impact: Source review could not complete. No deployment, DNS, NGINX,
   firewall, Helm, or Kubernetes runtime action occurred.
 - Timeline: Documentation pipeline 520 and main pipeline 521 passed on the
-  accepted tagged runner. The three implementation repositories then created
-  untagged pipelines 522-524, which had no eligible runner. Inspection showed
-  the dedicated runners healthy but configured, as designed, with untagged
-  execution disabled. Revisions `8b169e0`, `37027a3`, and `df4b329` added
-  explicit routing and started replacement pipelines 526-528.
-- Cause: The implementation repositories retained pre-retirement CI jobs with
-  no tags. The legacy GitLab-VM runner had previously masked this dependency.
+  accepted tagged runner. The implementation branches then created pipelines
+  522-524 with no eligible runner. Inspection showed the dedicated runners
+  healthy with untagged execution disabled. Revisions `8b169e0` and `37027a3`
+  added explicit routing. Cloud inspection found its branch ten commits behind
+  current main; revision `e98e793` incorporated main and retained the one
+  canonical `infra` default.
+- Cause: Kubernetes and Jenkins-library repositories retained pre-retirement
+  jobs with no tags. The cloud correction branch was cut from stale local main
+  that predated accepted runner routing. The legacy GitLab-VM runner had masked
+  the untagged dependency.
 - Contributing factors: Repository validation checked build content but did
   not assert that each job declared a tag matching the accepted runner model.
 - Resolution: In progress. Kubernetes and Jenkins-library validation now use
-  the instance runner's `validation` tag; the cloud/DNS pipeline uses the
-  project runner's `infra` tag. The validators assert these tags remain.
+  the instance runner's `validation` tag. The cloud/DNS branch incorporates
+  current main and its project-runner `infra` tag. Validators assert these
+  tags remain.
 - Validation: GitLab assigned pipeline 526 work to
   `gitlab-runner-shared01.example.com` runner ID 5 and pipeline 528 work to
-  `gitlab-runner-infra01.example.com` runner ID 4. Pipeline completion, merge,
-  and canonical-main CI remain pending.
+  `gitlab-runner-infra01.example.com` runner ID 4 before the cloud branch
+  reconciliation triggered replacement CI. Final branch pipelines, merge, and
+  canonical-main CI remain pending.
 - Prevention/follow-up: Keep explicit runner-tag contracts in every repository
   and never restore untagged execution merely to clear a queue.
 - Corrective automation: Extend enterprise CI governance to compare job tags
