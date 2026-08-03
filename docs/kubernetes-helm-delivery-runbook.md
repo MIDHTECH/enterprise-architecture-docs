@@ -81,7 +81,7 @@ Before enabling the deployment job:
    ```
 
 4. Confirm the node can resolve GitLab, the Kubernetes API endpoint, and
-   `headlamp.apps.example.com`.
+   `headlamp.example.com`.
 5. Confirm the kubeconfig credential is a Jenkins **Secret file** and is
    scoped to the deployment job/folder.
 6. Keep the built-in controller executor count at zero for deployment work.
@@ -120,12 +120,15 @@ must prove:
 - release `platform-ingress` is deployed in `ingress-nginx`;
 - one controller replica is Available;
 - `IngressClass/nginx` is owned by `k8s.io/ingress-nginx`;
-- HTTP and HTTPS NodePorts are `30081` and `30444`;
+- the ingress controller Service is ClusterIP-only and has no NodePort or
+  hostPort;
 - `headlamp/headlamp` uses ingress class `nginx`;
-- a request with host header `headlamp.apps.example.com` succeeds through
-  NodePort `30081`;
-- the old Headlamp NodePort `30080` remains available as the rollback path
-  until a separate removal change is approved.
+- `http://headlamp.example.com` succeeds through NGINX HTTP 80 on
+  `k8s-worker01.example.com`;
+- firewalld exposes only the NGINX frontend, not a Kubernetes backend port;
+- the old Headlamp NodePort `30080` and shared `headlamp.apps.example.com`
+  route remain only through rollback proof and are removed before the change
+  closes.
 
 Run DEPLOY a second time from the same Git revision. It must complete without
 an unexpected rollout, resource replacement, or value drift.
@@ -142,8 +145,10 @@ Start the same job with `ACTION=ROLLBACK`, select an explicit known-good
 `ROLLBACK_REVISION`, and set `CONFIRM_CHANGE=true`. Never guess a revision.
 The pipeline waits for the rollback and repeats runtime acceptance.
 
-If Helm cannot restore service, keep NGINX pointed to Headlamp NodePort
-`30080`, record the incident, and stop further platform deployment.
+If Helm cannot restore service before legacy cutover, retain the existing
+Headlamp route temporarily, record the incident, and stop further platform
+deployment. Do not create or open another NodePort. After cutover, restore the
+accepted ClusterIP release and product-local NGINX source.
 
 ## Evidence
 

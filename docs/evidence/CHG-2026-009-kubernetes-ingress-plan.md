@@ -2,6 +2,13 @@
 
 Date: 2026-08-03
 
+> Superseded for deployment on 2026-08-03. This PLAN accurately proves the
+> earlier source was non-mutating, but that source depended on shared
+> `nginx.example.com` and NodePorts 30081/30444. INC-2026-078 requires a
+> ClusterIP-only ingress service, local NGINX on `k8s-worker01.example.com`,
+> `headlamp.example.com`, corrected source review, and a new PLAN before any
+> DEPLOY.
+
 ## Control-plane and source gates
 
 - Canonical documentation main revision before the retry:
@@ -62,14 +69,12 @@ Build 2 finished SUCCESS and recorded:
 The PLAN was non-mutating. No Helm release, namespace, ingress class, ingress,
 controller, 30081 listener, or 30444 listener exists.
 
-## Firewall prerequisite
+## Superseded firewall prerequisite
 
 Firewalld is running on all four Kubernetes nodes. Active-zone and rich/direct
-rule inspection found no rule admitting TCP 30081 only from
-`nginx.example.com` (`192.168.1.114`). The reviewed Ansible prerequisite is
-therefore required before DEPLOY. It must not open 30081 or 30444 generally,
-and the existing Headlamp NodePort 30080 must remain available.
+rule inspection found no rule admitting TCP 30081. The corrected architecture
+keeps that port closed: it replaces the NodePort service with ClusterIP and
+exposes only NGINX HTTP 80 on `k8s-worker01.example.com`.
 
-DEPLOY is not authorized by this evidence. CHG-2026-009 remains stopped for
-explicit operator authorization of the reviewed firewall prerequisite and the
-Jenkins `ACTION=DEPLOY`, `CONFIRM_CHANGE=true` run.
+DEPLOY is not authorized by this evidence. CHG-2026-009 returned to source
+review and requires a new PLAN from corrected revisions.

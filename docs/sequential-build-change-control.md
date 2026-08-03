@@ -24,11 +24,11 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | --- | --- |
 | Change ID | `CHG-2026-009` |
 | Component | Single-replica Kubernetes ingress tier: Jenkins delivery objects, `platform-ingress` Helm release, and only its documented cluster prerequisites |
-| State | Active at the source-restricted firewall and DEPLOY approval gate. Jenkins PLAN build 2 is accepted; no ingress runtime resource has been created. |
-| Blocker | Firewalld inspection found no rule admitting TCP 30081 only from `nginx.example.com` (`192.168.1.114`) on the four Kubernetes nodes. The reviewed prerequisite playbook and `ACTION=DEPLOY` still require explicit operator authorization. |
-| Permitted work | Publish PLAN build 2 and firewall evidence, request operator authorization, then run only the reviewed Ansible source-restricted firewall prerequisite and Jenkins `ACTION=DEPLOY` with `CONFIRM_CHANGE=true`; retain Headlamp NodePort 30080 and validate every acceptance gate. |
-| Prohibited work | Direct Helm or `kubectl apply` from a workstation, AWX, or Ansible; Jenkins-controller execution; storage or another product change; direct LAN exposure of NodePorts 30081/30444; removal of Headlamp NodePort 30080. |
-| Exit criteria | Exact source and PLAN accepted; release and one replica healthy; ingress class, restricted NodePorts, and Headlamp host route validated; explicit Helm rollback and restore proven; second convergence clean; incidents, evidence, source, and documentation published. |
+| State | Active at the architecture and source-correction gate. Jenkins PLAN build 2 proved the earlier source but is superseded; no ingress runtime resource has been created. |
+| Blocker | The reviewed design still depended on shared `nginx.example.com` and Kubernetes NodePorts 30081/30444. That contradicts the permanent product-local NGINX and no-host-port rule. INC-2026-078 records the safe pre-deployment defect. |
+| Permitted work | Correct and publish only CHG-2026-009 documentation and source: install NGINX on `k8s-worker01.example.com`, expose `headlamp.example.com` on HTTP 80, use a ClusterIP ingress service, update DNS, remove the legacy shared-proxy route at cutover, and produce a new Jenkins PLAN. |
+| Prohibited work | Direct Helm or `kubectl apply` from a workstation, AWX, or Ansible; Jenkins-controller execution; storage or another product change; any NodePort or backend-port LAN exposure; `nginx.example.com` as the Headlamp edge; DEPLOY from superseded PLAN build 2. |
+| Exit criteria | Corrected exact source and new PLAN accepted; local NGINX and DNS reconciled; release and one replica healthy; ClusterIP-only ingress service and `headlamp.example.com` route validated; legacy shared route and Headlamp NodePort retired; rollback/restore and idempotence proven; incidents, evidence, source, and documentation published. |
 
 `CHG-2026-001` through `CHG-2026-008` are complete.
 

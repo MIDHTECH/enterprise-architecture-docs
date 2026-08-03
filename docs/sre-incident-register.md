@@ -109,6 +109,7 @@ facts; they do not erase the original observation.
 | INC-2026-075 | 2026-08-03 | SEV-4 | Resolved | Kubernetes ingress delivery prerequisites | Live reconciliation found the job and credential absent, then exposed an unlabeled seed that could not use the exclusive agent |
 | INC-2026-076 | 2026-08-03 | SEV-3 | Resolved | Jenkins Configuration as Code | Production job 1617 deployed an unsupported freestyle label method; merge request !15 and protected jobs 1624/1625 restored and converged Jenkins |
 | INC-2026-077 | 2026-08-03 | SEV-4 | Resolved | Jenkins ingress source checkout | PLAN build 1 ran on the dedicated agent but GitLab denied the existing Jenkins deploy key before source checkout |
+| INC-2026-078 | 2026-08-03 | SEV-4 | Open | Kubernetes ingress exposure design | Pre-deployment review found that the accepted PLAN still depended on shared `nginx.example.com` and NodePorts, contrary to the permanent product-local NGINX rule |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2507,6 +2508,50 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Evidence/related runbook:
   [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md),
   [PLAN evidence](evidence/CHG-2026-009-kubernetes-ingress-plan.md)
+
+## INC-2026-078: Ingress PLAN Retained Shared Proxy and NodePorts
+
+- Date: 2026-08-03
+- Severity: SEV-4
+- Status: Open
+- Component: CHG-2026-009 Kubernetes ingress exposure design
+- Detection/symptom: Operator review asked why the planned Headlamp route still
+  used `nginx.example.com`. Source and DNS inspection confirmed that PLAN build
+  2 rendered NodePorts 30081/30444, expected the shared proxy at
+  `192.168.1.114`, and used `headlamp.apps.example.com`.
+- Impact: The plan contradicted the permanent rule that every product VM uses
+  its own NGINX hostname frontend and never exposes a backend host port. The
+  defect was found before deployment; no ingress namespace, controller,
+  IngressClass, Ingress, NodePort listener, DNS change, or firewall rule was
+  created.
+- Timeline: PLAN build 2 successfully proved exact source `e34bd547` on
+  `jenkins-agent01`. Post-PLAN inspection showed all four nodes Ready and zero
+  ingress resources. Before the firewall or DEPLOY gate, operator review
+  rejected the shared-edge assumption. A new conflict audit found zero GitLab,
+  Jenkins, AWX, or Kubernetes work, and DNS confirmed
+  `headlamp.apps.example.com -> 192.168.1.114` while
+  `headlamp.example.com` was absent.
+- Cause: The first ingress design treated a source-restricted NodePort as a
+  sufficiently private backend and reused the historical shared proxy. That
+  interpretation did not satisfy the stricter product-local NGINX boundary.
+- Contributing factors: CI asserted the old fixed NodePorts but had no negative
+  contract forbidding NodePort, `nginx.example.com`, or the legacy `.apps`
+  hostname.
+- Resolution: In progress. Correct the Helm Service to ClusterIP, install
+  NGINX on `k8s-worker01.example.com`, publish
+  `headlamp.example.com -> 192.168.1.108`, remove the shared route at cutover,
+  and require a new PLAN from reviewed revisions.
+- Validation: Pending corrected source CI, new PLAN, controlled DNS/NGINX
+  convergence, runtime acceptance, rollback/restore, legacy-route retirement,
+  zero backend host ports, and second-run idempotence.
+- Prevention/follow-up: Source validation must fail on NodePort/hostPort,
+  `nginx.example.com`, `headlamp.apps.example.com`, and direct backend-IP curl
+  acceptance in the active ingress implementation.
+- Corrective automation: Add explicit ClusterIP, local-NGINX, canonical-host,
+  firewall, and negative legacy-reference assertions to source CI.
+- Evidence/related runbook:
+  [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md),
+  [superseded PLAN evidence](evidence/CHG-2026-009-kubernetes-ingress-plan.md)
 
 ## New Incident Template
 
