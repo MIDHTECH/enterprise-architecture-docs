@@ -2359,10 +2359,11 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   started. GitLab runner ID 5 was otherwise healthy and returned the failed
   trace normally. No Kubernetes source, host, package, Helm release, or cluster
   resource changed.
-- Current recovery: Keep CHG-2026-010 source work gated. Retry only the failed
-  checkout after runner-to-GitLab HTTP reachability is stable, require pipeline
-  556 and a subsequent canonical-main pipeline to pass, then restore this
-  incident to Resolved with exact job evidence.
+- Current recovery: Five canonical probes from runner ID 5 initially showed
+  one DNS failure followed by four HTTP 200 responses. Recovery branch
+  `a696ea4` then cloned successfully and pipeline 557 passed job 1751. Keep
+  CHG-2026-010 source work gated and this incident in Monitoring until the
+  recovery merge and its canonical-main validation also pass.
 - Prevention/follow-up: Retry a clone-only transport failure only after
   confirming source validation is still gated; do not weaken CI or bypass the
   published revision requirement.
