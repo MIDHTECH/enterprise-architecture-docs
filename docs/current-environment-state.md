@@ -196,9 +196,14 @@ storage envelope.
   source `e34bd547` on the dedicated agent with server-side dry run and hidden
   secrets. Context `kubernetes-admin@kubernetes`, all four v1.34.10 nodes
   Ready, Headlamp NodePort 30080, and zero post-run ingress objects are
-  verified. INC-2026-075 and INC-2026-077 are resolved. The source-restricted
-  TCP 30081 firewalld rule is absent on all four nodes, so the reviewed
-  prerequisite playbook and DEPLOY remain gated for operator authorization.
+  verified. INC-2026-075 and INC-2026-077 are resolved. PLAN build 2 is now
+  superseded: review found that its shared `nginx.example.com` dependency and
+  NodePorts 30081/30444 contradict the permanent product-local NGINX and
+  no-host-port rule. INC-2026-078 records the safe pre-deployment correction.
+  CHG-2026-009 is back at source review for a ClusterIP-only controller,
+  NGINX HTTP 80 on `k8s-worker01.example.com`, and
+  `headlamp.example.com -> 192.168.1.108`. No DEPLOY is authorized from the
+  old PLAN.
 - Enterprise first-slice implementation repositories:
   `midhhealth/data-and-integration/database-reliability-platform`,
   `midhhealth/reliability-operations/resilience-service-operations`,

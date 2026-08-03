@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-009` |
 | Type | Normal |
-| State | Credential and PLAN prerequisite gate |
+| State | Architecture and source-correction gate |
 | Risk | Moderate |
 | Impact | Low |
 | Priority | High |
@@ -36,11 +36,17 @@ Jenkins owns Helm planning, deployment, rollback, and evidence. AWX and
 Ansible may configure only the documented operating-system and firewalld
 prerequisites. They must not install the Helm release or run `kubectl apply`.
 
-The permanent VM exposure rule remains in force. The ingress controller uses
-NodePorts 30081/30444 only as a private boundary. Firewalld admits HTTP 30081
-only from the existing product-local edge proxy at `nginx.example.com`
-(`192.168.1.114`). Applications remain exposed by canonical hostname through
-NGINX; the NodePorts are not general LAN service endpoints.
+The permanent VM exposure rule remains in force. NGINX is installed on the
+Kubernetes edge node `k8s-worker01.example.com` and is the only LAN listener,
+on standard HTTP port 80. DNS publishes `headlamp.example.com` directly to
+`192.168.1.108`. NGINX proxies privately to the ingress-nginx ClusterIP service
+through cluster DNS. The ingress controller must not publish a NodePort,
+hostPort, or backend port on any cluster VM.
+
+The earlier shared-edge design was rejected before deployment on 2026-08-03.
+`nginx.example.com`, `headlamp.apps.example.com`, and NodePorts 30081/30444 are
+not part of the corrected target architecture. INC-2026-078 records the design
+defect and the required source reset.
 
 ## Accepted source
 
@@ -50,10 +56,12 @@ NGINX; the NodePorts are not general LAN service endpoints.
 | `midhhealth/platform-delivery/jenkins-jobs` | `950cc4f89cba54b12fe64af90db5e90bd7d430fa` | 352 | Passed |
 | `midhhealth/platform-delivery/jenkins-shared-library` | `b23d3a4e9ae0db9f398f77554e7559acad839088` | 351 | Passed |
 
-The chart locks ingress-nginx 4.15.0 and controller 1.15.1 by digest. The Helm
-release is `platform-ingress` in namespace `ingress-nginx`, with one controller
-replica and NodePorts 30081/30444. The managed Headlamp Ingress uses class
-`nginx` and host `headlamp.apps.example.com`.
+These revisions and PLAN build 2 are retained as audit evidence but are
+superseded for deployment. Corrected source revisions and a new PLAN are
+required. The corrected chart retains ingress-nginx 4.15.0 and controller
+1.15.1 by digest, uses one controller replica and a ClusterIP-only Service, and
+manages Headlamp with ingress class `nginx` and host
+`headlamp.example.com`.
 
 ## Pre-change audit
 
@@ -139,11 +147,13 @@ confirmed context `kubernetes-admin@kubernetes`, all four expected v1.34.10
 nodes Ready, zero ingress namespace/class/object, and retained Headlamp
 NodePort 30080. INC-2026-075 and INC-2026-077 are resolved.
 
-Firewalld is running on all four nodes, but none has the required rule allowing
-TCP 30081 only from `nginx.example.com` (`192.168.1.114`). No 30081 or 30444
-listener exists before deployment. The reviewed prerequisite playbook is
-therefore required and remains stopped with DEPLOY pending explicit operator
-authorization.
+Firewalld is running on all four nodes and no 30081 or 30444 listener exists.
+That absence is now the required target, not a missing prerequisite. The
+corrected prerequisite installs product-local NGINX on
+`k8s-worker01.example.com`, admits only HTTP 80, and keeps all Kubernetes
+backend ports off the LAN. The existing `headlamp.apps.example.com ->
+192.168.1.114` record and shared-proxy route remain live only until controlled
+cutover; they must be retired after the new path passes acceptance.
 
 ## Implementation gates
 
@@ -163,21 +173,30 @@ authorization.
 6. Run `ACTION=PLAN`, `CONFIRM_CHANGE=false` on
    `jenkins-agent01.example.com`. Require the intended context, four-node set,
    server-side Helm dry run, locked chart, and no secret output.
-7. Run the reviewed Ansible prerequisite playbook only if PLAN and live
-   firewall inspection show it is required. The scope is the documented
-   Kubernetes nodes and source-restricted NodePort rule only.
-8. Run `ACTION=DEPLOY`, `CONFIRM_CHANGE=true` through Jenkins. Require atomic
+7. Publish corrected Ansible, Helm, Jenkins-library, DNS, and shared-proxy
+   source. Require CI and review for each exact revision. The corrected
+   prerequisite installs local NGINX only on `k8s-worker01.example.com`, opens
+   only HTTP 80, and never opens a NodePort.
+8. Run a new `ACTION=PLAN`, `CONFIRM_CHANGE=false` from the corrected exact
+   revisions. Require a ClusterIP-only service and the
+   `headlamp.example.com` Ingress host. PLAN build 2 is not deployable.
+9. Reconcile `headlamp.example.com -> 192.168.1.108` through the controlled DNS
+   path, then apply the reviewed local-NGINX prerequisite through AWX.
+10. Run `ACTION=DEPLOY`, `CONFIRM_CHANGE=true` through Jenkins. Require atomic
    Helm wait and runtime acceptance.
-9. Repeat DEPLOY from the same revision and require no unexpected rollout,
+11. Repeat DEPLOY from the same revision and require no unexpected rollout,
    replacement, or value drift.
-10. Run an explicit known-good Helm rollback through the same Jenkins job,
-   validate the retained Headlamp NodePort 30080 recovery path, then restore
-   the accepted release and validate again.
-11. Publish runtime evidence and incidents before closing the active change.
+12. Run an explicit known-good Helm rollback through the same Jenkins job,
+   validate the still-retained legacy recovery path, then restore the accepted
+   release and validate again.
+13. Remove the legacy `headlamp.apps.example.com` record and shared-proxy route,
+   remove Headlamp NodePort 30080 through reviewed Kubernetes source, and prove
+   that no Headlamp backend host port remains exposed.
+14. Publish runtime evidence and incidents before closing the active change.
 
-Gates 1 through 6 are accepted through Jenkins PLAN build 2 and the linked
-evidence. Gate 7 is required by the live firewall inspection and is awaiting
-operator authorization together with gate 8 DEPLOY.
+Gates 1 through 6 document the superseded implementation and remain useful
+audit evidence only. The correction restarts at source review; no DEPLOY is
+authorized until gates 7 through 9 and a new PLAN are accepted.
 
 Evidence: [Kubernetes Ingress PLAN](../evidence/CHG-2026-009-kubernetes-ingress-plan.md)
 
@@ -187,23 +206,24 @@ Evidence: [Kubernetes Ingress PLAN](../evidence/CHG-2026-009-kubernetes-ingress-
    Helm history records the reviewed revision sequence.
 2. Exactly one ingress-nginx controller replica is Available.
 3. `IngressClass/nginx` is owned by `k8s.io/ingress-nginx`.
-4. HTTP/HTTPS NodePorts are exactly 30081/30444 and are not generally exposed
-   as VM host services. The HTTP firewall rule is limited to
-   `nginx.example.com`.
-5. `headlamp/headlamp` uses ingress class `nginx`, and the expected Host-header
-   request succeeds through NodePort 30081.
-6. The old Headlamp NodePort 30080 remains available for rollback and is not
-   removed by this change.
+4. The ingress controller Service is ClusterIP-only. No NodePort, hostPort,
+   TCP 30081, or TCP 30444 is published on any cluster VM.
+5. `headlamp/headlamp` uses ingress class `nginx`, and
+   `http://headlamp.example.com` succeeds through NGINX on
+   `k8s-worker01.example.com` port 80.
+6. The old Headlamp NodePort 30080 and `headlamp.apps.example.com` shared route
+   are retained only for rollback proof, then removed before closure.
 7. PLAN, DEPLOY, second convergence, rollback, restore, cluster health, logs,
    and Jenkins agent identity pass with no secret leakage.
 
 ## Backout plan
 
 Use only the reviewed Jenkins job with `ACTION=ROLLBACK`, an explicit known-good
-Helm revision, and `CONFIRM_CHANGE=true`. If Helm rollback cannot restore the
-release, keep the existing NGINX route on Headlamp NodePort 30080, record the
-incident, and stop. Do not guess a revision, delete cluster resources manually,
-or expose a NodePort directly.
+Helm revision, and `CONFIRM_CHANGE=true`. Before legacy-route retirement, the
+existing shared route and Headlamp NodePort 30080 remain the bounded recovery
+path. After cutover, restore the last accepted ClusterIP release and local
+NGINX configuration through the same controlled sources. Do not guess a
+revision, delete cluster resources manually, or expose a NodePort directly.
 
 ## Closure information
 
