@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-009` |
 | Type | Normal |
-| State | Pre-deployment prerequisite reconciliation |
+| State | Credential and PLAN prerequisite gate |
 | Risk | Moderate |
 | Impact | Low |
 | Priority | High |
@@ -96,6 +96,24 @@ target the healthy instance runner with its existing `shared` tag. Pipeline
 505 exposed the missing CI tag and did not execute. The correction must pass
 CI, review, protected deployment, seed reconciliation, and idempotence before
 the credential or PLAN gate can proceed.
+
+Protected production job 1617 at merged main revision `c560f6e7` changed only
+the managed JCasC file, then failed when Jenkins rejected `assignedNode` on a
+`FreeStyleJob`. Jenkins entered a restart loop before seed reconciliation; no
+ingress job, credential, PLAN, or cluster resource was created. INC-2026-076
+tracks the service incident. Recovery revision
+`b19b64bd1f1571a0627de4edb04ebcdaa927d683` in `ansible-jenkins` merge request
+!15 uses the supported `label` DSL. Branch pipeline 511 passed, the merge
+completed as `ff98681140b12ca317f7ca75a7fbc6ebca29d23d`, and main pipeline 513
+passed. Protected production job 1624 restored Jenkins and completed seed
+build 44 successfully on `jenkins-agent01`, generating
+`projects/deploy-kubernetes-ingress`. The second protected deployment, job
+1625, passed with `ok=34 changed=0 unreachable=0 failed=0`; seed build 45 also
+passed on `jenkins-agent01`. Runtime validation found Jenkins active with zero
+restarts, HTTP 200, the controller at zero executors, the dedicated agent
+online, an empty queue, and exactly the two older scripts still unapproved.
+INC-2026-076 is resolved and this change has returned to gate 4. The credential,
+PLAN, and all ingress runtime resources remain absent.
 
 ## Implementation gates
 
