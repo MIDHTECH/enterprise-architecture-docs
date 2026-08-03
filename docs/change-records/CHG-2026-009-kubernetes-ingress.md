@@ -192,8 +192,9 @@ cutover; they must be retired after the new path passes acceptance.
 8. Run a new `ACTION=PLAN`, `CONFIRM_CHANGE=false` from the corrected exact
    revisions. Require a ClusterIP-only service and the
    `headlamp.example.com` Ingress host. PLAN build 2 is not deployable.
-9. Reconcile `headlamp.example.com -> 192.168.1.108` through the controlled DNS
-   path, then apply the reviewed local-NGINX prerequisite through AWX.
+9. Run `headlamp-dns-publish.yml` through the controlled DNS path to add
+   `headlamp.example.com -> 192.168.1.108` while retaining the legacy record,
+   then apply the reviewed local-NGINX prerequisite through AWX.
 10. Run `ACTION=DEPLOY`, `CONFIRM_CHANGE=true` through Jenkins. Require atomic
    Helm wait and runtime acceptance.
 11. Repeat DEPLOY from the same revision and require no unexpected rollout,
@@ -205,6 +206,14 @@ cutover; they must be retired after the new path passes acceptance.
    remove Headlamp NodePort 30080 through reviewed Kubernetes source, and prove
    that no Headlamp backend host port remains exposed.
 14. Publish runtime evidence and incidents before closing the active change.
+
+The staged DNS path is deliberate: cloud revision `660b6ca` keeps the existing
+legacy record only when `headlamp-dns-publish.yml` explicitly enables the
+transition flag. The normal `dns.yml` default is final-state false and removes
+that record at cutover. The staged zone uses serial `2026080301`; final removal
+advances it to `2026080302`. The shared-proxy role's final state already omits
+the Headlamp route, but that role is not reconciled until the new canonical
+path passes deployment, rollback, and restore.
 
 Gates 1 through 6 document the superseded implementation and remain useful
 audit evidence only. The correction restarts at source review; no DEPLOY is

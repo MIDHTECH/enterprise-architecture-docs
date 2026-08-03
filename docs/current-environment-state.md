@@ -209,7 +209,11 @@ storage envelope.
   Explicit `validation` routing in revisions `8b169e0` and `37027a3`, plus
   cloud reconciliation revision `e98e793`, assigned replacement work to the
   accepted dedicated runners. INC-2026-079 tracks validation through merge
-  and main CI.
+  and main CI. Kubernetes main revision `d206ab3f` passed pipeline 530 and
+  Jenkins-library main revision `d4fc707c` passed pipeline 531. Cloud revision
+  `660b6ca` adds a staged DNS playbook that publishes the new canonical record
+  at zone serial `2026080301` while preserving the legacy rollback route;
+  final cutover advances to `2026080302`. Its CI and merge remain pending.
 - Enterprise first-slice implementation repositories:
   `midhhealth/data-and-integration/database-reliability-platform`,
   `midhhealth/reliability-operations/resilience-service-operations`,
