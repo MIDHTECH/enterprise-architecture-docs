@@ -59,7 +59,7 @@ and tested before deployment.
 | External Secrets Operator | 0.19, latest patch | Kubernetes | Validate CRDs and provider behavior |
 | metrics-server | 0.8, latest patch | Kubernetes | Match supported Kubernetes versions |
 | Velero | 1.17, latest patch | Kubernetes | Verify backup-storage and volume plugins |
-| Longhorn | 1.9, latest patch | Kubernetes | Follow sequential Longhorn upgrade path |
+| Longhorn | 1.12.0, V1 Data Engine | Jenkins-managed Helm bootstrap on Kubernetes; later explicit Argo CD handoff | Pin official chart digest; keep worker-only `/data/longhorn`; follow one-minor-at-a-time upgrade path |
 | Trivy Operator | 0.29, latest patch | Kubernetes | Review CRD changes before upgrade |
 | Argo Rollouts | 1.8, latest patch | Kubernetes, later phase | Install after base platform acceptance |
 

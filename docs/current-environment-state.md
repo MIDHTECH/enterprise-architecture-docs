@@ -229,7 +229,7 @@ ingress changes completed through 2026-08-03:
 | --- | --- | --- |
 | Hypervisor capacity | infra01 has 17/17, infra02 has 14/14, and infra03 has 4/4 domains running; infra01 bridge correction and one controlled guest reboot passed | Monitoring under INC-2026-046 |
 | Kubernetes base | Explicit `kubernetes-admin@kubernetes` context reports server 1.34.10, 4/4 nodes Ready, no non-running pods, and no active Jobs | Accepted after infra01 recovery |
-| Persistent Kubernetes applications | No StorageClass and no PVCs | Blocked until storage is installed and tested |
+| Persistent Kubernetes applications | No StorageClass or PVC exists; three workers each have an empty 150 GiB XFS `/data` disk, while required V1 iSCSI prerequisites remain absent | CHG-2026-010 active at source and PLAN gate |
 | Kubernetes application ingress | `IngressClass/nginx`, one Ready ingress-nginx controller, ClusterIP-only Services, and worker01-local NGINX expose `headlamp.example.com` on TCP 80 | Accepted through CHG-2026-009 |
 | Elastic host logging | Filebeat active and encrypted-output validation passed on 31/31 Rocky Linux VMs; Logstash queue empty; all 31 inventory hostnames present in Elasticsearch | Accepted |
 | Prometheus metrics | 32/32 configured targets Up after AWX job 321: Prometheus plus 31 Node Exporters | Accepted for all Rocky Linux VMs |
@@ -303,7 +303,9 @@ forwarding corrections recorded in INC-2026-036 through INC-2026-038.
 3. Confirm AWX SCM and machine credential IDs for the Linux VM fleet.
 4. Run preflight smoke tests for the systems, database, resilience, data, and
    network automation slices through Jenkins/AWX.
-5. Install and validate a Kubernetes StorageClass.
+5. Complete CHG-2026-010: accept Longhorn 1.12.0 V1 on worker-only
+   `/data/longhorn`, validate Retain storage and persistence, then open a
+   separate scoped backup-target change before Artifactory.
 6. Connect Prometheus alert delivery to Alertmanager and validate a test alert.
 7. Apply application dashboards, alert rules, and SLOs from
    `observability-sre-platform`.
