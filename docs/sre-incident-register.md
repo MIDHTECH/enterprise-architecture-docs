@@ -104,7 +104,7 @@ facts; they do not erase the original observation.
 | INC-2026-070 | 2026-08-02 | SEV-4 | Resolved | AWX controller-object reconciliation | Initial job templates omitted the project-relative `playbooks/` path |
 | INC-2026-071 | 2026-08-02 | SEV-4 | Resolved | AWX inventory reconciliation | The reconciler attempted an unsupported PATCH on nested inventory child endpoints |
 | INC-2026-072 | 2026-08-02 | SEV-4 | Resolved | AWX execution scheduling | Controller-side templates were bound to the non-executing control-plane group and could not obtain capacity |
-| INC-2026-073 | 2026-08-02 | SEV-4 | Resolved | GitLab shared runner | One source-validation job could not clone GitLab during a transient HTTP connectivity failure |
+| INC-2026-073 | 2026-08-02 | SEV-4 | Monitoring | GitLab shared runner | Transient HTTP clone failures recurred during CHG-2026-010 documentation-main validation |
 | INC-2026-074 | 2026-08-02 | SEV-4 | Resolved | AWX execution runtime lock | The first install omitted Python 3.9 conditional hashes for `importlib-metadata` and `zipp` |
 | INC-2026-075 | 2026-08-03 | SEV-4 | Resolved | Kubernetes ingress delivery prerequisites | Live reconciliation found the job and credential absent, then exposed an unlabeled seed that could not use the exclusive agent |
 | INC-2026-076 | 2026-08-03 | SEV-3 | Resolved | Jenkins Configuration as Code | Production job 1617 deployed an unsupported freestyle label method; merge request !15 and protected jobs 1624/1625 restored and converged Jenkins |
@@ -2335,12 +2335,13 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Evidence/related runbook:
   [AWX Execution Plane Acceptance](evidence/CHG-2026-008-awx-execution-plane-acceptance.md)
 
-## INC-2026-073: Shared Runner Briefly Could Not Clone GitLab
+## INC-2026-073: Shared Runner Intermittently Could Not Clone GitLab
 
 - Date: 2026-08-02
 - Severity: SEV-4
-- Status: Resolved
-- Component: `ansible-awx` branch pipeline 497, shared-runner job 1589
+- Status: Monitoring
+- Component: Shared-runner source checkout; `ansible-awx` pipeline 497 job
+  1589 and `enterprise-architecture-docs` pipeline 556 job 1750
 - Detection/symptom: The first pipeline attempt could not clone the project
   over HTTP because the runner temporarily could not connect to GitLab. The
   source/layout validation itself had no reported defect.
@@ -2351,6 +2352,17 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   recovered. Replacement job 1592 passed and pipeline 497 completed green.
 - Validation: Main pipeline 498 passed the same revision, and later pipelines
   499/500 also completed successfully.
+- Recurrence: On 2026-08-03, CHG-2026-010 documentation merge request !20
+  merged as `fd75fd47`, then main pipeline 556 job 1750 failed during
+  `get_sources`. The archived 2,756-byte job trace records
+  `Failed to connect to gitlab.example.com:80 after 34816 ms`; validation never
+  started. GitLab runner ID 5 was otherwise healthy and returned the failed
+  trace normally. No Kubernetes source, host, package, Helm release, or cluster
+  resource changed.
+- Current recovery: Keep CHG-2026-010 source work gated. Retry only the failed
+  checkout after runner-to-GitLab HTTP reachability is stable, require pipeline
+  556 and a subsequent canonical-main pipeline to pass, then restore this
+  incident to Resolved with exact job evidence.
 - Prevention/follow-up: Retry a clone-only transport failure only after
   confirming source validation is still gated; do not weaken CI or bypass the
   published revision requirement.
