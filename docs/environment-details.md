@@ -60,8 +60,8 @@ for every environment:
 ## Core Endpoints
 
 Application endpoints are migrating one product at a time to local NGINX on
-the product VM and the canonical `<product>.example.com` name. AWX and Jenkins
-are accepted on this model. The standalone `nginx.example.com` VM at
+the product VM and the canonical `<product>.example.com` name. AWX, Jenkins,
+and Headlamp are accepted on this model. The standalone `nginx.example.com` VM at
 `192.168.1.114` temporarily serves products not yet migrated. Internal TLS is
 not installed, so the verified current endpoints use HTTP:
 
@@ -70,7 +70,7 @@ not installed, so the verified current endpoints use HTTP:
 | `http://gitlab.apps.example.com` | Source control and merge requests | Active |
 | `http://jenkins.example.com` | CI pipelines through service-local NGINX to backend port `8080` | Active and accepted; `.apps` DNS and shared route retired |
 | `http://awx.example.com` | Automation controller through service-local NGINX to backend port `32000` | Active and accepted; `.apps` record retired |
-| `http://headlamp.apps.example.com` | Kubernetes dashboard through backend port `30080` | Active |
+| `http://headlamp.example.com` | Kubernetes dashboard through worker01-local NGINX to the private ingress-nginx ClusterIP | Active and accepted; `.apps` DNS, shared route, and NodePort retired |
 | `http://grafana.apps.example.com` | Dashboards | Active |
 | `http://prometheus.apps.example.com` | Metrics | Active |
 | `http://alertmanager.apps.example.com` | Alerts | Active |

@@ -14,7 +14,7 @@ product and AWX the second.
 
 ## Current Status
 
-As of 2026-07-29, BIND is installed, enabled, and active. Forward, reverse,
+As of 2026-08-03, BIND is installed, enabled, and active. Forward, reverse,
 UDP, TCP, and recursive lookups pass, and the Ansible role has converged with
 `changed=0`, `failed=0`, and `unreachable=0`.
 
@@ -22,11 +22,10 @@ The managed query and recursion ACL includes both `192.168.1.0/24` and the
 Kubernetes pod CIDR `10.244.0.0/16`. CoreDNS forwards `example.com` only to
 `192.168.1.106`; all other names use the normal node upstreams.
 
-Zone serial `2026072901` includes the physical hosts, all 31 VMs, reverse
-records, and approved `*.apps.example.com` service names at `.114`. The latest
-records add Elasticsearch nodes `.116`, `.133`, and `.134`; Kibana `.117`;
-Splunk `.118`; Logstash `.135`; the Kibana/Splunk application aliases; and
-`headlamp.apps.example.com`.
+Zone serial `2026080302` includes the physical hosts, all 35 VMs, reverse
+records, remaining approved `*.apps.example.com` service names at `.114`, and
+the canonical `headlamp.example.com -> 192.168.1.108` record. The retired
+`headlamp.apps.example.com` record is absent and returns NXDOMAIN.
 
 Headlamp DNS was initially reconciled through AWX project 23, inventory 4,
 inventory source 24, and DNS-only job template 25. Deployment job 398
@@ -37,7 +36,9 @@ infra02, and infra03. Production inventory commit `2c8ccfe` added the required
 `dns_servers` group. Jobs 433 and 438 each processed `dns.example.com` and
 reported `changed=0`, `unreachable=0`, and `failed=0`. Acceptance also proved
 the name through authoritative BIND, the Mac split resolver, Kubernetes
-CoreDNS, and normal HTTP status 200.
+CoreDNS, and normal HTTP status 200. CHG-2026-009 later staged canonical DNS in
+AWX job 760 and finalized it in job 782, advancing serial `2026080302` and
+retiring the legacy name after rollback/restore acceptance.
 
 The Linksys router now contains 63 verified DHCP reservations: infra01,
 infra02, infra03, and every address from `.101` through `.160`. Automatic client DNS

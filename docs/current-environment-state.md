@@ -26,8 +26,8 @@ Implementation and acceptance counts are maintained separately in
 ## Live on-premises infrastructure
 
 The following state combines the directly verified platform baseline with the
-accepted runner, Jenkins, and AWX execution-plane changes completed through
-2026-08-02:
+accepted runner, Jenkins, AWX execution-plane, and Kubernetes ingress changes
+completed through 2026-08-03:
 
 | Layer | Verified state |
 | --- | --- |
@@ -36,7 +36,7 @@ accepted runner, Jenkins, and AWX execution-plane changes completed through
 | `infra03.example.com` | Ubuntu 26.04 LTS, `br0` active, four build-execution domains running with autostart |
 | Virtual machines | 35 domains in the latest accepted inventory: 17 on infra01, 14 on infra02, and 4 on infra03; all domains are running and all infra01 guests recovered expected IPv4 addresses |
 | Product roles | At least 23 runtime roles directly verified; Harbor is installed; Vault 2.0.3 is active, unsealed, and accepted through NGINX; Keycloak still awaits revalidation |
-| Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready |
+| Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready; single-replica ingress-nginx accepted with a ClusterIP-only Service |
 | AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
 | AWX execution plane | AWX 24.6.1 instance 3 on `awx-execution.example.com` is Ready at capacity 76 only in `lab-infrastructure`; NGINX exposes hostname TCP 443 and Receptor remains loopback-only on 27199 |
 | AWX inventories | 50 records across nine populated inventories plus the empty Demo inventory; 39 distinct names. Purpose-specific delivery inventories remain isolated, and `awx-execution-plane` contains only the execution node and canary localhost. |
@@ -86,9 +86,10 @@ binds only `127.0.0.1:27199` with no backend firewall opening. Removal 744,
 restore 745, zero-change install 748, and final validation 749 passed at
 canonical source revision `7b931558`.
 
-The four-node application cluster currently contains the control-plane components,
-CoreDNS, Flannel, and Headlamp. Argo CD, MetalLB, ingress-nginx, cert-manager,
-Kyverno, External Secrets Operator, metrics-server, Velero, Longhorn,
+The four-node application cluster currently contains the control-plane
+components, CoreDNS, Flannel, Headlamp, and the accepted single-replica
+ingress-nginx tier. Argo CD, MetalLB, cert-manager, Kyverno, External Secrets
+Operator, metrics-server, Velero, Longhorn,
 OpenTelemetry Operator, Trivy Operator, and Argo Rollouts are not installed in
 the current cluster and must not be reported as completed.
 
@@ -107,11 +108,12 @@ local NGINX forwards port 80 to NodePort `32000`, and
 `awx.apps.example.com` has been removed. AWX jobs 485/492 and DNS jobs
 502/514 prove first convergence and zero-change idempotence.
 
-`nginx.example.com` remains online temporarily for GitLab, Jenkins, Headlamp,
-Prometheus, Alertmanager, Grafana, MinIO, Loki, Tempo, OpenTelemetry HTTP,
-Kibana, and Vault. It must not be retired until each consumer is migrated and
-accepted in a separate sequential change. Headlamp uses `30080`; Vault uses
-HTTPS with the
+`nginx.example.com` remains online temporarily for GitLab, Prometheus,
+Alertmanager, Grafana, MinIO, Loki, Tempo, OpenTelemetry HTTP, Kibana, and
+Vault. It must not be retired until each consumer is migrated and accepted in
+a separate sequential change. Headlamp is no longer a shared-proxy consumer:
+`headlamp.example.com -> 192.168.1.108` reaches worker01-local NGINX on TCP 80,
+and both Headlamp and ingress-nginx are ClusterIP-only. Vault uses HTTPS with the
 version-controlled backend certificate as its trust anchor. Source-restricted
 firewalld rules allow only
 approved lab-LAN consumers to reach Loki and Tempo and allow the Kubernetes
@@ -170,56 +172,20 @@ storage envelope.
   `midhhealth/platform-delivery/jenkins-jobs` and backed by
   `midhhealth/platform-delivery/jenkins-shared-library`
 - Kubernetes Helm delivery:
-  source boundary and Jenkins job code are activated under CHG-2026-009. The dedicated
-  `jenkins-agent01` executor is accepted with Helm 4.1.0, kubectl 1.34.10,
-  Java 21.0.12, and Git 2.52.0. The 2026-08-03 live audit found the kubeconfig
-  secret-file credential and generated ingress job absent after the seed
-  stopped at its script-approval gate. Four exact current scripts were
-  approved and two stale variants remain unapproved. The initial seed queue
-  item was cancelled before execution after it exposed the missing label on
-  the Ansible/JCasC-managed seed. Pipeline 505 then exposed the missing
-  `shared` runner tag without executing. The resulting correction and the
-  follow-up Job DSL fix passed branch/main CI and merged through merge requests
-  !14 and !15. Protected production job 1624 restored Jenkins; seed build 44
-  succeeded on `jenkins-agent01` and generated
-  `projects/deploy-kubernetes-ingress`. Idempotence job 1625 passed with
-  `changed=0`, and seed build 45 also succeeded on the dedicated agent.
-  Jenkins is active, returns HTTP 200, has zero controller executors and an
-  empty queue, and retains exactly the two stale scripts unapproved.
-  INC-2026-076 is resolved. Folder-scoped credential
-  `kubernetes-production-kubeconfig` now exists and its temporary source files
-  were securely removed after upload. PLAN build 1 ran on `jenkins-agent01`
-  with exact source `e34bd547`, but failed safely before checkout because the
-  existing `Jenkins SCM read-only` deploy key was not enabled for
-  `ansible-kubernetes`. GitLab's idempotent enable service joined that existing
-  key read-only (`can_push=false`), and PLAN build 2 then succeeded from exact
-  source `e34bd547` on the dedicated agent with server-side dry run and hidden
-  secrets. Context `kubernetes-admin@kubernetes`, all four v1.34.10 nodes
-  Ready, Headlamp NodePort 30080, and zero post-run ingress objects are
-  verified. INC-2026-075 and INC-2026-077 are resolved. PLAN build 2 is now
-  superseded: review found that its shared `nginx.example.com` dependency and
-  NodePorts 30081/30444 contradict the permanent product-local NGINX and
-  no-host-port rule. INC-2026-078 records the safe pre-deployment correction.
-  CHG-2026-009 corrected source is now accepted for a ClusterIP-only
-  controller, NGINX HTTP 80 on `k8s-worker01.example.com`, and
-  `headlamp.example.com -> 192.168.1.108`. No DEPLOY is authorized from the
-  old PLAN. Kubernetes main `d206ab3f` passed pipeline 530; cloud/DNS main
-  `ffb11dc3` passed pipeline 543; Jenkins shared-library main `e9790766`
-  passed pipeline 542; and jobs-as-code main `85a83131` passed pipeline 550
-  after assigning the Headlamp job to the exclusive `kubernetes-deployer`
-  agent.
-  The cloud source stages serial `2026080301` while preserving the rollback
-  record and advances final cutover to `2026080302`. The Jenkins sources add
-  manual job `projects/configure-headlamp-edge`, five bounded AWX actions, and
-  canonical `http://awx.example.com` access without direct port 32000. The
-  Seed builds 50/51 converged and PLAN build 3 passed from exact revisions
-  `d206ab3f` and `e9790766`, proving ClusterIP-only rendering and the canonical
-  hostname without cluster mutation. The first `PUBLISH_DNS` build stopped
-  before playbook launch when AWX returned 403 attaching organization-less
-  machine credential 1 to new template 53. DNS, NGINX, firewall, Helm, and
-  Kubernetes runtime state remain unchanged. INC-2026-081 is resolved;
-  INC-2026-082 is open at the AWX credential-use gate; INC-2026-078 remains
-  open until runtime acceptance and legacy-route retirement.
+  CHG-2026-009 is accepted and closed. Dedicated `jenkins-agent01` owns the
+  reviewed Helm workflow; the controller has zero executors. Corrected PLAN
+  build 3 used Kubernetes revision `d206ab3f` and shared-library revision
+  `e9790766`. DEPLOY builds 4/5, rollback build 6, and restore build 7 produced
+  accepted Helm revisions 1-4. Edge builds 2-7 launched bounded AWX jobs 760,
+  772, 782, 792, 802, and 812 for transitional DNS, worker01-local NGINX,
+  final DNS, shared-route retirement, ClusterIP cutover, and zero-change
+  convergence. The final ingress controller is 1/1 Ready with zero restarts;
+  its Service and Headlamp are ClusterIP-only. Authoritative serial
+  `2026080302` publishes `headlamp.example.com -> 192.168.1.108`; the legacy
+  name is NXDOMAIN. TCP 30080/30081/30444 has no listener or firewall opening
+  on any cluster node. INC-2026-078, INC-2026-081, and INC-2026-082 are
+  resolved. See the
+  [runtime acceptance evidence](evidence/CHG-2026-009-kubernetes-ingress-acceptance.md).
 - Enterprise first-slice implementation repositories:
   `midhhealth/data-and-integration/database-reliability-platform`,
   `midhhealth/reliability-operations/resilience-service-operations`,
@@ -256,32 +222,32 @@ Node Exporter 1.11.1 is installed on managed platform hosts.
 ## Application and telemetry readiness audit
 
 The readiness baseline was collected directly through 2026-07-29 and includes
-the accepted Jenkins, GitLab Runner, and AWX execution-plane changes completed
-through 2026-08-02:
+the accepted Jenkins, GitLab Runner, AWX execution-plane, and Kubernetes
+ingress changes completed through 2026-08-03:
 
 | Capability | Live evidence | Readiness |
 | --- | --- | --- |
 | Hypervisor capacity | infra01 has 17/17, infra02 has 14/14, and infra03 has 4/4 domains running; infra01 bridge correction and one controlled guest reboot passed | Monitoring under INC-2026-046 |
 | Kubernetes base | Explicit `kubernetes-admin@kubernetes` context reports server 1.34.10, 4/4 nodes Ready, no non-running pods, and no active Jobs | Accepted after infra01 recovery |
 | Persistent Kubernetes applications | No StorageClass and no PVCs | Blocked until storage is installed and tested |
-| Kubernetes application ingress | No IngressClass or ingress controller; Headlamp is exposed by NodePort | Blocked for standard application URLs |
+| Kubernetes application ingress | `IngressClass/nginx`, one Ready ingress-nginx controller, ClusterIP-only Services, and worker01-local NGINX expose `headlamp.example.com` on TCP 80 | Accepted through CHG-2026-009 |
 | Elastic host logging | Filebeat active and encrypted-output validation passed on 31/31 Rocky Linux VMs; Logstash queue empty; all 31 inventory hostnames present in Elasticsearch | Accepted |
 | Prometheus metrics | 32/32 configured targets Up after AWX job 321: Prometheus plus 31 Node Exporters | Accepted for all Rocky Linux VMs |
 | Grafana visualization | AWX job 356 provisioned Prometheus, Loki, and Tempo data sources plus the Server Fleet Overview dashboard | Accepted for metrics, logs, and trace exploration |
 | Loki log pipeline | AWX job 381 returned one run-specific stream containing the accepted Tempo trace ID | Accepted for the bounded correlated workload |
 | Tempo trace pipeline | AWX job 381 found and retrieved trace `f819ea257b72ff3a7fd5998e807b3430`, then correlated it to the Loki event | Accepted for the bounded correlated workload |
 | Management applications | GitLab, AWX, Prometheus, Grafana, Kibana, and the Headlamp NGINX route returned HTTP responses; Jenkins returned the expected authenticated HTTP 403 | Available |
-| Headlamp name resolution | BIND, the Mac split resolver, and Kubernetes CoreDNS return `192.168.1.114`; normal application URL returns HTTP 200 | Accepted through AWX jobs 398 and 402 |
+| Headlamp name resolution | Authoritative serial `2026080302` returns `headlamp.example.com -> 192.168.1.108`; the legacy `.apps` name is NXDOMAIN; canonical HTTP returns 200 | Accepted through AWX jobs 760 and 782 and CHG-2026-009 |
 | Vault secrets service | Vault 2.0.3 reports initialized, unsealed, active, and HTTP 200 through the verified NGINX TLS upstream; NGINX convergence job 421 reported `changed=0`, `unreachable=0`, and `failed=0` | Accepted through AWX jobs 417 and 421 |
 | AWX inventory boundaries | Product VMs are canonical in `production`; infra01/02/03 are isolated in `cloud-infra-production`; the four Kubernetes records remain a deliberate cluster RBAC boundary | Accepted through sync job 425 and DNS/NGINX jobs 433, 438, 443, and 448 |
 | AWX execution boundary | Instance 3 is Ready only in `lab-infrastructure`; canaries ran on `awx-execution.example.com`; NGINX TCP 443 is reachable and direct Receptor TCP 27199 is not | Accepted through jobs 741-749 and CHG-2026-008 |
 
 The platform can deploy and exercise stateless test applications through
-ClusterIP or NodePort and can accept their logs, metrics, and traces. The
+ClusterIP-backed Ingress and can accept their logs, metrics, and traces. The
 shared telemetry path is accepted; each application must still prove its own
 service-specific telemetry, dashboards, alerts, and SLOs. Enterprise-style
-stateful deployment and standard application ingress remain blocked until
-Kubernetes storage and ingress are installed and tested.
+stateful deployment remains blocked until Kubernetes storage is installed and
+tested.
 
 ## Step-by-step verification
 
@@ -337,7 +303,7 @@ forwarding corrections recorded in INC-2026-036 through INC-2026-038.
 3. Confirm AWX SCM and machine credential IDs for the Linux VM fleet.
 4. Run preflight smoke tests for the systems, database, resilience, data, and
    network automation slices through Jenkins/AWX.
-5. Install and validate a Kubernetes StorageClass and ingress controller.
+5. Install and validate a Kubernetes StorageClass.
 6. Connect Prometheus alert delivery to Alertmanager and validate a test alert.
 7. Apply application dashboards, alert rules, and SLOs from
    `observability-sre-platform`.

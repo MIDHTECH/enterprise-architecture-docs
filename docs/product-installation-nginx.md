@@ -5,11 +5,11 @@
 The lab does not implement high availability. One standalone Rocky Linux VM
 provides friendly HTTP application URLs:
 
-Implementation status as of 2026-07-31: installed and retained as a temporary
+Implementation status as of 2026-08-03: installed and retained as a temporary
 migration dependency. The approved target is one local NGINX instance on each
-product VM with the canonical `<product>.example.com` URL. AWX and Jenkins are
-migrated; all remaining routes stay here until their own sequential acceptance
-closes.
+product VM with the canonical `<product>.example.com` URL. AWX, Jenkins, and
+Headlamp are migrated; all remaining routes stay here until their own
+sequential acceptance closes.
 
 | Identity | Address | Placement | Purpose |
 | --- | --- | --- | --- |
@@ -26,7 +26,7 @@ There is no second NGINX VM, Keepalived, VRRP, or floating VIP. Address
 | `http://gitlab.apps.example.com` | `192.168.1.101:80` | Active |
 | `http://jenkins.example.com` | local NGINX on `192.168.1.102:80` → `127.0.0.1:8080` | Migrated and accepted; `.apps` DNS and shared route removed |
 | `http://awx.example.com` | local NGINX on `192.168.1.103:80` → `127.0.0.1:32000` | Migrated and accepted; `awx.apps.example.com` removed |
-| `http://headlamp.apps.example.com` | `192.168.1.107:30080` | Active |
+| `http://headlamp.example.com` | worker01-local NGINX on `192.168.1.108:80` → ingress-nginx ClusterIP `10.110.15.196:80` | Migrated and accepted; `.apps` DNS, shared route, and NodePort removed |
 | `http://prometheus.apps.example.com` | `192.168.1.115:9090` | Active |
 | `http://alertmanager.apps.example.com` | `192.168.1.110:9093` | Active |
 | `http://grafana.apps.example.com` | `192.168.1.128:3000` | Active |
