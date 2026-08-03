@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-009` |
 | Type | Normal |
-| State | Corrected source accepted; control-path gate |
+| State | Corrected PLAN accepted; AWX credential-use gate |
 | Risk | Moderate |
 | Impact | Low |
 | Priority | High |
@@ -80,6 +80,25 @@ because the minimal Rocky CI image does not contain `find`. Revision
 main pipeline 546 passed. INC-2026-080 records this safe CI portability
 failure; no Jenkins or runtime object changed during the failed pipeline.
 
+Runtime control validation then exposed two further safe prerequisite gates.
+The generated Headlamp job initially used `agent any`, while the controller
+has zero executors and `jenkins-agent01` is `EXCLUSIVE` to
+`kubernetes-deployer`. Merge request !2 corrected the job and added a CI
+contract; jobs main `85a83131` passed pipeline 550, and seed builds 50/51
+converged. Jenkins PLAN build 3 then passed at exact Kubernetes revision
+`d206ab3f` and shared-library revision `e9790766`, rendering only a ClusterIP
+controller Service and the `headlamp.example.com` Ingress. INC-2026-081 records
+the resolved scheduler prerequisite.
+
+The first `PUBLISH_DNS` attempt synchronized the accepted cloud and inventory
+projects and created job template 53, then AWX denied association of machine
+credential 1 with HTTP 403. The playbook never launched and DNS did not
+change. Read-only inspection found `jenkins-automation` has Default
+organization admin through role 1, but `Managed Hosts SSH` credential 1 has
+no organization, so the organization role cannot grant credential use.
+INC-2026-082 remains open at this RBAC gate; direct DNS or NGINX changes are
+not authorized.
+
 ## Accepted corrected source
 
 | Repository | Revision | GitLab pipeline | State |
@@ -87,7 +106,7 @@ failure; no Jenkins or runtime object changed during the failed pipeline.
 | `midhhealth/platform-engineering/ansible-kubernetes` | `d206ab3f5696455e0c5d816eef9bb420ed2b3cd2` | 530 | Passed |
 | `midhhealth/platform-engineering/cloud-infra-automation-platform` | `ffb11dc3eb218509b6647a5a68d09bedb25e3445` | 543 | Passed |
 | `midhhealth/platform-delivery/jenkins-shared-library` | `e9790766ef56559230ba46370f99565c620fd1b8` | 542 | Passed |
-| `midhhealth/platform-delivery/jenkins-jobs` | `50c222b210422c718dc02ee53c6a569de6315e91` | 546 | Passed |
+| `midhhealth/platform-delivery/jenkins-jobs` | `85a83131a25297542a01107be083b99f725f918d` | 550 | Passed |
 
 The original accepted revisions `e34bd547`, `950cc4f`, and `b23d3a4`, plus
 PLAN build 2, remain audit evidence but are superseded for deployment. A new
@@ -210,18 +229,20 @@ cutover; they must be retired after the new path passes acceptance.
 7. Publish corrected Ansible, Helm, Jenkins-library, Jenkins jobs-as-code,
    DNS, and shared-proxy source. Require CI and review for each exact revision.
    This gate is complete at the revisions in **Accepted corrected source**.
-8. Run the enterprise Jenkins seed from jobs revision `50c222b2`; require
+8. Run the enterprise Jenkins seed from jobs revision `85a83131`; require
    `projects/configure-headlamp-edge` to match source and prove a second seed
-   run makes no unexpected job-definition change.
+   run makes no unexpected job-definition change. Complete: builds 50/51.
 9. Run a new `ACTION=PLAN`, `CONFIRM_CHANGE=false` from the corrected exact
    revisions. Require a ClusterIP-only service and the
-   `headlamp.example.com` Ingress host. PLAN build 2 is not deployable.
+   `headlamp.example.com` Ingress host. Complete: build 3; PLAN build 2 is not
+   deployable.
 10. Run `PUBLISH_DNS` and then `INSTALL_EDGE` through the source-managed
    `projects/configure-headlamp-edge` Jenkins job. Require AWX to synchronize
    the exact accepted project revisions. This adds
    `headlamp.example.com -> 192.168.1.108` while retaining the legacy record,
    installs NGINX only on `k8s-worker01.example.com`, opens only HTTP 80, and
-   never opens a NodePort.
+   never opens a NodePort. Blocked before playbook launch by INC-2026-082 until
+   the reviewed AWX credential-use boundary is corrected and validated.
 11. Run `ACTION=DEPLOY`, `CONFIRM_CHANGE=true` through Jenkins. Require atomic
    Helm wait and runtime acceptance.
 12. Repeat DEPLOY from the same revision and require no unexpected rollout,
@@ -244,9 +265,9 @@ the Headlamp route, but that role is not reconciled until the new canonical
 path passes deployment, rollback, and restore.
 
 Gates 1 through 6 document the superseded implementation and remain useful
-audit evidence only. Corrected source gate 7 is complete. No DEPLOY is
-authorized until the source-managed Jenkins job, a new PLAN, and the staged
-DNS/local-NGINX prerequisites in gates 8 through 10 are accepted.
+audit evidence only. Corrected source gate 7, seed gate 8, and PLAN gate 9 are
+complete. No DEPLOY is authorized until the AWX credential-use correction and
+staged DNS/local-NGINX prerequisites in gate 10 are accepted.
 
 Evidence: [Kubernetes Ingress PLAN](../evidence/CHG-2026-009-kubernetes-ingress-plan.md)
 

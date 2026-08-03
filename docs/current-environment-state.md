@@ -205,16 +205,21 @@ storage envelope.
   `headlamp.example.com -> 192.168.1.108`. No DEPLOY is authorized from the
   old PLAN. Kubernetes main `d206ab3f` passed pipeline 530; cloud/DNS main
   `ffb11dc3` passed pipeline 543; Jenkins shared-library main `e9790766`
-  passed pipeline 542; and jobs-as-code main `50c222b2` passed pipeline 546.
+  passed pipeline 542; and jobs-as-code main `85a83131` passed pipeline 550
+  after assigning the Headlamp job to the exclusive `kubernetes-deployer`
+  agent.
   The cloud source stages serial `2026080301` while preserving the rollback
   record and advances final cutover to `2026080302`. The Jenkins sources add
   manual job `projects/configure-headlamp-edge`, five bounded AWX actions, and
   canonical `http://awx.example.com` access without direct port 32000. The
-  Jenkins seed has not run yet, live AWX Kubernetes/cloud projects still show
-  older revisions, and no new AWX template, DNS record, NGINX package,
-  firewall rule, Helm release, or Kubernetes object has been created.
-  INC-2026-079 and INC-2026-080 are resolved; INC-2026-078 remains open until
-  runtime acceptance and legacy-route retirement.
+  Seed builds 50/51 converged and PLAN build 3 passed from exact revisions
+  `d206ab3f` and `e9790766`, proving ClusterIP-only rendering and the canonical
+  hostname without cluster mutation. The first `PUBLISH_DNS` build stopped
+  before playbook launch when AWX returned 403 attaching organization-less
+  machine credential 1 to new template 53. DNS, NGINX, firewall, Helm, and
+  Kubernetes runtime state remain unchanged. INC-2026-081 is resolved;
+  INC-2026-082 is open at the AWX credential-use gate; INC-2026-078 remains
+  open until runtime acceptance and legacy-route retirement.
 - Enterprise first-slice implementation repositories:
   `midhhealth/data-and-integration/database-reliability-platform`,
   `midhhealth/reliability-operations/resilience-service-operations`,
