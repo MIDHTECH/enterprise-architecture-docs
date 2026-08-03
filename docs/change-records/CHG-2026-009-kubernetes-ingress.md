@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-009` |
 | Type | Normal |
-| State | Corrected PLAN accepted; AWX credential-use gate |
+| State | Closed successfully |
 | Risk | Moderate |
 | Impact | Low |
 | Priority | High |
@@ -15,7 +15,7 @@
 | Assignment group | Platform Engineering |
 | Requested by | MIDHTECHLAB operator |
 | Requested date | 2026-08-03 |
-| Expected outage | None; Headlamp NodePort 30080 remains the rollback path |
+| Expected outage | None |
 
 ## Decision and delivery boundary
 
@@ -94,10 +94,11 @@ The first `PUBLISH_DNS` attempt synchronized the accepted cloud and inventory
 projects and created job template 53, then AWX denied association of machine
 credential 1 with HTTP 403. The playbook never launched and DNS did not
 change. Read-only inspection found `jenkins-automation` has Default
-organization admin through role 1, but `Managed Hosts SSH` credential 1 has
-no organization, so the organization role cannot grant credential use.
-INC-2026-082 remains open at this RBAC gate; direct DNS or NGINX changes are
-not authorized.
+organization admin through role 1, but `Managed Hosts SSH` credential 1 had
+no organization, so the organization role could not grant credential use.
+The AWX administrative API assigned existing credential 1 to organization 1
+without changing its name or type. Jenkins then attached the credential and
+all bounded runtime stages passed. INC-2026-082 is resolved.
 
 ## Accepted corrected source
 
@@ -241,8 +242,8 @@ cutover; they must be retired after the new path passes acceptance.
    the exact accepted project revisions. This adds
    `headlamp.example.com -> 192.168.1.108` while retaining the legacy record,
    installs NGINX only on `k8s-worker01.example.com`, opens only HTTP 80, and
-   never opens a NodePort. Blocked before playbook launch by INC-2026-082 until
-   the reviewed AWX credential-use boundary is corrected and validated.
+   never opens a NodePort. Complete: Jenkins builds 2 and 3 launched AWX jobs
+   760 and 772 after the reviewed credential-organization correction.
 11. Run `ACTION=DEPLOY`, `CONFIRM_CHANGE=true` through Jenkins. Require atomic
    Helm wait and runtime acceptance.
 12. Repeat DEPLOY from the same revision and require no unexpected rollout,
@@ -255,6 +256,7 @@ cutover; they must be retired after the new path passes acceptance.
    `headlamp.apps.example.com` record, shared-proxy route, Headlamp NodePort
    30080, and its firewall admission to be absent.
 15. Publish runtime evidence and incidents before closing the active change.
+   Complete with the acceptance evidence linked below.
 
 The staged DNS path is deliberate: cloud main revision `ffb11dc3` keeps the existing
 legacy record only when `headlamp-dns-publish.yml` explicitly enables the
@@ -265,11 +267,32 @@ the Headlamp route, but that role is not reconciled until the new canonical
 path passes deployment, rollback, and restore.
 
 Gates 1 through 6 document the superseded implementation and remain useful
-audit evidence only. Corrected source gate 7, seed gate 8, and PLAN gate 9 are
-complete. No DEPLOY is authorized until the AWX credential-use correction and
-staged DNS/local-NGINX prerequisites in gate 10 are accepted.
+audit evidence only. Gates 7 through 15 completed through the controlled
+Jenkins, AWX, and Helm paths. No workstation Helm or direct `kubectl apply`
+was used.
 
 Evidence: [Kubernetes Ingress PLAN](../evidence/CHG-2026-009-kubernetes-ingress-plan.md)
+
+Runtime evidence: [Kubernetes Ingress Acceptance](../evidence/CHG-2026-009-kubernetes-ingress-acceptance.md)
+
+## Runtime implementation result
+
+- Jenkins build 3 rendered the corrected ClusterIP-only PLAN from Kubernetes
+  revision `d206ab3f` and shared-library revision `e9790766`.
+- `PUBLISH_DNS` build 2 / AWX job 760 published transitional serial
+  `2026080301`; `INSTALL_EDGE` build 3 / AWX job 772 installed NGINX on
+  `k8s-worker01.example.com` and admitted only TCP 80.
+- Helm DEPLOY builds 4 and 5 produced revisions 1 and 2. Revision 2 preserved
+  deployment generation 1, the controller pod UID, and zero restarts.
+- ROLLBACK build 6 created Helm revision 3 from revision 1; DEPLOY build 7
+  restored the accepted source as Helm revision 4. Canonical and retained
+  legacy paths returned HTTP 200 during the rollback proof.
+- `FINALIZE_DNS` build 4 / AWX job 782 advanced serial `2026080302` and removed
+  the legacy DNS record. `REMOVE_SHARED_PROXY` build 5 / AWX job 792 removed
+  only the obsolete Headlamp route from the shared proxy.
+- `CUTOVER_HEADLAMP` build 6 / AWX job 802 converted Headlamp to ClusterIP and
+  removed TCP 30080 from every cluster-node firewall. Repeat build 7 / AWX job
+  812 passed with `changed: {}` and no failures.
 
 ## Acceptance
 
@@ -300,7 +323,7 @@ revision, delete cluster resources manually, or expose a NodePort directly.
 
 | Field | Value |
 | --- | --- |
-| Close code | Pending |
-| Closed date | Pending |
-| Implementation result | Pending |
-| Validation evidence | Pending |
+| Close code | Successful |
+| Closed date | 2026-08-03 |
+| Implementation result | Single-replica ingress-nginx accepted behind worker01-local NGINX; Headlamp and controller Services are ClusterIP-only; all legacy Headlamp DNS, shared-route, NodePort, and firewall exposure retired |
+| Validation evidence | Jenkins ingress builds 3-7; edge builds 2-7; AWX jobs 760, 772, 782, 792, 802, and 812; Helm revisions 1-4; [acceptance evidence](../evidence/CHG-2026-009-kubernetes-ingress-acceptance.md) |

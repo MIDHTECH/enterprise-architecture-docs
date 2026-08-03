@@ -109,11 +109,11 @@ facts; they do not erase the original observation.
 | INC-2026-075 | 2026-08-03 | SEV-4 | Resolved | Kubernetes ingress delivery prerequisites | Live reconciliation found the job and credential absent, then exposed an unlabeled seed that could not use the exclusive agent |
 | INC-2026-076 | 2026-08-03 | SEV-3 | Resolved | Jenkins Configuration as Code | Production job 1617 deployed an unsupported freestyle label method; merge request !15 and protected jobs 1624/1625 restored and converged Jenkins |
 | INC-2026-077 | 2026-08-03 | SEV-4 | Resolved | Jenkins ingress source checkout | PLAN build 1 ran on the dedicated agent but GitLab denied the existing Jenkins deploy key before source checkout |
-| INC-2026-078 | 2026-08-03 | SEV-4 | Open | Kubernetes ingress exposure design | Pre-deployment review found that the accepted PLAN still depended on shared `nginx.example.com` and NodePorts, contrary to the permanent product-local NGINX rule |
+| INC-2026-078 | 2026-08-03 | SEV-4 | Resolved | Kubernetes ingress exposure design | Corrected ClusterIP-only ingress, worker01-local NGINX, canonical DNS, and negative backend-port checks passed; legacy route and NodePort retired |
 | INC-2026-079 | 2026-08-03 | SEV-4 | Resolved | CHG-2026-009 source CI routing | Corrected branch pipelines initially remained pending because jobs lacked tags after retirement of the legacy untagged runner |
 | INC-2026-080 | 2026-08-03 | SEV-4 | Resolved | Jenkins jobs-as-code CI portability | Routed pipeline 544 failed because the minimal Rocky runner image does not include `find` |
 | INC-2026-081 | 2026-08-03 | SEV-4 | Resolved | Jenkins Headlamp edge scheduling | Generated job used `agent any` while the only executor is exclusive to `kubernetes-deployer` |
-| INC-2026-082 | 2026-08-03 | SEV-4 | Open | AWX credential-use RBAC | Staged DNS stopped before playbook launch because Jenkins automation could not attach organization-less machine credential 1 |
+| INC-2026-082 | 2026-08-03 | SEV-4 | Resolved | AWX credential-use RBAC | Existing machine credential 1 was assigned to organization 1 through the AWX API; all subsequent Jenkins-controlled AWX stages passed |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2517,7 +2517,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-08-03
 - Severity: SEV-4
-- Status: Open
+- Status: Resolved
 - Component: CHG-2026-009 Kubernetes ingress exposure design
 - Detection/symptom: Operator review asked why the planned Headlamp route still
   used `nginx.example.com`. Source and DNS inspection confirmed that PLAN build
@@ -2541,13 +2541,16 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Contributing factors: CI asserted the old fixed NodePorts but had no negative
   contract forbidding NodePort, `nginx.example.com`, or the legacy `.apps`
   hostname.
-- Resolution: In progress. Correct the Helm Service to ClusterIP, install
-  NGINX on `k8s-worker01.example.com`, publish
-  `headlamp.example.com -> 192.168.1.108`, remove the shared route at cutover,
-  and require a new PLAN from reviewed revisions.
-- Validation: Pending corrected source CI, new PLAN, controlled DNS/NGINX
-  convergence, runtime acceptance, rollback/restore, legacy-route retirement,
-  zero backend host ports, and second-run idempotence.
+- Resolution: Corrected accepted source renders the ingress controller as
+  ClusterIP-only, installs NGINX on `k8s-worker01.example.com`, publishes
+  `headlamp.example.com -> 192.168.1.108`, and removes the shared route and
+  legacy NodePort during controlled cutover.
+- Validation: Jenkins PLAN build 3, deploy/convergence builds 4/5,
+  rollback/restore builds 6/7, and edge builds 2-7 passed. AWX job 812 reported
+  `changed: {}`. TCP 30080/30081/30444 is absent from listeners and firewalls
+  on all four nodes; canonical HTTP returns 200 and direct-IP access is
+  rejected. The legacy DNS name is NXDOMAIN and the shared NGINX configuration
+  contains no Headlamp route.
 - Prevention/follow-up: Source validation must fail on NodePort/hostPort,
   `nginx.example.com`, `headlamp.apps.example.com`, and direct backend-IP curl
   acceptance in the active ingress implementation.
@@ -2664,7 +2667,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-08-03
 - Severity: SEV-4
-- Status: Open
+- Status: Resolved
 - Component: AWX RBAC for Jenkins-controlled CHG-2026-009 stages
 - Detection/symptom: `PUBLISH_DNS` build 1 synchronized AWX projects and
   inventory, created template 53, then received HTTP 403 from
@@ -2674,12 +2677,14 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Cause: `jenkins-automation` has Default organization admin through role 1,
   but `Managed Hosts SSH` credential 1 has `organization_id=NULL`; the
   organization role therefore does not provide credential use.
-- Resolution: In progress. Normalize credential 1 into the reviewed Default
-  organization through the AWX administrative API, verify the effective
-  boundary, then rerun only `PUBLISH_DNS`.
-- Validation: Require credential 1 to retain its name and machine type while
-  reporting organization 1; Jenkins must attach it, launch the reviewed
-  template, and complete without exposing credential inputs.
+- Resolution: The AWX administrative API assigned existing credential 1 to
+  the reviewed Default organization (organization 1). Its name and machine
+  credential type were unchanged.
+- Validation: Database inspection confirmed organization 1. Jenkins then
+  attached credential 1 and completed `PUBLISH_DNS`, `INSTALL_EDGE`,
+  `FINALIZE_DNS`, `REMOVE_SHARED_PROXY`, and two `CUTOVER_HEADLAMP` runs.
+  Corresponding AWX jobs 760, 772, 782, 792, 802, and 812 passed without
+  exposing credential inputs; the final run had no changes or failures.
 - Prevention/follow-up: AWX controller acceptance must assert organization and
   effective use-role scope for every credential referenced by Jenkins.
 - Corrective automation: Add a read-only credential-organization/RBAC contract

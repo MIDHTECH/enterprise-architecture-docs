@@ -199,9 +199,11 @@ non-VM services are currently installed:
 
 - CoreDNS
 - Flannel
-- Headlamp, exposed through `http://headlamp.apps.example.com`
+- Headlamp, exposed through `http://headlamp.example.com` by worker01-local
+  NGINX and a private ingress-nginx ClusterIP
+- ingress-nginx, one Ready controller with a ClusterIP-only Service
 
-Argo CD, MetalLB, ingress-nginx, cert-manager, Kyverno, External Secrets
+Argo CD, MetalLB, cert-manager, Kyverno, External Secrets
 Operator, metrics-server, Velero, Longhorn, OpenTelemetry Operator, Trivy
 Operator, and Argo Rollouts remain planned. Their manifests or repository
 definitions do not constitute a live installation.

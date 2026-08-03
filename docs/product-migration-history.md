@@ -244,7 +244,8 @@ The 2026 ingress migration changes ownership as well as version: retire
 checksum-pinned raw-manifest application from Ansible, adopt a locked Helm
 release, and make Jenkins own plan, approval, deployment, acceptance, and
 rollback. Preserve the old Headlamp NodePort until the edge route and Helm
-rollback are proven.
+rollback are proven. CHG-2026-009 completed that proof on 2026-08-03 and then
+retired the NodePort, legacy DNS, and shared-proxy route.
 
 ### Prometheus and Alertmanager
 
