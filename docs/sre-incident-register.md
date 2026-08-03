@@ -112,6 +112,8 @@ facts; they do not erase the original observation.
 | INC-2026-078 | 2026-08-03 | SEV-4 | Open | Kubernetes ingress exposure design | Pre-deployment review found that the accepted PLAN still depended on shared `nginx.example.com` and NodePorts, contrary to the permanent product-local NGINX rule |
 | INC-2026-079 | 2026-08-03 | SEV-4 | Resolved | CHG-2026-009 source CI routing | Corrected branch pipelines initially remained pending because jobs lacked tags after retirement of the legacy untagged runner |
 | INC-2026-080 | 2026-08-03 | SEV-4 | Resolved | Jenkins jobs-as-code CI portability | Routed pipeline 544 failed because the minimal Rocky runner image does not include `find` |
+| INC-2026-081 | 2026-08-03 | SEV-4 | Resolved | Jenkins Headlamp edge scheduling | Generated job used `agent any` while the only executor is exclusive to `kubernetes-deployer` |
+| INC-2026-082 | 2026-08-03 | SEV-4 | Open | AWX credential-use RBAC | Staged DNS stopped before playbook launch because Jenkins automation could not attach organization-less machine credential 1 |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2630,6 +2632,58 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   require branch plus canonical-main CI before seed execution.
 - Corrective automation: The validator now asserts the accepted runner tag,
   uses `nullglob`, and rejects direct AWX/Jenkins backend-port URLs.
+- Evidence/related runbook:
+  [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md)
+
+## INC-2026-081: Headlamp Edge Job Could Not Use the Exclusive Agent
+
+- Date: 2026-08-03
+- Severity: SEV-4
+- Status: Resolved
+- Component: Jenkins CHG-2026-009 control job
+- Detection/symptom: Pre-launch inspection found `agent any` in the generated
+  Headlamp job while the controller has zero executors and `jenkins-agent01`
+  is `EXCLUSIVE` to `kubernetes-deployer`.
+- Impact: The job would have remained queued. No AWX or infrastructure action
+  was launched from the defective definition.
+- Cause: The new Job DSL did not inherit the accepted dedicated-agent policy.
+- Resolution: Jobs merge request !2 changed the pipeline to the explicit
+  `kubernetes-deployer` label and added a validation assertion.
+- Validation: Branch pipeline 549 and main pipeline 550 passed at `85a83131`;
+  seed builds 50/51 converged; corrected PLAN build 3 passed on
+  `jenkins-agent01`.
+- Prevention/follow-up: Every generated mutating job must declare an eligible
+  accepted executor and CI must reject `agent any` where the controller has no
+  executor.
+- Corrective automation: Job DSL structural validation asserts the explicit
+  dedicated label.
+- Evidence/related runbook:
+  [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md)
+
+## INC-2026-082: Jenkins Automation Lacked Machine-Credential Use
+
+- Date: 2026-08-03
+- Severity: SEV-4
+- Status: Open
+- Component: AWX RBAC for Jenkins-controlled CHG-2026-009 stages
+- Detection/symptom: `PUBLISH_DNS` build 1 synchronized AWX projects and
+  inventory, created template 53, then received HTTP 403 from
+  `/api/v2/job_templates/53/credentials/`.
+- Impact: No DNS playbook launched. DNS, NGINX, firewall, Helm, and Kubernetes
+  runtime state did not change.
+- Cause: `jenkins-automation` has Default organization admin through role 1,
+  but `Managed Hosts SSH` credential 1 has `organization_id=NULL`; the
+  organization role therefore does not provide credential use.
+- Resolution: In progress. Normalize credential 1 into the reviewed Default
+  organization through the AWX administrative API, verify the effective
+  boundary, then rerun only `PUBLISH_DNS`.
+- Validation: Require credential 1 to retain its name and machine type while
+  reporting organization 1; Jenkins must attach it, launch the reviewed
+  template, and complete without exposing credential inputs.
+- Prevention/follow-up: AWX controller acceptance must assert organization and
+  effective use-role scope for every credential referenced by Jenkins.
+- Corrective automation: Add a read-only credential-organization/RBAC contract
+  to the AWX controller audit.
 - Evidence/related runbook:
   [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md)
 
