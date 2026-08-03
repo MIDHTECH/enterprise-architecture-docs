@@ -2580,8 +2580,10 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   not assert that each job declared a tag matching the accepted runner model.
 - Resolution: In progress. Kubernetes and Jenkins-library validation now use
   the instance runner's `validation` tag. The cloud/DNS branch incorporates
-  current main and its project-runner `infra` tag. Validators assert these
-  tags remain.
+  current main and its project-runner `infra` tag. Revision `de148bf` also
+  provides a staged canonical-DNS playbook so final source can remove the
+  shared route without sacrificing rollback during deployment. Validators
+  assert the runner and transition contracts remain.
 - Validation: GitLab assigned pipeline 526 work to
   `gitlab-runner-shared01.example.com` runner ID 5 and pipeline 528 work to
   `gitlab-runner-infra01.example.com` runner ID 4 before the cloud branch
