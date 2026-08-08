@@ -30,3 +30,126 @@ care, payer, platform, data, AI, and observability workloads.
 - Policy enforcement for namespace, workload, image, and security controls.
 - Workload right-sizing, event-driven autoscaling, and cost allocation.
 - Cluster configuration validation and runtime readiness checks.
+
+## Longhorn Persistent-Storage Component
+
+Longhorn is the Kubernetes platform's persistent block-storage component. It
+is not a separate platform or an application-team-managed service. The
+Kubernetes platform team owns its topology, release lifecycle, capacity,
+security boundary, recovery procedures, and evidence. Application teams
+consume only the approved `longhorn` StorageClass through PVCs.
+
+The initial release is a Jenkins-managed Helm bootstrap. AWX and Ansible own
+only the worker operating-system prerequisites, `/data/longhorn` directories,
+and storage-node labels. Jenkins owns Helm planning, deployment, verification,
+rollback, and restore until a separately reviewed change transfers ownership
+to Argo CD. Jenkins and Argo CD must never reconcile the Longhorn release at
+the same time. Detailed implementation and acceptance gates are tracked in
+[CHG-2026-010](../change-records/CHG-2026-010-kubernetes-persistent-storage.md).
+
+### Architecture and evidence flow
+
+```mermaid
+flowchart TB
+    git["GitLab source and CI<br/>pinned chart and policy checks"]
+    jenkins["Jenkins storage pipeline<br/>PLAN / DEPLOY / VERIFY / ROLLBACK"]
+    awx["AWX and Ansible<br/>host prerequisites and node labels"]
+    helm["Helm release<br/>platform-storage"]
+    verify["Continuous storage verification<br/>health, placement, exposure, persistence"]
+    evidence["Change record and evidence<br/>source, CI, Jenkins, AWX, Helm, runtime"]
+
+    subgraph cluster["Application Kubernetes cluster"]
+        control["k8s-control<br/>control plane; storage excluded"]
+        manager["Longhorn 1.12.0 V1<br/>manager, CSI, webhooks, UI"]
+        sc["Default StorageClass: longhorn<br/>Retain / WaitForFirstConsumer"]
+        pvc["Application PVC"]
+        volume["Longhorn volume<br/>three replicas"]
+
+        subgraph workers["Storage failure domains"]
+            w1["k8s-worker01<br/>/data/longhorn"]
+            w2["k8s-worker02<br/>/data/longhorn"]
+            w3["k8s-worker03<br/>/data/longhorn"]
+        end
+    end
+
+    git --> jenkins
+    jenkins --> awx
+    jenkins --> helm
+    awx --> w1
+    awx --> w2
+    awx --> w3
+    helm --> manager
+    pvc --> sc --> volume
+    manager --> volume
+    volume --> w1
+    volume --> w2
+    volume --> w3
+    control -. "must remain excluded" .-> volume
+    manager --> verify
+    volume --> verify
+    verify --> evidence
+    jenkins --> evidence
+    awx --> evidence
+```
+
+### Design decisions
+
+| Concern | Platform decision |
+| --- | --- |
+| Release | Longhorn `1.12.0`, official Helm chart pinned by SHA-256 digest; V1 Data Engine only |
+| Storage nodes | `k8s-worker01`, `k8s-worker02`, and `k8s-worker03`; the control plane is explicitly excluded |
+| Data path | `/data/longhorn` on each worker's dedicated 150 GiB XFS `ftype=1` disk; root filesystems are prohibited |
+| Replica placement | Three replicas on three distinct worker nodes to avoid a single worker or disk failure domain |
+| Consumer contract | Default `longhorn` StorageClass, `Retain`, `WaitForFirstConsumer`, ext4, best-effort locality |
+| Capacity guardrails | Reserve 20 percent of each default disk and stop new scheduling before free capacity falls below the 25-percent minimum |
+| Network boundary | All Longhorn Services remain ClusterIP-only; no Ingress, NodePort, LoadBalancer, hostPort, or VM listener |
+| Management boundary | The Longhorn UI and APIs are platform-internal; application teams receive PVC access, not storage administration |
+| Backup boundary | The backup target remains unset; local replicas are high-availability copies, not an off-cluster backup |
+| Change ownership | Jenkins owns the bootstrap release until an explicit Argo CD handoff; only one reconciler may own it |
+
+### Availability, capacity, and failure behavior
+
+- A healthy volume has one running replica on each storage worker. A single
+  worker or disk failure can leave the volume available while Longhorn reports
+  the degraded state and rebuilds after an eligible failure domain returns or
+  replacement capacity is approved.
+- Two concurrent worker or disk failures can make a volume unavailable. The
+  platform therefore treats replica health, rebuild progress, node
+  schedulability, and free capacity as operational alerts rather than relying
+  on Kubernetes pod health alone.
+- Three replicas consume approximately three times the application data before
+  filesystem and snapshot overhead. Capacity planning uses schedulable
+  Longhorn capacity after reservation and minimum-free-space guardrails, not
+  the workers' raw 450 GiB total.
+- `WaitForFirstConsumer` delays binding until Kubernetes selects a workload
+  location. `Retain` prevents automatic destruction of the backing volume when
+  a claim is removed; release or data deletion requires a separate reviewed
+  operation.
+
+### Security and recovery contract
+
+- SELinux remains enforcing. V1 engine prerequisites, including active
+  `iscsid`, are installed and converged only through the reviewed AWX path.
+- Storage scheduling is label- and path-constrained to the three workers.
+  Negative acceptance checks must prove that the control-plane `/data` disk,
+  all root disks, public service types, ingress, and host ports are absent.
+- After the acceptance PVC contains data, recovery must not uninstall
+  Longhorn, remove its CRDs, delete `/data/longhorn`, or delete the PVC. Use a
+  known-good Helm rollback through Jenkins, preserve the volume, and stop for
+  incident handling if controller or replica health is not restored.
+- Remote backup, credential scope, encryption policy, retention schedules,
+  and restore objectives require a separate reviewed backup design. Until
+  that change is accepted, this component provides node-level replication but
+  does not claim disaster-recovery protection.
+
+### Operational evidence
+
+Every storage change must preserve the exact Git revision and chart digest,
+branch and main CI results, Jenkins build numbers, AWX job IDs and convergence
+results, Helm history, node and disk placement, StorageClass state, PVC/PV and
+volume identity, replica health, Kubernetes events, pod restarts, capacity,
+and negative network-exposure checks. Acceptance also requires marker data to
+survive pod recreation, repeated deployment, a known-good rollback, and
+restoration of the accepted release. This evidence closes the component
+before the platform queue advances to GitOps, policy, supply-chain,
+autoscaling, right-sizing, or cost-allocation work.
