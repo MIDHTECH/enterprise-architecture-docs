@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-011` |
 | Type | Normal |
-| State | Architecture and source recovery |
+| State | Runtime prerequisite recovery |
 | Risk | Moderate |
 | Impact | Low |
 | Priority | High |
@@ -139,6 +139,46 @@ never reconcile the same resource concurrently.
 12. Publish runtime evidence, incidents, exact source revisions, CI, Jenkins,
     Helm history, sync history, credential-boundary checks, and negative
     exposure/ownership checks before closing the component.
+
+## Runtime attempt and bounded network prerequisite
+
+Reviewed GitOps, shared-library, and Job DSL source passed branch and
+protected-main validation. The Jenkins seed converged, the dedicated Argo CD
+repository credential remained project-scoped and read-only, and PLAN build 4
+passed against the exact accepted revisions. The first DEPLOY attempt exposed
+the Helm CRD discovery boundary and was corrected with a reviewed two-phase
+first-install flow. DEPLOY build 7 then reached that accepted flow but lost its
+HTTP/2 connection to the Kubernetes API. Atomic rollback removed the failed
+Helm release. Recovery PLAN build 8 subsequently timed out during its initial
+read-only API check before Helm executed.
+
+The application control plane is healthy, all four nodes are Ready, and
+probes from infra01 and the Kubernetes workers are stable. By contrast, all
+four VMs hosted on infra03 show synchronized loss to the control-plane API.
+Live and persistent inspection shows `bridge.stp=yes` on infra03 `lab-br0`;
+infra01 has the accepted `bridge.stp=no` state from INC-2026-046. The
+canonical bridge source already declares STP disabled for this single-uplink
+topology. This is therefore a bounded infrastructure prerequisite to the same
+active Argo CD change, not authorization for another platform component.
+
+The correction must use reviewed cloud-infrastructure source and the
+controlled AWX path. Direct remote `nmcli`, workstation Ansible, VM restart,
+or ad-hoc bridge recreation is prohibited. Scope is only infra03. Although
+infra02 also reports STP enabled, its Kubernetes-worker path is stable and its
+fleet-wide standardization is deferred to a separate queued network change.
+Before Jenkins can retry PLAN or DEPLOY, acceptance must prove:
+
+1. all four infra03 domains remain running and configured for autostart;
+2. live and persistent infra03 `lab-br0` STP state are disabled;
+3. bridge ports remain forwarding and the host retains canonical addressing;
+4. every infra03 guest passes sustained ICMP, ARP, DNS, GitLab, Jenkins, AWX,
+   and Kubernetes `/readyz` probes without loss or timeout;
+5. GitLab, Jenkins, and AWX remain idle after the correction; and
+6. the application cluster retains four Ready nodes and healthy Longhorn,
+   ingress, and Headlamp state.
+
+INC-2026-085 records the failed builds, transport evidence, corrective gate,
+and eventual validation.
 
 ## Acceptance criteria
 
