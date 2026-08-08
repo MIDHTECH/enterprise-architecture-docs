@@ -157,3 +157,74 @@ survive pod recreation, repeated deployment, a known-good rollback, and
 restoration of the accepted release. This evidence closes the component
 before the platform queue advances to GitOps, policy, supply-chain,
 autoscaling, right-sizing, or cost-allocation work.
+
+## Argo CD GitOps Control-Plane Component
+
+Argo CD is the platform's pull-based desired-state reconciler. Jenkins owns
+the controller's Helm bootstrap, rollback, and restore; Argo CD owns only the
+resources explicitly delegated through a restricted AppProject and
+Application. GitLab CI validates desired state but cannot deploy it. This
+separation prevents Jenkins, GitLab CI, and Argo CD from reconciling the same
+resource concurrently.
+
+CHG-2026-011 first limits live ownership to an isolated reconciliation canary.
+Ingress-nginx, Longhorn, Headlamp, application workloads, policies, secrets,
+backup, autoscaling, and cluster lifecycle remain outside Argo CD until later
+component-specific handoffs. See the
+[change record](../change-records/CHG-2026-011-argocd-gitops-bootstrap.md).
+
+### Control and reconciliation flow
+
+```mermaid
+flowchart LR
+    engineer["Platform engineer<br/>feature branch and merge request"]
+    gitlab["GitLab protected main<br/>CI and approved desired state"]
+    jenkins["Jenkins bootstrap pipeline<br/>PLAN / DEPLOY / VERIFY / ROLLBACK"]
+    helm["Helm-owned Argo CD 3.4.6<br/>private ClusterIP control plane"]
+    credential["Dedicated project deploy key<br/>read-only repository access"]
+    project["Restricted AppProject<br/>exact source and destination"]
+    app["Root Application<br/>clusters/onprem/bootstrap"]
+    canary["GitOps acceptance namespace<br/>desired-state marker"]
+    evidence["Sync, health, drift, rollback<br/>and change evidence"]
+
+    engineer --> gitlab
+    gitlab --> jenkins
+    jenkins --> helm
+    credential --> helm
+    gitlab -->|"pull only"| app
+    helm --> project --> app --> canary
+    canary -->|"observed drift"| app
+    app -->|"self-heal"| canary
+    jenkins --> evidence
+    app --> evidence
+```
+
+### Design decisions
+
+| Concern | Platform decision |
+| --- | --- |
+| Version | Argo CD `3.4.6`; official chart `10.2.2` pinned by SHA-256 digest |
+| Availability | Non-HA lab deployment aligned with the single-control-plane cluster; later HA requires a separate capacity and failure-domain change |
+| Exposure | ClusterIP-only with no ingress, NodePort, LoadBalancer, hostPort, LAN listener, or public DNS during bootstrap |
+| Repository access | Dedicated project-scoped read-only SSH deploy key to canonical GitLab; no human or write-capable identity |
+| Authorization | Dedicated AppProject with one exact repository and one isolated destination; no wildcard source, cluster, namespace, or resource ownership |
+| Initial desired state | `clusters/onprem/bootstrap` contains only a reconciliation marker and its bounded namespace |
+| Reconciliation | Automated self-heal and prune are enabled only within the canary boundary and tested through a controlled drift action |
+| Bootstrap owner | Jenkins manages the controller release, repository Secret, AppProject, and root registration |
+| Expansion | Each platform or application component requires its own explicit ownership handoff after source, rollback, and acceptance gates |
+
+### Credential, rollback, and evidence contract
+
+The private deploy key must never enter Git, Helm values, job parameters,
+console output, or evidence. Jenkins injects it from a scoped credential into
+the Kubernetes repository Secret and destroys temporary material. Validation
+must prove GitLab grants read-only access to only the GitOps project and that
+Argo CD records a successful repository connection.
+
+The first deployment, repeat convergence, known-good Helm rollback, accepted
+source restore, and post-restore reconciliation must all pass before ownership
+can expand. Evidence includes exact Git/chart revisions, CI and Jenkins
+results, Helm history, controller image/version, pod readiness and restarts,
+private exposure checks, AppProject permissions, Application revision/sync
+health, controlled drift restoration time, and negative proof that accepted
+ingress and storage resources remain unmanaged.

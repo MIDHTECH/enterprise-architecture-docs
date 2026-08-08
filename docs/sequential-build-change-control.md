@@ -22,13 +22,23 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `None` |
-| Component | `Idle` |
-| State | CHG-2026-010 is accepted, documented, and published. Longhorn 1.12.0 V1 is healthy on the existing application cluster with worker-only `/data/longhorn`, a retained three-replica acceptance volume, and private Services. |
-| Blocker | None |
-| Permitted work | Read-only queue and readiness audits. A later task may open exactly one documented queue component after a fresh conflict audit. |
-| Prohibited work | Starting more than one component; direct workstation Helm or `kubectl apply`; deleting the accepted Longhorn PVC, PV, CRDs, or data path; assigning Jenkins and Argo CD concurrent ownership; configuring a backup target without a separately reviewed credential and recovery boundary. |
-| Exit criteria | Satisfied by accepted source, CI, prerequisite convergence, Jenkins builds 1-8, AWX jobs 823/833/843/853, Helm convergence/rollback/restore, persistent marker and three-replica evidence, incident closure, and canonical publication. |
+| Change ID | `CHG-2026-011` |
+| Component | Private Argo CD GitOps bootstrap on the existing application cluster, including failed-source recovery, pinned Helm delivery, least-privilege GitLab repository access, an isolated reconciliation canary, rollback, and evidence |
+| State | Active at architecture and documentation gate. No Argo CD namespace, CRD, credential, deploy key, Jenkins job, Helm release, or reconciled canary has been created. |
+| Blocker | The existing GitOps repository main pipeline 244 failed with no eligible runner; source still contains direct kubectl deployment, a legacy repository URL, mutable images, a broad default Argo project, and no pinned controller chart or Jenkins bootstrap path. |
+| Permitted work | Publish this gate; recover and validate only CHG-2026-011 GitOps source, chart, Jenkins pipeline, repository credential boundary, isolated canary, rollback, and evidence; then execute reviewed PLAN and runtime gates sequentially. |
+| Prohibited work | Direct workstation Helm or `kubectl apply`; GitLab CI deployment; public Argo CD exposure; human/write-capable repository credentials; default-project or wildcard destinations; Argo ownership of ingress, Longhorn, Headlamp, application workloads, policy, secrets, backup, autoscaling, or another component; Artifactory/SonarQube work. |
+| Exit criteria | Exact source and PLAN accepted; Argo CD 3.4.6/chart 10.2.2 healthy and private; repository access proven read-only; restricted AppProject/root canary Synced and Healthy; drift self-heals; convergence, rollback, and restore pass; negative ownership/exposure checks, incidents, evidence, and canonical publication complete. |
+
+`CHG-2026-011` begins after CHG-2026-010 closeout and a fresh conflict audit.
+The operator-directed Enterprise Kubernetes Platform with GitOps goal places
+the GitOps control plane before deferred product installation. GitLab reported
+zero active pipelines/builds; Jenkins and AWX were idle; infra01/02/03 retained
+17/14/4 running domains with no conflicting mutator; and the application
+cluster had four Ready nodes, no active Jobs or non-running pods, no `argocd`
+namespace, zero `argoproj.io` CRDs, and a healthy three-replica Longhorn
+volume. The bounded design is in
+[CHG-2026-011](change-records/CHG-2026-011-argocd-gitops-bootstrap.md).
 
 `CHG-2026-010` closed successfully on 2026-08-08. Canonical source is
 `ansible-kubernetes` `93d4973a`, `jenkins-jobs` `c9bf66ff`, and
@@ -371,9 +381,10 @@ the inventory-normalization change.
 | 8 | Establish and accept `awx-execution.example.com` as the bounded AWX execution plane | Completed 2026-08-02 through `CHG-2026-008`; hostname-only NGINX, canary, rollback/restore, and zero-change convergence accepted |
 | 9 | Deploy and accept the single-replica Kubernetes ingress tier | Completed 2026-08-03 through `CHG-2026-009`; worker01-local NGINX, ClusterIP-only ingress, rollback/restore, legacy retirement, and zero-change convergence accepted |
 | 10 | Deploy and accept Kubernetes persistent storage | Completed 2026-08-08 through `CHG-2026-010`; worker-only Longhorn V1, Retain storage, convergence, recreation, rollback/restore, and private exposure accepted |
-| 11 | Install Artifactory | Platform storage and backup prerequisites accepted |
-| 12 | Install SonarQube | Artifactory change closed |
-| 13 | Continue remaining product and use-case queue | Previous component fully accepted |
+| 11 | Bootstrap and accept private Argo CD GitOps reconciliation | Active as `CHG-2026-011`; architecture/source recovery first, then pinned Jenkins/Helm delivery and isolated drift proof |
+| 12 | Install Artifactory | GitOps component closed and platform storage/backup prerequisites accepted |
+| 13 | Install SonarQube | Artifactory change closed |
+| 14 | Continue remaining product and use-case queue | Previous component fully accepted |
 
 The queue may be reordered only through an explicit documented decision. Do
 not use multiple tasks to work on different rows simultaneously.
