@@ -193,7 +193,8 @@ was not changed as part of the Elastic deployment.
 
 ## Kubernetes Services That Are Not VMs
 
-The live cluster was rebuilt and verified on 2026-07-28. Kubernetes 1.34.10
+The live cluster was rebuilt on 2026-07-28 and verified through 2026-08-08.
+Kubernetes 1.34.10
 has one Ready control-plane node and three Ready workers. Only the following
 non-VM services are currently installed:
 
@@ -202,11 +203,13 @@ non-VM services are currently installed:
 - Headlamp, exposed through `http://headlamp.example.com` by worker01-local
   NGINX and a private ingress-nginx ClusterIP
 - ingress-nginx, one Ready controller with a ClusterIP-only Service
+- Longhorn 1.12.0 V1, scheduled only on the three worker
+  `/data/longhorn` disks with a default Retain StorageClass
 
 Argo CD, MetalLB, cert-manager, Kyverno, External Secrets
-Operator, metrics-server, Velero, Longhorn, OpenTelemetry Operator, Trivy
-Operator, and Argo Rollouts remain planned. Their manifests or repository
-definitions do not constitute a live installation.
+Operator, metrics-server, Velero, OpenTelemetry Operator, Trivy Operator, and
+Argo Rollouts remain planned. Their manifests or repository definitions do
+not constitute a live installation.
 
 ## AWS-Managed Resources That Are Not VMs
 

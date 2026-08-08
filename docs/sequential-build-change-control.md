@@ -1,6 +1,6 @@
 # Sequential Build and Change Control
 
-Last verified: 2026-08-03
+Last verified: 2026-08-08
 
 ## Operating rule
 
@@ -22,13 +22,23 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `CHG-2026-010` |
-| Component | Longhorn-backed Kubernetes persistent storage on the three dedicated worker data disks, including source-managed host prerequisites, Jenkins Helm delivery, and bounded persistence acceptance |
-| State | Active at the source and non-mutating PLAN gate; documentation recovery merge request !21 merged as `d8d14dca` and canonical-main pipeline 559 passed. No Longhorn resource, StorageClass, PV, or PVC has been created. |
-| Blocker | Source automation, branch and main CI, the AWX prerequisite job, Jenkins storage job, and a server-side Helm PLAN are not yet accepted. The required `iscsi-initiator-utils` package and active `iscsid` service are absent on all four Kubernetes nodes. |
-| Permitted work | Publish this gate; implement and validate only CHG-2026-010 prerequisite, Helm, Jenkins, acceptance, rollback, and evidence source; then run the reviewed AWX and Jenkins gates sequentially. |
-| Prohibited work | Direct workstation Helm or `kubectl apply`; Longhorn data on the control plane or root disks; V2 Data Engine; NodePort, hostPort, LoadBalancer, or ingress exposure; deleting accepted PVC data; configuring a backup target without a separately reviewed secret boundary; storage for Artifactory or another product before this change closes. |
-| Exit criteria | Exact source and PLAN accepted; prerequisites converge; Longhorn 1.12.0 V1 is healthy on worker-only `/data/longhorn`; default Retain StorageClass and three replicas validated; data survives pod recreation, deploy convergence, rollback, and restore; negative exposure and control-plane-disk checks pass; incidents, evidence, source, and documentation are published. |
+| Change ID | `None` |
+| Component | `Idle` |
+| State | CHG-2026-010 is accepted, documented, and published. Longhorn 1.12.0 V1 is healthy on the existing application cluster with worker-only `/data/longhorn`, a retained three-replica acceptance volume, and private Services. |
+| Blocker | None |
+| Permitted work | Read-only queue and readiness audits. A later task may open exactly one documented queue component after a fresh conflict audit. |
+| Prohibited work | Starting more than one component; direct workstation Helm or `kubectl apply`; deleting the accepted Longhorn PVC, PV, CRDs, or data path; assigning Jenkins and Argo CD concurrent ownership; configuring a backup target without a separately reviewed credential and recovery boundary. |
+| Exit criteria | Satisfied by accepted source, CI, prerequisite convergence, Jenkins builds 1-8, AWX jobs 823/833/843/853, Helm convergence/rollback/restore, persistent marker and three-replica evidence, incident closure, and canonical publication. |
+
+`CHG-2026-010` closed successfully on 2026-08-08. Canonical source is
+`ansible-kubernetes` `93d4973a`, `jenkins-jobs` `c9bf66ff`, and
+`jenkins-shared-library` `edf29c2d`; main pipelines 564, 570, and 574 passed.
+Jenkins storage builds 4-8 accepted comprehensive verification, convergence,
+pod recreation, rollback, and restore. Storage revision 4 and acceptance
+revision 3 are deployed; the retained PVC and marker survived every gate.
+Design merge request !23 merged as `96e95ab2` and main pipeline 578 passed.
+See the [change record](change-records/CHG-2026-010-kubernetes-persistent-storage.md)
+and [acceptance evidence](evidence/CHG-2026-010-kubernetes-persistent-storage-acceptance.md).
 
 `CHG-2026-010` began only after the CHG-2026-009 closeout merge and a new
 read-only conflict audit. GitLab reported zero active pipelines and no
@@ -230,6 +240,17 @@ was removed. The preserved evidence is in
 
 ## Completed change
 
+`CHG-2026-010` accepted Longhorn 1.12.0 V1 on only the three worker
+`/data/longhorn` disks. The default StorageClass is Retain and
+WaitForFirstConsumer; the retained acceptance volume is Healthy, attached,
+and has three running replicas across worker01/02/03. Prerequisites converged
+through Jenkins builds 2-5 and AWX jobs 823/833/843/853. Storage builds 4-8
+passed verification, deploy convergence, pod recreation, rollback, and
+accepted-source restore. No Longhorn ingress, NodePort, LoadBalancer,
+hostPort, control-plane disk, or backup target exists. See the
+[change record](change-records/CHG-2026-010-kubernetes-persistent-storage.md)
+and [acceptance evidence](evidence/CHG-2026-010-kubernetes-persistent-storage-acceptance.md).
+
 `CHG-2026-008` accepted AWX instance 3 on
 `awx-execution.example.com` as the bounded `lab-infrastructure` execution
 plane. Canonical revision `7b931558` passed main pipeline 500 and AWX project
@@ -349,7 +370,7 @@ the inventory-normalization change.
 | 7 | Review `jenkins-agent01`, correct canonical port-80 access, and set the Jenkins root URL | Completed 2026-08-01 through `CHG-2026-003`; agent, portless URL, root URL, DNS, and route cleanup accepted |
 | 8 | Establish and accept `awx-execution.example.com` as the bounded AWX execution plane | Completed 2026-08-02 through `CHG-2026-008`; hostname-only NGINX, canary, rollback/restore, and zero-change convergence accepted |
 | 9 | Deploy and accept the single-replica Kubernetes ingress tier | Completed 2026-08-03 through `CHG-2026-009`; worker01-local NGINX, ClusterIP-only ingress, rollback/restore, legacy retirement, and zero-change convergence accepted |
-| 10 | Deploy and accept Kubernetes persistent storage | Active as `CHG-2026-010`; architecture and pre-change audit accepted, source and PLAN pending |
+| 10 | Deploy and accept Kubernetes persistent storage | Completed 2026-08-08 through `CHG-2026-010`; worker-only Longhorn V1, Retain storage, convergence, recreation, rollback/restore, and private exposure accepted |
 | 11 | Install Artifactory | Platform storage and backup prerequisites accepted |
 | 12 | Install SonarQube | Artifactory change closed |
 | 13 | Continue remaining product and use-case queue | Previous component fully accepted |

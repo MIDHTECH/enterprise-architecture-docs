@@ -133,7 +133,7 @@ Use kubeadm with containerd. Initialize the control plane, install the selected
 CNI, join the workers, and verify that all nodes are Ready.
 
 Bootstrap foundation releases through the accepted Jenkins/Helm path until
-Argo CD is available. CHG-2026-010 installs Longhorn 1.12.0 V1 on only the
+Argo CD is available. CHG-2026-010 accepted Longhorn 1.12.0 V1 on only the
 three worker `/data` disks. Once Argo CD is accepted, transfer each foundation
 release through an explicit ownership-handoff change; Jenkins and Argo CD must
 not reconcile the same release concurrently.

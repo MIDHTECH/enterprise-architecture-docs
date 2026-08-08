@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-010` |
 | Type | Normal |
-| State | Architecture and source preparation |
+| State | Closed - successful |
 | Risk | Moderate |
 | Impact | Low |
 | Priority | High |
@@ -170,11 +170,34 @@ known-good Helm rollback through Jenkins. If rollback does not restore healthy
 controllers and the three replicas, stop, retain all data and cluster
 resources, record the incident, and recover from the preserved release state.
 
+## Implementation and validation result
+
+The change completed successfully on 2026-08-08. Accepted source revisions are
+`ansible-kubernetes` `93d4973a`, `jenkins-jobs` `c9bf66ff`, and
+`jenkins-shared-library` `edf29c2d`; their canonical-main pipelines 564, 570,
+and 574 passed. Enterprise Longhorn design merge request !23 merged as
+`96e95ab2` and main documentation pipeline 578 passed before closeout.
+
+Prerequisite Jenkins builds 2-5 and AWX jobs 823, 833, 843, and 853 passed;
+the final two jobs reported `changed: {}` with no dark or failed host. Storage
+PLAN build 1 passed. Builds 2/3 preserved healthy runtime while evidence
+defects were corrected under INC-2026-084. VERIFY build 4, convergence build
+5, pod-recreation build 6, rollback build 7, and accepted-source restore build
+8 then passed.
+
+Final runtime is Longhorn 1.12.0 V1 on only the three worker
+`/data/longhorn` disks. Storage release revision 4 and acceptance revision 3
+are deployed. The default Retain StorageClass, Bound 1 GiB acceptance PVC,
+healthy attached volume, three running worker-separated replicas, persistent
+marker, private Services, absent ingress/host ports, empty backup target, and
+control-plane exclusion all passed. See the complete
+[acceptance evidence](../evidence/CHG-2026-010-kubernetes-persistent-storage-acceptance.md).
+
 ## Closure information
 
 | Field | Value |
 | --- | --- |
-| Close code | Pending |
-| Closed date | Pending |
-| Implementation result | Pending |
-| Validation evidence | Pending |
+| Close code | Successful |
+| Closed date | 2026-08-08 |
+| Implementation result | Longhorn 1.12.0 V1 accepted on three worker-only dedicated disks with retained three-replica persistence |
+| Validation evidence | [CHG-2026-010 Kubernetes Persistent-Storage Acceptance](../evidence/CHG-2026-010-kubernetes-persistent-storage-acceptance.md) |
