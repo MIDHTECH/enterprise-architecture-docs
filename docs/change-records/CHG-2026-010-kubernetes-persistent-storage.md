@@ -27,6 +27,10 @@ the reviewed Kubernetes worker labels. A later explicit change may transfer
 the accepted release to GitOps ownership; Jenkins and Argo CD must never
 manage it concurrently.
 
+The durable ownership model, topology, failure behavior, security boundary,
+and operational evidence flow are maintained in the
+[Kubernetes Platform Domain](../projects/kubernetes-platform.md#longhorn-persistent-storage-component).
+
 ```text
 GitLab source and CI
         |
