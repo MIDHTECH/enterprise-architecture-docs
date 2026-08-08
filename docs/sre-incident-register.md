@@ -116,6 +116,7 @@ facts; they do not erase the original observation.
 | INC-2026-082 | 2026-08-03 | SEV-4 | Resolved | AWX credential-use RBAC | Existing machine credential 1 was assigned to organization 1 through the AWX API; all subsequent Jenkins-controlled AWX stages passed |
 | INC-2026-083 | 2026-08-08 | SEV-4 | Resolved | Jenkins Kubernetes storage prerequisites | The generated pipeline used an unavailable `timestamps()` option and failed safely before AWX launch |
 | INC-2026-084 | 2026-08-08 | SEV-4 | Resolved | Jenkins Longhorn acceptance evidence | Groovy string interpolation corrupted two kubectl newline templates after the initial runtime became healthy |
+| INC-2026-085 | 2026-08-08 | SEV-3 | Open | infra03 build-execution network | STP-enabled single-uplink bridge causes synchronized guest packet loss and blocks Argo CD bootstrap |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2789,6 +2790,54 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Evidence/related runbook:
   [CHG-2026-010 storage acceptance](evidence/CHG-2026-010-kubernetes-persistent-storage-acceptance.md),
   [change record](change-records/CHG-2026-010-kubernetes-persistent-storage.md)
+
+## INC-2026-085: infra03 Bridge Packet Loss Blocked Argo CD Bootstrap
+
+- Date: 2026-08-08
+- Severity: SEV-3
+- Status: Open
+- Component: `infra03.example.com` NetworkManager bridge `lab-br0`, four
+  build-execution VMs, and Jenkins CHG-2026-011 Kubernetes API path
+- Detection/symptom: Argo CD DEPLOY build 7 reached the reviewed Helm
+  first-install path and failed with `http2: client connection lost`.
+  Recovery PLAN build 8 then timed out during its initial read-only Kubernetes
+  API check before Helm ran.
+- Impact: Argo CD bootstrap and its canary acceptance are paused. Atomic Helm
+  rollback removed the failed release; retained Argo CRDs and the empty
+  namespace introduce no reconciled workload. Existing Kubernetes workloads
+  remain healthy.
+- Timeline: The control-plane VM, API listener, firewall, conntrack state, and
+  four Kubernetes nodes were verified healthy. Probes from infra01 and the
+  worker VMs remained stable. Repeated probes from Jenkins agent and the three
+  GitLab runners on infra03 showed synchronized ARP, ICMP, and HTTPS loss when
+  crossing the infra03 bridge. All 17/14/4 domains remained running on
+  infra01/02/03. A fresh conflict audit found zero active GitLab pipelines,
+  an empty Jenkins queue with no running build marker, and zero active AWX
+  unified jobs.
+- Cause: Current evidence identifies topology drift on infra03: `lab-br0` has
+  STP enabled both live and persistently despite being a single-uplink lab
+  bridge. Canonical source and the accepted INC-2026-046 correction require
+  `bridge.stp no`. The exact packet-loss mechanism will remain an inference
+  until the reviewed correction and before/after probes complete.
+- Contributing factors: INC-2026-046 corrected infra01 and updated source but
+  left the fleet-wide live correction incomplete. infra02 also retains STP
+  enabled, although its worker path is currently stable; it is excluded from
+  this Argo CD prerequisite to preserve one-component change control.
+- Resolution: Pending. Publish the bounded gate, reconcile only infra03
+  through reviewed cloud-infrastructure source and AWX, and do not retry
+  Jenkins until sustained guest-path acceptance passes.
+- Validation: Pending live/persistent STP state, four running/autostart VMs,
+  forwarding bridge ports, sustained zero-loss probes from every infra03
+  guest, stable control planes, four Ready application-cluster nodes, and
+  preserved Longhorn/ingress/Headlamp health.
+- Prevention/follow-up: Add bridge-policy drift validation for every physical
+  hypervisor and queue infra02 standardization separately after CHG-2026-011.
+- Corrective automation: Extend the canonical cloud-infrastructure Ansible
+  boundary with an infra03-limited STP convergence and verification playbook;
+  execute it only through the controlled AWX workflow.
+- Evidence/related runbook:
+  [CHG-2026-011 Argo CD bootstrap](change-records/CHG-2026-011-argocd-gitops-bootstrap.md),
+  [Sequential Build and Change Control](sequential-build-change-control.md)
 
 ## New Incident Template
 

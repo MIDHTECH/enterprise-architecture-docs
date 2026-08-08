@@ -24,9 +24,9 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | --- | --- |
 | Change ID | `CHG-2026-011` |
 | Component | Private Argo CD GitOps bootstrap on the existing application cluster, including failed-source recovery, pinned Helm delivery, least-privilege GitLab repository access, an isolated reconciliation canary, rollback, and evidence |
-| State | Active at architecture and documentation gate. No Argo CD namespace, CRD, credential, deploy key, Jenkins job, Helm release, or reconciled canary has been created. |
-| Blocker | The existing GitOps repository main pipeline 244 failed with no eligible runner; source still contains direct kubectl deployment, a legacy repository URL, mutable images, a broad default Argo project, and no pinned controller chart or Jenkins bootstrap path. |
-| Permitted work | Publish this gate; recover and validate only CHG-2026-011 GitOps source, chart, Jenkins pipeline, repository credential boundary, isolated canary, rollback, and evidence; then execute reviewed PLAN and runtime gates sequentially. |
+| State | Active at runtime prerequisite recovery. Reviewed source, protected-main CI, Jenkins seed, repository credential boundary, and two-phase first-install logic are complete. PLAN build 4 passed. Failed DEPLOY build 7 rolled back the release automatically, and recovery PLAN build 8 then failed its initial API reachability check before Helm. |
+| Blocker | Intermittent packet loss affects every infra03 build-execution VM when crossing the host bridge to the application-cluster API. The infra03 `lab-br0` connection still persists STP enabled, contrary to the accepted single-uplink bridge standard and corrective source from INC-2026-046. Jenkins deployment must not be retried until the bounded infra03 prerequisite and sustained guest-path acceptance pass. |
+| Permitted work | Publish this updated gate; use reviewed cloud-infrastructure source and the controlled AWX path to disable STP only on infra03 `lab-br0`; preserve all four running guests; validate persistent/runtime state and sustained guest-to-API transport; then resume only CHG-2026-011 PLAN, DEPLOY, reconciliation, rollback, restore, and evidence. |
 | Prohibited work | Direct workstation Helm or `kubectl apply`; GitLab CI deployment; public Argo CD exposure; human/write-capable repository credentials; default-project or wildcard destinations; Argo ownership of ingress, Longhorn, Headlamp, application workloads, policy, secrets, backup, autoscaling, or another component; Artifactory/SonarQube work. |
 | Exit criteria | Exact source and PLAN accepted; Argo CD 3.4.6/chart 10.2.2 healthy and private; repository access proven read-only; restricted AppProject/root canary Synced and Healthy; drift self-heals; convergence, rollback, and restore pass; negative ownership/exposure checks, incidents, evidence, and canonical publication complete. |
 
@@ -39,6 +39,18 @@ cluster had four Ready nodes, no active Jobs or non-running pods, no `argocd`
 namespace, zero `argoproj.io` CRDs, and a healthy three-replica Longhorn
 volume. The bounded design is in
 [CHG-2026-011](change-records/CHG-2026-011-argocd-gitops-bootstrap.md).
+
+Runtime work subsequently exposed a transport prerequisite rather than an
+Argo CD content failure. PLAN build 4 passed exact accepted source. DEPLOY
+build 7 reached the reviewed first-install phase, then Helm lost its HTTP/2
+connection to the Kubernetes API; atomic rollback removed the failed release.
+Recovery PLAN build 8 failed its first read-only `cluster-info` request with a
+context deadline before Helm ran. Independent probes found the control plane
+healthy and all four nodes Ready, while all four infra03 build-execution VMs
+showed synchronized loss crossing infra03's bridge. The bridge still has STP
+enabled both live and persistently; infra01 has the accepted STP-disabled
+state. INC-2026-085 records the open prerequisite. No retry is allowed until
+the reviewed infra03-only correction and sustained validation complete.
 
 `CHG-2026-010` closed successfully on 2026-08-08. Canonical source is
 `ansible-kubernetes` `93d4973a`, `jenkins-jobs` `c9bf66ff`, and
