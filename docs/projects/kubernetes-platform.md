@@ -39,6 +39,10 @@ Kubernetes platform team owns its topology, release lifecycle, capacity,
 security boundary, recovery procedures, and evidence. Application teams
 consume only the approved `longhorn` StorageClass through PVCs.
 
+The current runtime target is the existing four-node kubeadm application
+cluster. Managed AKS, EKS, and GKE implementations remain portable reference
+patterns; they do not replace or duplicate this accepted on-premises target.
+
 The initial release is a Jenkins-managed Helm bootstrap. AWX and Ansible own
 only the worker operating-system prerequisites, `/data/longhorn` directories,
 and storage-node labels. Jenkins owns Helm planning, deployment, verification,
