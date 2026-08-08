@@ -24,9 +24,9 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | --- | --- |
 | Change ID | `CHG-2026-011` |
 | Component | Private Argo CD GitOps bootstrap on the existing application cluster, including failed-source recovery, pinned Helm delivery, least-privilege GitLab repository access, an isolated reconciliation canary, rollback, and evidence |
-| State | Active at runtime prerequisite recovery. Reviewed source, protected-main CI, Jenkins seed, repository credential boundary, and two-phase first-install logic are complete. PLAN build 4 passed. Failed DEPLOY build 7 rolled back the release automatically, and recovery PLAN build 8 then failed its initial API reachability check before Helm. |
-| Blocker | Intermittent packet loss affects every infra03 build-execution VM when crossing the host bridge to the application-cluster API. The infra03 `lab-br0` connection still persists STP enabled, contrary to the accepted single-uplink bridge standard and corrective source from INC-2026-046. Jenkins deployment must not be retried until the bounded infra03 prerequisite and sustained guest-path acceptance pass. |
-| Permitted work | Publish this updated gate; use reviewed cloud-infrastructure source and the controlled AWX path to disable STP only on infra03 `lab-br0`; preserve all four running guests; validate persistent/runtime state and sustained guest-to-API transport; then resume only CHG-2026-011 PLAN, DEPLOY, reconciliation, rollback, restore, and evidence. |
+| State | Blocked at runtime prerequisite acceptance. The reviewed infra03-only STP correction passed protected-main CI, controlled Jenkins/AWX PLAN, APPLY, VALIDATE, and no-change APPLY. Persistent and live STP are disabled, all four VMs remain running/autostart, and bridge ports remain forwarding. Sustained zero-loss guest-to-API acceptance still fails intermittently, so Argo CD remains paused. |
+| Blocker | Packet loss persists between the infra01-hosted Kubernetes control plane and infra03 guests after the accepted bridge-policy correction. Directional counters show the control VM receives requests and emits replies while only a small fraction reaches infra03's uplink/guest port during failed probes. Evidence narrows the remaining fault to the infra01-to-infra03 physical/switch path, but does not yet identify the exact cable, port, or network-device cause. |
+| Permitted work | Read-only diagnosis and publication of the accepted STP result and residual transport evidence; prepare a separately reviewed, explicitly scoped physical/switch-path prerequisite; preserve all running VMs and the healthy cluster. Resume CHG-2026-011 Jenkins PLAN/DEPLOY only after every infra03 guest passes the documented sustained zero-loss gate. |
 | Prohibited work | Direct workstation Helm or `kubectl apply`; GitLab CI deployment; public Argo CD exposure; human/write-capable repository credentials; default-project or wildcard destinations; Argo ownership of ingress, Longhorn, Headlamp, application workloads, policy, secrets, backup, autoscaling, or another component; Artifactory/SonarQube work. |
 | Exit criteria | Exact source and PLAN accepted; Argo CD 3.4.6/chart 10.2.2 healthy and private; repository access proven read-only; restricted AppProject/root canary Synced and Healthy; drift self-heals; convergence, rollback, and restore pass; negative ownership/exposure checks, incidents, evidence, and canonical publication complete. |
 
@@ -45,12 +45,23 @@ Argo CD content failure. PLAN build 4 passed exact accepted source. DEPLOY
 build 7 reached the reviewed first-install phase, then Helm lost its HTTP/2
 connection to the Kubernetes API; atomic rollback removed the failed release.
 Recovery PLAN build 8 failed its first read-only `cluster-info` request with a
-context deadline before Helm ran. Independent probes found the control plane
-healthy and all four nodes Ready, while all four infra03 build-execution VMs
-showed synchronized loss crossing infra03's bridge. The bridge still has STP
-enabled both live and persistently; infra01 has the accepted STP-disabled
-state. INC-2026-085 records the open prerequisite. No retry is allowed until
-the reviewed infra03-only correction and sustained validation complete.
+context deadline before Helm ran. The infra03-only correction then passed
+Jenkins build 3/AWX job 874 in check mode, build 4/job 882 in apply mode,
+build 5/job 890 in validation mode, and build 6/job 898 as a no-change
+idempotence apply. Persistent `bridge.stp=no`, live STP `0`, four running and
+autostart domains, and forwarding bridge ports are accepted.
+
+The required sustained transport gate did not pass. Individual HTTPS runs
+could reach 60/60 or 100/100, but other runs failed after 11 or 12 successful
+requests, and sequential 30-packet ICMP probes returned 1/30, 0/30, 3/30, and
+23/30 across the four infra03 guests. Firewall, route, neighbor, bridge FDB,
+VM health, and control-plane response checks did not identify a guest or
+Kubernetes fault. A directional counter probe showed replies leaving the
+infra01 control-plane path while few arrived at infra03, narrowing the
+remaining fault to the physical/switch segment without proving an exact
+device or port cause. INC-2026-085 remains open. No Argo CD retry is allowed
+until a reviewed network-path prerequisite and sustained zero-loss validation
+complete.
 
 `CHG-2026-010` closed successfully on 2026-08-08. Canonical source is
 `ansible-kubernetes` `93d4973a`, `jenkins-jobs` `c9bf66ff`, and
