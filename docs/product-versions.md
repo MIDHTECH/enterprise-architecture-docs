@@ -51,7 +51,7 @@ and tested before deployment.
 | containerd | 2.1, latest approved patch | Native on Kubernetes nodes | Validate CRI compatibility before Kubernetes upgrade |
 | Helm | 4.1.0 | Pinned binary on `jenkins-agent01`; Jenkins release execution | Upgrade only after chart and rollback compatibility tests |
 | Cilium | 1.18, latest patch | Argo CD | Upgrade one supported minor at a time |
-| Argo CD | 3.1, latest patch | Kubernetes | Pin manifests/chart and review upgrade notes |
+| Argo CD | 3.4.6; chart 10.2.2 | Jenkins-managed private Helm bootstrap; GitOps reconciliation after acceptance | Pin official chart digest; use a dedicated read-only repository identity; review one-minor-at-a-time upgrades |
 | MetalLB | 0.15, latest patch | Kubernetes | Pin CRDs and controller/speaker images |
 | ingress-nginx | Chart 4.15.0; controller 1.15.1 | Jenkins-managed Helm release; controller image digest pinned | Validate chart lock, render, atomic deployment, second convergence, and rollback |
 | cert-manager | 1.18, latest patch | Kubernetes | Back up and upgrade CRDs first |

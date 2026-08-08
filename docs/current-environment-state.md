@@ -304,21 +304,24 @@ forwarding corrections recorded in INC-2026-036 through INC-2026-038.
 3. Confirm AWX SCM and machine credential IDs for the Linux VM fleet.
 4. Run preflight smoke tests for the systems, database, resilience, data, and
    network automation slices through Jenkins/AWX.
-5. Define and accept a separate Longhorn backup-target, credential, retention,
+5. Complete CHG-2026-011: recover the GitOps repository, bootstrap private
+   Argo CD 3.4.6, and accept restricted canary reconciliation, convergence,
+   rollback, and restore before delegating another resource.
+6. Define and accept a separate Longhorn backup-target, credential, retention,
    and restore boundary before assigning storage to Artifactory.
-6. Connect Prometheus alert delivery to Alertmanager and validate a test alert.
-7. Apply application dashboards, alert rules, and SLOs from
+7. Connect Prometheus alert delivery to Alertmanager and validate a test alert.
+8. Apply application dashboards, alert rules, and SLOs from
    `observability-sre-platform`.
-8. Configure production alert receivers.
-9. Decide whether Loki and Tempo should move from local storage to MinIO.
-10. Back up `/etc/midhhealth/elastic-stack` through the restricted platform
+9. Configure production alert receivers.
+10. Decide whether Loki and Tempo should move from local storage to MinIO.
+11. Back up `/etc/midhhealth/elastic-stack` through the restricted platform
     secret-backup process.
-11. Configure reverse-proxy TLS and SSO for Kibana.
-12. Enroll structured Jenkins, AWX job, Kubernetes ingress, PostgreSQL,
+12. Configure reverse-proxy TLS and SSO for Kibana.
+13. Enroll structured Jenkins, AWX job, Kubernetes ingress, PostgreSQL,
     application, AI, and MLOps log classes through the Logstash boundary.
-13. Register `midh-ai-edge-01` as the Mac Studio AI/ML development endpoint.
-14. Define `infra03` Kubernetes labels and workload placement guardrails before
+14. Register `midh-ai-edge-01` as the Mac Studio AI/ML development endpoint.
+15. Define `infra03` Kubernetes labels and workload placement guardrails before
     assigning VMs from its reserved `.141–.160` block.
-15. Migrate Elasticsearch01–03 and the Kubernetes control plane/workers to the
+16. Migrate Elasticsearch01–03 and the Kubernetes control plane/workers to the
     `infra03-images` pool, validate application and cluster health, then retire
     the confirmed source domains to free infra01/02 capacity.
