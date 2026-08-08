@@ -152,21 +152,40 @@ HTTP/2 connection to the Kubernetes API. Atomic rollback removed the failed
 Helm release. Recovery PLAN build 8 subsequently timed out during its initial
 read-only API check before Helm executed.
 
-The application control plane is healthy, all four nodes are Ready, and
-probes from infra01 and the Kubernetes workers are stable. By contrast, all
-four VMs hosted on infra03 show synchronized loss to the control-plane API.
-Live and persistent inspection shows `bridge.stp=yes` on infra03 `lab-br0`;
-infra01 has the accepted `bridge.stp=no` state from INC-2026-046. The
-canonical bridge source already declares STP disabled for this single-uplink
-topology. This is therefore a bounded infrastructure prerequisite to the same
-active Argo CD change, not authorization for another platform component.
+The application control plane is healthy, all four nodes are Ready, and the
+initial comparison found all four infra03 VMs losing transport to the API.
+The bounded corrective source and delivery path were accepted before runtime
+mutation. Jenkins PLAN build 3/AWX job 874 predicted only persistent and live
+STP convergence. APPLY build 4/job 882 changed only those two states;
+VALIDATE build 5/job 890 passed with zero changes; and idempotence APPLY build
+6/job 898 also reported zero changes. The exact accepted cloud-infrastructure
+revision is `7690ad3bde91c725e77c11e3ce6e034330943ef2`; the credential
+reconciliation fix used shared-library protected-main revision
+`5ccf022d29fecfda49b5441e249286969e67242f`.
 
-The correction must use reviewed cloud-infrastructure source and the
-controlled AWX path. Direct remote `nmcli`, workstation Ansible, VM restart,
-or ad-hoc bridge recreation is prohibited. Scope is only infra03. Although
-infra02 also reports STP enabled, its Kubernetes-worker path is stable and its
-fleet-wide standardization is deferred to a separate queued network change.
-Before Jenkins can retry PLAN or DEPLOY, acceptance must prove:
+The infrastructure change itself is accepted: persistent `bridge.stp=no`,
+live STP `0`, four running/autostart domains, and forwarding uplink and guest
+ports. No VM was cycled and the bridge was not reconnected. The transport exit
+criterion, however, failed intermittently after convergence. Some HTTPS
+probe series passed 60/60 or 100/100, while others failed after 11 or 12
+successes. Sequential 30-packet ICMP probes returned 1/30, 0/30, 3/30, and
+23/30 across the four guests.
+
+Read-only checks verified correct routes, neighbor MAC, FDB learning, guest
+and control VM health, Kubernetes listener and firewall policy, and absence
+of source-specific filtering. The control plane received echo requests and
+emitted corresponding replies. During a failed large-packet probe, directional
+counters showed substantial reply traffic leaving infra01 but only a small
+fraction arriving at infra03. The residual fault is therefore narrowed to the
+infra01-to-infra03 physical/switch path, but the exact cable, port, or device
+cause is not proven. The earlier STP drift was real and corrected, but it was
+not sufficient to restore the required transport quality.
+
+Further mutation requires a separately reviewed and explicitly scoped
+network-path prerequisite. Direct router/switch UI changes, remote `nmcli`,
+workstation Ansible, VM restart, bridge recreation, or Argo CD retry remain
+prohibited. infra02 standardization remains a separate queued network change.
+Before Jenkins can retry PLAN or DEPLOY, acceptance must still prove:
 
 1. all four infra03 domains remain running and configured for autostart;
 2. live and persistent infra03 `lab-br0` STP state are disabled;
@@ -177,8 +196,10 @@ Before Jenkins can retry PLAN or DEPLOY, acceptance must prove:
 6. the application cluster retains four Ready nodes and healthy Longhorn,
    ingress, and Headlamp state.
 
-INC-2026-085 records the failed builds, transport evidence, corrective gate,
-and eventual validation.
+INC-2026-085 records the failed builds, accepted STP correction, residual
+transport evidence, and open network-path prerequisite. The exact execution
+and probe result is retained in
+[infra03 network prerequisite evidence](../evidence/CHG-2026-011-infra03-network-prerequisite-result.md).
 
 ## Acceptance criteria
 
