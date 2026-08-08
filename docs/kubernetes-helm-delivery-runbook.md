@@ -4,7 +4,8 @@
 
 This runbook defines the production-like delivery boundary for Kubernetes
 products in the on-premises lab. It applies first to the single-replica
-ingress tier and then to later platform charts.
+ingress tier and the worker-only Longhorn persistent-storage foundation, then
+to later platform charts.
 
 ```text
 Git commit -> GitLab CI -> Jenkins -> Helm -> Kubernetes
@@ -150,6 +151,60 @@ Headlamp route temporarily, record the incident, and stop further platform
 deployment. Do not create or open another NodePort. After cutover, restore the
 accepted ClusterIP release and product-local NGINX source.
 
+## Longhorn Storage Delivery and Recovery
+
+Longhorn uses the same GitLab, exclusive Jenkins agent, kubeconfig credential,
+Helm, and cluster boundary. Its additional managed components are:
+
+| Component | Required state |
+| --- | --- |
+| Host-prerequisite job | `projects/configure-kubernetes-storage-prerequisites` |
+| Storage Helm job | `projects/deploy-kubernetes-storage` |
+| Shared steps | `kubernetesStoragePrerequisitesAwxPipeline` and `kubernetesStoragePipeline` |
+| Host automation | AWX and `ansible-kubernetes` manage packages, `iscsid`, `/data/longhorn`, and worker labels only |
+| Helm releases | `platform-storage` in `longhorn-system`; `platform-storage-acceptance` in `storage-acceptance` |
+| Longhorn release | 1.12.0 with the official chart digest pinned; V1 Data Engine only |
+| Storage topology | Three workers using only dedicated XFS `/data/longhorn`; control plane and root disks excluded |
+
+Run prerequisite `PLAN`, confirmed `APPLY`, `VALIDATE`, and a second confirmed
+`APPLY`. The final application must report zero changes, unreachable hosts,
+and failed hosts. Do not install packages or label nodes directly to bypass an
+unavailable AWX control plane.
+
+Run the storage job with:
+
+```text
+GIT_BRANCH=<reviewed commit, protected branch, or tag>
+ACTION=PLAN
+CONFIRM_CHANGE=false
+ROLLBACK_REVISION=
+KUBECONFIG_CREDENTIAL_ID=kubernetes-production-kubeconfig
+```
+
+The server-side PLAN must render the pinned Longhorn chart with hidden
+Secrets and create no resource. After review, use `ACTION=DEPLOY` and
+`CONFIRM_CHANGE=true`. Acceptance must prove worker-only placement, V1-only
+settings, a default Retain/WaitForFirstConsumer StorageClass, private
+Services, a Bound PVC, a Healthy attached volume, three replicas on three
+workers, and the persistence marker.
+
+Repeat DEPLOY from the same source. Use `ACTION=RECREATE_ACCEPTANCE` with
+confirmation to replace only the acceptance pod; the PVC, PV, Longhorn volume,
+and marker must remain. Use `ACTION=VERIFY` for a read-only repeat of all
+acceptance and negative checks.
+
+For rollback, select an explicit known-good `platform-storage` revision and
+run `ACTION=ROLLBACK` with confirmation. The job must not roll back or delete
+the acceptance release, PVC, PV, or data. After acceptance succeeds on the
+known-good revision, run confirmed DEPLOY from accepted source and require the
+full checks again.
+
+Once a retained PVC contains data, never recover by uninstalling Longhorn,
+deleting its CRDs, deleting `/data/longhorn`, or deleting the claim. If a
+known-good rollback cannot restore controller and replica health, preserve all
+resources, record the incident, and stop. A backup target, credentials,
+retention policy, and restore objectives require a separate reviewed change.
+
 ## Evidence
 
 Record all of the following in the active change and incident register:
@@ -163,3 +218,8 @@ Record all of the following in the active change and incident register:
 - second-convergence result;
 - rollback test and recovery path;
 - every warning, failure, and corrective commit.
+
+For Longhorn also record host-prerequisite convergence, node/disk placement,
+StorageClass and PVC/PV identity, volume robustness and replica nodes, marker
+value, pod recreation, Helm histories for both releases, empty backup target,
+and negative ingress/NodePort/LoadBalancer/hostPort/control-plane-disk checks.

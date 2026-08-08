@@ -114,6 +114,8 @@ facts; they do not erase the original observation.
 | INC-2026-080 | 2026-08-03 | SEV-4 | Resolved | Jenkins jobs-as-code CI portability | Routed pipeline 544 failed because the minimal Rocky runner image does not include `find` |
 | INC-2026-081 | 2026-08-03 | SEV-4 | Resolved | Jenkins Headlamp edge scheduling | Generated job used `agent any` while the only executor is exclusive to `kubernetes-deployer` |
 | INC-2026-082 | 2026-08-03 | SEV-4 | Resolved | AWX credential-use RBAC | Existing machine credential 1 was assigned to organization 1 through the AWX API; all subsequent Jenkins-controlled AWX stages passed |
+| INC-2026-083 | 2026-08-08 | SEV-4 | Resolved | Jenkins Kubernetes storage prerequisites | The generated pipeline used an unavailable `timestamps()` option and failed safely before AWX launch |
+| INC-2026-084 | 2026-08-08 | SEV-4 | Resolved | Jenkins Longhorn acceptance evidence | Groovy string interpolation corrupted two kubectl newline templates after the initial runtime became healthy |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2705,6 +2707,88 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   to the AWX controller audit.
 - Evidence/related runbook:
   [CHG-2026-009 Kubernetes Ingress](change-records/CHG-2026-009-kubernetes-ingress.md)
+
+## INC-2026-083: Storage Prerequisite Pipeline Used an Unavailable Option
+
+- Date: 2026-08-08
+- Severity: SEV-4
+- Status: Resolved
+- Component: Jenkins CHG-2026-010 host-prerequisite control job
+- Detection/symptom: `projects/configure-kubernetes-storage-prerequisites`
+  build 1 failed during pipeline compilation because the installed Jenkins
+  option set does not include `timestamps()`.
+- Impact: The prerequisite PLAN did not start and no AWX job, package change,
+  service change, node label, Helm action, or Kubernetes mutation occurred.
+- Timeline: Jobs merge request !3 and main pipeline 568 passed source
+  validation. Seed build 52 stopped at the intended script-approval gate;
+  reviewed hashes were approved and seed builds 53/54 converged. Prerequisite
+  build 1 then loaded shared-library main `5048905d` but failed compilation.
+  Jobs correction `a3fb4f6` passed pipeline 569, merged as `c9bf66ff`, and
+  main pipeline 570 passed. Seed build 55 stopped for the changed reviewed
+  script hash; builds 56/57 passed after approval.
+- Cause: The generated pipeline declared the optional timestamp wrapper even
+  though the installed Jenkins/plugin set did not provide that declarative
+  option.
+- Contributing factors: Repository CI validated Job DSL structure but did not
+  compile the generated pipeline against the production plugin capability
+  set.
+- Resolution: Remove only `timestamps()` from the two new storage jobs and
+  add a validator that rejects its reintroduction there. Preserve the existing
+  seed job behavior, which supports the option in its own installed context.
+- Validation: Prerequisite PLAN build 2 and AWX check job 823 passed; APPLY
+  build 3/job 833 converged all four nodes; VALIDATE build 4/job 843 and repeat
+  APPLY build 5/job 853 both reported `changed: {}` with no dark or failed
+  hosts.
+- Prevention/follow-up: Validate generated declarative options against the
+  installed Jenkins capability set before enabling a production control job.
+- Corrective automation: `scripts/validate-job-dsl.sh` now rejects
+  `timestamps()` in the generated Kubernetes storage jobs.
+- Evidence/related runbook:
+  [CHG-2026-010 storage acceptance](evidence/CHG-2026-010-kubernetes-persistent-storage-acceptance.md),
+  [change record](change-records/CHG-2026-010-kubernetes-persistent-storage.md)
+
+## INC-2026-084: Longhorn Evidence Templates Lost Escaped Newlines
+
+- Date: 2026-08-08
+- Severity: SEV-4
+- Status: Resolved
+- Component: Jenkins CHG-2026-010 Helm acceptance pipeline
+- Detection/symptom: Storage build 2 installed healthy Longhorn and the
+  retained acceptance PVC, then its evidence stage failed because Groovy
+  expanded a kubectl Go-template newline into a literal line break. The first
+  focused correction allowed build 3 to pass worker-disk placement, where the
+  same defect appeared in the Service-state template.
+- Impact: Builds 2 and 3 reported FAILURE even though all Longhorn workloads
+  were Ready, the volume was Healthy with three replicas, and the marker was
+  readable. The evidence gate remained closed. No PVC, PV, Longhorn data,
+  release, or cluster resource was deleted as a recovery shortcut.
+- Timeline: Initial DEPLOY build 2 created storage and acceptance revision 1
+  and waited through the first image pulls. Correction `d286565` passed branch
+  pipeline 571, merged as `44b2b5e3`, and main pipeline 572 passed. VERIFY
+  build 3 proved all worker paths but exposed the second template. Comprehensive
+  correction `98d261e` passed pipeline 573, merged as `edf29c2d`, and main
+  pipeline 574 passed.
+- Cause: Intended `\n` sequences were written inside Groovy triple-quoted
+  strings without preserving the backslash through Groovy interpolation to
+  the generated shell script.
+- Contributing factors: The first correction was scoped to the first failing
+  template instead of auditing every newline-bearing shell fragment in the
+  acceptance function.
+- Resolution: Escape every intended newline at the Groovy boundary and add a
+  source validator that fails when a single-backslash newline remains in the
+  storage pipeline.
+- Validation: VERIFY build 4 passed all placement, settings, StorageClass,
+  exposure, PVC/PV, replica, marker, security, image, version, and backup
+  assertions. Convergence build 5, recreation build 6, rollback build 7, and
+  restore build 8 all passed against the same retained volume and marker.
+- Prevention/follow-up: Treat generated shell and nested Go-template or
+  JSONPath text as a multi-language escaping boundary and validate all similar
+  fragments together after the first defect.
+- Corrective automation: `scripts/local-validate.sh` now rejects unescaped
+  newline sequences in `kubernetesStoragePipeline.groovy`.
+- Evidence/related runbook:
+  [CHG-2026-010 storage acceptance](evidence/CHG-2026-010-kubernetes-persistent-storage-acceptance.md),
+  [change record](change-records/CHG-2026-010-kubernetes-persistent-storage.md)
 
 ## New Incident Template
 

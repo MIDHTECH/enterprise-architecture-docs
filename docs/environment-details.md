@@ -148,7 +148,7 @@ endpoints are not NGINX virtual hosts.
 
 ## Current Implementation Status
 
-| Layer | State through 2026-07-29 |
+| Layer | State through 2026-08-08 |
 | --- | --- |
 | Hypervisors, bridges, and libvirt | Operational |
 | 31 Rocky Linux VM domains | Running with autostart |
@@ -159,7 +159,7 @@ endpoints are not NGINX virtual hosts.
 | Elastic Stack | Elastic and Filebeat 9.4.2 healthy; encrypted Linux fleet logs accepted from all 31 VMs |
 | Splunk | VM provisioned; product not installed |
 | PostgreSQL | PostgreSQL 18 active |
-| Local Kubernetes | Four nodes Ready; CoreDNS forwards `example.com` only to `192.168.1.106`; Flannel and Headlamp present; GitOps/add-on stack absent |
+| Local Kubernetes | Four nodes Ready; CoreDNS forwards `example.com` only to `192.168.1.106`; Flannel, Headlamp, ClusterIP-only ingress-nginx, and worker-only Longhorn 1.12.0 V1 accepted; GitOps and remaining add-ons absent |
 | Remaining platform products | Provisioned or planned; verify each runbook before reporting installed |
 | Portfolio projects 6–10 | Executable first slices exist; Jenkins/AWX runtime acceptance evidence pending |
 | Healthcare AI and MLOps | Repository scaffolds; runtime implementation planned |

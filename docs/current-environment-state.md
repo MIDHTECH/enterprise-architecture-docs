@@ -1,6 +1,6 @@
 # Current Environment State
 
-Last verified: 2026-08-03
+Last verified: 2026-08-08
 
 ## Enterprise project portfolio
 
@@ -26,8 +26,8 @@ Implementation and acceptance counts are maintained separately in
 ## Live on-premises infrastructure
 
 The following state combines the directly verified platform baseline with the
-accepted runner, Jenkins, AWX execution-plane, and Kubernetes ingress changes
-completed through 2026-08-03:
+accepted runner, Jenkins, AWX execution-plane, Kubernetes ingress, and
+persistent-storage changes completed through 2026-08-08:
 
 | Layer | Verified state |
 | --- | --- |
@@ -36,11 +36,11 @@ completed through 2026-08-03:
 | `infra03.example.com` | Ubuntu 26.04 LTS, `br0` active, four build-execution domains running with autostart |
 | Virtual machines | 35 domains in the latest accepted inventory: 17 on infra01, 14 on infra02, and 4 on infra03; all domains are running and all infra01 guests recovered expected IPv4 addresses |
 | Product roles | At least 23 runtime roles directly verified; Harbor is installed; Vault 2.0.3 is active, unsealed, and accepted through NGINX; Keycloak still awaits revalidation |
-| Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready; single-replica ingress-nginx accepted with a ClusterIP-only Service |
+| Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready; ClusterIP-only ingress-nginx and worker-only Longhorn 1.12.0 V1 accepted |
 | AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
 | AWX execution plane | AWX 24.6.1 instance 3 on `awx-execution.example.com` is Ready at capacity 76 only in `lab-infrastructure`; NGINX exposes hostname TCP 443 and Receptor remains loopback-only on 27199 |
 | AWX inventories | 50 records across nine populated inventories plus the empty Demo inventory; 39 distinct names. Purpose-specific delivery inventories remain isolated, and `awx-execution-plane` contains only the execution node and canary localhost. |
-| Git repositories | AWX inventory, Kubernetes ingress, and cloud-infrastructure corrections are published; incident documentation is updated as each sequential change closes |
+| Git repositories | AWX inventory, Kubernetes ingress, Longhorn storage automation/design, and cloud-infrastructure corrections are published; incident documentation is updated as each sequential change closes |
 
 The directly verified provisioned-only product VMs include `governance`,
 `backup`, `artifactory`, `sonarqube`, and `splunk`.
@@ -87,11 +87,13 @@ restore 745, zero-change install 748, and final validation 749 passed at
 canonical source revision `7b931558`.
 
 The four-node application cluster currently contains the control-plane
-components, CoreDNS, Flannel, Headlamp, and the accepted single-replica
-ingress-nginx tier. Argo CD, MetalLB, cert-manager, Kyverno, External Secrets
-Operator, metrics-server, Velero, Longhorn,
-OpenTelemetry Operator, Trivy Operator, and Argo Rollouts are not installed in
-the current cluster and must not be reported as completed.
+components, CoreDNS, Flannel, Headlamp, the accepted single-replica
+ingress-nginx tier, and Longhorn 1.12.0 V1. Longhorn schedules only the three
+worker `/data/longhorn` disks and retains a healthy three-replica acceptance
+volume. Argo CD, MetalLB, cert-manager, Kyverno, External Secrets Operator,
+metrics-server, Velero, OpenTelemetry Operator, Trivy Operator, and Argo
+Rollouts are not installed in the current cluster and must not be reported as
+completed.
 
 Do not treat AWX's local k3s context as the application cluster. Application
 acceptance must use `/etc/kubernetes/admin.conf` on
@@ -229,7 +231,7 @@ ingress changes completed through 2026-08-03:
 | --- | --- | --- |
 | Hypervisor capacity | infra01 has 17/17, infra02 has 14/14, and infra03 has 4/4 domains running; infra01 bridge correction and one controlled guest reboot passed | Monitoring under INC-2026-046 |
 | Kubernetes base | Explicit `kubernetes-admin@kubernetes` context reports server 1.34.10, 4/4 nodes Ready, no non-running pods, and no active Jobs | Accepted after infra01 recovery |
-| Persistent Kubernetes applications | No StorageClass or PVC exists; three workers each have an empty 150 GiB XFS `/data` disk, while required V1 iSCSI prerequisites remain absent | CHG-2026-010 active at source and PLAN gate |
+| Persistent Kubernetes applications | Longhorn 1.12.0 V1 uses only three worker `/data/longhorn` disks; the default Retain StorageClass, Bound acceptance PVC, healthy attached volume, three worker-separated replicas, and persistent marker passed convergence, recreation, rollback, and restore | Accepted through CHG-2026-010 |
 | Kubernetes application ingress | `IngressClass/nginx`, one Ready ingress-nginx controller, ClusterIP-only Services, and worker01-local NGINX expose `headlamp.example.com` on TCP 80 | Accepted through CHG-2026-009 |
 | Elastic host logging | Filebeat active and encrypted-output validation passed on 31/31 Rocky Linux VMs; Logstash queue empty; all 31 inventory hostnames present in Elasticsearch | Accepted |
 | Prometheus metrics | 32/32 configured targets Up after AWX job 321: Prometheus plus 31 Node Exporters | Accepted for all Rocky Linux VMs |
@@ -242,12 +244,11 @@ ingress changes completed through 2026-08-03:
 | AWX inventory boundaries | Product VMs are canonical in `production`; infra01/02/03 are isolated in `cloud-infra-production`; the four Kubernetes records remain a deliberate cluster RBAC boundary | Accepted through sync job 425 and DNS/NGINX jobs 433, 438, 443, and 448 |
 | AWX execution boundary | Instance 3 is Ready only in `lab-infrastructure`; canaries ran on `awx-execution.example.com`; NGINX TCP 443 is reachable and direct Receptor TCP 27199 is not | Accepted through jobs 741-749 and CHG-2026-008 |
 
-The platform can deploy and exercise stateless test applications through
-ClusterIP-backed Ingress and can accept their logs, metrics, and traces. The
-shared telemetry path is accepted; each application must still prove its own
-service-specific telemetry, dashboards, alerts, and SLOs. Enterprise-style
-stateful deployment remains blocked until Kubernetes storage is installed and
-tested.
+The platform can deploy and exercise stateless applications through
+ClusterIP-backed Ingress and stateful applications through the accepted
+Longhorn StorageClass. The shared telemetry and storage foundations are
+accepted; each application must still prove its own persistence, backup,
+service-specific telemetry, dashboards, alerts, and SLOs.
 
 ## Step-by-step verification
 
@@ -303,9 +304,8 @@ forwarding corrections recorded in INC-2026-036 through INC-2026-038.
 3. Confirm AWX SCM and machine credential IDs for the Linux VM fleet.
 4. Run preflight smoke tests for the systems, database, resilience, data, and
    network automation slices through Jenkins/AWX.
-5. Complete CHG-2026-010: accept Longhorn 1.12.0 V1 on worker-only
-   `/data/longhorn`, validate Retain storage and persistence, then open a
-   separate scoped backup-target change before Artifactory.
+5. Define and accept a separate Longhorn backup-target, credential, retention,
+   and restore boundary before assigning storage to Artifactory.
 6. Connect Prometheus alert delivery to Alertmanager and validate a test alert.
 7. Apply application dashboards, alert rules, and SLOs from
    `observability-sre-platform`.
