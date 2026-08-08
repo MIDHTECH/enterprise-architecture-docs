@@ -4,9 +4,11 @@ Date: 2026-08-08
 
 ## Outcome
 
-The infra03-only STP correction is accepted and idempotent. The broader
-transport prerequisite is not accepted because intermittent packet loss
-persists on the infra01-to-infra03 path. Argo CD PLAN/DEPLOY remains closed.
+The infra03-only STP correction is accepted and idempotent. Initial
+post-correction transport acceptance failed intermittently, but a later
+validation-only window passed the complete sustained gate from all four
+infra03 guests without any additional mutation. Argo CD recovery PLAN is
+open; DEPLOY remains conditional on PLAN repeating the reachability gate.
 
 ## Accepted source and controlled execution
 
@@ -52,10 +54,37 @@ only a small fraction arrived at infra03. This narrows the residual problem to
 the physical/switch segment, but does not prove a particular cable, port, or
 network device as the root cause.
 
+## Recovery acceptance
+
+A later independent window passed with no physical, router, switch, bridge,
+VM, or Kubernetes mutation:
+
+- each of the four guests passed 100/100 standard-size ICMP probes to
+  `192.168.1.107` with zero loss;
+- each guest passed a second 100/100 probe using a 1,400-byte payload with
+  zero loss;
+- every guest resolved GitLab, Jenkins, and AWX correctly on each of 60
+  iterations, for 720 successful DNS checks in total;
+- every guest completed 60 requests each to GitLab sign-in, Jenkins login,
+  AWX ping, and Kubernetes `/readyz`, for 960 successful HTTP/HTTPS requests
+  with zero timeout or unexpected status;
+- every guest learned control-plane neighbor MAC `52:54:00:01:01:07`;
+- infra03 retained persistent STP `no`, live STP `0`, four running/autostart
+  domains, forwarding `eno1` and `vnet3`-`vnet6`, address
+  `192.168.1.186/24`, and its default route through `br0`;
+- GitLab had zero running pipelines, Jenkins had an empty queue and 0/1 busy
+  executors, and AWX had zero active unified jobs; and
+- the application cluster retained four Ready nodes, zero active Jobs or
+  non-running pods, and healthy Longhorn, ingress, and Headlamp workloads.
+
+No additional corrective action can be credited for the later recovery. The
+known STP drift remains corrected, but the exact mechanism of the transient
+post-correction loss is undetermined and remains under monitoring.
+
 ## Gate
 
-Do not retry Argo CD. Further mutation requires a separately reviewed,
-explicitly scoped network-path prerequisite. Acceptance requires sustained
-zero-loss ICMP and HTTPS/API probes from every infra03 guest while GitLab,
-Jenkins, AWX, the four-node cluster, Longhorn, ingress, and Headlamp remain
-healthy.
+Permit only the controlled Argo CD recovery PLAN against exact accepted
+source. PLAN must repeat its initial API reachability checks before Helm. If
+any transport probe fails, close the gate and do not run DEPLOY. If PLAN
+passes, the same active change may proceed to its reviewed DEPLOY and GitOps
+acceptance sequence.
