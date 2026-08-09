@@ -236,6 +236,14 @@ candidate exists, so Phase B is superseded before execution and a separately
 reviewed canary redesign is required. See the
 [infra01 Phase A result](../evidence/CHG-2026-011-infra01-uplink-phase-a-result.md).
 
+A later read-only event comparison showed that most infra01 carrier cycles
+aligned to the same second with infra02 while both hosts occupied the two ports
+on that `VLP01`. infra03 had no matching physical link cycle. This moves the
+primary investigation boundary to the shared node, its power/internal
+switching, or mesh/backhaul path. Only the
+[Velop shared-node diagnostic](CHG-2026-011-velop-shared-node-diagnostic.md) is
+open; it does not authorize a node, cable, router or cluster change.
+
 ## Acceptance criteria
 
 1. Argo CD reports version 3.4.6 from chart 10.2.2 and all controller, server,
