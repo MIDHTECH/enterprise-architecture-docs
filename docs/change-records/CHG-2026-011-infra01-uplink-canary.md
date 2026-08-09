@@ -172,7 +172,8 @@ An operator-supplied underside-label photograph reviewed on 2026-08-09
 identifies the upstream mesh node as a Linksys Velop model `VLP01`. The device
 MAC printed on that label matches the upstream bridge/STP neighbor identity
 previously observed from infra03, confirming that the photograph shows the
-correct upstream node.
+correct upstream node. The operator also confirmed that both infra01 and
+infra02 are cabled to this same Velop node.
 
 The photograph is not repository evidence because the label also contains
 authentication and recovery material. No password, recovery key, serial
@@ -184,4 +185,7 @@ label used by infra01, or a known-good candidate LAN-port label. Phase B
 therefore remains closed. A connection-side photograph or local-console
 observation must show and label the exact current infra01 cable/port and one
 candidate port on this same `VLP01` node without exposing the underside secret
-label.
+label. The port occupied by infra02 is not a Phase B candidate and must not be
+disconnected or moved. If the connection-side inspection finds no unoccupied,
+known-good candidate port on this node, stop and revise the canary design;
+do not swap infra01 and infra02 or expand the physical scope ad hoc.

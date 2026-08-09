@@ -2833,9 +2833,11 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   infra01 domains and all four Kubernetes nodes healthy.
   An operator-supplied underside-label photograph subsequently identified the
   upstream node as a Linksys Velop `VLP01`; its printed device identity matched
-  the bridge/STP neighbor previously observed from infra03. The image did not
-  show Ethernet ports or cables, so it did not identify the current infra01
-  port or a candidate port. Secret-bearing label content was not retained.
+  the bridge/STP neighbor previously observed from infra03. The operator
+  confirmed that infra01 and infra02 connect to this same node. The image did
+  not show Ethernet ports or cables, so it did not identify the current
+  infra01 port or an unoccupied candidate port. The infra02 port is excluded;
+  secret-bearing label content was not retained.
 - Cause: infra03 had real bridge-policy drift: STP remained enabled despite
   the canonical single-uplink standard. That drift is corrected and the
   automation is idempotent. During the failed interval, route, ARP neighbor,
@@ -2861,8 +2863,10 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   or cycling a VM. The pre-DEPLOY recurrence closed the gate before Helm; a
   separately reviewed physical or managed-network prerequisite is pending.
   Infra01 Phase A failed one readiness request and rolled back successfully;
-  the upstream `VLP01` node is identified, but Phase B still requires exact
-  reviewed current and candidate LAN-port labels on that node.
+  the upstream `VLP01` node and shared infra01/infra02 attachment are
+  identified, but Phase B still requires exact reviewed current-infra01 and
+  unoccupied-candidate LAN-port labels on that node. The infra02 port cannot be
+  used or disturbed.
 - Validation: STP, VM, bridge-port, canonical address/route, control-plane,
   four-Ready-node, and Longhorn/ingress/Headlamp checks passed. A complete
   four-guest window passed both ICMP sizes, DNS, and service/API probes, but a

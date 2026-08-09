@@ -13,9 +13,11 @@ same port and the rollback baseline passed.
 Argo CD PLAN and DEPLOY remain closed. An operator-supplied photograph now
 identifies the upstream device as a Linksys Velop `VLP01`, and its printed
 device MAC matches the previously observed upstream bridge/STP neighbor
-identity. Phase B is eligible only after the current upstream port and one
-known-good candidate port on that same device are identified by exact labels
-and reviewed. No port move has occurred.
+identity. The operator also confirmed that infra01 and infra02 connect to that
+same node. Phase B is eligible only after the current infra01 port and one
+unoccupied known-good candidate port on that same device are identified by
+exact labels and reviewed. The infra02 port is excluded. No port move has
+occurred.
 
 ## Pre-execution gate
 
@@ -110,7 +112,8 @@ Do not run another acceptance window, Argo CD PLAN or DEPLOY. Before Phase B:
 
 1. retain the identified Linksys Velop `VLP01` as the only upstream device in
    scope and record the exact current LAN-port label used by infra01;
-2. record one exact known-good LAN-port label on that same upstream device;
+2. record one exact unoccupied, known-good LAN-port label on that same upstream
+   device;
 3. confirm local-console presence and re-run the activity/invariant audit; and
 4. update the probe to retain endpoint, response code, duration and curl error
    for every failed request.
@@ -123,4 +126,7 @@ The device-label photograph is not stored in the repository because it also
 contains authentication and recovery material. No password, recovery key,
 serial number, QR content, or complete device MAC was copied into this record.
 The photograph does not show the Ethernet ports or cables and therefore does
-not satisfy either required port-label item.
+not satisfy either required port-label item. Because infra02 also connects to
+this node, its occupied port is not a candidate and must not be disconnected,
+moved, or swapped with infra01. If there is no unoccupied candidate port, Phase
+B must stop for a revised design.
