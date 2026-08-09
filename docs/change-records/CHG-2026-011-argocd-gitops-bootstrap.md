@@ -220,6 +220,18 @@ interval, temporary recovery, and pre-DEPLOY recurrence. The exact execution
 and probe result is retained in
 [infra03 network prerequisite evidence](../evidence/CHG-2026-011-infra03-network-prerequisite-result.md).
 
+The bounded infra01 Phase A canary then replaced the patch cable on the same
+upstream port. All 800 ICMP and 720 DNS checks passed, but app01 completed only
+239/240 service/API checks. Server logs proved its GitLab, Jenkins and AWX
+requests each returned 60/60 HTTP 200 responses, isolating the miss to one
+Kubernetes `/readyz` request. No carrier, NIC-error, VM or cluster-health event
+accompanied the miss, and the aggregate probe did not retain the exact curl
+error. The original cable was restored successfully at 14:18:24 with 1 Gb/s
+full-duplex carrier, zero selected NIC errors, 17/17 infra01 domains and four
+Ready cluster nodes. Argo CD PLAN and DEPLOY remain closed. Phase B requires
+reviewed exact current and candidate port labels before any port move. See the
+[infra01 Phase A result](../evidence/CHG-2026-011-infra01-uplink-phase-a-result.md).
+
 ## Acceptance criteria
 
 1. Argo CD reports version 3.4.6 from chart 10.2.2 and all controller, server,

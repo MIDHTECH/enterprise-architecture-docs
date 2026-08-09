@@ -145,3 +145,23 @@ Retain before/after timestamps, cable and port labels, carrier and driver
 counters, kernel link events, host/bridge/VM/cluster state, every observation
 window, and any rollback result. Do not record a router password, authentication
 material, or unrelated client inventory.
+
+## Execution result: Phase A
+
+Phase A ran on 2026-08-09 and failed the immediate zero-loss gate. The cable
+replacement converged at 13:04:29 local time with 1 Gb/s full-duplex carrier,
+`carrier_changes=272`, zero selected NIC errors, all 17 infra01 domains intact,
+and the canonical bridge/address/route state preserved. Across the four infra03
+guests, 800/800 combined standard and 1,400-byte ICMP probes and 720/720 DNS
+checks passed. HTTP/API checks returned 959/960: app01 missed one Kubernetes
+`/readyz` request while its GitLab, Jenkins and AWX checks each passed 60/60.
+
+No new carrier or NIC error event accompanied the failed request, and the exact
+response-code-versus-timeout mechanism was not captured. The failure remains a
+failure under the approved rule. The operator restored the original cable on
+the same port; rollback converged at 14:18:24 with `carrier_changes=274`, zero
+selected NIC errors, 17/17 infra01 domains and four Ready Kubernetes nodes.
+
+Phase B is eligible but not open. The exact current upstream device/port label
+and one known-good candidate port on the same device must be added and reviewed
+first. See the [Phase A result](../evidence/CHG-2026-011-infra01-uplink-phase-a-result.md).

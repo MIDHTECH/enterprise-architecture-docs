@@ -1,6 +1,6 @@
 # Sequential Build and Change Control
 
-Last verified: 2026-08-08
+Last verified: 2026-08-09
 
 ## Operating rule
 
@@ -24,9 +24,9 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | --- | --- |
 | Change ID | `CHG-2026-011` |
 | Component | Private Argo CD GitOps bootstrap on the existing application cluster, including failed-source recovery, pinned Helm delivery, least-privilege GitLab repository access, an isolated reconciliation canary, rollback, and evidence |
-| State | Blocked after pre-DEPLOY transport recurrence. Recovery PLAN build 9 passed exact accepted source without mutation, but the mandatory immediate Jenkins-agent check then returned 6/20 ICMP replies and Kubernetes `/readyz` timed out. DEPLOY was not started. |
-| Blocker | Infra03 guest-to-control-plane transport remains intermittently unstable despite the accepted STP correction. Read-only logs now show repeated real carrier drops and 1 Gb/s renegotiation on infra01 `enp0s25`, the uplink hosting the control-plane VM. The exact infra01 cable, upstream port, or Linksys/Velop/backhaul cause remains undetermined; transient success is not acceptance. |
-| Permitted work | Publish and execute only the bounded [infra01 uplink canary](change-records/CHG-2026-011-infra01-uplink-canary.md) after local-console presence and the exact labeled cable/port are confirmed. Preserve all VMs and the healthy cluster. Do not touch infra03's cable, change router configuration, or run another Argo CD PLAN/DEPLOY until the corrected path passes separated observation windows. |
+| State | Blocked after infra01 uplink Phase A failed its immediate zero-loss window and rolled back successfully. A same-port replacement cable preserved 800/800 ICMP and 720/720 DNS checks but app01 missed one of 240 service/API checks: one Kubernetes `/readyz` request. The original cable/port state is restored and healthy. |
+| Blocker | Phase A did not prove a stable path, and the exact one-request failure mechanism remains unproven. Phase B cannot open until the current upstream device/port and one known-good candidate port on that same device are identified by exact labels and reviewed. Transient login or readiness success is not acceptance. |
+| Permitted work | Publish the [infra01 Phase A result](evidence/CHG-2026-011-infra01-uplink-phase-a-result.md). After exact port labels and local-console presence are confirmed, execute only Phase B of the bounded [infra01 uplink canary](change-records/CHG-2026-011-infra01-uplink-canary.md), retaining the original cable and moving only infra01 to the reviewed port on the same device. Preserve all VMs and the healthy cluster. |
 | Prohibited work | Direct workstation Helm or `kubectl apply`; GitLab CI deployment; public Argo CD exposure; human/write-capable repository credentials; default-project or wildcard destinations; Argo ownership of ingress, Longhorn, Headlamp, application workloads, policy, secrets, backup, autoscaling, or another component; Artifactory/SonarQube work. |
 | Exit criteria | Exact source and PLAN accepted; Argo CD 3.4.6/chart 10.2.2 healthy and private; repository access proven read-only; restricted AppProject/root canary Synced and Healthy; drift self-heals; convergence, rollback, and restore pass; negative ownership/exposure checks, incidents, evidence, and canonical publication complete. |
 
@@ -84,6 +84,17 @@ two seconds. DEPLOY was not started. Follow-up probes soon recovered to
 20/20 and HTTP 200 across all four guests, confirming a short intermittent
 burst rather than stable acceptance. The gate is closed again pending a
 reviewed network-path correction and validation across separated windows.
+
+The infra01 same-port replacement-cable Phase A canary then ran under the
+reviewed gate. It preserved 800/800 combined ICMP probes, 720/720 DNS checks,
+correct neighbor identity and 959/960 service/API checks. The one miss was an
+app01 Kubernetes `/readyz` request; GitLab, Jenkins and AWX server logs each
+proved 60/60 HTTP 200 responses from app01. The miss had no accompanying
+carrier, NIC error or Kubernetes event, and its precise curl result was not
+retained. The original cable was restored on the same port and rollback passed
+at `carrier_changes=274`, 1 Gb/s full duplex, zero selected NIC errors, 17/17
+infra01 domains and four Ready nodes. Phase B remains closed until exact current
+and candidate port labels are recorded and reviewed.
 
 `CHG-2026-010` closed successfully on 2026-08-08. Canonical source is
 `ansible-kubernetes` `93d4973a`, `jenkins-jobs` `c9bf66ff`, and

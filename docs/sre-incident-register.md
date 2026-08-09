@@ -2824,6 +2824,13 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   returned only 6/20 ICMP replies. DEPLOY was not started. Immediate
   follow-up recovered to 20/20 and HTTP 200, confirming a short burst and
   invalidating the earlier recovery acceptance.
+  On 2026-08-09, the bounded infra01 same-port cable canary passed 800/800
+  combined ICMP and 720/720 DNS checks but app01 completed 239/240 service/API
+  checks. GitLab, Jenkins and AWX logs each proved 60/60 HTTP 200 responses,
+  isolating the miss to one Kubernetes `/readyz` request. The exact curl error
+  was not retained. The original cable was restored on the same port; rollback
+  returned 1 Gb/s full-duplex carrier with zero selected NIC errors, all 17
+  infra01 domains and all four Kubernetes nodes healthy.
 - Cause: infra03 had real bridge-policy drift: STP remained enabled despite
   the canonical single-uplink standard. That drift is corrected and the
   automation is idempotent. During the failed interval, route, ARP neighbor,
@@ -2848,6 +2855,8 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   converged and validated infra03 STP policy without reconnecting the bridge
   or cycling a VM. The pre-DEPLOY recurrence closed the gate before Helm; a
   separately reviewed physical or managed-network prerequisite is pending.
+  Infra01 Phase A failed one readiness request and rolled back successfully;
+  Phase B requires exact reviewed current and candidate upstream port labels.
 - Validation: STP, VM, bridge-port, canonical address/route, control-plane,
   four-Ready-node, and Longhorn/ingress/Headlamp checks passed. A complete
   four-guest window passed both ICMP sizes, DNS, and service/API probes, but a
@@ -2863,6 +2872,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   [CHG-2026-011 Argo CD bootstrap](change-records/CHG-2026-011-argocd-gitops-bootstrap.md),
   [infra03 prerequisite result](evidence/CHG-2026-011-infra03-network-prerequisite-result.md),
   [infra01 uplink canary](change-records/CHG-2026-011-infra01-uplink-canary.md),
+  [infra01 Phase A result](evidence/CHG-2026-011-infra01-uplink-phase-a-result.md),
   [Sequential Build and Change Control](sequential-build-change-control.md)
 
 ## New Incident Template
