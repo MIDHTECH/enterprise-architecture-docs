@@ -10,9 +10,12 @@ immediate four-guest window recorded one failed Kubernetes `/readyz` request
 from `gitlab-runner-app01.example.com`. The original cable was restored on the
 same port and the rollback baseline passed.
 
-Argo CD PLAN and DEPLOY remain closed. Phase B is eligible only after the
-current upstream device/port and one known-good candidate port on that same
-device are identified by exact labels and reviewed. No port move has occurred.
+Argo CD PLAN and DEPLOY remain closed. An operator-supplied photograph now
+identifies the upstream device as a Linksys Velop `VLP01`, and its printed
+device MAC matches the previously observed upstream bridge/STP neighbor
+identity. Phase B is eligible only after the current upstream port and one
+known-good candidate port on that same device are identified by exact labels
+and reviewed. No port move has occurred.
 
 ## Pre-execution gate
 
@@ -105,8 +108,9 @@ cable/port state is retained.
 
 Do not run another acceptance window, Argo CD PLAN or DEPLOY. Before Phase B:
 
-1. record the exact current upstream device and LAN-port label;
-2. record one exact known-good LAN-port label on the same upstream device;
+1. retain the identified Linksys Velop `VLP01` as the only upstream device in
+   scope and record the exact current LAN-port label used by infra01;
+2. record one exact known-good LAN-port label on that same upstream device;
 3. confirm local-console presence and re-run the activity/invariant audit; and
 4. update the probe to retain endpoint, response code, duration and curl error
    for every failed request.
@@ -114,3 +118,9 @@ Do not run another acceptance window, Argo CD PLAN or DEPLOY. Before Phase B:
 Phase B may move only infra01 to that reviewed port. It may not change a mesh
 node, router configuration, another host cable, DHCP, DNS, bridge, VM or
 Kubernetes configuration.
+
+The device-label photograph is not stored in the repository because it also
+contains authentication and recovery material. No password, recovery key,
+serial number, QR content, or complete device MAC was copied into this record.
+The photograph does not show the Ethernet ports or cables and therefore does
+not satisfy either required port-label item.

@@ -165,3 +165,23 @@ selected NIC errors, 17/17 infra01 domains and four Ready Kubernetes nodes.
 Phase B is eligible but not open. The exact current upstream device/port label
 and one known-good candidate port on the same device must be added and reviewed
 first. See the [Phase A result](../evidence/CHG-2026-011-infra01-uplink-phase-a-result.md).
+
+## Upstream device identification
+
+An operator-supplied underside-label photograph reviewed on 2026-08-09
+identifies the upstream mesh node as a Linksys Velop model `VLP01`. The device
+MAC printed on that label matches the upstream bridge/STP neighbor identity
+previously observed from infra03, confirming that the photograph shows the
+correct upstream node.
+
+The photograph is not repository evidence because the label also contains
+authentication and recovery material. No password, recovery key, serial
+number, QR content, or complete device MAC was copied into this record.
+
+This identifies the node but not the physical target for Phase B. The image
+does not show the Ethernet-port side, attached cables, the current LAN-port
+label used by infra01, or a known-good candidate LAN-port label. Phase B
+therefore remains closed. A connection-side photograph or local-console
+observation must show and label the exact current infra01 cable/port and one
+candidate port on this same `VLP01` node without exposing the underside secret
+label.
