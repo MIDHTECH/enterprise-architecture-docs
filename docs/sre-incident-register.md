@@ -427,6 +427,11 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Resolution: DHCP reservations were safely completed using the router's
   documented local JNAP actions. DNS configuration remains pending through the
   Linksys mobile app.
+- 2026-08-09 diagnostic note: A new unauthenticated read-only visit reproduced
+  the `Waiting...` overlay at the router-password sign-in screen before any
+  credential was entered. It exposed no node role, uptime, firmware, backhaul,
+  port, or power data needed by CHG-2026-011. No credential or request payload
+  was submitted. This does not change the supported mobile-app resolution.
 - Prevention/follow-up: Use **Advanced Settings → Local Network Settings → DNS
   Settings → Manual** in the Linksys app, set `192.168.1.106`, then renew and
   validate a client lease. Do not use guessed or undocumented DNS API fields.
