@@ -24,9 +24,9 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | --- | --- |
 | Change ID | `CHG-2026-011` |
 | Component | Private Argo CD GitOps bootstrap on the existing application cluster, including failed-source recovery, pinned Helm delivery, least-privilege GitLab repository access, an isolated reconciliation canary, rollback, and evidence |
-| State | Blocked after infra01 uplink Phase A failed its immediate zero-loss window and rolled back successfully. A same-port replacement cable preserved 800/800 ICMP and 720/720 DNS checks but app01 missed one of 240 service/API checks: one Kubernetes `/readyz` request. The original cable/port state is restored and healthy. |
-| Blocker | Phase A did not prove a stable path, and the exact one-request failure mechanism remains unproven. An operator-supplied label photograph identifies the upstream node as a Linksys Velop `VLP01` and its device identity matches the bridge/STP neighbor previously observed from infra03. The operator confirms infra01 and infra02 both connect to this node, but the photograph does not show Ethernet ports or cables. Phase B cannot open until the exact current infra01 LAN-port label and one unoccupied known-good candidate LAN-port label on that same node are identified and reviewed. The infra02 port is excluded. Transient login or readiness success is not acceptance. |
-| Permitted work | Record the identified `VLP01` node and shared infra01/infra02 attachment without retaining its secret-bearing label image or label data. After exact current and unoccupied candidate port labels and local-console presence are confirmed, execute only Phase B of the bounded [infra01 uplink canary](change-records/CHG-2026-011-infra01-uplink-canary.md), retaining the original cable and moving only infra01 to the reviewed port on the same device. Preserve infra02, all VMs, and the healthy cluster. If no unoccupied candidate exists, stop for a revised design. |
+| State | Blocked after infra01 uplink Phase A failed its immediate zero-loss window and rolled back successfully. A same-port replacement cable preserved 800/800 ICMP and 720/720 DNS checks but app01 missed one of 240 service/API checks: one Kubernetes `/readyz` request. The original cable/port state is restored and healthy. The approved Phase B is non-executable because both Ethernet ports on the identified upstream node are occupied by infra01 and infra02. |
+| Blocker | Phase A did not prove a stable path, and the exact one-request failure mechanism remains unproven. An operator-supplied label photograph identifies the upstream node as a Linksys Velop `VLP01` and its device identity matches the bridge/STP neighbor previously observed from infra03. The operator confirms this two-port node serves both infra01 and infra02, leaving no unoccupied same-node candidate. The infra02 port is excluded, so Phase B cannot meet its entry criteria. Transient login or readiness success is not acceptance. |
+| Permitted work | Record the identified `VLP01` two-port topology without retaining its secret-bearing label image or label data, and prepare a separately reviewed physical-path canary design. Read-only identification may label which occupied port/cable serves each host. Do not move a cable, disturb infra02, add a network device, change mesh/router configuration, or run Argo CD PLAN/DEPLOY until the revised design is reviewed and the gate is updated. Preserve all VMs and the healthy cluster. |
 | Prohibited work | Direct workstation Helm or `kubectl apply`; GitLab CI deployment; public Argo CD exposure; human/write-capable repository credentials; default-project or wildcard destinations; Argo ownership of ingress, Longhorn, Headlamp, application workloads, policy, secrets, backup, autoscaling, or another component; Artifactory/SonarQube work. |
 | Exit criteria | Exact source and PLAN accepted; Argo CD 3.4.6/chart 10.2.2 healthy and private; repository access proven read-only; restricted AppProject/root canary Synced and Healthy; drift self-heals; convergence, rollback, and restore pass; negative ownership/exposure checks, incidents, evidence, and canonical publication complete. |
 
@@ -97,9 +97,9 @@ infra01 domains and four Ready nodes. An operator-supplied underside-label
 photograph later identified the upstream node as a Linksys Velop `VLP01`; its
 printed device identity matched the bridge/STP neighbor previously observed
 from infra03. The operator confirmed infra01 and infra02 both connect to this
-node. Because the photograph does not show the Ethernet ports or cables, Phase
-B remains closed until the exact current infra01 port and an unoccupied
-candidate port are recorded and reviewed. The infra02 port is excluded;
+two-port node, so both ports are occupied and no unoccupied same-node candidate
+exists. The approved Phase B is therefore non-executable and a separately
+reviewed canary redesign is required. The infra02 port is excluded;
 secret-bearing label content is not retained.
 
 `CHG-2026-010` closed successfully on 2026-08-08. Canonical source is

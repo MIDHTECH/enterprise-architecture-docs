@@ -2835,8 +2835,9 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   upstream node as a Linksys Velop `VLP01`; its printed device identity matched
   the bridge/STP neighbor previously observed from infra03. The operator
   confirmed that infra01 and infra02 connect to this same node. The image did
-  not show Ethernet ports or cables, so it did not identify the current
-  infra01 port or an unoccupied candidate port. The infra02 port is excluded;
+  not show Ethernet ports or cables. The operator confirmed that the node has
+  two Ethernet ports; because both are occupied by the two hosts, no
+  unoccupied same-node candidate exists. The infra02 port is excluded and
   secret-bearing label content was not retained.
 - Cause: infra03 had real bridge-policy drift: STP remained enabled despite
   the canonical single-uplink standard. That drift is corrected and the
@@ -2864,9 +2865,9 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   separately reviewed physical or managed-network prerequisite is pending.
   Infra01 Phase A failed one readiness request and rolled back successfully;
   the upstream `VLP01` node and shared infra01/infra02 attachment are
-  identified, but Phase B still requires exact reviewed current-infra01 and
-  unoccupied-candidate LAN-port labels on that node. The infra02 port cannot be
-  used or disturbed.
+  identified. Its two ports are both occupied, so Phase B cannot satisfy its
+  entry criteria and is superseded before execution. The infra02 port cannot
+  be used or disturbed; a separately reviewed canary design is required.
 - Validation: STP, VM, bridge-port, canonical address/route, control-plane,
   four-Ready-node, and Longhorn/ingress/Headlamp checks passed. A complete
   four-guest window passed both ICMP sizes, DNS, and service/API probes, but a
