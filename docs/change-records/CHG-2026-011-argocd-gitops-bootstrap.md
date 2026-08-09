@@ -176,16 +176,17 @@ and control VM health, Kubernetes listener and firewall policy, and absence
 of source-specific filtering. The control plane received echo requests and
 emitted corresponding replies. During a failed large-packet probe, directional
 counters showed substantial reply traffic leaving infra01 but only a small
-fraction arriving at infra03. The residual fault is therefore narrowed to the
-infra01-to-infra03 physical/switch path, but the exact cable, port, or device
-cause is not proven. The earlier STP drift was real and corrected, but it was
-not sufficient to restore the required transport quality.
+fraction arriving at infra03. During that interval, evidence narrowed the
+residual fault toward the infra01-to-infra03 physical/switch path, but no exact
+cable, port, or device cause was proven. The earlier STP drift was real and
+corrected; the post-correction loss mechanism remains undetermined.
 
-Further mutation requires a separately reviewed and explicitly scoped
-network-path prerequisite. Direct router/switch UI changes, remote `nmcli`,
-workstation Ansible, VM restart, bridge recreation, or Argo CD retry remain
-prohibited. infra02 standardization remains a separate queued network change.
-Before Jenkins can retry PLAN or DEPLOY, acceptance must still prove:
+A later validation-only window passed without a physical, router, switch,
+bridge, VM, or Kubernetes mutation. Each infra03 guest passed 100/100 standard
+and 100/100 1,400-byte ICMP probes to `192.168.1.107`, with neighbor MAC
+`52:54:00:01:01:07`. Across the four guests, 720 DNS checks and 960 HTTP/HTTPS
+requests to GitLab, Jenkins, AWX, and Kubernetes `/readyz` completed with zero
+failure or timeout. Reinspection proved:
 
 1. all four infra03 domains remain running and configured for autostart;
 2. live and persistent infra03 `lab-br0` STP state are disabled;
@@ -196,9 +197,15 @@ Before Jenkins can retry PLAN or DEPLOY, acceptance must still prove:
 6. the application cluster retains four Ready nodes and healthy Longhorn,
    ingress, and Headlamp state.
 
-INC-2026-085 records the failed builds, accepted STP correction, residual
-transport evidence, and open network-path prerequisite. The exact execution
-and probe result is retained in
+The recovery window accepts the prerequisite for Jenkins recovery PLAN only.
+PLAN must repeat its read-only reachability gate before Helm; any recurrence
+prohibits DEPLOY. Direct router/switch UI changes, remote `nmcli`, workstation
+Ansible, VM restart, or bridge recreation remain prohibited. infra02
+standardization remains a separate queued network change.
+
+INC-2026-085 records the failed builds, accepted STP correction, failed
+interval, and later recovery acceptance. The exact execution and probe result
+is retained in
 [infra03 network prerequisite evidence](../evidence/CHG-2026-011-infra03-network-prerequisite-result.md).
 
 ## Acceptance criteria

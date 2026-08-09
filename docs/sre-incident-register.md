@@ -116,7 +116,7 @@ facts; they do not erase the original observation.
 | INC-2026-082 | 2026-08-03 | SEV-4 | Resolved | AWX credential-use RBAC | Existing machine credential 1 was assigned to organization 1 through the AWX API; all subsequent Jenkins-controlled AWX stages passed |
 | INC-2026-083 | 2026-08-08 | SEV-4 | Resolved | Jenkins Kubernetes storage prerequisites | The generated pipeline used an unavailable `timestamps()` option and failed safely before AWX launch |
 | INC-2026-084 | 2026-08-08 | SEV-4 | Resolved | Jenkins Longhorn acceptance evidence | Groovy string interpolation corrupted two kubectl newline templates after the initial runtime became healthy |
-| INC-2026-085 | 2026-08-08 | SEV-3 | Open | infra03 build-execution network | Intermittent infra01-to-infra03 physical/switch-path loss blocks Argo CD bootstrap after accepted STP correction |
+| INC-2026-085 | 2026-08-08 | SEV-3 | Monitoring | infra03 build-execution network | Initial post-STP intermittent loss later passed sustained four-guest recovery validation; exact transient mechanism remains undetermined |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2795,14 +2795,14 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-08-08
 - Severity: SEV-3
-- Status: Open
+- Status: Monitoring
 - Component: `infra03.example.com` NetworkManager bridge `lab-br0`, four
   build-execution VMs, and Jenkins CHG-2026-011 Kubernetes API path
 - Detection/symptom: Argo CD DEPLOY build 7 reached the reviewed Helm
   first-install path and failed with `http2: client connection lost`.
   Recovery PLAN build 8 then timed out during its initial read-only Kubernetes
   API check before Helm ran.
-- Impact: Argo CD bootstrap and its canary acceptance are paused. Atomic Helm
+- Impact: Argo CD bootstrap and its canary acceptance were paused. Atomic Helm
   rollback removed the failed release; retained Argo CRDs and the empty
   namespace introduce no reconciled workload. Existing Kubernetes workloads
   remain healthy.
@@ -2816,25 +2816,31 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   HTTPS probes alternated between 60/60 or 100/100 success and failure after
   11 or 12 successes. Thirty-packet ICMP results were 1/30, 0/30, 3/30, and
   23/30. Directional counters during a failed probe showed replies leaving
-  infra01 while few reached infra03.
+  infra01 while few reached infra03. A later validation-only window passed
+  800/800 combined standard and 1,400-byte ICMP probes, 720/720 DNS checks,
+  and 960/960 service/API requests across all four guests with no additional
+  mutation.
 - Cause: infra03 had real bridge-policy drift: STP remained enabled despite
   the canonical single-uplink standard. That drift is corrected and the
-  automation is idempotent, but packet loss persists. Route, ARP neighbor,
+  automation is idempotent. During the failed interval, route, ARP neighbor,
   bridge FDB, guest/control-VM health, Kubernetes firewall/listener, response
-  counters, and local port checks narrow the residual fault beyond the VMs
+  counters, and local port checks narrowed the residual fault beyond the VMs
   and control plane to the infra01-to-infra03 physical/switch segment. The
-  exact cable, switch/router port, or network-device cause is not yet proven.
+  exact cable, switch/router port, or network-device cause was not proven.
+  Because the later sustained window passed without a new corrective action,
+  the exact transient post-correction mechanism remains undetermined.
 - Contributing factors: INC-2026-046 corrected infra01 and updated source but
   left the fleet-wide live correction incomplete. infra02 also retains STP
   enabled, although its worker path is currently stable; it is excluded from
   this Argo CD prerequisite to preserve one-component change control.
-- Resolution: Partial. The reviewed cloud-infrastructure/AWX correction
-  converged and validated infra03 STP policy without reconnecting the bridge
-  or cycling a VM. Argo CD remains paused pending a separately reviewed
-  physical/switch-path prerequisite.
-- Validation: STP, VM, bridge-port, control-plane, four-Ready-node, and
-  Longhorn/ingress/Headlamp checks passed. Sustained zero-loss probes from
-  every infra03 guest remain failed and are the open acceptance criterion.
+- Resolution: The reviewed cloud-infrastructure/AWX correction converged and
+  validated infra03 STP policy without reconnecting the bridge or cycling a
+  VM. The later full recovery window accepted transport for an Argo CD
+  recovery PLAN only; any recurrence closes the gate before Helm.
+- Validation: STP, VM, bridge-port, canonical address/route, control-plane,
+  four-Ready-node, and Longhorn/ingress/Headlamp checks passed. Every infra03
+  guest passed both ICMP sizes, DNS, GitLab, Jenkins, AWX, and Kubernetes
+  `/readyz`; GitLab, Jenkins, and AWX remained idle.
 - Prevention/follow-up: Add bridge-policy drift validation for every physical
   hypervisor and queue infra02 standardization separately after CHG-2026-011.
 - Corrective automation: The canonical cloud-infrastructure infra03-limited

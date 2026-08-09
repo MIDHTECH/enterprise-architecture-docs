@@ -24,9 +24,9 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | --- | --- |
 | Change ID | `CHG-2026-011` |
 | Component | Private Argo CD GitOps bootstrap on the existing application cluster, including failed-source recovery, pinned Helm delivery, least-privilege GitLab repository access, an isolated reconciliation canary, rollback, and evidence |
-| State | Blocked at runtime prerequisite acceptance. The reviewed infra03-only STP correction passed protected-main CI, controlled Jenkins/AWX PLAN, APPLY, VALIDATE, and no-change APPLY. Persistent and live STP are disabled, all four VMs remain running/autostart, and bridge ports remain forwarding. Sustained zero-loss guest-to-API acceptance still fails intermittently, so Argo CD remains paused. |
-| Blocker | Packet loss persists between the infra01-hosted Kubernetes control plane and infra03 guests after the accepted bridge-policy correction. Directional counters show the control VM receives requests and emits replies while only a small fraction reaches infra03's uplink/guest port during failed probes. Evidence narrows the remaining fault to the infra01-to-infra03 physical/switch path, but does not yet identify the exact cable, port, or network-device cause. |
-| Permitted work | Read-only diagnosis and publication of the accepted STP result and residual transport evidence; prepare a separately reviewed, explicitly scoped physical/switch-path prerequisite; preserve all running VMs and the healthy cluster. Resume CHG-2026-011 Jenkins PLAN/DEPLOY only after every infra03 guest passes the documented sustained zero-loss gate. |
+| State | Active at recovery PLAN eligibility. The reviewed infra03-only STP correction passed protected-main CI, controlled Jenkins/AWX PLAN, APPLY, VALIDATE, and no-change APPLY. A later validation-only window passed the full sustained transport gate from every infra03 guest with no physical or additional runtime mutation. |
+| Blocker | None at the runtime prerequisite gate. The exact mechanism of the earlier post-correction intermittent loss remains undetermined and INC-2026-085 stays in Monitoring. Any renewed probe loss closes the gate immediately and prohibits Helm. |
+| Permitted work | Publish the recovery acceptance; run only the CHG-2026-011 Jenkins recovery PLAN against exact accepted source; if PLAN and its repeated transport checks pass, proceed with the same change's controlled DEPLOY, reconciliation canary, rollback/restore, and evidence. |
 | Prohibited work | Direct workstation Helm or `kubectl apply`; GitLab CI deployment; public Argo CD exposure; human/write-capable repository credentials; default-project or wildcard destinations; Argo ownership of ingress, Longhorn, Headlamp, application workloads, policy, secrets, backup, autoscaling, or another component; Artifactory/SonarQube work. |
 | Exit criteria | Exact source and PLAN accepted; Argo CD 3.4.6/chart 10.2.2 healthy and private; repository access proven read-only; restricted AppProject/root canary Synced and Healthy; drift self-heals; convergence, rollback, and restore pass; negative ownership/exposure checks, incidents, evidence, and canonical publication complete. |
 
@@ -59,9 +59,21 @@ VM health, and control-plane response checks did not identify a guest or
 Kubernetes fault. A directional counter probe showed replies leaving the
 infra01 control-plane path while few arrived at infra03, narrowing the
 remaining fault to the physical/switch segment without proving an exact
-device or port cause. INC-2026-085 remains open. No Argo CD retry is allowed
-until a reviewed network-path prerequisite and sustained zero-loss validation
-complete.
+device or port cause. INC-2026-085 recorded the open failed interval; at that
+point no Argo CD retry was allowed before sustained zero-loss validation.
+
+A later validation-only window completed without further infrastructure or
+network mutation. Each of the four infra03 guests passed 100/100 standard and
+100/100 1,400-byte ICMP probes to the control plane with the canonical
+neighbor MAC. Across those guests, 720 DNS checks and 960 GitLab, Jenkins,
+AWX, and Kubernetes readiness requests completed with zero failure or
+timeout. Persistent STP remained `no`, live STP `0`, infra03 retained four
+running/autostart domains and five forwarding ports, and its canonical
+address/default route remained intact. GitLab, Jenkins, and AWX were idle;
+the cluster retained four Ready nodes, zero active Jobs or non-running pods,
+and healthy Longhorn, ingress, and Headlamp state. This accepts the transport
+prerequisite for a recovery PLAN only. Any recurrence closes the gate before
+Helm.
 
 `CHG-2026-010` closed successfully on 2026-08-08. Canonical source is
 `ansible-kubernetes` `93d4973a`, `jenkins-jobs` `c9bf66ff`, and
