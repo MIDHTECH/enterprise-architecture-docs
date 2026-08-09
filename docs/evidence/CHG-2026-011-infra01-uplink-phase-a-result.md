@@ -10,9 +10,14 @@ immediate four-guest window recorded one failed Kubernetes `/readyz` request
 from `gitlab-runner-app01.example.com`. The original cable was restored on the
 same port and the rollback baseline passed.
 
-Argo CD PLAN and DEPLOY remain closed. Phase B is eligible only after the
-current upstream device/port and one known-good candidate port on that same
-device are identified by exact labels and reviewed. No port move has occurred.
+Argo CD PLAN and DEPLOY remain closed. An operator-supplied photograph now
+identifies the upstream device as a Linksys Velop `VLP01`, and its printed
+device MAC matches the previously observed upstream bridge/STP neighbor
+identity. The operator also confirmed that infra01 and infra02 connect to that
+same node and that the node provides two Ethernet ports. Because both ports are
+occupied, no unoccupied same-node candidate exists. Phase B is not executable
+under the approved design. The infra02 port is excluded and no port move has
+occurred.
 
 ## Pre-execution gate
 
@@ -103,14 +108,24 @@ cable/port state is retained.
 
 ## Gate
 
-Do not run another acceptance window, Argo CD PLAN or DEPLOY. Before Phase B:
+Do not run another acceptance window, Argo CD PLAN or DEPLOY. The identified
+Linksys Velop `VLP01` has two Ethernet ports, and infra01 and infra02 occupy
+them. There is no unoccupied same-node candidate, so Phase B cannot meet its
+entry criteria and is superseded before execution.
 
-1. record the exact current upstream device and LAN-port label;
-2. record one exact known-good LAN-port label on the same upstream device;
-3. confirm local-console presence and re-run the activity/invariant audit; and
-4. update the probe to retain endpoint, response code, duration and curl error
-   for every failed request.
+The next physical step requires a separately reviewed design. It must preserve
+infra02 unless an explicit maintenance scope, impact analysis, local-console
+recovery plan, and full acceptance gate authorize otherwise. Do not swap the
+two hosts, disconnect infra02, add an intermediary network device, alter the
+mesh, or change router, DHCP, DNS, bridge, VM, or Kubernetes configuration
+under this record. Any future probe must retain endpoint, response code,
+duration, and curl error for every failed request.
 
-Phase B may move only infra01 to that reviewed port. It may not change a mesh
-node, router configuration, another host cable, DHCP, DNS, bridge, VM or
-Kubernetes configuration.
+The device-label photograph is not stored in the repository because it also
+contains authentication and recovery material. No password, recovery key,
+serial number, QR content, or complete device MAC was copied into this record.
+The photograph does not show the Ethernet ports or cables and therefore does
+not identify which occupied port belongs to each host. Because the node has
+only those two occupied ports, the connection-side evidence cannot produce the
+unoccupied candidate required by Phase B. The canary must stop for a revised
+design.

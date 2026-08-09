@@ -162,6 +162,31 @@ failure under the approved rule. The operator restored the original cable on
 the same port; rollback converged at 14:18:24 with `carrier_changes=274`, zero
 selected NIC errors, 17/17 infra01 domains and four Ready Kubernetes nodes.
 
-Phase B is eligible but not open. The exact current upstream device/port label
-and one known-good candidate port on the same device must be added and reviewed
-first. See the [Phase A result](../evidence/CHG-2026-011-infra01-uplink-phase-a-result.md).
+Phase B was initially eligible but not open. The exact current upstream
+device/port label and one known-good candidate port on the same device had to
+be added and reviewed first. See the
+[Phase A result](../evidence/CHG-2026-011-infra01-uplink-phase-a-result.md).
+
+## Upstream device identification
+
+An operator-supplied underside-label photograph reviewed on 2026-08-09
+identifies the upstream mesh node as a Linksys Velop model `VLP01`. The device
+MAC printed on that label matches the upstream bridge/STP neighbor identity
+previously observed from infra03, confirming that the photograph shows the
+correct upstream node. The operator also confirmed that both infra01 and
+infra02 are cabled to this same Velop node and that the node has two Ethernet
+ports. Both ports are therefore occupied.
+
+The photograph is not repository evidence because the label also contains
+authentication and recovery material. No password, recovery key, serial
+number, QR content, or complete device MAC was copied into this record.
+
+This identifies the node but not the exact current infra01 port. The image does
+not show the Ethernet-port side, attached cables, or port labels. More
+importantly, the confirmed two-port/two-host topology proves that no
+unoccupied same-node candidate port exists. Phase B is not executable under
+this design. The port occupied by infra02 must not be disconnected, moved, or
+used as a candidate. Stop for a separately reviewed canary redesign; do not
+swap infra01 and infra02 or expand the physical scope ad hoc. A connection-side
+photograph remains useful to label the two current host attachments, but it
+cannot open the superseded same-node Phase B path.

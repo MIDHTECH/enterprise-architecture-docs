@@ -2831,6 +2831,14 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   was not retained. The original cable was restored on the same port; rollback
   returned 1 Gb/s full-duplex carrier with zero selected NIC errors, all 17
   infra01 domains and all four Kubernetes nodes healthy.
+  An operator-supplied underside-label photograph subsequently identified the
+  upstream node as a Linksys Velop `VLP01`; its printed device identity matched
+  the bridge/STP neighbor previously observed from infra03. The operator
+  confirmed that infra01 and infra02 connect to this same node. The image did
+  not show Ethernet ports or cables. The operator confirmed that the node has
+  two Ethernet ports; because both are occupied by the two hosts, no
+  unoccupied same-node candidate exists. The infra02 port is excluded and
+  secret-bearing label content was not retained.
 - Cause: infra03 had real bridge-policy drift: STP remained enabled despite
   the canonical single-uplink standard. That drift is corrected and the
   automation is idempotent. During the failed interval, route, ARP neighbor,
@@ -2856,7 +2864,10 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   or cycling a VM. The pre-DEPLOY recurrence closed the gate before Helm; a
   separately reviewed physical or managed-network prerequisite is pending.
   Infra01 Phase A failed one readiness request and rolled back successfully;
-  Phase B requires exact reviewed current and candidate upstream port labels.
+  the upstream `VLP01` node and shared infra01/infra02 attachment are
+  identified. Its two ports are both occupied, so Phase B cannot satisfy its
+  entry criteria and is superseded before execution. The infra02 port cannot
+  be used or disturbed; a separately reviewed canary design is required.
 - Validation: STP, VM, bridge-port, canonical address/route, control-plane,
   four-Ready-node, and Longhorn/ingress/Headlamp checks passed. A complete
   four-guest window passed both ICMP sizes, DNS, and service/API probes, but a

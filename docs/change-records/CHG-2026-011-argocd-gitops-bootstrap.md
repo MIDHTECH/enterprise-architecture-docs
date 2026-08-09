@@ -228,8 +228,12 @@ Kubernetes `/readyz` request. No carrier, NIC-error, VM or cluster-health event
 accompanied the miss, and the aggregate probe did not retain the exact curl
 error. The original cable was restored successfully at 14:18:24 with 1 Gb/s
 full-duplex carrier, zero selected NIC errors, 17/17 infra01 domains and four
-Ready cluster nodes. Argo CD PLAN and DEPLOY remain closed. Phase B requires
-reviewed exact current and candidate port labels before any port move. See the
+Ready cluster nodes. Argo CD PLAN and DEPLOY remain closed. Phase B required
+reviewed exact current and candidate port labels before any port move. The
+upstream node was subsequently identified as a two-port Linksys Velop `VLP01`
+with infra01 and infra02 occupying both ports. No unoccupied same-node
+candidate exists, so Phase B is superseded before execution and a separately
+reviewed canary redesign is required. See the
 [infra01 Phase A result](../evidence/CHG-2026-011-infra01-uplink-phase-a-result.md).
 
 ## Acceptance criteria
