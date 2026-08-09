@@ -24,9 +24,9 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | --- | --- |
 | Change ID | `CHG-2026-011` |
 | Component | Private Argo CD GitOps bootstrap on the existing application cluster, including failed-source recovery, pinned Helm delivery, least-privilege GitLab repository access, an isolated reconciliation canary, rollback, and evidence |
-| State | Active at recovery PLAN eligibility. The reviewed infra03-only STP correction passed protected-main CI, controlled Jenkins/AWX PLAN, APPLY, VALIDATE, and no-change APPLY. A later validation-only window passed the full sustained transport gate from every infra03 guest with no physical or additional runtime mutation. |
-| Blocker | None at the runtime prerequisite gate. The exact mechanism of the earlier post-correction intermittent loss remains undetermined and INC-2026-085 stays in Monitoring. Any renewed probe loss closes the gate immediately and prohibits Helm. |
-| Permitted work | Publish the recovery acceptance; run only the CHG-2026-011 Jenkins recovery PLAN against exact accepted source; if PLAN and its repeated transport checks pass, proceed with the same change's controlled DEPLOY, reconciliation canary, rollback/restore, and evidence. |
+| State | Blocked after pre-DEPLOY transport recurrence. Recovery PLAN build 9 passed exact accepted source without mutation, but the mandatory immediate Jenkins-agent check then returned 6/20 ICMP replies and Kubernetes `/readyz` timed out. DEPLOY was not started. |
+| Blocker | Infra03 guest-to-control-plane transport remains intermittently unstable despite the accepted, idempotent STP correction and intervening zero-loss windows. The burst recovered during follow-up probes, so the exact physical/switch/backhaul mechanism remains undetermined; transient success is not sufficient acceptance. |
+| Permitted work | Read-only diagnosis, idle-interval reproduction, and publication of the PLAN 9/pre-DEPLOY recurrence evidence; prepare a separately reviewed physical/managed-network corrective prerequisite. Preserve all VMs and the healthy cluster. Do not run another Argo CD PLAN or DEPLOY until the network path is corrected and accepted across separated observation windows. |
 | Prohibited work | Direct workstation Helm or `kubectl apply`; GitLab CI deployment; public Argo CD exposure; human/write-capable repository credentials; default-project or wildcard destinations; Argo ownership of ingress, Longhorn, Headlamp, application workloads, policy, secrets, backup, autoscaling, or another component; Artifactory/SonarQube work. |
 | Exit criteria | Exact source and PLAN accepted; Argo CD 3.4.6/chart 10.2.2 healthy and private; repository access proven read-only; restricted AppProject/root canary Synced and Healthy; drift self-heals; convergence, rollback, and restore pass; negative ownership/exposure checks, incidents, evidence, and canonical publication complete. |
 
@@ -74,6 +74,16 @@ the cluster retained four Ready nodes, zero active Jobs or non-running pods,
 and healthy Longhorn, ingress, and Headlamp state. This accepts the transport
 prerequisite for a recovery PLAN only. Any recurrence closes the gate before
 Helm.
+
+The recurrence gate then operated as designed. Jenkins recovery PLAN build 9
+passed in 23 seconds against shared-library revision `5ccf022d` and GitOps
+revision `6dbb5bf0`; server-side and client-side dry runs left the retained
+namespace and three CRDs unchanged. Before DEPLOY, a separate Jenkins-agent
+probe returned only 6/20 ICMP replies and Kubernetes `/readyz` timed out after
+two seconds. DEPLOY was not started. Follow-up probes soon recovered to
+20/20 and HTTP 200 across all four guests, confirming a short intermittent
+burst rather than stable acceptance. The gate is closed again pending a
+reviewed network-path correction and validation across separated windows.
 
 `CHG-2026-010` closed successfully on 2026-08-08. Canonical source is
 `ansible-kubernetes` `93d4973a`, `jenkins-jobs` `c9bf66ff`, and

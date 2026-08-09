@@ -79,12 +79,33 @@ VM, or Kubernetes mutation:
 
 No additional corrective action can be credited for the later recovery. The
 known STP drift remains corrected, but the exact mechanism of the transient
-post-correction loss is undetermined and remains under monitoring.
+post-correction loss remained undetermined.
+
+## Pre-DEPLOY recurrence
+
+The recovery gate reopened only Jenkins PLAN. Build 9 passed in 23 seconds
+against shared-library revision `5ccf022d29fecfda49b5441e249286969e67242f`
+and GitOps revision `6dbb5bf0d15b310be629e7681c39b540120ada53`. Its
+server-side and client-side dry runs left the existing `argocd` namespace and
+three retained CRDs unchanged.
+
+The required independent pre-DEPLOY check then failed from
+`jenkins-agent01.example.com`:
+
+- Kubernetes `/readyz` timed out after two seconds and returned HTTP `000`;
+- ICMP returned 6/20 replies, or 70 percent loss; and
+- DEPLOY was not started.
+
+Immediate follow-up probes showed the intermittent shape: infra03 host
+`/readyz` returned 200 with 29/30 ICMP replies, infra01 reached the infra03
+host and all four guests with 20/20 replies, and all four guests then reached
+Kubernetes `/readyz` with HTTP 200 and 20/20 ICMP replies. Recovery during
+follow-up does not satisfy the zero-loss invariant.
 
 ## Gate
 
-Permit only the controlled Argo CD recovery PLAN against exact accepted
-source. PLAN must repeat its initial API reachability checks before Helm. If
-any transport probe fails, close the gate and do not run DEPLOY. If PLAN
-passes, the same active change may proceed to its reviewed DEPLOY and GitOps
-acceptance sequence.
+Close Argo CD PLAN and DEPLOY. Prepare a separately reviewed physical or
+managed-network correction, then require zero-loss acceptance across
+separated observation windows so a short traffic-warmed interval cannot be
+misclassified as recovery. Preserve the accepted STP state, all VMs, and the
+healthy cluster.
