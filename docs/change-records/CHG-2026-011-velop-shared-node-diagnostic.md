@@ -78,6 +78,20 @@ Only the following evidence collection is open:
 Connection-side and application screenshots are evidence only after secret,
 QR, public-IP, and unrelated-client fields are excluded or redacted.
 
+## Local management-path result
+
+A secret-safe read-only check on 2026-08-09 opened the local Linksys Smart
+Wi-Fi page at `192.168.1.1`. No authenticated browser session existed, and the
+page remained behind its historical `Waiting...` overlay at the router-password
+sign-in screen. No credential was entered and no setting or request payload was
+submitted. The page exposed no trustworthy node role, uptime, firmware,
+backhaul, port, or power evidence.
+
+The desktop path is exhausted for this stage. Do not use the photographed
+setup credentials, guess a router password, or invoke undocumented JNAP
+actions. The supported Linksys application and onsite connection/power
+inspection remain the required sources for the open evidence items.
+
 ## Decision gate
 
 The diagnostic must assign one of these outcomes before an execution design is
