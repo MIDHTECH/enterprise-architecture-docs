@@ -2855,6 +2855,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Evidence/related runbook:
   [CHG-2026-011 Argo CD bootstrap](change-records/CHG-2026-011-argocd-gitops-bootstrap.md),
   [infra03 prerequisite result](evidence/CHG-2026-011-infra03-network-prerequisite-result.md),
+  [infra03 physical-path canary](change-records/CHG-2026-011-infra03-physical-path-canary.md),
   [Sequential Build and Change Control](sequential-build-change-control.md)
 
 ## New Incident Template
