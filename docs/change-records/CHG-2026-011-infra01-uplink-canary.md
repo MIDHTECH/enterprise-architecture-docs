@@ -190,3 +190,10 @@ used as a candidate. Stop for a separately reviewed canary redesign; do not
 swap infra01 and infra02 or expand the physical scope ad hoc. A connection-side
 photograph remains useful to label the two current host attachments, but it
 cannot open the superseded same-node Phase B path.
+
+Subsequent read-only comparison found that most infra01 link events occurred
+at the same second on infra02, including multiple Aug 8 events and the Aug 9
+07:28:20-07:28:23 cycle. Both hosts terminate on this two-port node, while
+infra03 recorded no physical link event in the same inspected interval. This
+supersedes a second infra01-only physical canary. Continue only with the
+[Velop shared-node diagnostic](CHG-2026-011-velop-shared-node-diagnostic.md).

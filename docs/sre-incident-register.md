@@ -2868,6 +2868,11 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   identified. Its two ports are both occupied, so Phase B cannot satisfy its
   entry criteria and is superseded before execution. The infra02 port cannot
   be used or disturbed; a separately reviewed canary design is required.
+  A subsequent read-only timeline comparison found many same-second physical
+  link cycles on infra01 and infra02 while infra03 recorded none. The primary
+  investigation boundary is now the shared Velop node, its power/internal
+  Ethernet switching, or mesh/backhaul behavior. Only a secret-safe read-only
+  node diagnostic is open.
 - Validation: STP, VM, bridge-port, canonical address/route, control-plane,
   four-Ready-node, and Longhorn/ingress/Headlamp checks passed. A complete
   four-guest window passed both ICMP sizes, DNS, and service/API probes, but a
@@ -2884,6 +2889,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   [infra03 prerequisite result](evidence/CHG-2026-011-infra03-network-prerequisite-result.md),
   [infra01 uplink canary](change-records/CHG-2026-011-infra01-uplink-canary.md),
   [infra01 Phase A result](evidence/CHG-2026-011-infra01-uplink-phase-a-result.md),
+  [Velop shared-node diagnostic](change-records/CHG-2026-011-velop-shared-node-diagnostic.md),
   [Sequential Build and Change Control](sequential-build-change-control.md)
 
 ## New Incident Template
