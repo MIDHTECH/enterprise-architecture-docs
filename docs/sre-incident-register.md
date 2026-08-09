@@ -116,7 +116,7 @@ facts; they do not erase the original observation.
 | INC-2026-082 | 2026-08-03 | SEV-4 | Resolved | AWX credential-use RBAC | Existing machine credential 1 was assigned to organization 1 through the AWX API; all subsequent Jenkins-controlled AWX stages passed |
 | INC-2026-083 | 2026-08-08 | SEV-4 | Resolved | Jenkins Kubernetes storage prerequisites | The generated pipeline used an unavailable `timestamps()` option and failed safely before AWX launch |
 | INC-2026-084 | 2026-08-08 | SEV-4 | Resolved | Jenkins Longhorn acceptance evidence | Groovy string interpolation corrupted two kubectl newline templates after the initial runtime became healthy |
-| INC-2026-085 | 2026-08-08 | SEV-3 | Open | infra03 build-execution network | Pre-DEPLOY probe reproduced 70 percent loss after a zero-loss window; exact physical/switch/backhaul mechanism remains undetermined |
+| INC-2026-085 | 2026-08-08 | SEV-3 | Open | infra01-to-infra03 build-execution path | Pre-DEPLOY loss recurred; infra01 uplink has repeated carrier drops and is the bounded first physical canary |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2833,6 +2833,13 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   exact cable, switch/router port, or network-device cause was not proven.
   Because the later sustained window passed without a new corrective action,
   the exact transient post-correction mechanism remains undetermined.
+  Subsequent host-log inspection found stronger physical evidence on infra01:
+  `enp0s25` recorded repeated carrier-down events followed by 1 Gb/s full-
+  duplex renegotiation and reports 264 carrier changes while PCI power remains
+  on/active. infra03 did not record matching physical link flaps in the same
+  window; its earlier neighbor-loss messages were STP message-age expirations
+  that stopped after STP convergence. The first physical canary therefore
+  targets infra01's cable and upstream port.
 - Contributing factors: INC-2026-046 corrected infra01 and updated source but
   left the fleet-wide live correction incomplete. infra02 also retains STP
   enabled, although its worker path is currently stable; it is excluded from
@@ -2855,7 +2862,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Evidence/related runbook:
   [CHG-2026-011 Argo CD bootstrap](change-records/CHG-2026-011-argocd-gitops-bootstrap.md),
   [infra03 prerequisite result](evidence/CHG-2026-011-infra03-network-prerequisite-result.md),
-  [infra03 physical-path canary](change-records/CHG-2026-011-infra03-physical-path-canary.md),
+  [infra01 uplink canary](change-records/CHG-2026-011-infra01-uplink-canary.md),
   [Sequential Build and Change Control](sequential-build-change-control.md)
 
 ## New Incident Template

@@ -211,8 +211,9 @@ Direct router/switch UI changes, remote `nmcli`, workstation Ansible, VM
 restart, bridge recreation, another PLAN, and DEPLOY remain prohibited until
 a separately reviewed physical or managed-network prerequisite is corrected
 and accepted. infra02 standardization remains a separate queued network
-change. The bounded execution and rollback design is
-[the infra03 physical-path canary](CHG-2026-011-infra03-physical-path-canary.md).
+change. Later carrier evidence superseded the infra03-first design; the
+bounded execution and rollback target is now
+[the infra01 uplink canary](CHG-2026-011-infra01-uplink-canary.md).
 
 INC-2026-085 records the failed builds, accepted STP correction, failed
 interval, temporary recovery, and pre-DEPLOY recurrence. The exact execution

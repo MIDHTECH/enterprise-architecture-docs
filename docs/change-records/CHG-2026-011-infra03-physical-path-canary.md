@@ -1,5 +1,11 @@
 # CHG-2026-011: infra03 Physical-Path Canary
 
+> **Superseded:** Later read-only evidence found repeated physical carrier
+> loss and 1 Gb/s renegotiation on infra01 `enp0s25`, while infra03's logged
+> neighbor-loss events were STP message-age expirations that stopped after the
+> accepted correction. Do not execute this infra03-first plan. Use the
+> [infra01 uplink canary](CHG-2026-011-infra01-uplink-canary.md).
+
 ## Purpose
 
 Restore deterministic transport between the four infra03 build-execution VMs
