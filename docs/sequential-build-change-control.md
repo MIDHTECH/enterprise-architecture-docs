@@ -40,6 +40,11 @@ namespace, zero `argoproj.io` CRDs, and a healthy three-replica Longhorn
 volume. The bounded design is in
 [CHG-2026-011](change-records/CHG-2026-011-argocd-gitops-bootstrap.md).
 
+The operator clarified on 2026-08-09 that managed AKS, EKS, and GKE runtime
+acceptance is not part of the current completion milestone. The active scope is
+the existing four-node on-premises kubeadm platform. Managed-cloud patterns
+remain future architecture work and cannot start in parallel with this queue.
+
 Runtime work subsequently exposed a transport prerequisite rather than an
 Argo CD content failure. PLAN build 4 passed exact accepted source. DEPLOY
 build 7 reached the reviewed first-install phase, then Helm lost its HTTP/2
