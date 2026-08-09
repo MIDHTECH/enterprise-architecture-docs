@@ -23,6 +23,22 @@ care, payer, platform, data, AI, and observability workloads.
 - Publishes workload runtime patterns to delivery, observability, governance, data, AI, and MLOps.
 - Sends runtime telemetry to SRE and operational evidence to governance.
 
+## Current Delivery Boundary
+
+The current completion milestone targets the existing four-node on-premises
+kubeadm application cluster. It includes the platform runtime controls in this
+document: ingress, persistent storage, GitOps reconciliation, continuous
+verification, admission policy, image-supply-chain controls, autoscaling,
+right-sizing, and cost allocation.
+
+AKS, EKS, and GKE provisioning patterns remain part of the long-term platform
+architecture, but managed-cloud deployment and runtime acceptance are deferred
+by operator decision on 2026-08-09. They are not entry or exit criteria for the
+current on-premises milestone and must not run in parallel with its active
+change queue. A future change must identify cloud accounts, state backends,
+identity boundaries, network integration, cost controls, rollback, and per-
+provider acceptance before managed-cluster execution begins.
+
 ## Executable Use-Case Scope
 
 - Kubernetes configuration drift monitoring and GitOps reconciliation.
@@ -41,7 +57,8 @@ consume only the approved `longhorn` StorageClass through PVCs.
 
 The current runtime target is the existing four-node kubeadm application
 cluster. Managed AKS, EKS, and GKE implementations remain portable reference
-patterns; they do not replace or duplicate this accepted on-premises target.
+patterns; they do not replace or duplicate this accepted on-premises target,
+and their runtime acceptance is outside the current milestone.
 
 The initial release is a Jenkins-managed Helm bootstrap. AWX and Ansible own
 only the worker operating-system prerequisites, `/data/longhorn` directories,

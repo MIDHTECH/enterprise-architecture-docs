@@ -374,6 +374,12 @@ recoverable.
 
 **Main tools:** Kubernetes, AKS/EKS/GKE, Helm, Argo CD or Flux CD, Kustomize, ingress controller, OPA Gatekeeper or Kyverno.
 
+**Current delivery boundary:** The active milestone completes these controls on
+the existing four-node on-premises kubeadm cluster. AKS/EKS/GKE architecture
+and Terraform portability remain future scope; managed-cloud deployment and
+runtime acceptance are explicitly deferred and do not block acceptance of the
+on-premises platform.
+
 **Architecture:**
 
 ![Kubernetes GitOps architecture](assets/project-3-kubernetes-gitops-architecture.svg)
@@ -384,7 +390,7 @@ This diagram shows the project architecture, control boundaries, runtime targets
 
 | Use case | Coverage |
 | --- | --- |
-| AKS/EKS/GKE Cluster Provisioning Automation | Terraform creates managed Kubernetes clusters |
+| AKS/EKS/GKE Cluster Provisioning Automation | Future scope: Terraform patterns remain planned; managed-cloud deployment and acceptance are deferred |
 | Kubernetes Configuration Drift | Live cluster state is compared with Git-defined desired state |
 | Kubernetes Application Deployment | Helm/Kustomize deploy application workloads |
 | GitOps Reconciliation | Argo CD or Flux restores approved desired state and records sync health |
