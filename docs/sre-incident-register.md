@@ -2869,10 +2869,14 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   entry criteria and is superseded before execution. The infra02 port cannot
   be used or disturbed; a separately reviewed canary design is required.
   A subsequent read-only timeline comparison found many same-second physical
-  link cycles on infra01 and infra02 while infra03 recorded none. The primary
-  investigation boundary is now the shared Velop node, its power/internal
-  Ethernet switching, or mesh/backhaul behavior. Only a secret-safe read-only
-  node diagnostic is open.
+  link cycles on infra01 and infra02 while infra03 recorded none. Quantitative
+  comparison found all 16 infra02 carrier-down events correlated with infra01:
+  14 in the exact same second and two within two seconds. Three of five
+  infra01-only events were the deliberate Phase A/rollback cable actions,
+  leaving two spontaneous infra01-only events. The dominant investigation
+  boundary is now the shared Velop node, its power/internal Ethernet switching,
+  or mesh/backhaul behavior. Only a secret-safe read-only node diagnostic is
+  open.
 - Validation: STP, VM, bridge-port, canonical address/route, control-plane,
   four-Ready-node, and Longhorn/ingress/Headlamp checks passed. A complete
   four-guest window passed both ICMP sizes, DNS, and service/API probes, but a

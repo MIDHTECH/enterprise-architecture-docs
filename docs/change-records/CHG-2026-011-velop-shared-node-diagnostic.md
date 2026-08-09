@@ -26,17 +26,27 @@ seconds on infra01 and infra02, including:
 | 2026-08-08 18:40:29 | 18:40:31 | Observed | Observed |
 | 2026-08-09 07:28:20 | 07:28:23 | Observed | Observed |
 
-Many additional Aug 8 events align exactly. infra03 recorded no physical
-link-down/up event in the same inspected interval. infra01 also had isolated
-events at 16:23 on Aug 8 and 07:28:59 on Aug 9; these retain a possible local
-cable/port contribution but do not explain the synchronized two-host events.
+A complete timestamp comparison from 2026-08-08 12:00 through the accepted
+2026-08-09 14:19 rollback baseline found 21 carrier-down events on infra01 and
+16 on infra02. Fourteen infra02 events matched infra01 in the exact same second
+and the remaining two matched within two seconds. There was no infra02-only
+event. Of the five infra01-only events, three were the documented Phase A and
+rollback cable actions at 13:03:34, 13:04:25, and 14:17:57. The remaining two
+were spontaneous events at 16:23:03 on Aug 8 and 07:28:59 on Aug 9.
+
+After excluding the three deliberate cable actions, 16 of 18 spontaneous
+infra01 events, or 88.9%, correlated with every infra02 event. infra03 recorded
+no physical link-down/up event in the same inspected interval. The two
+infra01-only events retain a possible secondary local cable/port contribution
+but do not explain the dominant synchronized pattern.
 
 Two independent host NICs and patch cables do not by themselves explain
 same-second carrier loss on both ports of one upstream node. The evidence
-therefore moves the primary fault boundary to the shared Velop node, its power
-path, internal Ethernet switching, firmware restart behavior, or a broader
-mesh/backhaul event that also resets the Ethernet ports. It does not yet prove
-which of those mechanisms occurred.
+therefore proves that the dominant failure boundary is shared by the two
+Velop-connected hosts and moves the primary investigation to the node, its
+power path, internal Ethernet switching, firmware restart behavior, or a
+broader mesh/backhaul event that also resets the Ethernet ports. It does not
+yet prove which of those mechanisms occurred.
 
 At 15:17 local time on 2026-08-09, infra01, infra02, and infra03 retained
 17/14/4 running and autostart domains. All three uplinks had carrier at 1 Gb/s
@@ -122,4 +132,3 @@ This stage is accepted only when:
 6. the sequential gate is updated and reviewed before physical execution.
 
 Diagnostic acceptance does not accept the transport path or open Argo CD.
-
