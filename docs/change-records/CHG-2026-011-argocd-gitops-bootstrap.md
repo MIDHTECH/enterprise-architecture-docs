@@ -197,15 +197,25 @@ failure or timeout. Reinspection proved:
 6. the application cluster retains four Ready nodes and healthy Longhorn,
    ingress, and Headlamp state.
 
-The recovery window accepts the prerequisite for Jenkins recovery PLAN only.
-PLAN must repeat its read-only reachability gate before Helm; any recurrence
-prohibits DEPLOY. Direct router/switch UI changes, remote `nmcli`, workstation
-Ansible, VM restart, or bridge recreation remain prohibited. infra02
-standardization remains a separate queued network change.
+The recovery window accepted the prerequisite for Jenkins recovery PLAN only.
+PLAN build 9 passed in 23 seconds against exact shared-library revision
+`5ccf022d29fecfda49b5441e249286969e67242f` and GitOps revision
+`6dbb5bf0d15b310be629e7681c39b540120ada53`; both dry runs preserved the
+retained namespace and three CRDs. The independent pre-DEPLOY check then
+closed the gate: the Jenkins agent received 6/20 ICMP replies and Kubernetes
+`/readyz` timed out. DEPLOY was not started. Follow-up traffic recovered
+quickly, which confirms intermittent behavior but does not satisfy sustained
+acceptance across separated windows.
+
+Direct router/switch UI changes, remote `nmcli`, workstation Ansible, VM
+restart, bridge recreation, another PLAN, and DEPLOY remain prohibited until
+a separately reviewed physical or managed-network prerequisite is corrected
+and accepted. infra02 standardization remains a separate queued network
+change.
 
 INC-2026-085 records the failed builds, accepted STP correction, failed
-interval, and later recovery acceptance. The exact execution and probe result
-is retained in
+interval, temporary recovery, and pre-DEPLOY recurrence. The exact execution
+and probe result is retained in
 [infra03 network prerequisite evidence](../evidence/CHG-2026-011-infra03-network-prerequisite-result.md).
 
 ## Acceptance criteria

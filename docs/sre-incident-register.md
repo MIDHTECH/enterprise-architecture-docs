@@ -116,7 +116,7 @@ facts; they do not erase the original observation.
 | INC-2026-082 | 2026-08-03 | SEV-4 | Resolved | AWX credential-use RBAC | Existing machine credential 1 was assigned to organization 1 through the AWX API; all subsequent Jenkins-controlled AWX stages passed |
 | INC-2026-083 | 2026-08-08 | SEV-4 | Resolved | Jenkins Kubernetes storage prerequisites | The generated pipeline used an unavailable `timestamps()` option and failed safely before AWX launch |
 | INC-2026-084 | 2026-08-08 | SEV-4 | Resolved | Jenkins Longhorn acceptance evidence | Groovy string interpolation corrupted two kubectl newline templates after the initial runtime became healthy |
-| INC-2026-085 | 2026-08-08 | SEV-3 | Monitoring | infra03 build-execution network | Initial post-STP intermittent loss later passed sustained four-guest recovery validation; exact transient mechanism remains undetermined |
+| INC-2026-085 | 2026-08-08 | SEV-3 | Open | infra03 build-execution network | Pre-DEPLOY probe reproduced 70 percent loss after a zero-loss window; exact physical/switch/backhaul mechanism remains undetermined |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1484,7 +1484,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-07-29
 - Severity: SEV-2
-- Status: Monitoring
+- Status: Open
 - Component: `infra01.example.com`, NetworkManager bridge `lab-br0`, libvirt
   autostart guests, and guest network initialization
 - Detection/symptom: After infra01 completed a full host reboot, all 17
@@ -2802,7 +2802,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   first-install path and failed with `http2: client connection lost`.
   Recovery PLAN build 8 then timed out during its initial read-only Kubernetes
   API check before Helm ran.
-- Impact: Argo CD bootstrap and its canary acceptance were paused. Atomic Helm
+- Impact: Argo CD bootstrap and its canary acceptance are paused again. Atomic Helm
   rollback removed the failed release; retained Argo CRDs and the empty
   namespace introduce no reconciled workload. Existing Kubernetes workloads
   remain healthy.
@@ -2819,7 +2819,11 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   infra01 while few reached infra03. A later validation-only window passed
   800/800 combined standard and 1,400-byte ICMP probes, 720/720 DNS checks,
   and 960/960 service/API requests across all four guests with no additional
-  mutation.
+  mutation. Recovery PLAN build 9 then passed without mutation, but the
+  independent pre-DEPLOY Jenkins-agent check timed out on `/readyz` and
+  returned only 6/20 ICMP replies. DEPLOY was not started. Immediate
+  follow-up recovered to 20/20 and HTTP 200, confirming a short burst and
+  invalidating the earlier recovery acceptance.
 - Cause: infra03 had real bridge-policy drift: STP remained enabled despite
   the canonical single-uplink standard. That drift is corrected and the
   automation is idempotent. During the failed interval, route, ARP neighbor,
@@ -2833,14 +2837,15 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   left the fleet-wide live correction incomplete. infra02 also retains STP
   enabled, although its worker path is currently stable; it is excluded from
   this Argo CD prerequisite to preserve one-component change control.
-- Resolution: The reviewed cloud-infrastructure/AWX correction converged and
-  validated infra03 STP policy without reconnecting the bridge or cycling a
-  VM. The later full recovery window accepted transport for an Argo CD
-  recovery PLAN only; any recurrence closes the gate before Helm.
+- Resolution: Partial. The reviewed cloud-infrastructure/AWX correction
+  converged and validated infra03 STP policy without reconnecting the bridge
+  or cycling a VM. The pre-DEPLOY recurrence closed the gate before Helm; a
+  separately reviewed physical or managed-network prerequisite is pending.
 - Validation: STP, VM, bridge-port, canonical address/route, control-plane,
-  four-Ready-node, and Longhorn/ingress/Headlamp checks passed. Every infra03
-  guest passed both ICMP sizes, DNS, GitLab, Jenkins, AWX, and Kubernetes
-  `/readyz`; GitLab, Jenkins, and AWX remained idle.
+  four-Ready-node, and Longhorn/ingress/Headlamp checks passed. A complete
+  four-guest window passed both ICMP sizes, DNS, and service/API probes, but a
+  later separated probe failed. Transient traffic-warmed success is therefore
+  not accepted.
 - Prevention/follow-up: Add bridge-policy drift validation for every physical
   hypervisor and queue infra02 standardization separately after CHG-2026-011.
 - Corrective automation: The canonical cloud-infrastructure infra03-limited
