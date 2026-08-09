@@ -25,7 +25,7 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | Change ID | `CHG-2026-011` |
 | Component | Private Argo CD GitOps bootstrap on the existing application cluster, including failed-source recovery, pinned Helm delivery, least-privilege GitLab repository access, an isolated reconciliation canary, rollback, and evidence |
 | State | Blocked after infra01 uplink Phase A failed its immediate zero-loss window and rolled back successfully. A same-port replacement cable preserved 800/800 ICMP and 720/720 DNS checks but app01 missed one of 240 service/API checks: one Kubernetes `/readyz` request. The original cable/port state is restored and healthy. The approved Phase B is non-executable because both Ethernet ports on the identified upstream node are occupied by infra01 and infra02. The read-only shared-node diagnostic is the only open stage. |
-| Blocker | The exact one-request failure mechanism remains unproven. Read-only host history now shows many same-second physical link-down/up events on infra01 and infra02 while both occupied ports terminate on one Linksys Velop `VLP01`; infra03 recorded no matching physical event. This moves the primary fault boundary to the shared node, power/internal switching, or mesh/backhaul path. The evidence does not yet select a safe correction. Transient login or readiness success is not acceptance. |
+| Blocker | The exact one-request failure mechanism remains unproven. A complete timestamp comparison found all 16 infra02 carrier-down events correlated with infra01: 14 in the exact same second and two within two seconds. After excluding three deliberate Phase A/rollback cable actions, 16 of 18 spontaneous infra01 events correlated; infra03 recorded no physical event. Both occupied ports terminate on one Linksys Velop `VLP01`, proving a dominant shared failure boundary and moving the primary investigation to the node, power/internal switching, or mesh/backhaul path. The evidence does not yet select a safe correction. Transient login or readiness success is not acceptance. |
 | Permitted work | Execute only the read-only evidence stage in the [Velop shared-node diagnostic](change-records/CHG-2026-011-velop-shared-node-diagnostic.md): label both occupied host connections, identify the node role, power path and infra03 attachment, and collect available uptime/restart/firmware/backhaul evidence without secrets. Preserve all cables, settings, VMs and the healthy cluster. Do not run Argo CD PLAN/DEPLOY until a correction is selected, separately reviewed, executed and accepted. |
 | Prohibited work | Direct workstation Helm or `kubectl apply`; GitLab CI deployment; public Argo CD exposure; human/write-capable repository credentials; default-project or wildcard destinations; Argo ownership of ingress, Longhorn, Headlamp, application workloads, policy, secrets, backup, autoscaling, or another component; Artifactory/SonarQube work. |
 | Exit criteria | Exact source and PLAN accepted; Argo CD 3.4.6/chart 10.2.2 healthy and private; repository access proven read-only; restricted AppProject/root canary Synced and Healthy; drift self-heals; convergence, rollback, and restore pass; negative ownership/exposure checks, incidents, evidence, and canonical publication complete. |
@@ -102,13 +102,16 @@ exists. The approved Phase B is therefore non-executable and a separately
 reviewed canary redesign is required. The infra02 port is excluded;
 secret-bearing label content is not retained.
 
-A fresh cross-host event comparison then found that most physical carrier
-events on infra01 and infra02 occurred at matching seconds, including
-2026-08-08 13:24, 16:22, 16:35, and 18:40 and 2026-08-09 07:28. Both hosts use
-the two ports on the same `VLP01`; infra03 recorded no physical link event in
-the inspected interval. This supersedes another single-port test and opens
-only the read-only [shared-node diagnostic](change-records/CHG-2026-011-velop-shared-node-diagnostic.md).
-No node, power, backhaul, cable, router, VM, or cluster mutation is authorized.
+A complete cross-host timestamp comparison then found all 16 infra02 carrier-
+down events correlated with infra01: 14 in the exact same second and two within
+two seconds. Three of five infra01-only events were the documented Phase A and
+rollback cable actions, leaving only two spontaneous infra01-only events.
+infra03 recorded no physical link event in the inspected interval. Because
+both hosts use the two ports on the same `VLP01`, the dominant failure boundary
+is shared and another single-port test is superseded. Only the read-only
+[shared-node diagnostic](change-records/CHG-2026-011-velop-shared-node-diagnostic.md)
+is open. No node, power, backhaul, cable, router, VM, or cluster mutation is
+authorized.
 
 `CHG-2026-010` closed successfully on 2026-08-08. Canonical source is
 `ansible-kubernetes` `93d4973a`, `jenkins-jobs` `c9bf66ff`, and
