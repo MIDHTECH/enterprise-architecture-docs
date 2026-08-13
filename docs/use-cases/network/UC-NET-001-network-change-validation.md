@@ -31,6 +31,22 @@ route, listener, firewall, TLS/HTTP, and service health. A separately approved
 canary change captures source and runtime state, runs the same postchecks,
 executes rollback, and proves restoration.
 
+## Platform and enterprise fit
+
+| Relationship | Detailed fit |
+| --- | --- |
+| Owning platform | **Network Change Validation and Rollback** belongs to the Enterprise Network Engineering and Automation Platform because that platform turns reviewed connectivity intent into discovery, validation, approved canary change, reachability proof, and configuration recovery. |
+| Enterprise consumers | The capability supports the trusted network, naming, ingress, egress, and service paths used by every enterprise platform. |
+| Enterprise outcome | Its planned result advances: Protect service connectivity and name resolution during changes to the existing lab. |
+| Control contribution | The design adds segmentation, least privilege, bounded change, configuration backup, and allowed/denied-path evidence. |
+| Cross-platform handoff | Supporting platforms consume a reviewed result or evidence artifact; they do not take ownership away from the primary platform. |
+| Infrastructure boundary | Fit is achieved by reusing documented existing repositories, control planes, services, and targets—not by inventing capacity or treating planned products as available. |
+
+The platform fit is therefore based on ownership and a reusable decision, not
+on the presence of a particular tool. Enterprise fit requires evidence that the
+named outcome was observed for the bounded scope; completing documentation or
+running an isolated technology demonstration is insufficient.
+
 ## Trigger and actors
 
 | Item | Definition |

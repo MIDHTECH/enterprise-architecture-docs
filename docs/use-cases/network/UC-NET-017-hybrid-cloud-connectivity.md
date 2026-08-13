@@ -1,6 +1,6 @@
 # UC-NET-017: Hybrid-Cloud Connectivity
 
-Last verified: 2026-08-13
+Last reviewed: 2026-08-13
 
 ## Use-case record
 
@@ -14,174 +14,347 @@ Last verified: 2026-08-13
 | Jira epic | `EPIC-NET-017` — Implement Hybrid-Cloud Connectivity |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing DNS, NGINX, KVM bridges, Kubernetes networking, GitLab, Jenkins, AWX, and blackbox checks |
-| Current state | **Planned — specification only; implementation and runtime evidence are not claimed** |
+| Current state | **Planned — detailed design only; implementation and runtime evidence are not claimed** |
 | Infrastructure boundary | Reuse the existing lab; do not create a new router, switch, firewall appliance, VM, IP, VLAN, CNI, load balancer, VPN, or cloud network |
 | Owner | Enterprise Network Engineering and Automation Platform team |
 
 ## Purpose
 
-Network engineer, service owner, platform engineer, security reviewer, and SRE need a repeatable, auditable implementation of **Hybrid-Cloud Connectivity**.
-The canonical coverage target is: Routed and secured environment integration. The work must strengthen the
-owning platform and its enterprise outcome without becoming an isolated tool
-demonstration.
+**Hybrid-Cloud Connectivity** addresses a specific operating need inside the
+Enterprise Network Engineering and Automation Platform: **Routed and secured environment integration**. Without a shared design, teams can perform
+the activity differently, omit critical controls, or report success without
+enough context for another engineer or reviewer to reproduce the decision.
+
+The design connects reviewed network intent and the inventoried device, service, or path scope to a controlled result. It gives
+network engineer, service owner, security reviewer, SRE, and change approver a common description of the trigger, inputs, boundaries,
+failure behavior, evidence, and ownership. Documentation here defines the
+future implementation contract; it does not claim that the capability has been
+built or exercised.
 
 ## Expected outcome
 
-A protected GitLab revision defines the trigger, target allowlist, validation,
-evidence, and safe stop for Hybrid-Cloud Connectivity. CI proves source behavior with
-positive and negative fixtures. Any runtime step uses only the documented
-existing lab, requires the appropriate approval, publishes machine-readable
-evidence, and proves rollback or non-mutation.
+For an approved scope, the future workflow evaluates **Hybrid-Cloud Connectivity** through
+read-only discovery and configuration-difference analysis followed by an approved canary through existing Jenkins/AWX network automation when mutation applies. It produces a deterministic allow, block, escalate, or
+not-applicable decision tied to immutable source and the named target. The
+decision supports connectivity, security, DNS, load-balancing, capacity, incident, and application-release decisions and advances secure and reliable connectivity for provider, payer, and shared-platform systems.
+
+A missing prerequisite, unauthorized target, malformed result, unavailable
+product, or failed safety check stops the workflow. No new infrastructure is
+created under this design.
+
+## Platform and enterprise fit
+
+| Relationship | Detailed fit |
+| --- | --- |
+| Owning platform | Hybrid-Cloud Connectivity turns a versioned platform intent into a repeatable decision rather than an isolated operator action. |
+| Platform workflow | only existing inventoried devices and services are evaluated; no appliance, circuit, VLAN capacity, address space, or management product is created. |
+| Enterprise outcome | The result contributes to maintain trusted connectivity and service paths across the existing lab and remains traceable to its owner and source. |
+| Provider and payer value | The control reduces inconsistent or unreviewed behavior in systems supporting healthcare and enterprise operations. |
+| Risk and compliance | Decisions, exceptions, evidence, and review ownership are explicit and auditable. |
+| Operational resilience | Fail-closed behavior, bounded execution, and recovery evidence prevent an ambiguous result from becoming a wider service change. |
 
 ## Trigger and actors
 
 | Item | Definition |
 | --- | --- |
-| Trigger | Merge request, protected scheduled pipeline, or approved operator-started job |
-| Primary actors | Network engineer, service owner, platform engineer, security reviewer, and SRE |
-| Platform owner | Owns source, target allowlist, safe execution, and recovery |
-| Enterprise owner | Confirms the provider, payer, shared-platform, compliance, or resilience value |
-| Reviewer | Verifies evidence, exceptions, and completion state |
+| Trigger | Merge request, protected scheduled evaluation, approved operator request, source/data event, or monitored condition defined by the implementation contract |
+| Primary actors | network engineer, service owner, security reviewer, SRE, and change approver |
+| Request owner | States the desired outcome, scope, urgency, and enterprise consumer |
+| Platform owner | Owns the policy, accepted execution path, target boundary, and safe-stop behavior |
+| Reviewer or approver | Confirms risk, prerequisites, evidence requirements, and any exception before a mutating step |
+| Evidence consumer | Uses the result for connectivity, security, DNS, load-balancing, capacity, incident, and application-release decisions |
 
 ## Preconditions
 
-- The target already exists in canonical inventory or is a synthetic fixture.
-- Execution uses existing DNS, NGINX, KVM bridges, Kubernetes networking, GitLab, Jenkins, AWX, and blackbox checks.
-- Repository, branch, runner, inventory, namespace, and credential scopes are
-  explicit and protected.
-- Inputs contain no passwords, tokens, private keys, kubeconfigs, or protected
-  healthcare data.
-- A planned product, provisioned-only VM, or deferred cloud path is not treated
-  as available.
-- Rollback source or a verified non-mutating stop point is known before work.
+- The named repository, source revision, and target resolve to current
+  enterprise inventory; synthetic fixtures are permitted for source-only tests.
+- The implementation contract defines the scope required to demonstrate:
+  **Routed and secured environment integration**
+- Credentials, if later required, come only from an existing protected
+  credential boundary and are never stored in source, logs, screenshots, or
+  result artifacts.
+- Protected healthcare data is excluded unless a separate approved data
+  classification and handling design explicitly permits it.
+- Tool, API, schema, rule, query, model, or configuration versions that affect
+  the decision are pinned or recorded.
+- A non-mutating plan, fixture, query, or dry-run path is available before any
+  approved bounded change.
+- Recovery means either a verified zero-change stop or an identified restore
+  source and tested reversal procedure.
 
 ## Scope and exclusions
 
-In scope are the source contract, allowlisted targets, CI validation,
-controlled execution where applicable, sanitized evidence, owner review, and
-rollback or safe stop. The page does not authorize a new router, switch, firewall appliance, VM, IP, VLAN, CNI, load balancer, VPN, or cloud network. Any new
-capacity, product installation, or production integration requires a separate
-architecture decision and change record.
+In scope:
 
-## End-to-end execution flow
+- the versioned contract for Hybrid-Cloud Connectivity;
+- explicit input, owner, target, policy, threshold, and decision semantics;
+- positive, negative, missing-input, unauthorized-target, and malformed-result
+  fixture behavior;
+- read-only evaluation or an approved bounded action on an existing target;
+- sanitized machine-readable evidence and reviewer-visible diagnostics;
+- exception ownership and expiry; and
+- safe stop, idempotence, rollback, restore, or reconciliation evidence as
+  appropriate to the activity.
+
+Out of scope:
+
+- installing a product, creating a VM/runner/cluster/database/service, or
+  allocating new capacity;
+- treating a provisioned-only, planned, or unverified product as available;
+- broad production rollout, unrestricted remediation, or bypass of change
+  approval;
+- embedding credentials or protected data in source and evidence;
+- claiming source completion, runtime verification, or acceptance from this
+  documentation; and
+- replacing adjacent platform gates owned by other use cases.
+
+## Detailed operational flow
+
+1. The request identifies **Hybrid-Cloud Connectivity**, the enterprise outcome, owner, immutable
+   source or policy revision, named target, and expected coverage.
+2. Preflight resolves the target against canonical inventory and verifies that
+   every required product and execution path is currently accepted, not merely
+   planned or provisioned.
+3. The future workflow loads the versioned contract, validates required inputs,
+   rejects secrets and protected data, and computes a digest for decision-
+   affecting configuration.
+4. Positive and negative source fixtures establish the intended behavior before
+   any live evaluation. An invalid contract or unexpected fixture result stops.
+5. A read-only plan, query, comparison, or offline evaluation measures the
+   bounded target and predicts the decision and possible impact.
+6. If mutation is necessary, the owner obtains the required change approval and
+   limits execution to the documented canary. Otherwise, the workflow remains
+   non-mutating.
+7. The result records intent revision, device/service identity, precheck, plan/diff, execution ID, before/after reachability, configuration backup, and rollback result and explains why the coverage was or
+   was not satisfied.
+8. An independent post-check proves expected state and detects partial,
+   ambiguous, or out-of-scope effects. Failed post-checks invoke safe stop or
+   the documented recovery path.
+9. Platform and enterprise reviewers accept, reject, or assign follow-up work.
+   Only reviewed evidence changes the status of this page.
 
 ```mermaid
 flowchart LR
-    Need["Enterprise need"] --> Source["Protected GitLab source"]
-    Source --> CI["Schema, policy, and fixture gates"]
-    CI --> Plan["Read-only plan or bounded canary"]
-    Plan --> Evidence["Sanitized machine-readable evidence"]
-    Evidence --> Review["Platform and enterprise-owner review"]
-    Review --> Accept["Accept, reject, or open separate change"]
-    Review --> Recover["Rollback or safe stop"]
+    Need["Enterprise need and owner"] --> Contract["Versioned Hybrid-Cloud Connectivity contract"]
+    Contract --> Preflight["Inventory and prerequisite check"]
+    Preflight --> Evaluate["Fixture and read-only evaluation"]
+    Evaluate --> Decision{"Decision satisfies policy?"}
+    Decision -->|No| Stop["Block, explain, and preserve evidence"]
+    Decision -->|Yes| Review["Owner review or approved bounded action"]
+    Review --> Verify["Independent result and recovery check"]
+    Verify --> Publish["Publish evidence and follow-up"]
 ```
+
+## Design considerations
+
+| Concern | Required design treatment |
+| --- | --- |
+| Network change safety | Validate intent and reachability before action, use a bounded canary, preserve configuration backup, and verify allowed and denied paths after recovery. |
+| Auditability | Record immutable input and policy versions, executor identity, target, timestamps, result, evidence checksum, reviewer, and related change/incident identifiers. |
+| Safe failure | Missing data, unavailable dependencies, ambiguous scope, or incomplete evidence blocks the decision instead of producing a false success. |
+
+These considerations make the page specific to **Hybrid-Cloud Connectivity** while preserving the
+same enterprise control language used across the owning platform. In particular,
+the later implementation must demonstrate network change safety.
+
+## Decision and control rules
+
+- The canonical coverage test is: **Routed and secured environment integration**
+- Immutable identifiers are used for source, policy, data, configuration, and
+  evaluated target wherever the underlying platform provides them.
+- The workflow fails closed when a required input, result, or provenance field
+  is missing, malformed, stale, or outside its allowed scope.
+- Read-only and fixture modes never receive credentials capable of changing the
+  target.
+- A mutating mode, if relevant, requires explicit approval, an allowlisted
+  target, a bounded canary, stop conditions, and a verified recovery source.
+- Exceptions require rationale, owner, reviewer, issue/change reference, scope,
+  and expiry; an expired exception fails the gate.
+- Success enables only the explicitly named downstream decision. It does not
+  imply that adjacent security, reliability, data, release, or runtime gates
+  passed.
+- A screenshot can support human review but cannot replace machine-readable
+  evidence.
+
+## Information and evidence contract
+
+| Evidence element | Requirement |
+| --- | --- |
+| Identity | Use-case ID, repository/project, immutable revision, target, and environment or dataset scope |
+| Execution | Pipeline/build/job/run ID, executor or runner, mode, start/end time, and tool/API version |
+| Inputs | Sanitized parameter names, contract/policy digest, baseline or comparison point, and owner |
+| Result | Expected statement, observed value, threshold/policy evaluation, decision, and explicit blocking reason |
+| Safety | Approval/change ID when required, canary boundary, non-mutation or before/after proof, and unexpected effects |
+| Recovery | Rollback/restore source, recovery execution ID, post-recovery verification, or documented zero-change stop |
+| Governance | Reviewer, exceptions, incident/action links, evidence checksum, retention class, and final status |
+
+Evidence must be concise enough for a reviewer to evaluate but complete enough
+for another engineer to reproduce the reasoning. Secrets, credentials, private
+keys, tokens, kubeconfigs, and protected healthcare data are prohibited.
 
 ## Code and configuration map
 
-All implementation paths are planned inside the named GitLab repository until a
-commit and pipeline are recorded.
+The following locations are planned implementation responsibilities. They are
+not represented as existing files until a future reviewed commit is linked.
 
-| Planned path | Responsibility |
+| Planned location | Responsibility |
 | --- | --- |
-| `use-cases/UC-NET-017/contract.yml` | Trigger, enterprise outcome, owner, target allowlist, safety, and evidence contract |
-| `use-cases/UC-NET-017/schemas/report.schema.json` | Machine-readable result and provenance requirements |
-| `use-cases/UC-NET-017/scripts/execute.sh` | Read-only plan or approved bounded action with explicit exit codes |
-| `use-cases/UC-NET-017/tests/` | Passing, failing, denied-target, redaction, and rollback fixtures |
-| `.gitlab-ci.yml` | Pinned validation job on an existing accepted runner |
-| `docs/use-cases/UC-NET-017.md` | Implementation, operations, troubleshooting, and evidence notes |
+| `midhhealth/platform-engineering/network-engineering-platform` | Own the future platform implementation and use-case-specific operating notes |
+| Planned `UC-NET-017/contract` | Define inputs, owner, target allowlist, mode, coverage, policy, outputs, and safe stop |
+| Planned `UC-NET-017/result-schema` | Normalize provenance, observed values, decision, safety, recovery, and review fields |
+| Planned `UC-NET-017/fixtures` | Exercise passing, blocking, malformed, unauthorized, unavailable-dependency, and recovery cases |
+| Existing GitLab CI path or planned reviewed include | Validate source and fixtures on an accepted existing runner |
+| Existing Jenkins/AWX/platform path, if applicable | Perform only a separately approved bounded action against an inventoried target |
+| Planned operating documentation | Explain prerequisites, evaluation, evidence review, troubleshooting, exception handling, and recovery |
+
+Exact paths and tool choices must be confirmed against the named repository at
+implementation planning time. This design intentionally avoids inventing source
+files or implying that an unavailable product exists.
+
+## Failure and recovery model
+
+| Failure condition | Expected behavior | Recovery or safe stop |
+| --- | --- | --- |
+| Contract or policy is missing/invalid | Fail before target access | Correct through reviewed source and rerun fixtures |
+| Target is absent, ambiguous, or outside inventory | Deny execution | Update authoritative inventory through separate governance; do not guess |
+| Required product or executor is unavailable | Block and report the unmet prerequisite | Wait for separately approved acceptance or select only an already accepted compatible path |
+| Read-only result differs from expectation | Stop before mutation | Review baseline, scope, data freshness, and policy; revise source if needed |
+| Bounded action partially succeeds | Trigger the documented stop and recovery decision | Restore from the named source or reconcile to the last accepted revision |
+| Evidence is missing, malformed, or contains sensitive material | Reject and quarantine the result | Remove exposure, rotate affected credentials if needed, record an incident, and rerun safely |
+| Post-check fails or an unrelated object changes | Do not expand beyond the canary | Recover the canary, reconcile unexpected state, and require owner review |
+| Recovery cannot be proven | Mark blocked, not accepted | Preserve state/evidence and escalate through incident and change governance |
 
 ## Jira breakdown
 
-### STORY-NET-017-001: Define and validate the platform contract
+### STORY-NET-017-001: Define the Hybrid-Cloud Connectivity contract
 
-**Description:** The platform owner needs Hybrid-Cloud Connectivity expressed as versioned
-source with an enterprise outcome, existing target, owner, inputs, outputs,
-safety boundary, and evidence schema.
-
-**Status:** Planned.
-
-**Acceptance criteria:** Given the current lab inventory, when the contract is
-validated, then every target resolves to an existing asset or synthetic fixture,
-the enterprise outcome and owner are present, forbidden infrastructure and
-sensitive inputs are rejected, and the expected coverage is: Routed and secured environment integration.
-
-**Implementation steps:** Create the contract and report schema, add positive
-and negative fixtures, pin tool dependencies, and connect validation to the
-existing GitLab runner allowed for this platform.
-
-**Completed work:** Architecture scope and the no-new-infrastructure boundary
-are documented here. No implementation commit, passing pipeline, or runtime
-result is claimed.
-
-**Validation and rollback:** Run schema, lint, reference, secret, and fixture
-tests. Revert the source commit when the contract points to an absent asset or
-fails its enterprise traceability; no runtime rollback is required.
-
-**Required attachments:** `ART-NET-017-001A` contract validation
-and fixture report.
-
-### STORY-NET-017-002: Execute safely and prove the outcome
-
-**Description:** Platform and enterprise owners need a reproducible result for
-Hybrid-Cloud Connectivity that distinguishes source completion from runtime acceptance and
-preserves a recovery path.
+**Description:** The platform owner and enterprise consumer need Hybrid-Cloud Connectivity defined
+as a versioned, reviewable contract so its scope, decision, evidence, and safety
+boundary are consistent before implementation begins.
 
 **Status:** Planned.
 
-**Acceptance criteria:** Given a protected revision and approved existing
-target, when the job runs, then it records revision, executor, target, start/end
-time, result, and evidence; mutation requires explicit approval; a second check
-proves either idempotence, recovery, or zero change.
+**Acceptance criteria:** Given current enterprise inventory, when the contract
+is reviewed, then it names the owner, immutable input, accepted target/executor,
+coverage statement, policy or threshold, output, evidence, exception process,
+and safe stop; it rejects unavailable products, sensitive inputs, and new-
+infrastructure actions.
 
-**Implementation steps:** Add the guarded job, run PLAN or fixture mode first,
-obtain a change record for mutation, limit execution to one canary, collect
-sanitized results, exercise rollback or safe stop, and publish the decision.
+**Implementation steps:** Confirm the named repository and current target;
+identify producers and consumers; define inputs, decision states, thresholds,
+evidence, and recovery semantics; add future positive and negative fixtures;
+obtain platform and enterprise-owner review.
 
-**Completed work:** Required execution and evidence behavior is specified. No
-job, canary, rollback, or acceptance evidence is claimed.
+**Completed work:** The purpose, platform fit, enterprise outcome, operational
+flow, controls, and future delivery contract are documented on this page. No
+implementation commit or runtime result is claimed.
 
-**Validation and rollback:** Compare expected and actual results, verify no
-credential or protected data leakage, run the rollback or non-mutation check,
-and record unexpected failures in the incident register.
+**Validation and rollback:** Review the design against the canonical portfolio,
+inventory, product state, and no-new-infrastructure rule. Revert the
+documentation revision if an incorrect dependency or boundary is found.
 
-**Required attachments:** `ART-NET-017-002A` execution result,
-`ART-NET-017-002B` rollback or non-mutation proof, and
-`ATT-NET-017-002A` only when a real UI capture adds review value.
+**Required attachments:** Future `ART-NET-017-001A` contract and fixture review.
+
+### STORY-NET-017-002: Build the source and evidence gate
+
+**Description:** The implementation owner needs a fail-closed source workflow
+that evaluates Hybrid-Cloud Connectivity, produces normalized evidence, and controls only its
+declared downstream decisions.
+
+**Status:** Planned.
+
+**Acceptance criteria:** Given valid fixtures, the future job produces the
+expected allow or not-applicable decision and complete provenance; given an
+invalid contract, unauthorized target, failed policy, malformed result, or
+sensitive output, it fails and blocks the named downstream path.
+
+**Implementation steps:** Implement the reviewed contract and result schema in
+the named repository; pin decision-affecting tools; connect an accepted runner;
+add fixture and redaction checks; declare downstream dependencies; document
+diagnosis and safe stop.
+
+**Completed work:** Source responsibilities and required fixture behaviors are
+specified. Implementation is intentionally deferred.
+
+**Validation and rollback:** Exercise positive, blocking, missing-input,
+malformed-output, unauthorized-target, exception-expiry, and redaction cases.
+Revert the source commit if the new gate misclassifies established behavior.
+
+**Required attachments:** Future `ART-NET-017-002A` source validation and
+`ART-NET-017-002B` downstream-block proof.
+
+### STORY-NET-017-003: Verify the bounded outcome and recovery
+
+**Description:** Platform and enterprise reviewers need evidence that the
+future workflow satisfies **Routed and secured environment integration** on its named scope without hidden
+effects and can stop or recover safely.
+
+**Status:** Planned.
+
+**Acceptance criteria:** Given approved prerequisites and target, when the
+future evaluation or canary runs, then the observed result is compared with the
+expected statement, unrelated objects remain unchanged, recovery or zero-change
+is proven, exceptions and incidents are reconciled, and reviewers publish an
+explicit acceptance or rejection.
+
+**Implementation steps:** Reconfirm inventory and idle state; run fixture or
+read-only mode; obtain change approval if mutation applies; execute one bounded
+canary; collect the normalized result; run independent post-check and recovery;
+publish evidence and owner decision here.
+
+**Completed work:** Acceptance, evidence, and recovery requirements are fully
+planned. No live evaluation, mutation, rollback, or acceptance is claimed.
+
+**Validation and rollback:** Compare expected and observed state, verify the
+evidence checksum and sensitive-data boundary, exercise the recovery or non-
+mutation proof, and retain incident/action links. Failed recovery leaves the
+use case blocked.
+
+**Required attachments:** Future `ART-NET-017-003A` bounded result,
+`ART-NET-017-003B` recovery/non-mutation proof, and an optional sanitized
+`ATT-NET-017-003A` only when a real capture adds review value.
 
 ## Evidence and screenshot register
 
-| ID | Evidence | Source | Status |
+| ID | Planned evidence | Source | Current status |
 | --- | --- | --- | --- |
-| `ART-NET-017-001A` | Contract, reference, and fixture validation | GitLab CI | Pending |
-| `ART-NET-017-002A` | Bounded execution or read-only result | Jenkins, AWX, GitLab CI, or approved API | Pending |
-| `ART-NET-017-002B` | Rollback, recovery, idempotence, or non-mutation proof | Approved execution path | Pending |
-| `ATT-NET-017-002A` | Optional sanitized supporting capture | Named source system | Pending if required |
+| `ART-NET-017-001A` | Reviewed contract, inventory, dependency, and fixture design | Architecture and implementation repository review | Pending future implementation |
+| `ART-NET-017-002A` | Positive and negative source-gate results | Existing GitLab and accepted runner | Pending future execution |
+| `ART-NET-017-002B` | Failed-decision proof showing the declared downstream path blocked | Existing delivery pipeline | Pending future execution |
+| `ART-NET-017-003A` | Bounded observed result compared with **Routed and secured environment integration** | Approved existing execution path | Pending future execution |
+| `ART-NET-017-003B` | Recovery, restore, idempotence, reconciliation, or zero-change proof | Approved existing execution path | Pending future execution |
 
 ## Expected versus current result
 
-| Measure | Expected | Current |
+| Measure | Expected future result | Current result |
 | --- | --- | --- |
-| Platform fit | Routed and secured environment integration | Defined in canonical portfolio |
-| Enterprise fit | maintain trusted connectivity and service paths across the existing lab | Traceability specified; owner review pending |
-| Infrastructure | Existing lab or synthetic fixture only | No new infrastructure authorized |
-| Implementation | Passing source gates and reviewable artifact | Not started |
-| Runtime acceptance | Bounded result plus recovery/non-mutation evidence | Not run |
+| Canonical coverage | Routed and secured environment integration | Detailed behavior and decision semantics documented |
+| Platform fit | Controlled result supports connectivity, security, DNS, load-balancing, capacity, incident, and application-release decisions | Owning-platform relationships documented |
+| Enterprise fit | maintain trusted connectivity and service paths across the existing lab | Enterprise value, ownership, and evidence contract documented |
+| Infrastructure | Existing inventoried targets and accepted execution paths only | No new infrastructure authorized |
+| Implementation | Reviewed source contract, schema, fixtures, and fail-closed gate | Not scheduled |
+| Runtime or bounded acceptance | Observed result plus recovery/non-mutation evidence and owner review | Not run |
 
 ## Acceptance decision
 
-**Planned.** Source validation is only `Code complete`. Acceptance requires the
-named existing target, passing evidence, enterprise-owner review, rollback or
-safe-stop proof, incident reconciliation, and publication of the verified
-result.
+**Planned.** The page is a detailed organizational and platform design, not an
+implementation-completion claim. Code complete will require reviewed source and
+passing positive and negative validation in `midhhealth/platform-engineering/network-engineering-platform`. Runtime verified requires
+the expected result on the named existing scope plus independent post-check and
+recovery/non-mutation evidence. Accepted additionally requires owner review,
+exception and incident reconciliation, evidence publication, and a clean
+architecture repository.
 
 ## Operational, security, and follow-up notes
 
-- Copy this specification into `midhhealth/platform-engineering/network-engineering-platform` as the epic and story contract.
-- Keep secrets and protected healthcare data out of source, logs, screenshots,
-  and artifacts.
-- Stop when the target is absent, capacity is unclear, or a new product or
-  infrastructure allocation would be required.
-- Return GitLab commit, pipeline, Jenkins/AWX job, runtime, rollback, and
-  incident evidence to the architecture repository.
-
-
+- Schedule implementation separately; documentation approval does not authorize
+  code execution or a lab change.
+- Recheck current environment state before selecting any product, endpoint,
+  runner, inventory, cluster, database, model, dataset, or network target.
+- Use synthetic or approved de-identified fixtures and sanitize diagnostics.
+- Stop when scope, ownership, capacity, data classification, or recovery is
+  unclear.
+- Preserve the separation between source validation, approval, bounded
+  execution, evidence review, and acceptance.
+- Return future commit, pipeline/job/run, observed-result, recovery, exception,
+  incident, and owner-review evidence to this page.
