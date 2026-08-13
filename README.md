@@ -22,6 +22,8 @@ operators and engineers a common operating record for the platform.
 - [Jenkins AWX Ansible Operations](docs/jenkins-awx-ansible-operations.md)
 - [Platform Engineering Interview Learning Labs](docs/platform-engineering-interview-learning-labs.md)
 - [Platform and Use-Case Learning Enhancement Plan](docs/platform-usecase-learning-enhancement-plan.md)
+- [New-Employee Platform Briefing](docs/new-employee-platform-briefing.md)
+- [Use-Case Interview Question Bank](docs/use-case-interview-question-bank.md)
 - [Kubernetes Helm Delivery](docs/kubernetes-helm-delivery-runbook.md)
 - [PostgreSQL 18 Installation](docs/product-installation-postgresql.md)
 - [Lab DNS and Copper9100 Configuration](docs/product-installation-dns.md)

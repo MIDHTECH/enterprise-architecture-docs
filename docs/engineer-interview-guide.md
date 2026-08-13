@@ -26,6 +26,12 @@ response and incident command, use the
 The linked use-case pages carry the detailed architecture and their own
 follow-up questions; this narrative guide remains the portfolio-level view.
 
+New employees can build the common story from the
+[MidhHealth Platform Briefing](new-employee-platform-briefing.md). Interviewers
+and candidates can then select platform and scenario questions from the
+[Use-Case Interview Question Bank](use-case-interview-question-bank.md), which
+links every canonical detailed use case exactly once.
+
 ## Enterprise DevSecOps Delivery Platform
 
 **Client problem:** Application teams were deploying manually with inconsistent build, test, security, and release controls.

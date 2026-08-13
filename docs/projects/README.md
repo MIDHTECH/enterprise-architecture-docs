@@ -22,6 +22,11 @@ The application-to-platform relationships and the still-empty
 application-to-application inventory are recorded in
 [`application-integration-contracts.json`](../application-integration-contracts.json).
 
+New engineers should begin with the
+[MidhHealth Platform Briefing](../new-employee-platform-briefing.md), then use
+the [Use-Case Interview Question Bank](../use-case-interview-question-bank.md)
+to practise explaining the decisions behind these domain pages.
+
 | Domain | Page |
 | --- | --- |
 | DevSecOps delivery | [DevSecOps Delivery](devsecops-delivery.md) |
