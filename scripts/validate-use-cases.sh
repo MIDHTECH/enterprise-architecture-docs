@@ -137,6 +137,7 @@ import sys
 
 root = Path(sys.argv[1])
 documents = sorted((root / "docs/use-cases").glob("*/UC-*.md"))
+portfolio_text = (root / "docs/enterprise-project-portfolio-and-usecases.md").read_text()
 id_to_path = {}
 for document in documents:
     match = re.match(r"(UC-[A-Z0-9]+-\d{3})", document.name)
@@ -147,6 +148,20 @@ for document in documents:
 for document in documents:
     text = document.read_text()
     own_id = re.match(r"(UC-[A-Z0-9]+-\d{3})", document.name).group(1)
+    portfolio_target = document.relative_to(root / "docs").as_posix()
+    portfolio_link_count = portfolio_text.count(f"({portfolio_target})")
+    if portfolio_link_count != 1:
+        raise SystemExit(
+            f"{document}: canonical portfolio must link the detailed page exactly once; found {portfolio_link_count}"
+        )
+    platform_index = document.parent / "README.md"
+    if not platform_index.is_file():
+        raise SystemExit(f"{document}: missing platform index {platform_index}")
+    index_link_count = platform_index.read_text().count(f"({document.name})")
+    if index_link_count != 1:
+        raise SystemExit(
+            f"{document}: platform index must link the detailed page exactly once; found {index_link_count}"
+        )
     required_architecture_headings = (
         "Architecture context",
         "Architecture diagram",

@@ -38,6 +38,11 @@ that code or runtime execution exists, and they do not authorize new
 infrastructure. When implementation is scheduled later, verified evidence can
 flow back into the corresponding page.
 
+Start from the canonical portfolio when reviewing enterprise coverage, or use
+the platform indexes above when reviewing a platform backlog. Both navigation
+paths link to every detailed page; no use-case design should require browsing
+the repository tree to find it.
+
 Detailed designs may be developed across the portfolio without starting their
 implementation. Implementation and acceptance are separately scheduled and
 tracked so that a documentation update cannot be mistaken for authorization to
