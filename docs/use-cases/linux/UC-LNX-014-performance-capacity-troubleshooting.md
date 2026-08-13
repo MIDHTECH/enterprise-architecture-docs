@@ -87,7 +87,7 @@ listed below.
 
 ![UC-LNX-014 Performance and Capacity Troubleshooting architecture](../../assets/use-cases/UC-LNX-014/UC-LNX-014-architecture.svg)
 
-An alert or capacity trend triggers evidence capture and layer-by-layer diagnosis, followed by a bounded tuning experiment against the original baseline.
+Read this as the shared incident clock. Signal, classification, ownership, diagnosis, action, verification, and learning stay on one timeline so recovery cannot be declared merely because an alert cleared.
 
 ## IaC delivery model
 

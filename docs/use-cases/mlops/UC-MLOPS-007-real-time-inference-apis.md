@@ -128,7 +128,7 @@ listed below.
 
 ![UC-MLOPS-007 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-MLOPS-007/UC-MLOPS-007-architecture.svg)
 
-The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
+Follow the information, not the boxes. The main route keeps contract, classification, processing, and consumption visible; the orange route is where refused or replayable work waits for a human decision.
 
 ## Dependencies and handoffs
 

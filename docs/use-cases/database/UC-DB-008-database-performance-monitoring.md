@@ -128,7 +128,7 @@ listed below.
 
 ![UC-DB-008 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-DB-008/UC-DB-008-architecture.svg)
 
-The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
+The center is the outcome the team cares about. The surrounding loop senses, compares, decides, verifies, and learns; it only closes when an accountable owner accepts the evidence.
 
 ## Dependencies and handoffs
 

@@ -128,7 +128,7 @@ listed below.
 
 ![UC-NET-030 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-NET-030/UC-NET-030-architecture.svg)
 
-The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
+Read this as the shared incident clock. Signal, classification, ownership, diagnosis, action, verification, and learning stay on one timeline so recovery cannot be declared merely because an alert cleared.
 
 ## Dependencies and handoffs
 

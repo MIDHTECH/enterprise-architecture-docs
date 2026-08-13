@@ -88,7 +88,7 @@ listed below.
 
 ![UC-LNX-002 KVM and libvirt Virtualization architecture](../../assets/use-cases/UC-LNX-002/UC-LNX-002-architecture.svg)
 
-A capacity request becomes a Terraform plan, passes through a canary domain, and finishes as healthy libvirt resources with state and runtime evidence.
+Read this one left to right. The upper line follows a reviewed change toward a provable outcome; the lower branch shows who can stop it and how the team returns to a known release.
 
 ## IaC delivery model
 

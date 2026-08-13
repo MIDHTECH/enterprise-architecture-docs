@@ -87,7 +87,7 @@ listed below.
 
 ![UC-LNX-010 Filesystem, LVM and Storage Management architecture](../../assets/use-cases/UC-LNX-010/UC-LNX-010-architecture.svg)
 
-An approved capacity request resolves to a specific device, passes through LVM and filesystem controls, and closes with mount, capacity, and recovery evidence.
+Read this one left to right. The upper line follows a reviewed change toward a provable outcome; the lower branch shows who can stop it and how the team returns to a known release.
 
 ## IaC delivery model
 

@@ -98,7 +98,7 @@ listed below.
 
 ![UC-NET-001 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-NET-001/UC-NET-001-architecture.svg)
 
-The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
+Trace the requested conversation from source zone to destination. Each boundary answers a different question—identity, intent, policy, path, and proof—and a drawn arrow never substitutes for permission.
 
 ## Dependencies and handoffs
 

@@ -88,7 +88,7 @@ listed below.
 
 ![UC-LNX-006 Operating-System Patching architecture](../../assets/use-cases/UC-LNX-006/UC-LNX-006-architecture.svg)
 
-Advisory triage and a frozen package set lead to an Ansible canary and reboot gate, then host health and package evidence.
+Read the timeline as a controlled change, not a happy-path checklist. Preparation, authorization, verification, and recovery are peers, and failure returns to a known-good point.
 
 ## IaC delivery model
 

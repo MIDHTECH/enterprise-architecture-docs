@@ -139,6 +139,16 @@ root = Path(sys.argv[1])
 documents = sorted((root / "docs/use-cases").glob("*/UC-*.md"))
 portfolio_text = (root / "docs/enterprise-project-portfolio-and-usecases.md").read_text()
 id_to_path = {}
+architecture_archetypes = set()
+allowed_archetypes = {
+    "delivery-pipeline",
+    "data-flow",
+    "feedback-loop",
+    "lifecycle",
+    "service-path",
+    "decision-map",
+    "response",
+}
 for document in documents:
     match = re.match(r"(UC-[A-Z0-9]+-\d{3})", document.name)
     if not match:
@@ -233,21 +243,30 @@ for document in documents:
     if svg_description is None or not (svg_description.text or "").strip():
         raise SystemExit(f"{architecture_path}: SVG must contain an accessible description")
     serialized_svg = architecture_path.read_text()
-    required_visual_concepts = (
-        "Source and dependency layer",
-        "Automation control plane",
-        "Existing runtime, outcome, and recovery",
-        "Enterprise assurance",
+    if svg_root.attrib.get("data-use-case") != own_id:
+        raise SystemExit(f"{architecture_path}: data-use-case must equal {own_id}")
+    diagram_archetype = svg_root.attrib.get("data-archetype")
+    if diagram_archetype not in allowed_archetypes:
+        raise SystemExit(f"{architecture_path}: unsupported architecture archetype {diagram_archetype!r}")
+    architecture_archetypes.add(diagram_archetype)
+    required_human_concepts = (
+        "WHAT WE’RE TRYING TO MAKE TRUE",
+        "The line we do not cross in this design",
     )
-    if document.parent.name != "linux":
-        for concept in required_visual_concepts:
-            if concept not in serialized_svg:
-                raise SystemExit(f"{architecture_path}: missing detailed visual concept {concept!r}")
+    for concept in required_human_concepts:
+        if concept not in serialized_svg:
+            raise SystemExit(f"{architecture_path}: missing human-readable visual concept {concept!r}")
+    if own_id not in serialized_svg:
+        raise SystemExit(f"{architecture_path}: diagram does not contain its own use-case ID")
 
     for target in re.findall(r"\[[^\]]+\]\(([^)#]+\.md)(?:#[^)]+)?\)", text):
         resolved = (document.parent / target).resolve()
         if not resolved.is_file():
             raise SystemExit(f"{document}: broken internal Markdown link: {target}")
+
+if architecture_archetypes != allowed_archetypes:
+    missing = sorted(allowed_archetypes - architecture_archetypes)
+    raise SystemExit(f"Architecture portfolio does not exercise every approved visual grammar; missing {missing}")
 PY
 
 LINUX_USE_CASE_FILES=()

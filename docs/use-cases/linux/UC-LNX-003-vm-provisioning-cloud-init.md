@@ -88,7 +88,7 @@ listed below.
 
 ![UC-LNX-003 VM Provisioning with cloud-init architecture](../../assets/use-cases/UC-LNX-003/UC-LNX-003-architecture.svg)
 
-Request metadata and IPAM decisions drive Terraform and cloud-init, followed by DNS, SSH, and inventory checks before handoff.
+Read this one left to right. The upper line follows a reviewed change toward a provable outcome; the lower branch shows who can stop it and how the team returns to a known release.
 
 ## IaC delivery model
 

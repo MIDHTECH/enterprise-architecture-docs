@@ -88,7 +88,7 @@ listed below.
 
 ![UC-LNX-001 Ubuntu and Rocky Linux Installation Standards architecture](../../assets/use-cases/UC-LNX-001/UC-LNX-001-architecture.svg)
 
-Approved OS policy and installation media move through Packer, Terraform, and Ansible, ending with a tested canary image and release evidence.
+Read this one left to right. The upper line follows a reviewed change toward a provable outcome; the lower branch shows who can stop it and how the team returns to a known release.
 
 ## IaC delivery model
 

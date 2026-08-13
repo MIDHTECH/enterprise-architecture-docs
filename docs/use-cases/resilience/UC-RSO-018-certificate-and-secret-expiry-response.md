@@ -128,7 +128,7 @@ listed below.
 
 ![UC-RSO-018 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-RSO-018/UC-RSO-018-architecture.svg)
 
-The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
+Start in the center, then test the decision against each surrounding question. Governance is complete only when the person affected can see who asked, which rule applied, what evidence existed, and how to challenge or reverse the result.
 
 ## Dependencies and handoffs
 

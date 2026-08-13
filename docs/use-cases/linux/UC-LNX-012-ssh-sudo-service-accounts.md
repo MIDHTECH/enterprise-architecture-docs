@@ -87,7 +87,7 @@ listed below.
 
 ![UC-LNX-012 SSH, sudo and Service Accounts architecture](../../assets/use-cases/UC-LNX-012/UC-LNX-012-architecture.svg)
 
-An identity request becomes SSH, sudo, and service-account policy, tested for allowed and denied behavior before access-review evidence is published.
+Read this one left to right. The upper line follows a reviewed change toward a provable outcome; the lower branch shows who can stop it and how the team returns to a known release.
 
 ## IaC delivery model
 

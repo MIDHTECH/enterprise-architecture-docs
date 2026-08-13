@@ -77,7 +77,10 @@ plan without authorizing infrastructure or runtime work. Required content is:
    actors, source and dependency contracts, planned control logic, decision
    gates, accepted execution boundary, existing target, assurance controls,
    evidence, owner acceptance, and recovery. Simple Mermaid block flows do not
-   satisfy this requirement;
+   satisfy this requirement. The visual form must fit the work: use a delivery
+   pipeline, data flow, feedback loop, controlled lifecycle, service path,
+   decision map, or response timeline as appropriate instead of forcing every
+   capability into the same layout;
 3. explicit upstream and assurance dependencies linked by canonical use-case
    ID, including the artifact exchanged and the effect of missing evidence;
 4. functional, performance, scale, reliability, recovery, observability, and

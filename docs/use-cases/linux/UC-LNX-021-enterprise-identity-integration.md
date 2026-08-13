@@ -87,7 +87,7 @@ listed below.
 
 ![UC-LNX-021 Enterprise Identity Integration architecture](../../assets/use-cases/UC-LNX-021/UC-LNX-021-architecture.svg)
 
-Directory and role policy become SSSD, Kerberos, PAM, and certificate configuration, followed by positive, negative, outage, and recovery tests.
+Read this one left to right. The upper line follows a reviewed change toward a provable outcome; the lower branch shows who can stop it and how the team returns to a known release.
 
 ## IaC delivery model
 

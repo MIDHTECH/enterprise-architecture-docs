@@ -87,7 +87,7 @@ listed below.
 
 ![UC-LNX-019 Linux Monitoring and Incident Operations architecture](../../assets/use-cases/UC-LNX-019/UC-LNX-019-architecture.svg)
 
-Host signals pass through alert rules and triage into incident response, then recovery evidence and a durable Git correction close the loop.
+Read this as the shared incident clock. Signal, classification, ownership, diagnosis, action, verification, and learning stay on one timeline so recovery cannot be declared merely because an alert cleared.
 
 ## IaC delivery model
 

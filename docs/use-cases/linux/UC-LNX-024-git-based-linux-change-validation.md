@@ -87,7 +87,7 @@ listed below.
 
 ![UC-LNX-024 Git-Based Linux Change Validation architecture](../../assets/use-cases/UC-LNX-024/UC-LNX-024-architecture.svg)
 
-A merge request passes source and policy gates, approved orchestration, canary and cohort execution, then feeds runtime and recovery proof back to the record.
+Read this one left to right. The upper line follows a reviewed change toward a provable outcome; the lower branch shows who can stop it and how the team returns to a known release.
 
 ## IaC delivery model
 

@@ -88,7 +88,7 @@ listed below.
 
 ![UC-LNX-004 Server Build and Retirement architecture](../../assets/use-cases/UC-LNX-004/UC-LNX-004-architecture.svg)
 
-The owner-approved request flows through build or retirement orchestration and closes with either service handoff or verified decommission evidence.
+Read the timeline as a controlled change, not a happy-path checklist. Preparation, authorization, verification, and recovery are peers, and failure returns to a known-good point.
 
 ## IaC delivery model
 

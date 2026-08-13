@@ -128,7 +128,7 @@ listed below.
 
 ![UC-GOV-012 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-GOV-012/UC-GOV-012-architecture.svg)
 
-The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
+Read the timeline as a controlled change, not a happy-path checklist. Preparation, authorization, verification, and recovery are peers, and failure returns to a known-good point.
 
 ## Dependencies and handoffs
 

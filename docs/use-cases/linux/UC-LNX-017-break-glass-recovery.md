@@ -87,7 +87,7 @@ listed below.
 
 ![UC-LNX-017 Break-Glass Recovery architecture](../../assets/use-cases/UC-LNX-017/UC-LNX-017-architecture.svg)
 
-An incident opens a time-bound console or rescue path, then returns the host to normal management with access cleanup and incident evidence.
+Read this as the shared incident clock. Signal, classification, ownership, diagnosis, action, verification, and learning stay on one timeline so recovery cannot be declared merely because an alert cleared.
 
 ## IaC delivery model
 

@@ -87,7 +87,7 @@ listed below.
 
 ![UC-LNX-011 DNS, NTP and Host Networking architecture](../../assets/use-cases/UC-LNX-011/UC-LNX-011-architecture.svg)
 
-Authoritative DNS, IP, route, and time inputs become host state through a connectivity-safe canary and resolution, reachability, and clock checks.
+Read this one left to right. The upper line follows a reviewed change toward a provable outcome; the lower branch shows who can stop it and how the team returns to a known release.
 
 ## IaC delivery model
 

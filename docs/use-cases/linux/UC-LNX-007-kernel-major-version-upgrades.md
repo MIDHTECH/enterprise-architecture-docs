@@ -88,7 +88,7 @@ listed below.
 
 ![UC-LNX-007 Kernel and Major-Version Upgrades architecture](../../assets/use-cases/UC-LNX-007/UC-LNX-007-architecture.svg)
 
-Compatibility inputs and the approved target pass through rehearsal and a controlled reboot, ending with service health and rollback proof.
+Read the timeline as a controlled change, not a happy-path checklist. Preparation, authorization, verification, and recovery are peers, and failure returns to a known-good point.
 
 ## IaC delivery model
 

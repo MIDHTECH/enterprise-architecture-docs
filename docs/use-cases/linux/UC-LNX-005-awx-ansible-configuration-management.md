@@ -88,7 +88,7 @@ listed below.
 
 ![UC-LNX-005 AWX and Ansible Configuration Management architecture](../../assets/use-cases/UC-LNX-005/UC-LNX-005-architecture.svg)
 
-Reviewed inventory and roles flow through GitLab and Jenkins into an AWX canary, expand by cohort, and return job events and health evidence.
+Read this one left to right. The upper line follows a reviewed change toward a provable outcome; the lower branch shows who can stop it and how the team returns to a known release.
 
 ## IaC delivery model
 

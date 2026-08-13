@@ -87,7 +87,7 @@ listed below.
 
 ![UC-LNX-016 Server Compliance Evidence architecture](../../assets/use-cases/UC-LNX-016/UC-LNX-016-architecture.svg)
 
-Versioned controls drive read-only collection, results and exceptions are normalized, and the signed report links findings to source and host evidence.
+The center is the outcome the team cares about. The surrounding loop senses, compares, decides, verifies, and learns; it only closes when an accountable owner accepts the evidence.
 
 ## IaC delivery model
 

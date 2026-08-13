@@ -87,7 +87,7 @@ listed below.
 
 ![UC-LNX-023 Backup, Restore, Disaster Recovery and HA Testing architecture](../../assets/use-cases/UC-LNX-023/UC-LNX-023-architecture.svg)
 
-Recovery policy and backup integrity checks lead into an isolated restore or failover, ending with measured RPO/RTO and service evidence.
+Read the timeline as a controlled change, not a happy-path checklist. Preparation, authorization, verification, and recovery are peers, and failure returns to a known-good point.
 
 ## IaC delivery model
 

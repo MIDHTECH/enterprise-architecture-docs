@@ -88,7 +88,7 @@ listed below.
 
 ![UC-LNX-008 SELinux and Firewall Management architecture](../../assets/use-cases/UC-LNX-008/UC-LNX-008-architecture.svg)
 
-A service requirement becomes narrow SELinux and firewall policy, tested positively and negatively on a canary before enforcement is accepted.
+Read this one left to right. The upper line follows a reviewed change toward a provable outcome; the lower branch shows who can stop it and how the team returns to a known release.
 
 ## IaC delivery model
 

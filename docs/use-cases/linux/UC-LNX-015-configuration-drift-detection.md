@@ -87,7 +87,7 @@ listed below.
 
 ![UC-LNX-015 Configuration-Drift Detection architecture](../../assets/use-cases/UC-LNX-015/UC-LNX-015-architecture.svg)
 
-Reviewed desired state is compared with live facts, differences are classified, and only approved remediation reaches a canary before closure.
+The center is the outcome the team cares about. The surrounding loop senses, compares, decides, verifies, and learns; it only closes when an accountable owner accepts the evidence.
 
 ## IaC delivery model
 
