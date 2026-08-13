@@ -33,6 +33,22 @@ metrics, fairness/safety placeholders, and approval state, then publishes an
 immutable evidence bundle tied to the Git commit. Promotion remains blocked
 until every required gate passes.
 
+## Platform and enterprise fit
+
+| Relationship | Detailed fit |
+| --- | --- |
+| Owning platform | **Model Registry and Versioning** belongs to the Enterprise MLOps Model Platform because that platform turns versioned code, data, features, models, evaluations, promotion, monitoring, and retirement into a governed lifecycle. |
+| Enterprise consumers | The capability supports reproducible model capabilities used by provider, payer, AI, analytics, and shared platforms. |
+| Enterprise outcome | Its planned result advances: Prevent an untraceable or unvalidated model artifact from entering an enterprise workflow. |
+| Control contribution | The design adds lineage, reproducibility, model-risk review, drift response, rollback, and retirement evidence. |
+| Cross-platform handoff | Supporting platforms consume a reviewed result or evidence artifact; they do not take ownership away from the primary platform. |
+| Infrastructure boundary | Fit is achieved by reusing documented existing repositories, control planes, services, and targets—not by inventing capacity or treating planned products as available. |
+
+The platform fit is therefore based on ownership and a reusable decision, not
+on the presence of a particular tool. Enterprise fit requires evidence that the
+named outcome was observed for the bounded scope; completing documentation or
+running an isolated technology demonstration is insufficient.
+
 ## Trigger and actors
 
 | Item | Definition |
