@@ -642,6 +642,7 @@ Screenshot capture procedure:
 | Application provenance | Approved Podinfo commit copied to protected internal GitLab with license and scans | Project 29, protected `main`, internal commit `b8dceac72494313eca3ab388a20ad06867675224`, and pipeline `653` prove import, source policy and tests; image scan/SBOM remain pending | Partially satisfied |
 | Platform source validation | All relevant shared-platform pipelines pass | Pipelines 354, 351, 352, 360, and 358 passed | Satisfied for shared prerequisites |
 | Managed Jenkins platform path | Job generated from reviewed DSL and proven on the dedicated executor | CHG-2026-009 PLAN/deploy/rollback/restore builds 3-7 accepted the shared ingress path | Satisfied for platform prerequisite; no Podinfo job run |
+| Podinfo release contract | Application-specific Job DSL calls a reusable digest-pinned application Helm contract | Shared-library pipeline `656` and Job DSL pipeline `657` passed; Jenkins seed synchronization remains pending | Source satisfied; controller generation pending |
 | Dedicated agent | Online, pinned tools, correct label, second convergence clean | Jenkins build 1 passed on the agent; AWX jobs 536/541 were clean | Satisfied |
 | Podinfo Helm plan | Successful non-mutating server-side plan using the internal commit and Harbor digest | Not yet run | Pending |
 | Podinfo deployment | Atomic release and all project health checks pass | Not yet run | Pending |

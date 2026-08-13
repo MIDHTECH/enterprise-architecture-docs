@@ -19,7 +19,7 @@ whole path before a business application depends on it.
 | Data owner | Not applicable; no clinical, payer, PHI or production data |
 | Primary runtime | Existing application Kubernetes cluster; planned namespace `podinfo` |
 | Source revision | Upstream tag `6.14.1`, commit `eec06d1ea459af4cb4e10e806f8be7c7bd58b361` |
-| Internal revision | `b8dceac72494313eca3ab388a20ad06867675224`; pipeline `653` |
+| Internal revision | Protected `main` at `6ac37678191d638baaa6e1e8f4da0f1d788f8676`; last fully passing pipeline `653` |
 | Current state | **Internal project and initial CI passed; Harbor publication and runtime deployment pending** |
 | Machine state | `internal-ci-passed` |
 
@@ -39,7 +39,7 @@ to the same project record. A failed handoff keeps the prior release in place.
 | Source | `stefanprodan/podinfo` | Tag `6.14.1`, commit and Apache-2.0 license recorded in [APP-PODINFO-001](../../evidence/APP-PODINFO-001-source-review.md) | A moving branch, changed license or unreviewed commit blocks import. |
 | Build | `midhhealth/applications/podinfo` with the existing GitLab application runner | Internal commit produces tests, scan results, SBOM/provenance and one immutable image reference | Source policy and tests pass; missing image scan/SBOM or mutable tag still blocks publication. |
 | Artifact | Existing `harbor.example.com` | Internally built image digest; Trivy result attached to the release | Public-image fallback or missing digest blocks Helm PLAN. |
-| Release | `jenkins-jobs`, `jenkins-shared-library`, `ansible-jenkins` | Manual PLAN/DEPLOY/ROLLBACK on `jenkins-agent01` with the protected kubeconfig | Wrong executor, missing confirmation or inaccessible revision fails closed. |
+| Release | `jenkins-jobs`, `jenkins-shared-library`, `ansible-jenkins` | Validated Podinfo Job DSL and reusable PLAN/DEPLOY/ROLLBACK source on `jenkins-agent01` with the protected kubeconfig | Source pipelines pass; job generation, wrong executor, missing confirmation or inaccessible revision still fail closed. |
 | Runtime | `ansible-kubernetes`, `kubernetes-platform-gitops` and the existing four-node cluster | Namespace, ServiceAccount, ClusterIP Service, resource limits, probes and nginx Ingress | Wrong cluster identity, NodePort/hostPort or unauthorized cluster add-on blocks deployment. |
 | Access | `network-engineering-platform` | Approved DNS/TLS name, source path and worker-local edge route | No hostname is assumed; traffic remains unavailable until the route is approved and tested. |
 | Operations | `observability-sre-platform` and `resilience-service-operations` | Release-labeled metrics/logs/traces, SLO, alert owner, dependency and rollback evidence | Missing release identity, owner, alert route or recovery proof prevents acceptance. |
@@ -115,6 +115,7 @@ evidence excludes tokens, private keys and kubeconfig content.
 | Upstream source and license | [APP-PODINFO-001](../../evidence/APP-PODINFO-001-source-review.md) | **Passed** |
 | Internal GitLab project and provenance | [APP-PODINFO-002](../../evidence/APP-PODINFO-002-internal-project-ci.md) | **Passed** |
 | Build and test | Pipeline `653`, source-policy job `1943`, unit-test job `1944`, binary job `1945` | **Passed** |
+| Application release contract source | [APP-PODINFO-003](../../evidence/APP-PODINFO-003-release-contract-source.md) | **Passed in both platform repositories; Jenkins seed synchronization pending** |
 | Scan, SBOM and Harbor provenance | GitLab reports, image digest and Harbor scan | Pending |
 | Existing Jenkins executor | [CHG-2026-002](../../evidence/CHG-2026-002-jenkins-agent-acceptance.md) | **Platform prerequisite passed** |
 | Existing Kubernetes ingress | [CHG-2026-009](../../evidence/CHG-2026-009-kubernetes-ingress-acceptance.md) | **Platform prerequisite passed** |

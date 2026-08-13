@@ -20,8 +20,20 @@
         "project_id": 29,
         "default_branch": "main",
         "protected_branch": true,
-        "commit": "b8dceac72494313eca3ab388a20ad06867675224",
-        "pipeline_id": 653
+        "commit": "6ac37678191d638baaa6e1e8f4da0f1d788f8676",
+        "last_passing_pipeline_id": 653
+      },
+      "delivery_contracts": {
+        "shared_library": {
+          "repository": "midhhealth/platform-delivery/jenkins-shared-library",
+          "commit": "71c5b28811630aa1bdc5ac2d5395660f8f6afec6",
+          "pipeline_id": 656
+        },
+        "job_dsl": {
+          "repository": "midhhealth/platform-delivery/jenkins-jobs",
+          "commit": "8adccc2e6de77d37bf6104f82d8832030409fc62",
+          "pipeline_id": 657
+        }
       },
       "deployment_state": "internal-ci-passed",
       "runtime": {
@@ -53,6 +65,7 @@
       "evidence": [
         "docs/evidence/APP-PODINFO-001-source-review.md",
         "docs/evidence/APP-PODINFO-002-internal-project-ci.md",
+        "docs/evidence/APP-PODINFO-003-release-contract-source.md",
         "docs/evidence/CHG-2026-002-jenkins-agent-acceptance.md",
         "docs/evidence/CHG-2026-009-kubernetes-ingress-acceptance.md",
         "docs/evidence/CHG-2026-010-kubernetes-persistent-storage-acceptance.md"
@@ -61,6 +74,7 @@
         {"id": "source-pinned", "state": "passed"},
         {"id": "internal-project-created", "state": "passed"},
         {"id": "internal-ci-passed", "state": "passed"},
+        {"id": "application-release-contract-source", "state": "passed"},
         {"id": "harbor-image-published", "state": "pending"},
         {"id": "helm-plan-passed", "state": "pending"},
         {"id": "application-deployed", "state": "pending"},

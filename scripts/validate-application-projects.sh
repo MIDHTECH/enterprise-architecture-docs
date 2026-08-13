@@ -187,6 +187,22 @@ for application in applications:
         raise SystemExit(
             f"{manifest}: {application_id} has missing or unknown platform projects {unknown_projects}"
         )
+    delivery_contracts = application.get("delivery_contracts", {})
+    if application.get("deployment_state") not in {"inventory", "source-pinned"}:
+        for contract_name in ("shared_library", "job_dsl"):
+            contract = delivery_contracts.get(contract_name, {})
+            if contract.get("repository") not in project_dependencies:
+                raise SystemExit(
+                    f"{manifest}: {application_id} {contract_name} must reference a platform dependency"
+                )
+            if not re.fullmatch(r"[0-9a-f]{40}", contract.get("commit", "")):
+                raise SystemExit(
+                    f"{manifest}: {application_id} {contract_name} must pin a full commit"
+                )
+            if not isinstance(contract.get("pipeline_id"), int):
+                raise SystemExit(
+                    f"{manifest}: {application_id} {contract_name} must record a pipeline ID"
+                )
     for evidence in application.get("evidence", []):
         if not (root / evidence).is_file():
             raise SystemExit(f"{manifest}: {application_id} evidence does not exist: {evidence}")
