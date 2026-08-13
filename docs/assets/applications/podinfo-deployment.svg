@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1160" viewBox="0 0 1800 1160" role="img" aria-labelledby="title desc" data-application="podinfo">
 <title id="title">Podinfo project deployment through existing MidhHealth platform contracts</title>
-<desc id="desc">A detailed application flow from pinned upstream source to an internal GitLab project, build and scan, Harbor image, Jenkins-controlled Helm release, the existing Kubernetes cluster, ingress and telemetry, with pending gates and rollback evidence clearly distinguished.</desc>
+<desc id="desc">A detailed application flow from pinned upstream source through a protected internal GitLab project and passing application CI to a pending Harbor image, Jenkins-controlled Helm release, the existing Kubernetes cluster, ingress and telemetry, with completed and pending gates clearly distinguished.</desc>
 <defs>
 <style>
 .bg{fill:#fff}.lane{fill:#f8fafc;stroke:#cbd5e1;stroke-width:2}.source{fill:#eff6ff;stroke:#2563eb;stroke-width:2}.platform{fill:#ecfdf5;stroke:#059669;stroke-width:2}.runtime{fill:#fff7ed;stroke:#d97706;stroke-width:2}.evidence{fill:#f5f3ff;stroke:#7c3aed;stroke-width:2}.pending{fill:#fff7ed;stroke:#ea580c;stroke-width:2.5;stroke-dasharray:8 5}.passed{fill:#ecfdf5;stroke:#059669;stroke-width:2.5}.blocked{fill:#fff1f2;stroke:#e11d48;stroke-width:2.5}.card{fill:#fff;stroke:#64748b;stroke-width:1.7}.title{font:700 30px Arial,sans-serif;fill:#0f172a}.sub{font:15px Arial,sans-serif;fill:#475569}.section{font:700 20px Arial,sans-serif;fill:#0f172a}.head{font:700 15px Arial,sans-serif;fill:#0f172a}.body{font:12px Arial,sans-serif;fill:#475569}.small{font:11px Arial,sans-serif;fill:#64748b}.status{font:700 11px Arial,sans-serif;letter-spacing:1px}.flow{fill:none;stroke:#2563eb;stroke-width:3;marker-end:url(#blue)}.return{fill:none;stroke:#7c3aed;stroke-width:3;stroke-dasharray:8 6;marker-end:url(#purple)}.stop{fill:none;stroke:#e11d48;stroke-width:2.5;marker-end:url(#red)}.note{font:italic 15px Georgia,serif;fill:#475569}.tagPass{fill:#d1fae5}.tagPending{fill:#ffedd5}.tagStop{fill:#ffe4e6}
@@ -18,16 +18,16 @@
 <rect class="passed" x="70" y="180" width="360" height="105" rx="13"/>
 <text class="head" x="92" y="212">Pinned upstream source</text><text class="body" x="92" y="238">tag 6.14.1 • eec06d1ea459…</text><text class="body" x="92" y="259">Apache-2.0 license hash recorded</text>
 <rect class="tagPass" x="310" y="193" width="93" height="22" rx="11"/><text class="status" x="325" y="208" fill="#047857">PASSED</text>
-<rect class="pending" x="535" y="180" width="390" height="105" rx="13"/>
-<text class="head" x="557" y="212">Internal GitLab project</text><text class="body" x="557" y="238">midhhealth/applications/podinfo</text><text class="body" x="557" y="259">history + LICENSE + UPSTREAM.md</text>
-<rect class="tagPending" x="802" y="193" width="98" height="22" rx="11"/><text class="status" x="818" y="208" fill="#c2410c">PENDING</text>
+<rect class="passed" x="535" y="180" width="390" height="105" rx="13"/>
+<text class="head" x="557" y="212">Protected internal GitLab project</text><text class="body" x="557" y="238">project 29 • main • b8dceac72494…</text><text class="body" x="557" y="259">1,197 commits • 109 tags • provenance retained</text>
+<rect class="tagPass" x="802" y="193" width="93" height="22" rx="11"/><text class="status" x="817" y="208" fill="#047857">PASSED</text>
 <rect class="card" x="1040" y="180" width="650" height="105" rx="13"/>
 <text class="head" x="1062" y="212">People making the release decision</text><text class="body" x="1062" y="238">Platform Delivery owns source and release • Security reviews findings</text><text class="body" x="1062" y="259">SRE accepts health and recovery • no clinical or payer data owner required</text>
 <path class="flow" d="M430 232H535"/>
 
 <rect class="platform" x="38" y="350" width="1724" height="255" rx="18"/>
 <text class="section" x="66" y="386">2 · Existing delivery contracts—each can veto the handoff</text>
-<rect class="pending" x="70" y="425" width="300" height="130" rx="13"/><text class="head" x="92" y="458">GitLab application runner</text><text class="body" x="92" y="484">compile • unit/e2e tests</text><text class="body" x="92" y="505">secret/dependency scan • SBOM</text><text class="body" x="92" y="526">bind result to internal commit</text>
+<rect class="passed" x="70" y="425" width="300" height="130" rx="13"/><text class="head" x="92" y="458">GitLab application runner</text><text class="body" x="92" y="484">pipeline 653 • runner 3</text><text class="body" x="92" y="505">source policy • Go test/vet • binary</text><text class="body" x="92" y="526">scan/SBOM move to the Harbor gate</text>
 <rect class="pending" x="420" y="425" width="300" height="130" rx="13"/><text class="head" x="442" y="458">Existing Harbor</text><text class="body" x="442" y="484">internal image, addressed by digest</text><text class="body" x="442" y="505">Trivy result returns to project</text><text class="body" x="442" y="526">no public-image fallback</text>
 <rect class="passed" x="770" y="425" width="300" height="130" rx="13"/><text class="head" x="792" y="458">Jenkins deployer</text><text class="body" x="792" y="484">jenkins-agent01 • one executor</text><text class="body" x="792" y="505">protected kubeconfig • Helm 4.1.0</text><text class="body" x="792" y="526">PLAN / DEPLOY / ROLLBACK</text>
 <rect class="passed" x="1120" y="425" width="300" height="130" rx="13"/><text class="head" x="1142" y="458">Cluster prerequisites</text><text class="body" x="1142" y="484">4/4 nodes Ready • nginx accepted</text><text class="body" x="1142" y="505">ClusterIP-only service path</text><text class="body" x="1142" y="526">Longhorn available, not consumed</text>
@@ -52,6 +52,6 @@
 
 <path class="flow" d="M925 285V350"/><path class="flow" d="M1270 605V640"/>
 <path class="return" d="M1490 960C1490 1070 245 1070 245 920"/>
-<path class="stop" d="M535 250C485 310 440 333 370 425"/><text class="small" x="405" y="340" fill="#be123c">missing internal project stops every downstream action</text>
+<path class="stop" d="M570 555C610 612 705 620 760 690"/><text class="small" x="590" y="625" fill="#be123c">no Harbor digest: Helm PLAN and every runtime action stop here</text>
 <text class="note" x="52" y="1120">The goal is not to make a pod appear. The goal is to make one application release explainable from source to recovery.</text>
 </svg>

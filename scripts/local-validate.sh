@@ -13,6 +13,7 @@ required_docs=(
   "docs/assets/application-project-deployment-model.svg"
   "docs/assets/applications/podinfo-deployment.svg"
   "docs/evidence/APP-PODINFO-001-source-review.md"
+  "docs/evidence/APP-PODINFO-002-internal-project-ci.md"
   "docs/use-case-implementation-status.md"
   "docs/component-architecture.md"
   "docs/environment-details.md"

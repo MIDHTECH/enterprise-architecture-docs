@@ -12,15 +12,16 @@ whole path before a business application depends on it.
 
 | Field | Verified value |
 | --- | --- |
-| Project repository | `midhhealth/applications/podinfo` — planned internal project; existence not yet verified |
+| Project repository | `midhhealth/applications/podinfo` — private GitLab project ID `29`; `main` protected |
 | Business capability | Shared platform delivery validation |
 | Accountable owner | Platform Delivery team |
 | Operational owner | Platform Delivery with SRE acceptance |
 | Data owner | Not applicable; no clinical, payer, PHI or production data |
 | Primary runtime | Existing application Kubernetes cluster; planned namespace `podinfo` |
 | Source revision | Upstream tag `6.14.1`, commit `eec06d1ea459af4cb4e10e806f8be7c7bd58b361` |
-| Current state | **Source pinned; internal project and runtime deployment pending** |
-| Machine state | `source-pinned` |
+| Internal revision | `b8dceac72494313eca3ab388a20ad06867675224`; pipeline `653` |
+| Current state | **Internal project and initial CI passed; Harbor publication and runtime deployment pending** |
+| Machine state | `internal-ci-passed` |
 
 ![Podinfo project moving through existing enterprise platform contracts](../../assets/applications/podinfo-deployment.svg)
 
@@ -36,7 +37,7 @@ to the same project record. A failed handoff keeps the prior release in place.
 | Direction | Project or service | Contract | Failure behavior |
 | --- | --- | --- | --- |
 | Source | `stefanprodan/podinfo` | Tag `6.14.1`, commit and Apache-2.0 license recorded in [APP-PODINFO-001](../../evidence/APP-PODINFO-001-source-review.md) | A moving branch, changed license or unreviewed commit blocks import. |
-| Build | `midhhealth/applications/podinfo` with the existing GitLab application runner | Internal commit produces tests, scan results, SBOM/provenance and one immutable image reference | Missing internal project, failed test/scan or mutable tag blocks publication. |
+| Build | `midhhealth/applications/podinfo` with the existing GitLab application runner | Internal commit produces tests, scan results, SBOM/provenance and one immutable image reference | Source policy and tests pass; missing image scan/SBOM or mutable tag still blocks publication. |
 | Artifact | Existing `harbor.example.com` | Internally built image digest; Trivy result attached to the release | Public-image fallback or missing digest blocks Helm PLAN. |
 | Release | `jenkins-jobs`, `jenkins-shared-library`, `ansible-jenkins` | Manual PLAN/DEPLOY/ROLLBACK on `jenkins-agent01` with the protected kubeconfig | Wrong executor, missing confirmation or inaccessible revision fails closed. |
 | Runtime | `ansible-kubernetes`, `kubernetes-platform-gitops` and the existing four-node cluster | Namespace, ServiceAccount, ClusterIP Service, resource limits, probes and nginx Ingress | Wrong cluster identity, NodePort/hostPort or unauthorized cluster add-on blocks deployment. |
@@ -47,8 +48,8 @@ to the same project record. A failed handoff keeps the prior release in place.
 
 | Required chain | What Podinfo must prove | Current state |
 | --- | --- | --- |
-| Delivery spine | Internal source → tested/scanned build → Harbor digest → manual promotion → rollback | Source identity passed; every internal and runtime gate remains pending. |
-| Identity and secrets | Project-scoped GitLab/Harbor identity and read-only Jenkins SCM plus protected kubeconfig | Existing platform credentials are documented; Podinfo authorization has not been attached or proven. |
+| Delivery spine | Internal source → tested/scanned build → Harbor digest → manual promotion → rollback | Internal project, source policy, unit tests, vet and binary packaging pass; image, promotion and rollback remain pending. |
+| Identity and secrets | Project-scoped GitLab/Harbor identity and read-only Jenkins SCM plus protected kubeconfig | GitLab project authorization is active; Harbor and Jenkins application authorization have not been attached or proven. |
 | Network and service access | ClusterIP-only service and an explicitly approved nginx route | Shared ingress is accepted; the Podinfo hostname, DNS, TLS and route are unresolved. |
 | Operational readiness | Owner, dependency map, SLO, runbook and acceptance decision | Owner and dependencies are named here; thresholds, runbook exercise and acceptance are pending. |
 | Telemetry and release feedback | Metrics, logs and traces carry the Podinfo commit, image digest and Helm revision | Platform services exist; application signal delivery has not been tested. |
@@ -74,10 +75,11 @@ to the same project record. A failed handoff keeps the prior release in place.
 
 ## Release conversation
 
-1. The Platform Delivery owner imports exactly the reviewed commit with its
-   history, license and provenance into the internal project.
-2. The project's GitLab pipeline compiles and tests the source, scans it, and
-   publishes one Harbor image identified by digest and internal commit.
+1. The Platform Delivery owner imported the reviewed commit with its history,
+   license and provenance into the protected internal project.
+2. The project's GitLab pipeline now validates, compiles and tests the source.
+   Its next responsibility is to scan and publish one Harbor image identified
+   by digest and internal commit.
 3. Jenkins PLAN renders the project-owned values and proves target identity,
    policy and server-side validity without changing the cluster.
 4. An explicit deployment decision installs the same digest atomically in the
@@ -111,8 +113,9 @@ evidence excludes tokens, private keys and kubeconfig content.
 | Gate | Evidence | Result |
 | --- | --- | --- |
 | Upstream source and license | [APP-PODINFO-001](../../evidence/APP-PODINFO-001-source-review.md) | **Passed** |
-| Internal GitLab project and provenance | Project URL, internal commit and `UPSTREAM.md` | Pending |
-| Build, test, scan and Harbor provenance | GitLab pipeline, reports, image digest and Harbor scan | Pending |
+| Internal GitLab project and provenance | [APP-PODINFO-002](../../evidence/APP-PODINFO-002-internal-project-ci.md) | **Passed** |
+| Build and test | Pipeline `653`, source-policy job `1943`, unit-test job `1944`, binary job `1945` | **Passed** |
+| Scan, SBOM and Harbor provenance | GitLab reports, image digest and Harbor scan | Pending |
 | Existing Jenkins executor | [CHG-2026-002](../../evidence/CHG-2026-002-jenkins-agent-acceptance.md) | **Platform prerequisite passed** |
 | Existing Kubernetes ingress | [CHG-2026-009](../../evidence/CHG-2026-009-kubernetes-ingress-acceptance.md) | **Platform prerequisite passed** |
 | Existing persistent storage | [CHG-2026-010](../../evidence/CHG-2026-010-kubernetes-persistent-storage-acceptance.md) | Available but deliberately not consumed |
@@ -122,8 +125,9 @@ evidence excludes tokens, private keys and kubeconfig content.
 
 ## Decision
 
-Status: **Source pinned**
+Status: **Internal CI passed**
 
 The application is not deployed or accepted. The next allowed state change is
-creation/import of the internal GitLab project. Cluster, DNS and Harbor changes
-remain blocked until that project's CI produces an approved immutable artifact.
+publication of a scanned, immutable image in the existing Harbor service.
+Cluster, DNS and ingress changes remain blocked until that digest exists and
+the application-specific Jenkins PLAN can reference it.

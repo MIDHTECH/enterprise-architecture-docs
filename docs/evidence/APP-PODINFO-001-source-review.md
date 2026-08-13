@@ -7,8 +7,11 @@ Date: 2026-08-13
 Podinfo release `6.14.1` is the pinned source candidate for the first
 application-project deployment. The source was cloned directly from the
 maintainer's public repository and inspected at the exact tag and commit below.
-This review approves the source identity for an internal import; it does not
-claim that the GitLab project, image, release, telemetry, or rollback exists.
+This review approved the source identity for an internal import. The import and
+its first internal CI run are now recorded separately in
+[APP-PODINFO-002](APP-PODINFO-002-internal-project-ci.md); this record still
+does not claim that a Harbor image, runtime release, telemetry, or rollback
+exists.
 
 | Field | Verified value |
 | --- | --- |
@@ -37,21 +40,18 @@ the public image directly would fail the enterprise provenance requirement.
 
 ## Import boundary
 
-The import may proceed only when `midhhealth/applications/podinfo` is available
-through authenticated GitLab access. Its first internal revision must retain
-the upstream history and `LICENSE`, add an `UPSTREAM.md` containing the values
-above, and make `origin` the internal project while preserving the public URL
-as a read-only `upstream` remote.
+The import completed into `midhhealth/applications/podinfo` through the existing
+GitLab SSH service on port `2222`. Its first internal revision retained the
+upstream history and `LICENSE`, added `UPSTREAM.md`, made `origin` the internal
+project, and preserved the public URL as the read-only `upstream` remote.
 
 The application namespace `podinfo` is the planned bounded runtime inside the
 existing application cluster. No ingress hostname has been approved yet. DNS,
 TLS and edge routing therefore remain fail-closed instead of borrowing the
 Headlamp hostname or inventing a production route.
 
-## Current stop
+## Current boundary
 
-The internal GitLab project has not been proven to exist. On 2026-08-13, the
-available workstation SSH identities were rejected by the GitLab SSH endpoint,
-and the isolated in-app browser could not reach the internal GitLab network.
-No project, credential, namespace, image, DNS record or Kubernetes resource was
-changed during those checks.
+Source identity and import are closed facts. Harbor publication is the next
+handoff. No namespace, image, DNS record, ingress route, or Kubernetes resource
+was created as part of the source review or import.

@@ -12,8 +12,8 @@ Last verified: 2026-08-13
 | Primary roles | Application developer, DevOps engineer, platform engineer, SRE, security reviewer |
 | Change record | `CHG-2026-002` |
 | Target | Podinfo application mirrored into on-premises GitLab, Jenkins, AWX, dedicated Jenkins agent, and Kubernetes cluster |
-| Current state | **In progress — Podinfo source is pinned and the shared Jenkins/ingress prerequisites are accepted; the internal application project, image, deployment, telemetry and application rollback remain pending** |
-| Current blocker | Authenticated access is required to create/import `midhhealth/applications/podinfo`; no application pipeline or runtime action may bypass the internal project. |
+| Current state | **In progress — Podinfo has a protected internal project and passing source/test/package CI; Harbor image, deployment, telemetry and application rollback remain pending** |
+| Current blocker | No approved Harbor image digest exists. Helm PLAN and every runtime action must continue to fail closed until build, scan, SBOM and publication evidence are bound to the internal commit. |
 | Owner | Platform Delivery team |
 
 ## Purpose
@@ -37,11 +37,13 @@ ClusterIP-only Service, approved application route, and negative backend-port
 checks are healthy. An operator can then roll the release back to a known
 revision and prove service recovery.
 
-The first application payload will be
+The first application payload is
 [`stefanprodan/podinfo`](https://github.com/stefanprodan/podinfo), copied into a
-new `midhhealth/applications/podinfo` GitLab project. Tag `6.14.1`, commit
+private `midhhealth/applications/podinfo` GitLab project. Tag `6.14.1`, commit
 `eec06d1ea459af4cb4e10e806f8be7c7bd58b361`, and the Apache-2.0 license hash
 are recorded in [APP-PODINFO-001](../../evidence/APP-PODINFO-001-source-review.md).
+The protected internal commit and first passing GitLab pipeline are recorded in
+[APP-PODINFO-002](../../evidence/APP-PODINFO-002-internal-project-ci.md).
 Podinfo is small, has health and
 readiness endpoints, structured logs, Prometheus and OpenTelemetry
 instrumentation, fault injection, a Dockerfile, tests, and a Helm chart. Those
@@ -91,8 +93,8 @@ running an isolated technology demonstration is insufficient.
   credentials with appropriate scope.
 - The selected Git revision has passed GitLab CI and is protected by the
   repository review policy.
-- The upstream Podinfo commit, license, and provenance record have been reviewed
-  before the source is imported into GitLab.
+- The upstream Podinfo commit, license, and provenance record were reviewed and
+  the resulting internal commit is protected in GitLab.
 - The edge proxy and the Kubernetes control plane allow only the documented
   ingress traffic path.
 
@@ -132,8 +134,8 @@ branch. Staff must:
 
 For this documented capability, the approved candidate is Podinfo release
 `6.14.1` at commit `eec06d1ea459af4cb4e10e806f8be7c7bd58b361`.
-The source identity and license review are complete; the internal import is not
-claimed as completed. Other public projects may be selected for later use
+The source identity, license review, internal import, and initial source/test
+pipeline are complete. Other public projects may be selected for later use
 cases only after the current use case is accepted.
 
 ## Architecture context
@@ -146,7 +148,7 @@ environment.
 | Context element | Architecture statement |
 | --- | --- |
 | Business and operational setting | Enterprise consumers: Enterprise DevSecOps Delivery Platform. The result must be explainable, repeatable, and owned. |
-| Current state | **In progress — source identity and shared delivery prerequisites are accepted; the internal Podinfo project and all application-specific runtime evidence remain pending** |
+| Current state | **In progress — internal source and initial CI are proven; Harbor provenance and all application-specific runtime evidence remain pending** |
 | Desired state | A reviewed contract drives a bounded result, machine-readable evidence, and a safe stop or recovery decision. |
 | Existing target boundary | Podinfo application mirrored into on-premises GitLab, Jenkins, AWX, dedicated Jenkins agent, and Kubernetes cluster |
 | Infrastructure constraint | Fit is achieved by reusing documented existing repositories, control planes, services, and targets—not by inventing capacity or treating planned products as available. |
@@ -637,7 +639,7 @@ Screenshot capture procedure:
 
 | Area | Expected | Current observation | Decision |
 | --- | --- | --- | --- |
-| Application provenance | Approved Podinfo commit copied to protected internal GitLab with license and scans | Tag `6.14.1`, exact commit and license hash are pinned; internal import and scan remain pending | Partially satisfied |
+| Application provenance | Approved Podinfo commit copied to protected internal GitLab with license and scans | Project 29, protected `main`, internal commit `b8dceac72494313eca3ab388a20ad06867675224`, and pipeline `653` prove import, source policy and tests; image scan/SBOM remain pending | Partially satisfied |
 | Platform source validation | All relevant shared-platform pipelines pass | Pipelines 354, 351, 352, 360, and 358 passed | Satisfied for shared prerequisites |
 | Managed Jenkins platform path | Job generated from reviewed DSL and proven on the dedicated executor | CHG-2026-009 PLAN/deploy/rollback/restore builds 3-7 accepted the shared ingress path | Satisfied for platform prerequisite; no Podinfo job run |
 | Dedicated agent | Online, pinned tools, correct label, second convergence clean | Jenkins build 1 passed on the agent; AWX jobs 536/541 were clean | Satisfied |
@@ -668,10 +670,10 @@ wrong executor is selected, rollback fails, or evidence contains a secret.
 
 ## Acceptance decision
 
-`UC-CICD-001` is **not yet accepted**. Podinfo's upstream source identity is
-pinned, and the shared Jenkins agent plus Kubernetes ingress path are accepted.
-The internal Podinfo project, its GitLab pipeline, Harbor image digest,
-application-specific Helm PLAN/deployment, telemetry, rollback, convergence,
-and evidence review remain open. No later application should be promoted until
+`UC-CICD-001` is **not yet accepted**. Podinfo's upstream source identity,
+protected internal project, and first CI pipeline are proven, and the shared
+Jenkins agent plus Kubernetes ingress path are accepted. The Harbor image
+digest, application-specific Helm PLAN/deployment, telemetry, rollback,
+convergence, and evidence review remain open. No later application should be promoted until
 this reference path is accepted or explicitly closed as a documented partial
 implementation under the sequential change process.

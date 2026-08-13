@@ -142,6 +142,8 @@ allowed_chains = {
 allowed_states = {
     "inventory",
     "source-pinned",
+    "internal-ci-passed",
+    "artifact-published",
     "ready",
     "deployed",
     "accepted",
@@ -167,6 +169,14 @@ for application in applications:
         raise SystemExit(f"{manifest}: {application_id} must pin a full source commit")
     if not re.fullmatch(r"[0-9a-f]{64}", source.get("license_sha256", "")):
         raise SystemExit(f"{manifest}: {application_id} must pin a license SHA-256")
+    internal_repository = application.get("internal_repository", {})
+    if application.get("deployment_state") not in {"inventory", "source-pinned"}:
+        if not re.fullmatch(r"[0-9a-f]{40}", internal_repository.get("commit", "")):
+            raise SystemExit(f"{manifest}: {application_id} must pin its internal commit")
+        if not isinstance(internal_repository.get("project_id"), int):
+            raise SystemExit(f"{manifest}: {application_id} must record its internal project ID")
+        if internal_repository.get("protected_branch") is not True:
+            raise SystemExit(f"{manifest}: {application_id} internal default branch must be protected")
     chains = application.get("required_chains", [])
     unknown_chains = set(chains) - allowed_chains
     if not chains or unknown_chains:
