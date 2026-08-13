@@ -12,7 +12,8 @@ Last verified: 2026-08-13
 | Primary roles | Application developer, DevOps engineer, platform engineer, SRE, security reviewer |
 | Change record | `CHG-2026-002` |
 | Target | Podinfo application mirrored into on-premises GitLab, Jenkins, AWX, dedicated Jenkins agent, and Kubernetes cluster |
-| Current state | **In progress — Podinfo has a protected internal project and passing source/test/package CI; Harbor image, deployment, telemetry and application rollback remain pending** |
+| Documentation state | **Detailed — the intended project and platform handoffs are described** |
+| Runtime state | **Not deployed — implementation is deferred and no further execution is authorized by this page** |
 | Current blocker | No approved Harbor image digest exists. Helm PLAN and every runtime action must continue to fail closed until build, scan, SBOM and publication evidence are bound to the internal commit. |
 | Owner | Platform Delivery team |
 
@@ -671,10 +672,11 @@ wrong executor is selected, rollback fails, or evidence contains a secret.
 
 ## Acceptance decision
 
-`UC-CICD-001` is **not yet accepted**. Podinfo's upstream source identity,
+`UC-CICD-001` is **complete as architecture documentation but not implemented
+or accepted as a runtime capability**. Podinfo's upstream source identity,
 protected internal project, and first CI pipeline are proven, and the shared
 Jenkins agent plus Kubernetes ingress path are accepted. The Harbor image
 digest, application-specific Helm PLAN/deployment, telemetry, rollback,
-convergence, and evidence review remain open. No later application should be promoted until
-this reference path is accepted or explicitly closed as a documented partial
-implementation under the sequential change process.
+convergence, and evidence review remain open. Those are future implementation
+activities, not the next action in this documentation work. No application
+should be promoted from this page without a separate implementation decision.

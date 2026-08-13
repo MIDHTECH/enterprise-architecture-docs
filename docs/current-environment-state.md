@@ -77,6 +77,9 @@ tests, vet, and binary packaging as jobs 1943–1945 on application runner ID 3.
 This proves the independent project source/CI boundary only. A Harbor image,
 Kubernetes namespace, route, telemetry acceptance, and rollback still do not
 exist for the application.
+Pipeline 659 was canceled when the work was clarified as documentation-only;
+see [APP-PODINFO-004](evidence/APP-PODINFO-004-documentation-scope-stop.md).
+No application runtime action followed that pipeline.
 
 Legacy GitLab runner ID 2 (`ansible-jenkins-runner-01`) is paused and its
 container is absent from `gitlab.example.com`. Retirement, rollback restore,

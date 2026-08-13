@@ -1,4 +1,4 @@
-# Application Deployment Record: Podinfo
+# Application Architecture Record: Podinfo
 
 Last verified: 2026-08-13
 
@@ -10,6 +10,11 @@ payer product. It is a deliberately small, non-PHI reference workload whose
 health endpoints, metrics, traces and fault controls let engineers prove the
 whole path before a business application depends on it.
 
+This is a **documentation and planning record**. It describes the intended
+connections and acceptance evidence; it does not authorize a deployment. No
+Harbor image, namespace, DNS name, ingress route, or running Podinfo workload
+was created from this record.
+
 | Field | Verified value |
 | --- | --- |
 | Project repository | `midhhealth/applications/podinfo` — private GitLab project ID `29`; `main` protected |
@@ -19,9 +24,12 @@ whole path before a business application depends on it.
 | Data owner | Not applicable; no clinical, payer, PHI or production data |
 | Primary runtime | Existing application Kubernetes cluster; planned namespace `podinfo` |
 | Source revision | Upstream tag `6.14.1`, commit `eec06d1ea459af4cb4e10e806f8be7c7bd58b361` |
-| Internal revision | Protected `main` at `6ac37678191d638baaa6e1e8f4da0f1d788f8676`; last fully passing pipeline `653` |
-| Current state | **Internal project and initial CI passed; Harbor publication and runtime deployment pending** |
-| Machine state | `internal-ci-passed` |
+| Internal revision | Protected `main` at `81e02a9825bb4adbb353ebe23c62e26740f7550c`; last fully passing pipeline `653`; latest pipeline `659` canceled when scope was corrected |
+| Documentation state | **Detailed and linked to its separate platform-project contracts** |
+| Documentation machine state | `detailed-and-linked` |
+| Implementation authority | **None — implementation and execution are intentionally deferred** |
+| Runtime state | **Not deployed** |
+| Machine state | `not-deployed` |
 
 ![Podinfo project moving through existing enterprise platform contracts](../../assets/applications/podinfo-deployment.svg)
 
@@ -55,7 +63,7 @@ to the same project record. A failed handoff keeps the prior release in place.
 | Telemetry and release feedback | Metrics, logs and traces carry the Podinfo commit, image digest and Helm revision | Platform services exist; application signal delivery has not been tested. |
 | Kubernetes workload | Bounded namespace, non-root image, probes, requests/limits, rollout and rollback | Namespace and application resources do not yet exist. |
 
-## Deployment shape
+## Documented deployment shape
 
 - Planned namespace: `podinfo` on `kubernetes-admin@kubernetes`, after the
   four expected node names and API version are checked.
@@ -116,6 +124,7 @@ evidence excludes tokens, private keys and kubeconfig content.
 | Internal GitLab project and provenance | [APP-PODINFO-002](../../evidence/APP-PODINFO-002-internal-project-ci.md) | **Passed** |
 | Build and test | Pipeline `653`, source-policy job `1943`, unit-test job `1944`, binary job `1945` | **Passed** |
 | Application release contract source | [APP-PODINFO-003](../../evidence/APP-PODINFO-003-release-contract-source.md) | **Passed in both platform repositories; Jenkins seed synchronization pending** |
+| Documentation scope stop | [APP-PODINFO-004](../../evidence/APP-PODINFO-004-documentation-scope-stop.md) | **Pipeline 659 canceled; no runtime action followed** |
 | Scan, SBOM and Harbor provenance | GitLab reports, image digest and Harbor scan | Pending |
 | Existing Jenkins executor | [CHG-2026-002](../../evidence/CHG-2026-002-jenkins-agent-acceptance.md) | **Platform prerequisite passed** |
 | Existing Kubernetes ingress | [CHG-2026-009](../../evidence/CHG-2026-009-kubernetes-ingress-acceptance.md) | **Platform prerequisite passed** |
@@ -126,9 +135,15 @@ evidence excludes tokens, private keys and kubeconfig content.
 
 ## Decision
 
-Status: **Internal CI passed**
+Documentation status: **Detailed and linked**
 
-The application is not deployed or accepted. The next allowed state change is
-publication of a scanned, immutable image in the existing Harbor service.
-Cluster, DNS and ingress changes remain blocked until that digest exists and
-the application-specific Jenkins PLAN can reference it.
+Runtime status: **Not deployed**
+
+Implementation authorization: **Not granted**
+
+The historical source and CI evidence is retained because it is factual, not
+because more execution is expected. The next activity is documentation:
+inventory real application projects and describe their API, event, data,
+identity, operational and recovery contracts. Image publication, Jenkins job
+generation, Helm execution, cluster, DNS and ingress changes require a future,
+separately approved implementation phase.

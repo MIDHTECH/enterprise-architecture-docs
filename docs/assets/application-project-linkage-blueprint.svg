@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1120" viewBox="0 0 1800 1120" role="img" aria-labelledby="title desc">
+<title id="title">Separate application projects linked into one enterprise workflow</title>
+<desc id="desc">A documentation-only architecture showing a human business journey crossing independently owned application projects through API, event and data contracts, supported by existing platform projects and returned operating evidence. The diagram does not claim any application is deployed.</desc>
+<defs>
+<style>
+.bg{fill:#f8fafc}.paper{fill:#fff;stroke:#cbd5e1;stroke-width:2}.ink{fill:#0f172a}.muted{fill:#475569}.blue{fill:#eff6ff;stroke:#2563eb;stroke-width:2}.teal{fill:#ecfdf5;stroke:#059669;stroke-width:2}.violet{fill:#f5f3ff;stroke:#7c3aed;stroke-width:2}.amber{fill:#fff7ed;stroke:#d97706;stroke-width:2}.rose{fill:#fff1f2;stroke:#e11d48;stroke-width:2}.dash{fill:#fff;stroke:#64748b;stroke-width:2;stroke-dasharray:8 6}.title{font:700 30px Arial,sans-serif;fill:#0f172a}.sub{font:15px Arial,sans-serif;fill:#475569}.section{font:700 20px Arial,sans-serif;fill:#0f172a}.head{font:700 15px Arial,sans-serif;fill:#0f172a}.body{font:12px Arial,sans-serif;fill:#475569}.small{font:11px Arial,sans-serif;fill:#64748b}.human{font:italic 15px Georgia,serif;fill:#334155}.flow{fill:none;stroke:#2563eb;stroke-width:3;marker-end:url(#arrow)}.event{fill:none;stroke:#7c3aed;stroke-width:3;stroke-dasharray:8 5;marker-end:url(#purple)}.data{fill:none;stroke:#059669;stroke-width:3;marker-end:url(#green)}.feedback{fill:none;stroke:#d97706;stroke-width:3;stroke-dasharray:10 6;marker-end:url(#orange)}.stop{fill:none;stroke:#e11d48;stroke-width:2.5;marker-end:url(#red)}
+</style>
+<marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0L0 8L10 4z" fill="#2563eb"/></marker>
+<marker id="purple" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0L0 8L10 4z" fill="#7c3aed"/></marker>
+<marker id="green" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0L0 8L10 4z" fill="#059669"/></marker>
+<marker id="orange" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0L0 8L10 4z" fill="#d97706"/></marker>
+<marker id="red" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0L0 8L10 4z" fill="#e11d48"/></marker>
+</defs>
+<rect class="bg" width="1800" height="1120"/><rect class="paper" x="26" y="26" width="1748" height="1068" rx="20"/>
+<text class="title" x="58" y="72">One human journey across independently owned application projects</text>
+<text class="sub" x="58" y="103">DOCUMENTATION-ONLY BLUEPRINT — each project stays independent; arrows are owned contracts, not proof of a deployed integration.</text>
+
+<rect class="blue" x="58" y="145" width="250" height="170" rx="18"/>
+<circle cx="112" cy="202" r="28" fill="#fff" stroke="#2563eb" stroke-width="2"/><circle cx="112" cy="191" r="8" fill="#2563eb"/><path d="M94 222Q112 205 130 222" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/>
+<text class="section" x="160" y="194">Person or</text><text class="section" x="160" y="218">business event</text>
+<text class="body" x="82" y="260">A care, payer or shared-service need</text><text class="body" x="82" y="282">starts the story—not a deployment tool.</text>
+
+<rect class="paper" x="360" y="135" width="1325" height="435" rx="20"/>
+<text class="section" x="390" y="174">Independent application ownership</text>
+<text class="small" x="390" y="197">Real project names are inserted only when repository and owner are known.</text>
+
+<path class="flow" d="M308 230H410"/><text class="small" x="322" y="218">intent + identity</text>
+<rect class="blue" x="410" y="225" width="300" height="210" rx="17"/>
+<text class="head" x="438" y="260">Application project record</text><text class="body" x="438" y="288">Owns one business outcome</text><text class="body" x="438" y="309">repository • product owner • release</text><text class="body" x="438" y="330">identity • data boundary • recovery</text>
+<line x1="438" y1="350" x2="680" y2="350" stroke="#93c5fd"/><text class="small" x="438" y="374">Documentation: detailed / gap</text><text class="small" x="438" y="397">Runtime: not deployed / deployed / accepted</text>
+
+<rect class="violet" x="790" y="225" width="400" height="210" rx="17"/>
+<text class="head" x="818" y="260">Owned cross-project contract</text>
+<circle cx="835" cy="294" r="6" fill="#7c3aed"/><text class="body" x="852" y="299">API: operation, version, timeout, errors</text>
+<circle cx="835" cy="326" r="6" fill="#7c3aed"/><text class="body" x="852" y="331">Event: meaning, schema, ordering, replay</text>
+<circle cx="835" cy="358" r="6" fill="#7c3aed"/><text class="body" x="852" y="363">Data: fields, purpose, lineage, reconcile</text>
+<circle cx="835" cy="390" r="6" fill="#7c3aed"/><text class="body" x="852" y="395">Identity: caller, consent, least privilege</text>
+
+<rect class="teal" x="1270" y="225" width="350" height="210" rx="17"/>
+<text class="head" x="1298" y="260">Neighboring application project</text><text class="body" x="1298" y="288">Owns a different business outcome,</text><text class="body" x="1298" y="309">repository, release and recovery path.</text><text class="body" x="1298" y="342">Consumes the promise; owns its timeout,</text><text class="body" x="1298" y="363">fallback and reconciliation behavior.</text>
+<path class="event" d="M710 305H790"/><text class="small" x="725" y="290">request/event</text><path class="data" d="M1190 350H1270"/><text class="small" x="1204" y="336">meaningful data</text>
+<path class="stop" d="M990 435V515"/><rect class="rose" x="842" y="472" width="296" height="67" rx="12"/><text class="head" x="864" y="499">If the promise is incomplete</text><text class="body" x="864" y="521">stop the paper journey; name the gap and owner</text>
+
+<rect class="teal" x="58" y="625" width="1115" height="285" rx="20"/>
+<text class="section" x="88" y="664">Existing shared platform contracts support each project; they do not own its business behavior</text>
+<path d="M125 743C265 680 405 805 545 743S825 680 965 743" fill="none" stroke="#a7f3d0" stroke-width="28" stroke-linecap="round"/>
+<circle cx="145" cy="740" r="42" fill="#fff" stroke="#059669" stroke-width="2"/><text class="head" x="145" y="737" text-anchor="middle">Source &amp;</text><text class="small" x="145" y="754" text-anchor="middle">delivery</text>
+<circle cx="350" cy="740" r="42" fill="#fff" stroke="#059669" stroke-width="2"/><text class="head" x="350" y="737" text-anchor="middle">Identity &amp;</text><text class="small" x="350" y="754" text-anchor="middle">secrets</text>
+<circle cx="555" cy="740" r="42" fill="#fff" stroke="#059669" stroke-width="2"/><text class="head" x="555" y="737" text-anchor="middle">Runtime &amp;</text><text class="small" x="555" y="754" text-anchor="middle">network</text>
+<circle cx="760" cy="740" r="42" fill="#fff" stroke="#059669" stroke-width="2"/><text class="head" x="760" y="737" text-anchor="middle">Data &amp;</text><text class="small" x="760" y="754" text-anchor="middle">integration</text>
+<circle cx="965" cy="740" r="42" fill="#fff" stroke="#059669" stroke-width="2"/><text class="head" x="965" y="737" text-anchor="middle">Observe &amp;</text><text class="small" x="965" y="754" text-anchor="middle">recover</text>
+<text class="body" x="104" y="835">Each application links only the use-case chains it needs and names the existing platform project that owns the reusable capability.</text>
+<text class="body" x="104" y="860">No new cluster, service or integration product is implied by this map.</text>
+
+<rect class="amber" x="1220" y="625" width="465" height="285" rx="20"/>
+<text class="section" x="1250" y="664">Evidence planned for a later phase</text>
+<text class="body" x="1250" y="703">contract tests tied to both revisions</text><text class="body" x="1250" y="730">correlation ID across project telemetry</text><text class="body" x="1250" y="757">identity and denied-path checks</text><text class="body" x="1250" y="784">degraded behavior and reconciliation</text><text class="body" x="1250" y="811">rollback / recovery exercise and owner decision</text>
+<rect class="rose" x="1250" y="844" width="405" height="42" rx="10"/><text class="head" x="1452" y="870" text-anchor="middle">NOT IMPLEMENTED OR DEPLOYED BY THIS DOCUMENT</text>
+
+<path class="data" d="M560 435C560 540 510 560 510 625"/><path class="data" d="M1440 435C1440 535 730 535 730 625"/>
+<path class="feedback" d="M1450 910C1450 1020 560 1020 560 910"/><text class="small" x="870" y="1005">future evidence returns to each owning project and the end-to-end journey</text>
+<text class="human" x="58" y="1062">The review question at every arrow: “Who owns this promise, and what should the person experience when it breaks?”</text>
+</svg>

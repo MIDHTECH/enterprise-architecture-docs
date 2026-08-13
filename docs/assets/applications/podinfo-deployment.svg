@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1160" viewBox="0 0 1800 1160" role="img" aria-labelledby="title desc" data-application="podinfo">
-<title id="title">Podinfo project deployment through existing MidhHealth platform contracts</title>
-<desc id="desc">A detailed application flow from pinned upstream source through a protected internal GitLab project and passing application CI to a pending Harbor image, Jenkins-controlled Helm release, the existing Kubernetes cluster, ingress and telemetry, with completed and pending gates clearly distinguished.</desc>
+<title id="title">Podinfo documented application path through existing MidhHealth platform contracts</title>
+<desc id="desc">A documentation-only architecture view from pinned upstream source through a protected internal GitLab project to planned Harbor, Jenkins, Kubernetes, ingress and telemetry contracts. No runtime deployment is authorized or shown as complete.</desc>
 <defs>
 <style>
 .bg{fill:#fff}.lane{fill:#f8fafc;stroke:#cbd5e1;stroke-width:2}.source{fill:#eff6ff;stroke:#2563eb;stroke-width:2}.platform{fill:#ecfdf5;stroke:#059669;stroke-width:2}.runtime{fill:#fff7ed;stroke:#d97706;stroke-width:2}.evidence{fill:#f5f3ff;stroke:#7c3aed;stroke-width:2}.pending{fill:#fff7ed;stroke:#ea580c;stroke-width:2.5;stroke-dasharray:8 5}.passed{fill:#ecfdf5;stroke:#059669;stroke-width:2.5}.blocked{fill:#fff1f2;stroke:#e11d48;stroke-width:2.5}.card{fill:#fff;stroke:#64748b;stroke-width:1.7}.title{font:700 30px Arial,sans-serif;fill:#0f172a}.sub{font:15px Arial,sans-serif;fill:#475569}.section{font:700 20px Arial,sans-serif;fill:#0f172a}.head{font:700 15px Arial,sans-serif;fill:#0f172a}.body{font:12px Arial,sans-serif;fill:#475569}.small{font:11px Arial,sans-serif;fill:#64748b}.status{font:700 11px Arial,sans-serif;letter-spacing:1px}.flow{fill:none;stroke:#2563eb;stroke-width:3;marker-end:url(#blue)}.return{fill:none;stroke:#7c3aed;stroke-width:3;stroke-dasharray:8 6;marker-end:url(#purple)}.stop{fill:none;stroke:#e11d48;stroke-width:2.5;marker-end:url(#red)}.note{font:italic 15px Georgia,serif;fill:#475569}.tagPass{fill:#d1fae5}.tagPending{fill:#ffedd5}.tagStop{fill:#ffe4e6}
@@ -10,8 +10,8 @@
 <marker id="red" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0L0 8L10 4z" fill="#e11d48"/></marker>
 </defs>
 <rect class="bg" width="1800" height="1160"/>
-<text class="title" x="48" y="50">Podinfo: the first application project through the shared platform</text>
-<text class="sub" x="48" y="80">Green is proven. Orange is the next controlled handoff. Red stops the release. Nothing below creates another platform or cluster.</text>
+<text class="title" x="48" y="50">Podinfo: one project, documented across shared platform contracts</text>
+<text class="sub" x="48" y="80">DOCUMENTATION / PLANNING VIEW — green records historical facts; orange is future design; no application is deployed or authorized here.</text>
 
 <rect class="lane" x="38" y="112" width="1724" height="205" rx="18"/>
 <text class="section" x="66" y="148">1 · Source and project ownership</text>
@@ -53,5 +53,5 @@
 <path class="flow" d="M925 285V350"/><path class="flow" d="M1270 605V640"/>
 <path class="return" d="M1490 960C1490 1070 245 1070 245 920"/>
 <path class="stop" d="M570 555C610 612 705 620 760 690"/><text class="small" x="590" y="625" fill="#be123c">no Harbor digest: Helm PLAN and every runtime action stop here</text>
-<text class="note" x="52" y="1120">The goal is not to make a pod appear. The goal is to make one application release explainable from source to recovery.</text>
+<text class="note" x="52" y="1120">The deliverable is an explainable architecture record. Runtime implementation and deployment belong to a separately approved future phase.</text>
 </svg>

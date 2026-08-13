@@ -1,12 +1,13 @@
-# Application Project Deployment Register
+# Application Project Architecture and Linkage Register
 
 Last verified: 2026-08-13
 
 ## Goal
 
-Deploy each application as an independent project on the existing enterprise
-platform, then prove that its delivery, runtime, data, security, observability
-and recovery use cases work together.
+Document each application as an independent project and show how its business,
+delivery, runtime, data, security, observability and recovery contracts fit
+together. Implementation and deployment are later activities and are not
+authorized by this register.
 
 This is not a plan for one repository or one shared release. A clinical
 application, payer service, data product, AI workflow and platform component
@@ -17,6 +18,10 @@ links between projects.
 The machine-readable inventory is maintained in
 [`application-projects.json`](application-projects.json). Its state values are
 acceptance facts, not aspirations.
+
+The [cross-project linkage blueprint](application-project-linkage-blueprint.md)
+defines how independently owned application projects participate in one
+enterprise workflow without becoming a monorepo or a shared release.
 
 ![Separate application projects connected by shared platform contracts](assets/application-project-deployment-model.svg)
 
@@ -35,10 +40,11 @@ and green platform pipeline do not mean that a claims application, clinical
 service or data product has been deployed. The application project must still
 produce its own release and operating evidence.
 
-## Deployment unit
+## Documentation unit
 
-One row in this register represents one deployable project. A project is ready
-for implementation only when it names:
+One row in this register represents one independently owned application
+project. Its architecture is detailed enough for later implementation only
+when it names:
 
 - one accountable application or platform owner;
 - one primary runtime target already present in the environment;
@@ -117,48 +123,47 @@ When a real project is identified, add one row to the register below and link
 its real GitLab repository. Start its handoff from the
 [application deployment record template](projects/application-deployment-record-template.md).
 
-## Per-application implementation register
+## Per-application documentation register
 
 | Application project | Business capability | Owner | Runtime | Required chains | Upstream/downstream projects | Release evidence | Recovery evidence | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| [`midhhealth/applications/podinfo`](projects/applications/podinfo.md) | Non-PHI reference workload proving shared application delivery | Platform Delivery team | Existing application Kubernetes cluster; planned `podinfo` namespace | Delivery spine; Identity and secrets; Network and service access; Operational readiness; Telemetry and release feedback; Kubernetes workload | Upstream Podinfo source; nine named platform projects in the project record | [Pinned source](evidence/APP-PODINFO-001-source-review.md), [internal CI](evidence/APP-PODINFO-002-internal-project-ci.md), and [separate release-contract source](evidence/APP-PODINFO-003-release-contract-source.md); image, deployment and telemetry pending | Stateless Helm rollback and route recovery pending | **Internal CI passed** |
+| [`midhhealth/applications/podinfo`](projects/applications/podinfo.md) | Non-PHI reference workload documenting the shared application-delivery path | Platform Delivery team | Existing application Kubernetes cluster is the documented future target; planned `podinfo` namespace does not exist | Delivery spine; Identity and secrets; Network and service access; Operational readiness; Telemetry and release feedback; Kubernetes workload | Upstream Podinfo source; nine named platform projects in the project record | [Pinned source](evidence/APP-PODINFO-001-source-review.md), [historical internal CI](evidence/APP-PODINFO-002-internal-project-ci.md), [release-contract source](evidence/APP-PODINFO-003-release-contract-source.md), and [scope stop](evidence/APP-PODINFO-004-documentation-scope-stop.md); no runtime evidence | Documented stateless rollback design; no recovery execution | **Detailed and linked; not deployed** |
 
 Podinfo is the first registered application project, but it does not fill the
 care-delivery or payer-operations portfolios. Those remain inventory gaps until
 their real repositories and owners are known.
 
-## Deployment waves
+## Documentation sequence
 
-1. **Make project identity real.** Register every application repository,
-   owner, runtime and dependency; do not begin with deployment tooling.
-2. **Prove the shared deployment spine with one project.** Build, scan,
-   publish, deploy, observe and roll back one bounded application on the
-   accepted Kubernetes path.
-3. **Onboard independent stateless projects.** Each gets its own namespace or
-   VM service identity, DNS/TLS route, telemetry, SLO and recovery evidence.
-4. **Onboard stateful projects.** Add database identity, schema lifecycle,
-   persistence, backup, restore and owned RTO/RPO.
-5. **Connect data-producing and consuming projects.** Version schemas and
-   events, classify data, record lineage, monitor quality and prove replay or
-   reconciliation.
-6. **Add AI/model projects only after their consumers are known.** Bind model,
-   data, prompt, access, human-review, monitoring and rollback revisions to the
-   consuming application release.
-7. **Prove an enterprise workflow.** Exercise one provider or payer journey
-   across multiple independently deployed projects and retain the end-to-end
-   trace, SLO, incident and recovery evidence.
+1. **Make project identity real.** Register every known application repository,
+   owner, users and business outcome. Leave unknown projects as named gaps.
+2. **Describe the application boundary.** Record the intended runtime, data
+   classification, service identity and trust boundaries without creating them.
+3. **Link independent projects.** Name each API, event, data and identity
+   contract, its producer, consumer, owner, versioning rule and failure behavior.
+4. **Map platform use cases.** Attach only the chains needed by that project and
+   explain what each platform contributes to the enterprise outcome.
+5. **Write the operating story.** Document SLO intent, telemetry correlation,
+   incident ownership, degraded behavior, rollback and recovery expectations.
+6. **Define future evidence.** State what a later implementation must prove,
+   while keeping every execution and deployment gate pending.
+7. **Review an enterprise workflow on paper.** Walk a provider or payer journey
+   across the separate project records and resolve missing ownership or contracts.
 
 ## Completion rule
 
-The goal is complete only when:
+The documentation goal is complete only when:
 
 - every real application project has one register row and no project is hidden
   behind a portfolio label;
-- every project is deployed from its own reviewed revision through an accepted
-  platform path;
-- every required use-case chain resolves to implemented revisions and current
-  runtime evidence;
-- every cross-project dependency is versioned, owned and observable;
-- every service has a tested rollback or recovery path; and
-- at least one provider workflow and one payer workflow have passed an
-  end-to-end exercise across the linked projects.
+- every required use-case chain is explained in the owning application record;
+- every cross-project dependency names its producer, consumer, contract owner,
+  versioning rule, failure behavior and future evidence;
+- every service has a documented rollback or recovery path and decision owner;
+- at least one provider workflow and one payer workflow can be traced on paper
+  across the linked projects without an unnamed handoff; and
+- documentation readiness, implementation status and runtime status are never
+  collapsed into one misleading state.
+
+Deployment, runtime testing and acceptance are explicitly outside this
+documentation goal and require a later implementation decision.

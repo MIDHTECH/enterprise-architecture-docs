@@ -16,9 +16,11 @@ register = root / "docs/application-project-deployment-register.md"
 template = root / "docs/projects/application-deployment-record-template.md"
 traceability = root / "docs/use-cases/enterprise-traceability.md"
 diagram = root / "docs/assets/application-project-deployment-model.svg"
+linkage = root / "docs/application-project-linkage-blueprint.md"
+linkage_diagram = root / "docs/assets/application-project-linkage-blueprint.svg"
 manifest = root / "docs/application-projects.json"
 
-for required in (register, template, traceability, diagram, manifest):
+for required in (register, template, traceability, diagram, linkage, linkage_diagram, manifest):
     if not required.is_file():
         raise SystemExit(f"Missing application-project artifact: {required}")
 
@@ -92,17 +94,17 @@ for heading in (
     "## Why this project exists",
     "## What this project connects to",
     "## Platform path",
-    "## Deployment shape",
-    "## Release conversation",
+    "## Documented deployment shape",
+    "## Intended release conversation",
     "## Operability and recovery",
     "## Security and data boundaries",
-    "## Acceptance record",
+    "## Evidence plan and historical facts",
     "## Decision",
 ):
     if heading not in template_text:
         raise SystemExit(f"{template}: missing required heading {heading}")
 
-for document in (register, template, traceability):
+for document in (register, template, traceability, linkage):
     document_text = document.read_text()
     for target in re.findall(r"\[[^]]+\]\(([^)]+)\)", document_text):
         if target.startswith(("http://", "https://", "#")):
@@ -111,14 +113,15 @@ for document in (register, template, traceability):
         if not target_path.exists():
             raise SystemExit(f"{document}: unresolved local link {target}")
 
-svg = ET.parse(diagram).getroot()
 namespace = {"svg": "http://www.w3.org/2000/svg"}
-if svg.attrib.get("role") != "img" or svg.attrib.get("aria-labelledby") != "title desc":
-    raise SystemExit(f"{diagram}: accessible image role and label are required")
-for element in ("title", "desc"):
-    node = svg.find(f"svg:{element}", namespace)
-    if node is None or not (node.text or "").strip():
-        raise SystemExit(f"{diagram}: accessible {element} is required")
+for svg_path in (diagram, linkage_diagram):
+    svg = ET.parse(svg_path).getroot()
+    if svg.attrib.get("role") != "img" or svg.attrib.get("aria-labelledby") != "title desc":
+        raise SystemExit(f"{svg_path}: accessible image role and label are required")
+    for element in ("title", "desc"):
+        node = svg.find(f"svg:{element}", namespace)
+        if node is None or not (node.text or "").strip():
+            raise SystemExit(f"{svg_path}: accessible {element} is required")
 
 manifest_data = json.loads(manifest.read_text())
 if manifest_data.get("schema_version") != 1:
@@ -140,6 +143,7 @@ allowed_chains = {
     "ai-or-model-enabled-application",
 }
 allowed_states = {
+    "not-deployed",
     "inventory",
     "source-pinned",
     "internal-ci-passed",
@@ -164,6 +168,10 @@ for application in applications:
         raise SystemExit(f"{manifest}: invalid repository {repository!r}")
     if application.get("deployment_state") not in allowed_states:
         raise SystemExit(f"{manifest}: invalid deployment_state for {application_id}")
+    if application.get("documentation_state") != "detailed-and-linked":
+        raise SystemExit(f"{manifest}: {application_id} documentation must be detailed-and-linked")
+    if application.get("implementation_authorized") is not False:
+        raise SystemExit(f"{manifest}: {application_id} must not imply implementation authorization")
     source = application.get("source", {})
     if not re.fullmatch(r"[0-9a-f]{40}", source.get("commit", "")):
         raise SystemExit(f"{manifest}: {application_id} must pin a full source commit")
@@ -221,7 +229,12 @@ for application in applications:
         if not artifact.is_file():
             raise SystemExit(f"{manifest}: missing project artifact {artifact}")
     record_text = record.read_text()
-    for required_value in (repository, source["commit"], application.get("deployment_state")):
+    for required_value in (
+        repository,
+        source["commit"],
+        application.get("documentation_state"),
+        application.get("deployment_state"),
+    ):
         if required_value not in record_text:
             raise SystemExit(f"{record}: missing manifest value {required_value!r}")
     application_svg = ET.parse(application_diagram).getroot()

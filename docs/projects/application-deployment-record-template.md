@@ -1,4 +1,4 @@
-# Application Deployment Record: `<project-name>`
+# Application Architecture Record: `<project-name>`
 
 Last verified: `YYYY-MM-DD`
 
@@ -6,6 +6,10 @@ Copy this file once for each real application project. Replace every angle-
 bracketed value with verified information from that project's repository and
 owners. A portfolio label is not a project, and a shared platform pipeline is
 not application evidence.
+
+This template creates documentation, not a deployment request. Describe the
+future implementation precisely, but keep implementation authority and runtime
+state separate from documentation readiness.
 
 ## Why this project exists
 
@@ -20,8 +24,11 @@ loses when the application is unavailable or wrong.
 | Accountable owner | `<person or team>` |
 | Operational owner | `<on-call team>` |
 | Data owner | `<person or team, or not applicable with reason>` |
-| Primary runtime | `<existing Kubernetes namespace or existing VM service>` |
-| Current production revision | `<immutable commit and release identifier>` |
+| Documented runtime target | `<existing Kubernetes or VM platform, if verified>` |
+| Documentation state | `<inventory / drafting / detailed-and-linked / reviewed>` |
+| Implementation authorization | `<not granted unless a separate decision exists>` |
+| Runtime state | `<not-deployed / deployed / accepted>` |
+| Current runtime revision | `<immutable identifier, or not deployed>` |
 | Criticality | `<decision and approver>` |
 
 ## What this project connects to
@@ -41,12 +48,12 @@ Select the required chains from the
 [application project deployment register](../application-project-deployment-register.md)
 and explain why each one is needed. Do not copy the entire platform backlog.
 
-| Required chain | Project-specific implementation | Platform contract revision | Acceptance evidence |
+| Required chain | Planned project relationship | Platform contract revision | Future acceptance evidence |
 | --- | --- | --- | --- |
 | Delivery spine | `<pipeline entry point and release flow>` | `<revision>` | `<pipeline, artifact and rollback links>` |
 | `<additional chain>` | `<how this application consumes it>` | `<revision>` | `<evidence link>` |
 
-## Deployment shape
+## Documented deployment shape
 
 Draw the application-specific request, data and control paths. Show the real
 project boundaries, identities, protocols, stores, asynchronous handoffs,
@@ -56,7 +63,9 @@ or a generic sequence of boxes for this view.
 ![Application-specific deployment architecture](../assets/application-project-deployment-model.svg)
 
 The image above is a temporary orientation reference. Replace it with an SVG
-owned by this project record before implementation acceptance.
+owned by this project record before the architecture can be called detailed.
+The diagram must label proposed components as planned and must not make them
+look deployed.
 
 | Concern | Project decision |
 | --- | --- |
@@ -68,7 +77,7 @@ owned by this project record before implementation acceptance.
 | Resource limits | `<measured request, limit or host boundary>` |
 | Availability and scaling | `<replicas, failure domain and capacity decision>` |
 
-## Release conversation
+## Intended release conversation
 
 Tell the release story as a sequence of accountable decisions, not tool names:
 
@@ -97,7 +106,7 @@ audit events, retention and credential revocation. If protected healthcare or
 production data is not authorized in the lab, name the synthetic or sanitized
 substitute and stop the release when that boundary cannot be preserved.
 
-## Acceptance record
+## Evidence plan and historical facts
 
 | Evidence | Link or immutable identifier | Result | Owner |
 | --- | --- | --- | --- |
@@ -105,14 +114,19 @@ substitute and stop the release when that boundary cannot be preserved.
 | Build and test | `<link>` | `<pass/fail>` | `<owner>` |
 | Security and policy gates | `<link>` | `<pass/fail>` | `<owner>` |
 | Artifact provenance | `<link>` | `<pass/fail>` | `<owner>` |
-| Deployment verification | `<link>` | `<pass/fail>` | `<owner>` |
+| Deployment verification | `<future evidence; do not imply it exists>` | `<pending unless verified>` | `<owner>` |
 | Dependency contract tests | `<link>` | `<pass/fail>` | `<owner>` |
 | Observability and SLO | `<link>` | `<pass/fail>` | `<owner>` |
 | Rollback or recovery exercise | `<link>` | `<pass/fail>` | `<owner>` |
 
 ## Decision
 
-Status: **Inventory / Design / Ready / Deployed / Accepted / Blocked**
+Documentation status: **Inventory / Drafting / Detailed and linked / Reviewed**
+
+Runtime status: **Not deployed / Deployed / Accepted / Blocked**
+
+Implementation authorization: **Not granted / Separately approved**
 
 State who made the decision, when it was made, which release it covers and
-which unresolved risk remains. `Deployed` is not the same as `Accepted`.
+which unresolved risk remains. Documentation readiness is not implementation
+authorization, and `Deployed` is not the same as `Accepted`.
