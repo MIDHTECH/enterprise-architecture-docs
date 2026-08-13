@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="980" viewBox="0 0 1700 980" role="img" aria-labelledby="title desc">
+  <title id="title">MidhHealth hybrid cloud network architecture</title>
+  <desc id="desc">Detailed hybrid cloud network architecture showing MidhHealth on-premises datacenters, Azure ExpressRoute, Microsoft edge, transit VNet, hub VNet, spoke VNet, route servers, NVAs, BGP routing, and infrastructure automation controls.</desc>
+  <defs>
+    <style>
+      .bg { fill: #ffffff; }
+      .cloud { fill: #f8fbff; stroke: #2563eb; stroke-width: 3; }
+      .onprem { fill: #fffdf7; stroke: #111827; stroke-width: 3; }
+      .zone { fill: #ffffff; stroke: #2563eb; stroke-width: 2.4; stroke-dasharray: 8 6; rx: 10; }
+      .box { fill: #ffffff; stroke: #111827; stroke-width: 2.2; rx: 8; }
+      .svc { fill: #eff6ff; stroke: #2563eb; stroke-width: 2; rx: 8; }
+      .net { fill: #ecfeff; stroke: #0891b2; stroke-width: 2; rx: 8; }
+      .sec { fill: #fee2e2; stroke: #b91c1c; stroke-width: 2; rx: 8; }
+      .ops { fill: #ecfdf5; stroke: #15803d; stroke-width: 2; rx: 8; }
+      .auto { fill: #f5f3ff; stroke: #6d28d9; stroke-width: 2; rx: 8; }
+      .warn { fill: #fffbeb; stroke: #b45309; stroke-width: 2; rx: 8; }
+      .title { font: 700 30px Arial, sans-serif; fill: #0f172a; }
+      .h1 { font: 700 19px Arial, sans-serif; fill: #0f172a; }
+      .h2 { font: 700 15px Arial, sans-serif; fill: #111827; }
+      .txt { font: 13px Arial, sans-serif; fill: #334155; }
+      .small { font: 12px Arial, sans-serif; fill: #475569; }
+      .route { font: 700 15px Arial, sans-serif; fill: #0284c7; }
+      .bgp { font: 700 16px Arial, sans-serif; fill: #16a34a; }
+      .purple { font: 700 15px Arial, sans-serif; fill: #6d28d9; }
+      .icon { font: 700 25px Arial, sans-serif; fill: #0f172a; }
+      .line { stroke: #334155; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+      .blueLine { stroke: #0284c7; stroke-width: 4; fill: none; marker-end: url(#arrowBlue); }
+      .purpleLine { stroke: #6d28d9; stroke-width: 4; fill: none; marker-end: url(#arrowPurple); }
+      .greenLine { stroke: #16a34a; stroke-width: 3; fill: none; marker-end: url(#arrowGreen); }
+      .dashLine { stroke: #334155; stroke-width: 2; fill: none; stroke-dasharray: 7 5; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#334155"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#0284c7"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#6d28d9"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1700" height="980"/>
+  <text class="title" x="32" y="48">MidhHealth Hybrid Cloud Infrastructure Architecture</text>
+  <text class="txt" x="34" y="76">Azure ExpressRoute hub-and-spoke shown in detail; AWS and GCP follow the same governed landing-zone, private-connectivity, policy, and evidence model.</text>
+
+  <rect class="cloud" x="20" y="105" width="1660" height="575"/>
+  <text class="h1" x="52" y="142">Microsoft Azure Landing Zone</text>
+  <text class="small" x="52" y="164">Private connectivity, transit routing, firewall inspection, workload spokes, and platform evidence</text>
+
+  <rect class="box" x="50" y="210" width="310" height="98"/>
+  <text class="h2" x="84" y="244">Azure VMware Solution</text>
+  <text class="txt" x="84" y="267">Private cloud for migration waves</text>
+  <text class="small" x="84" y="288">AVS management and workload prefixes</text>
+  <text class="icon" x="62" y="266">A</text>
+
+  <circle cx="445" cy="260" r="23" fill="#111827"/>
+  <text x="445" y="268" text-anchor="middle" font-family="Arial" font-size="24" fill="#ffffff">X</text>
+  <text class="h2" x="398" y="205">Dedicated Microsoft</text>
+  <text class="h2" x="415" y="226">Enterprise Edge</text>
+  <text class="small" x="398" y="302">D-MSEE / MSEE</text>
+
+  <rect class="svc" x="570" y="225" width="150" height="70"/>
+  <text class="h2" x="590" y="252">ER Gateway A</text>
+  <text class="small" x="590" y="274">Active path</text>
+  <rect class="svc" x="570" y="395" width="150" height="70"/>
+  <text class="h2" x="590" y="422">ER Gateway B</text>
+  <text class="small" x="590" y="444">Resilient path</text>
+
+  <text class="h2" x="366" y="174">Azure ExpressRoute</text>
+  <path class="purpleLine" d="M360 260 L422 260"/>
+  <path class="purpleLine" d="M468 260 L570 260"/>
+  <path class="purpleLine" d="M445 283 L445 430 L570 430"/>
+  <path class="blueLine" d="M570 292 L360 292"/>
+  <text class="route" x="742" y="260">0.0.0.0/0</text>
+  <text class="route" x="725" y="284">Default Route</text>
+  <path class="blueLine" d="M720 260 L875 260"/>
+  <path class="blueLine" d="M720 430 L875 430"/>
+  <text class="route" x="720" y="388">MidhHealth</text>
+  <text class="route" x="720" y="412">network prefixes</text>
+
+  <rect class="zone" x="910" y="155" width="340" height="220"/>
+  <text class="h1" x="936" y="188">Azure Transit VNet</text>
+  <rect class="net" x="930" y="225" width="95" height="70"/>
+  <text class="h2" x="948" y="252">Route</text>
+  <text class="h2" x="948" y="272">Server</text>
+  <rect class="ops" x="1048" y="225" width="90" height="70"/>
+  <text class="h2" x="1074" y="252">BGP</text>
+  <text class="small" x="1062" y="273">iBGP/eBGP</text>
+  <rect class="sec" x="1160" y="225" width="70" height="70"/>
+  <text class="h2" x="1177" y="252">NVA</text>
+  <text class="small" x="1174" y="273">Transit</text>
+  <path class="greenLine" d="M1025 260 L1048 260"/>
+  <path class="greenLine" d="M1138 260 L1160 260"/>
+  <text class="bgp" x="1000" y="216">iBGP</text>
+  <text class="bgp" x="1112" y="216">eBGP</text>
+
+  <rect class="zone" x="910" y="425" width="340" height="205"/>
+  <text class="h1" x="936" y="458">Azure Hub VNet</text>
+  <rect class="net" x="930" y="492" width="95" height="70"/>
+  <text class="h2" x="948" y="519">Route</text>
+  <text class="h2" x="948" y="539">Server</text>
+  <rect class="ops" x="1048" y="492" width="90" height="70"/>
+  <text class="h2" x="1074" y="519">BGP</text>
+  <text class="small" x="1062" y="540">iBGP/eBGP</text>
+  <rect class="sec" x="1160" y="492" width="70" height="70"/>
+  <text class="h2" x="1177" y="519">NVA</text>
+  <text class="small" x="1178" y="540">FW</text>
+  <path class="greenLine" d="M1025 527 L1048 527"/>
+  <path class="greenLine" d="M1138 527 L1160 527"/>
+  <text class="bgp" x="1000" y="485">iBGP</text>
+  <text class="bgp" x="1112" y="485">eBGP</text>
+
+  <path class="line" d="M1080 375 L1080 425"/>
+  <text class="small" x="1022" y="407">VNet peering</text>
+  <path class="purpleLine" d="M1195 295 L1195 492"/>
+  <text class="purple" x="1208" y="402">IPsec / VXLAN + BGP</text>
+
+  <rect class="zone" x="1350" y="425" width="275" height="205"/>
+  <text class="h1" x="1374" y="458">Azure Spoke VNet</text>
+  <rect class="svc" x="1390" y="492" width="90" height="70"/>
+  <text class="h2" x="1412" y="520">AKS</text>
+  <text class="small" x="1407" y="540">Apps</text>
+  <rect class="svc" x="1502" y="492" width="90" height="70"/>
+  <text class="h2" x="1523" y="520">VMs</text>
+  <text class="small" x="1514" y="540">Services</text>
+  <text class="small" x="1282" y="521">VNet peering</text>
+  <path class="line" d="M1250 527 L1350 527"/>
+
+  <path class="line" d="M875 260 L930 260"/>
+  <path class="line" d="M875 430 L930 527"/>
+
+  <rect class="onprem" x="135" y="735" width="560" height="178"/>
+  <text class="h1" x="162" y="770">MidhHealth Data Center / Co-Lo</text>
+  <rect class="svc" x="165" y="800" width="132" height="70"/>
+  <text class="h2" x="186" y="827">infra01</text>
+  <text class="small" x="184" y="848">KVM / core</text>
+  <rect class="svc" x="315" y="800" width="132" height="70"/>
+  <text class="h2" x="336" y="827">infra02</text>
+  <text class="small" x="334" y="848">K8s / apps</text>
+  <rect class="warn" x="465" y="800" width="132" height="70"/>
+  <text class="h2" x="486" y="827">infra03</text>
+  <text class="small" x="481" y="848">planned RAM</text>
+  <circle cx="632" cy="835" r="24" fill="#111827"/>
+  <text x="632" y="843" text-anchor="middle" font-family="Arial" font-size="24" fill="#ffffff">X</text>
+  <text class="small" x="604" y="890">Customer edge router</text>
+
+  <path class="purpleLine" d="M632 811 L632 430 L570 430"/>
+  <path class="blueLine" d="M600 800 L445 800 L445 283"/>
+  <text class="h2" x="540" y="725">Customer ExpressRoute</text>
+  <text class="small" x="540" y="748">Private peering and advertised prefixes</text>
+
+  <rect class="box" x="770" y="735" width="825" height="178"/>
+  <text class="h1" x="800" y="770">Infrastructure Automation and Governance Control Plane</text>
+  <rect class="auto" x="810" y="805" width="120" height="58"/>
+  <text class="h2" x="838" y="830">GitLab</text>
+  <text class="small" x="828" y="848">MR review</text>
+  <rect class="auto" x="955" y="805" width="120" height="58"/>
+  <text class="h2" x="980" y="830">Jenkins</text>
+  <text class="small" x="973" y="848">plan gates</text>
+  <rect class="auto" x="1100" y="805" width="120" height="58"/>
+  <text class="h2" x="1122" y="830">Terraform</text>
+  <text class="small" x="1117" y="848">state / plan</text>
+  <rect class="warn" x="1245" y="805" width="120" height="58"/>
+  <text class="h2" x="1262" y="830">Drift</text>
+  <text class="small" x="1264" y="848">impact report</text>
+  <rect class="ops" x="1390" y="805" width="120" height="58"/>
+  <text class="h2" x="1415" y="830">AWX</text>
+  <text class="small" x="1406" y="848">Ansible apply</text>
+  <path class="line" d="M930 834 L955 834"/>
+  <path class="line" d="M1075 834 L1100 834"/>
+  <path class="line" d="M1220 834 L1245 834"/>
+  <path class="line" d="M1365 834 L1390 834"/>
+  <path class="dashLine" d="M1450 805 C1450 700 1215 650 1195 562"/>
+
+  <rect class="box" x="1320" y="155" width="305" height="190"/>
+  <text class="h1" x="1346" y="188">Multi-Cloud Equivalents</text>
+  <rect class="svc" x="1348" y="215" width="115" height="48"/>
+  <text class="h2" x="1372" y="245">AWS</text>
+  <rect class="svc" x="1482" y="215" width="115" height="48"/>
+  <text class="h2" x="1505" y="245">GCP</text>
+  <text class="small" x="1348" y="292">Direct Connect / Cloud VPN</text>
+  <text class="small" x="1348" y="314">Transit Gateway / Cloud Router</text>
+  <text class="small" x="1348" y="336">EKS/GKE, DB, object storage</text>
+</svg>

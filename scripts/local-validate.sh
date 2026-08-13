@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
+required_docs=(
+  ".gitlab-ci.yml"
+  "README.md"
+  "docs/enterprise-project-portfolio-and-usecases.md"
+  "docs/use-case-implementation-status.md"
+  "docs/component-architecture.md"
+  "docs/environment-details.md"
+  "docs/vm-inventory.md"
+  "docs/product-versions.md"
+  "docs/product-migration-history.md"
+  "docs/product-installation-elastic-stack.md"
+  "docs/product-installation-splunk.md"
+  "docs/sre-incident-register.md"
+  "docs/jenkins-awx-ansible-operations.md"
+  "docs/kubernetes-helm-delivery-runbook.md"
+  "docs/gitlab-organization-model.md"
+  "docs/engineer-interview-guide.md"
+  "docs/engineer-training-standard.md"
+  "docs/marketing-role-engineer-guide.md"
+  "docs/projects/README.md"
+  "docs/projects/devsecops-delivery.md"
+  "docs/projects/multi-cloud-infrastructure.md"
+  "docs/projects/kubernetes-platform.md"
+  "docs/projects/observability-sre.md"
+  "docs/projects/governance-operations.md"
+  "docs/projects/linux-systems.md"
+  "docs/projects/database-reliability.md"
+  "docs/projects/resilience-service-operations.md"
+  "docs/projects/data-engineering.md"
+  "docs/projects/network-engineering.md"
+  "docs/projects/healthcare-ai.md"
+  "docs/projects/mlops-model-platform.md"
+  "docs/use-cases/README.md"
+  "docs/use-cases/devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md"
+)
+
+for path in "${required_docs[@]}"; do
+  test -f "$path"
+done
+
+./scripts/validate-use-cases.sh
+
+portfolio="docs/enterprise-project-portfolio-and-usecases.md"
+grep -q "cloud-infra-automation-platform" "$portfolio"
+grep -q "devsecops-cicd-orchestrator" "$portfolio"
+grep -q "kubernetes-platform-gitops" "$portfolio"
+grep -q "observability-sre-platform" "$portfolio"
+grep -q "cloud-governance-ops-automation" "$portfolio"
+grep -q "linux-systems-platform" "$portfolio"
+grep -q "database-reliability-platform" "$portfolio"
+grep -q "resilience-service-operations" "$portfolio"
+grep -q "data-engineering-platform" "$portfolio"
+grep -q "network-engineering-platform" "$portfolio"
+grep -q "healthcare-ai-platform" "$portfolio"
+grep -q "mlops-model-platform" "$portfolio"
+use_case_count="$(
+  awk '
+    /^## Enterprise / { in_domain=1; in_table=0; next }
+    /^## / { in_domain=0; in_table=0 }
+    in_domain && /^\| Use case / { in_table=1; next }
+    in_domain && in_table && /^\| ---/ { next }
+    in_domain && in_table && /^\| [^|-]/ { count++ }
+    END { print count+0 }
+  ' "$portfolio"
+)"
+test "$use_case_count" -gt 0
+declared_total="$({
+  awk -F'|' '/^\| \*\*Total\*\* \| \*\*[0-9]+\*\* \|$/ { print $3 }' "$portfolio"
+} | tr -d ' *')"
+test "$declared_total" = "$use_case_count"
+
+linux_use_case_count="$({
+  awk '
+    /^## Enterprise Linux Systems Engineering Platform/ { in_domain=1; in_table=0; next }
+    /^## Enterprise / { if (in_domain) exit }
+    in_domain && /^\| Use case / { in_table=1; next }
+    in_domain && in_table && /^\| ---/ { next }
+    in_domain && in_table && /^\| [^|-]/ { count++ }
+    END { print count+0 }
+  ' "$portfolio"
+})"
+declared_linux_count="$({
+  awk -F'|' '/^\| 6\. Linux Systems Engineering \| [0-9]+ \|$/ { print $3 }' "$portfolio"
+} | tr -d ' ')"
+test "$declared_linux_count" = "$linux_use_case_count"
+grep -q "elasticsearch01.example.com" docs/vm-inventory.md
+grep -q "elasticsearch03.example.com" docs/vm-inventory.md
+grep -q "splunk.example.com" docs/vm-inventory.md
+grep -q "Elastic Stack | 9.4.2" docs/product-versions.md
+grep -q "Splunk Enterprise | 10.4.1" docs/product-versions.md
+grep -q "INC-2026-020" docs/sre-incident-register.md
+grep -q "INC-2026-027" docs/sre-incident-register.md
+grep -q "Filebeat | 9.4.2" docs/product-versions.md
+grep -q "projects/run-ansible-playbook" docs/jenkins-awx-ansible-operations.md
+grep -q "CONFIRM_APPLY" docs/jenkins-awx-ansible-operations.md
+grep -q "AWX_SCM_CREDENTIAL_ID" docs/jenkins-awx-ansible-operations.md
+grep -q "midhhealth/platform-delivery/jenkins-jobs" docs/jenkins-awx-ansible-operations.md
+grep -q "midhhealth/platform-engineering/linux-systems-platform" docs/gitlab-organization-model.md
+grep -q "midhhealth/platform-delivery/ansible-jenkins" docs/gitlab-organization-model.md
+grep -q "midhhealth/platform-delivery/awx-inventory" docs/gitlab-organization-model.md
+grep -q "midhhealth/platform-engineering/ansible-kubernetes" docs/gitlab-organization-model.md
+grep -q "projects/deploy-kubernetes-ingress" docs/kubernetes-helm-delivery-runbook.md
+grep -q "kubernetes-production-kubeconfig" docs/kubernetes-helm-delivery-runbook.md
+grep -q "Helm | 4.1.0" docs/product-versions.md
+grep -q "Chart 4.15.0; controller 1.15.1" docs/product-versions.md
+grep -q "midhhealth/ai-and-ml-platform/healthcare-ai-platform" docs/gitlab-organization-model.md
+grep -q "midhhealth/ai-and-ml-platform/mlops-model-platform" docs/gitlab-organization-model.md
+grep -q "| Explicitly implemented first slices | 10 |" docs/use-case-implementation-status.md
+
+if grep -R --line-number --exclude='sre-incident-register.md' \
+  'infra01\.midhtech\.local' docs; then
+  echo "Legacy infra01 hostname remains in active documentation." >&2
+  exit 1
+fi
+
+if grep -q 'prometheus\.example\.com.*192\.168\.1\.109' docs/vm-inventory.md; then
+  echo "Stale Prometheus address remains in canonical inventory." >&2
+  exit 1
+fi
+
+if grep -R --line-number \
+  -E 'awx(\.apps)?\.example\.com.*30080|192\.168\.1\.103:30080' \
+  README.md docs; then
+  echo "Stale AWX proxy port remains; the live AWX NodePort is 32000." >&2
+  exit 1
+fi
+
+echo "Enterprise architecture documentation validation passed."

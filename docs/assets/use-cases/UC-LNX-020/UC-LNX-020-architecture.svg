@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="980" viewBox="0 0 1600 980" role="img" aria-labelledby="title desc">
+<title id="title">020 Hybrid-Cloud and Container Host Engineering architecture</title>
+<desc id="desc">Give every supported node class a clear Linux contract while preserving provider-specific controls. The flow moves from reviewed source and approval through IaC execution to runtime validation, convergence and recovery evidence.</desc>
+<defs>
+<style>
+.bg{fill:#ffffff}.frame{fill:#f8fafc;stroke:#2563eb;stroke-width:3}.zone{fill:#ffffff;stroke:#60a5fa;stroke-width:2.5;stroke-dasharray:9 7}.title{font:700 32px Arial,sans-serif;fill:#0f172a}.subtitle{font:16px Arial,sans-serif;fill:#475569}.zoneTitle{font:700 22px Arial,sans-serif;fill:#0f172a}.boxTitle{font:700 18px Arial,sans-serif;fill:#111827}.boxSub{font:14px Arial,sans-serif;fill:#475569}.amber{fill:#fffbeb;stroke:#b45309;stroke-width:2}.blue{fill:#eff6ff;stroke:#2563eb;stroke-width:2}.purple{fill:#f5f3ff;stroke:#6d28d9;stroke-width:2}.red{fill:#fef2f2;stroke:#b91c1c;stroke-width:2}.green{fill:#ecfdf5;stroke:#15803d;stroke-width:2}.flow{stroke:#2563eb;stroke-width:3;fill:none;marker-end:url(#arrow)}.feedback{stroke:#15803d;stroke-width:2.5;stroke-dasharray:8 6;fill:none;marker-end:url(#greenArrow)}.controlTitle{font:700 18px Arial,sans-serif;fill:#0f172a}.control{font:700 15px Arial,sans-serif;fill:#1e3a8a}
+</style>
+<marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto"><path d="M0,0 L0,8 L11,4 z" fill="#2563eb"/></marker>
+<marker id="greenArrow" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto"><path d="M0,0 L0,8 L11,4 z" fill="#15803d"/></marker>
+</defs>
+<rect class="bg" width="1600" height="980"/>
+<text class="title" x="50" y="58">020 — Hybrid-Cloud and Container Host Engineering</text>
+<text class="subtitle" x="50" y="92">Give every supported node class a clear Linux contract while preserving provider-specific controls.</text>
+<rect class="frame" x="35" y="125" width="1530" height="650" rx="14"/>
+<rect class="zone" x="60" y="160" width="440" height="570" rx="14"/>
+<rect class="zone" x="580" y="160" width="440" height="570" rx="14"/>
+<rect class="zone" x="1100" y="160" width="440" height="570" rx="14"/>
+<text class="zoneTitle" x="86" y="202">Source and approval</text>
+<text class="zoneTitle" x="606" y="202">IaC execution</text>
+<text class="zoneTitle" x="1126" y="202">Runtime and evidence</text>
+<rect class="amber" x="80" y="230" width="400" height="92" rx="12"/>
+<text class="boxTitle" x="104" y="268">Node class</text>
+<text class="boxSub" x="104" y="296">image, runtime, kernel and environment</text>
+<rect class="blue" x="80" y="380" width="400" height="92" rx="12"/>
+<text class="boxTitle" x="104" y="418">Matrix validation</text>
+<text class="boxSub" x="104" y="446">versions, exceptions and secrets</text>
+<rect class="purple" x="80" y="530" width="400" height="92" rx="12"/>
+<text class="boxTitle" x="104" y="568">Change approval</text>
+<text class="boxSub" x="104" y="596">one canary per environment</text>
+<rect class="red" x="600" y="230" width="400" height="92" rx="12"/>
+<text class="boxTitle" x="624" y="268">Terraform node</text>
+<text class="boxSub" x="624" y="296">on-prem or cloud infrastructure</text>
+<rect class="blue" x="600" y="380" width="400" height="92" rx="12"/>
+<text class="boxTitle" x="624" y="418">Ansible profile</text>
+<text class="boxSub" x="624" y="446">baseline, runtime and node settings</text>
+<rect class="green" x="600" y="530" width="400" height="92" rx="12"/>
+<text class="boxTitle" x="624" y="568">Conformance test</text>
+<text class="boxSub" x="624" y="596">cgroups, storage, network and reboot</text>
+<rect class="green" x="1120" y="230" width="400" height="92" rx="12"/>
+<text class="boxTitle" x="1144" y="268">Linux node</text>
+<text class="boxSub" x="1144" y="296">VM, container host or K8s worker</text>
+<rect class="amber" x="1120" y="380" width="400" height="92" rx="12"/>
+<text class="boxTitle" x="1144" y="418">Runtime evidence</text>
+<text class="boxSub" x="1144" y="446">versions, security and workload probe</text>
+<rect class="purple" x="1120" y="530" width="400" height="92" rx="12"/>
+<text class="boxTitle" x="1144" y="568">Parity record</text>
+<text class="boxSub" x="1144" y="596">owned environment exceptions</text>
+<path class="flow" d="M480 276 L600 276"/>
+<path class="flow" d="M480 426 L600 426"/>
+<path class="flow" d="M480 576 L600 576"/>
+<path class="flow" d="M1000 276 L1120 276"/>
+<path class="flow" d="M1000 426 L1120 426"/>
+<path class="flow" d="M1000 576 L1120 576"/>
+<path class="feedback" d="M1320 622 C1320 740 285 760 285 630"/>
+<text class="controlTitle" x="70" y="820">Controls visible in the evidence</text>
+<rect class="blue" x="70" y="845" width="330" height="82" rx="12"/><text class="control" x="235" y="894" text-anchor="middle">Pinned profile</text>
+<rect class="blue" x="450" y="845" width="330" height="82" rx="12"/><text class="control" x="615" y="894" text-anchor="middle">Per-env canary</text>
+<rect class="blue" x="830" y="845" width="330" height="82" rx="12"/><text class="control" x="995" y="894" text-anchor="middle">Conformance pass</text>
+<rect class="blue" x="1210" y="845" width="330" height="82" rx="12"/><text class="control" x="1375" y="894" text-anchor="middle">Drain and replace</text>
+</svg>

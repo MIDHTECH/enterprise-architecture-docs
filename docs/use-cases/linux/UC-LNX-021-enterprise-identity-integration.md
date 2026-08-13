@@ -1,0 +1,257 @@
+# UC-LNX-021: Enterprise Identity Integration
+
+Last verified: 2026-08-02
+
+## Use-case record
+
+| Field | Value |
+| --- | --- |
+| Portfolio | Enterprise Linux Systems Engineering Platform |
+| Canonical coverage target | LDAP, Kerberos, Active Directory, SSO, PAM and certificate-based host access |
+| Delivery model | End-to-end infrastructure as code |
+| Primary roles | Identity engineer, Linux security engineer, directory administrator, SRE |
+| Target environment | Managed Linux hosts joined to the approved enterprise identity trust |
+| Current state | **Defined backlog. Local access review exists; SSSD/realmd/Kerberos/PAM integration, certificate enrollment, offline behavior, and revocation testing are not accepted.** |
+| Related change | None; implementation requires a future approved change record |
+| Owner | Linux Platform team |
+
+## Purpose
+
+Central identity helps only when hosts fail predictably during directory, DNS, time, or certificate trouble. Enrollment, SSSD, PAM, group mappings, trust, offline behavior, and emergency access are tested together.
+
+## Expected outcome
+
+Approved groups receive intended access, unauthorized users are denied, and authentication stays observable during dependency failures. Enrollment rolls back cleanly and cached access follows policy.
+
+## Trigger and actors
+
+| Item | Definition |
+| --- | --- |
+| Trigger | A host cohort or role needs centrally governed identity and access |
+| Engineering owners | Identity engineer, Linux security engineer, directory administrator, SRE |
+| Approver | Confirms scope, risk, window, plan, and recovery readiness |
+| Operations/SRE | Reviews health, evidence, incident linkage, and acceptance |
+
+## Preconditions
+
+- The sequential change record authorizes this exact use case and no conflicting infrastructure work is active.
+- GitLab, tagged runner, Jenkins, AWX, inventory, DNS, and observability dependencies are healthy.
+- Exact target/canary limits and owners are known; secrets are referenced from approved systems.
+- The selected SHA passed source, syntax, lint, policy, security, and plan/check gates.
+- Recovery prerequisites and stop conditions are verified before mutation.
+
+## Scope and exclusions
+
+**In scope:** DNS/time prerequisites, realm discovery/join, SSSD, Kerberos, PAM/NSS, group-to-sudo mapping, SSH certificates, host certificates, offline cache, revocation, and evidence.
+
+**Excluded:** Directory schema redesign, hard-coded join passwords, broad domain-admin access, and removing local break glass before recovery proof.
+
+## Architecture diagram
+
+![UC-LNX-021 Enterprise Identity Integration architecture](../../assets/use-cases/UC-LNX-021/UC-LNX-021-architecture.svg)
+
+Directory and role policy become SSSD, Kerberos, PAM, and certificate configuration, followed by positive, negative, outage, and recovery tests.
+
+## IaC delivery model
+
+| Layer | Responsibility |
+| --- | --- |
+| GitLab | Source of truth, merge request, protected branch, CI, immutable SHA, artifacts |
+| Jenkins | Manual PLAN/CHECK/APPLY/ROLLBACK, approval, concurrency, evidence aggregation |
+| Terraform/image automation | VM/image/volume/network lifecycle only when required |
+| AWX and Ansible | OS desired state, inventory limit, check mode, serial rollout, job events |
+| Observability/evidence | Health, logs, metrics, expected-versus-observed, incidents, acceptance |
+
+Current-source reality: roles/access_controls provides local access evidence but does not implement enterprise directory integration.
+
+## End-to-end implementation
+
+### Code and configuration map
+
+| State | Repository path | Responsibility |
+| --- | --- | --- |
+| Existing | `linux-systems-platform: roles/access_controls` | Local accounts, shells, sudo, and SSH posture evidence |
+| Planned | `linux-systems-platform: roles/enterprise_identity` | realmd/SSSD/Kerberos/PAM/NSS, certificate trust, and group mappings |
+| Planned | `linux-systems-platform: playbooks/identity-enroll.yml and identity-revoke.yml` | Canary join, login/sudo tests, offline behavior, and clean removal |
+
+### Required variables and controls
+
+| Variable/control | Example or constraint | Purpose |
+| --- | --- | --- |
+| `identity_realm` | approved uppercase realm | Trust target |
+| `identity_servers` | discovered/allowlisted FQDNs | Bounded endpoints |
+| `identity_admin_groups` | group-to-role mappings | Least privilege |
+| `join_credential_id` | ephemeral secret reference | No join secret in Git |
+
+### Delivery sequence
+
+1. Validate forward/reverse DNS, time synchronization, certificates, ports, realm discovery, directory groups, and emergency access.
+2. Render SSSD, Kerberos, PAM/NSS, SSH CA, and sudo mapping source without embedding join credentials.
+3. Enroll one canary using an ephemeral credential, then remove that credential from process memory and artifacts.
+4. Test allowed/denied login, group resolution, sudo scope, SSH certificate, ticket lifecycle, offline cache, expiry, and lockout.
+5. Simulate directory unavailability and verify local service continuity and break-glass boundaries.
+6. Expand by cohort, repeat for convergence, rotate/revoke a test identity, and publish evidence.
+
+## Code and configuration map
+
+The implementation map above distinguishes observed `Existing` paths from `Planned` IaC design targets. Planned paths must not be used as evidence of completion.
+
+## Jira breakdown
+
+### STORY-LNX-021-001: Implement and validate the source model
+
+**Description:** The platform team keeps the inputs, roles or modules, tests, pipeline gates, and operating boundaries for Enterprise Identity Integration in Git. A reviewer can reproduce the proposal from the selected commit without relying on settings that exist only in a console.
+
+**Status:** In progress only where supporting source is listed; the full source gate is not accepted.
+
+**Acceptance criteria:**
+
+- Inputs have schemas/defaults, safe bounds, ownership, and secret references.
+- CI rejects malformed, unsafe, non-idempotent, and out-of-scope changes.
+- CI publishes immutable SHA, exact assumptions, and plan/check artifacts.
+
+**Implementation steps:**
+
+1. Validate forward/reverse DNS, time synchronization, certificates, ports, realm discovery, directory groups, and emergency access.
+2. Render SSSD, Kerberos, PAM/NSS, SSH CA, and sudo mapping source without embedding join credentials.
+3. Enroll one canary using an ephemeral credential, then remove that credential from process memory and artifacts.
+
+**Completed work:** roles/access_controls provides local access evidence but does not implement enterprise directory integration.
+
+**Validation and rollback:** Validate without runtime mutation; revert source and regenerate artifacts from the prior accepted revision if incorrect.
+
+**Required attachments:** `ART-LNX-021-001` and `ATT-LNX-021-001`.
+
+### STORY-LNX-021-002: Execute the bounded canary and rollout
+
+**Description:** The operator reviews PLAN or CHECK output against one named canary before applying Enterprise Identity Integration. Failed health or negative tests stop the run, and expansion requires explicit approval.
+
+**Status:** Planned; no runtime acceptance is claimed.
+
+**Acceptance criteria:**
+
+- Execution uses the reviewed SHA, credential references, inventory, variables, and canary limit.
+- Health and negative tests pass before any cohort expansion.
+- Failure thresholds stop the workflow and preserve evidence without hidden manual correction.
+
+**Implementation steps:**
+
+1. Test allowed/denied login, group resolution, sudo scope, SSH certificate, ticket lifecycle, offline cache, expiry, and lockout.
+2. Simulate directory unavailability and verify local service continuity and break-glass boundaries.
+3. Expand by cohort, repeat for convergence, rotate/revoke a test identity, and publish evidence.
+
+**Completed work:** The execution design is documented; no successful live canary is claimed.
+
+**Validation and rollback:** DNS, time, TLS, and realm discovery pass before enrollment; Authorized identities receive only mapped access and denied users fail; Directory outage and certificate/ticket expiry behave as designed. Use the validated local break-glass account, restore prior PAM/NSS/SSHD configuration, leave the realm cleanly with approved credentials, remove stale host objects, and verify local access.
+
+**Required attachments:** `ART-LNX-021-002`, `ATT-LNX-021-002`, and `ATT-LNX-021-003`.
+
+### STORY-LNX-021-003: Prove convergence, recovery, and handoff
+
+**Description:** Operations accepts Enterprise Identity Integration only after the same revision converges cleanly, runtime health is visible, and the recovery path has been exercised. The evidence must explain what moved, what stayed stable, and how the team recovered it.
+
+**Status:** Planned; blocked until the canary story succeeds.
+
+**Acceptance criteria:**
+
+- Repeating identical code and inputs produces zero unexpected change.
+- Recovery is exercised and service returns within the approved objective.
+- Logs, metrics, job output, owner, result, and incidents are linked.
+
+**Implementation steps:**
+
+1. Repeat the identical execution and compare the changed set.
+2. Exercise the documented recovery path on the bounded target.
+3. Verify service health, monitoring, security posture, and consumer access.
+4. Publish sanitized evidence and obtain owner/SRE acceptance.
+
+**Completed work:** Acceptance requirements are defined; no runtime proof is claimed.
+
+**Validation and rollback:** Second run is unchanged and revocation is effective. Use the validated local break-glass account, restore prior PAM/NSS/SSHD configuration, leave the realm cleanly with approved credentials, remove stale host objects, and verify local access.
+
+**Required attachments:** `ART-LNX-021-003`, `ATT-LNX-021-004`, and `ATT-LNX-021-005`.
+
+## Evidence and screenshot register
+
+| ID | Required evidence | Source | Status |
+| --- | --- | --- | --- |
+| `ART-LNX-021-001` | CI, immutable SHA, and plan/check artifact | GitLab | Pending |
+| `ATT-LNX-021-001` | Successful source pipeline | GitLab | Pending |
+| `ART-LNX-021-002` | Canary execution and changed set | Jenkins/AWX/Terraform | Pending |
+| `ATT-LNX-021-002` | Canary result | Control plane | Pending |
+| `ATT-LNX-021-003` | Runtime health and expected state | Dashboard/CLI | Pending |
+| `ART-LNX-021-003` | Second convergence and recovery log | Control plane | Pending |
+| `ATT-LNX-021-004` | Recovery result | Control plane | Pending |
+| `ATT-LNX-021-005` | Final accepted state | Dashboard/CLI | Pending |
+
+## Expected versus current result
+
+| Area | Expected | Current observation | Decision |
+| --- | --- | --- | --- |
+| Source | Complete IaC and pipeline for Enterprise Identity Integration | roles/access_controls provides local access evidence but does not implement enterprise directory integration. | Not yet code complete |
+| Runtime | Approved canary/cohort execution | No accepted use-case run | Pending |
+| Idempotence | Identical second run has zero unexpected change | No accepted convergence proof | Pending |
+| Recovery | Recovery exercised and timed | No accepted recovery artifact | Pending |
+| Evidence | Sanitized artifacts tied to immutable executions | Register defined; captures pending | Pending |
+
+## Validation, idempotence, and rollback
+
+- DNS, time, TLS, and realm discovery pass before enrollment.
+- Authorized identities receive only mapped access and denied users fail.
+- Directory outage and certificate/ticket expiry behave as designed.
+- Second run is unchanged and revocation is effective.
+
+**Rollback/recovery:** Use the validated local break-glass account, restore prior PAM/NSS/SSHD configuration, leave the realm cleanly with approved credentials, remove stale host objects, and verify local access.
+
+Idempotence means the same reviewed revision, target, variables, and action produces zero unexplained changes plus stable consumer health. First-run success is not enough.
+
+## Troubleshooting guide
+
+Primary scenario: **Realm join succeeds, but logins take minutes and fail whenever one directory server is unreachable.**
+
+1. Stop propagation and preserve SHA, plan/check, execution IDs, timestamps, and targets.
+2. Isolate source, orchestration, infrastructure, connectivity, privilege, host state, and consumer health.
+3. Compare live facts with intended variables and the last accepted baseline; correlate logs/metrics to the window.
+4. Reproduce only on the canary or in PLAN/CHECK and change one hypothesis at a time.
+5. Recover through the documented path and record unexpected failures or near misses.
+
+## Interview preparation
+
+1. **Question:** Explain the end-to-end IaC architecture for Enterprise Identity Integration.
+   **Answer signals:** Cover GitLab review and CI, Jenkins approval, Terraform/image ownership where relevant, AWX/Ansible execution, observability, convergence, recovery, and evidence.
+
+2. **Question:** How would you make the implementation idempotent and reusable?
+   **Answer signals:** identity_realm, identity_servers, identity_admin_groups, join_credential_id; explicit schemas, stable identities, bounded targets, deterministic tasks, and no UI-only state.
+
+3. **Question:** What pipeline and plan/check evidence is required before APPLY?
+   **Answer signals:** DNS, time, TLS, and realm discovery pass before enrollment; Authorized identities receive only mapped access and denied users fail; immutable SHA, runner identity, target assumptions, scan/test results, and no exposed secret.
+
+4. **Question:** Troubleshooting scenario: Realm join succeeds, but logins take minutes and fail whenever one directory server is unreachable. How do you respond?
+   **Answer signals:** Stop propagation, preserve execution evidence, verify target and source revision, isolate the failed layer, compare live facts to desired/baseline, and test recovery on the canary.
+
+5. **Question:** How do you prove idempotence?
+   **Answer signals:** Repeat identical SHA, inputs, target, credentials scope, and action; require zero unexplained changes plus stable health and equivalent evidence.
+
+6. **Question:** What rollback or recovery path would you defend?
+   **Answer signals:** Use the validated local break-glass account, restore prior PAM/NSS/SSHD configuration, leave the realm cleanly with approved credentials, remove stale host objects, and verify local access.
+
+7. **Question:** Which security/audit controls should an interviewer hear?
+   **Answer signals:** Protected source, least privilege, secret references, approval gates, short-lived access, canary limits, immutable artifacts, exception expiry, and incident linkage.
+
+8. **Question:** Discuss the tradeoff between central identity consistency and resilient offline host access.
+   **Answer signals:** Frame business impact and failure modes, choose a safe default, measure canary results, keep recovery available, and document justified exceptions.
+
+9. **Question:** Tell me about a time you owned a difficult Enterprise Identity Integration change or incident across multiple teams. What did you do?
+   **Answer signals:** Use a concise STAR example showing ownership, risk communication, evidence-based decisions, a safe stop or rollback, collaboration with service/security/SRE owners, measurable recovery or improvement, and a durable IaC correction.
+
+## Safety and security controls
+
+- Protected source, merge requests, tagged runners, immutable revisions, and retained artifacts.
+- Least-privilege credentials referenced from approved secret systems.
+- PLAN/CHECK by default; APPLY/ROLLBACK requires confirmation and exact target limits.
+- Canary rollout, failure thresholds, health gates, and stop conditions.
+- No credentials, private keys, secrets, or protected health information in artifacts.
+
+## Acceptance decision
+
+UC-LNX-021 is **not yet accepted**. Acceptance requires implemented source, passing CI, controlled execution, runtime health, zero-change second convergence, exercised recovery, reviewed evidence, and publication on the canonical branch.

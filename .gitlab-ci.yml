@@ -1,0 +1,14 @@
+default:
+  image:
+    name: python:3.13-slim
+    pull_policy: if-not-present
+  tags:
+    - shared
+
+stages:
+  - validate
+
+docs_validate:
+  stage: validate
+  script:
+    - ./scripts/local-validate.sh
