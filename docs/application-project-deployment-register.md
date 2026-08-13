@@ -14,6 +14,10 @@ keep separate source, ownership, versions, pipelines and rollback histories.
 They become an enterprise system through versioned contracts and evidence
 links between projects.
 
+The machine-readable inventory is maintained in
+[`application-projects.json`](application-projects.json). Its state values are
+acceptance facts, not aspirations.
+
 ![Separate application projects connected by shared platform contracts](assets/application-project-deployment-model.svg)
 
 ## Keep the three inventories separate
@@ -23,7 +27,7 @@ Three kinds of things meet in this plan, but they are not interchangeable:
 | Inventory | What it contains | Why it stays separate |
 | --- | --- | --- |
 | Application projects | Independently owned care, payer, data, AI or internal-service repositories that produce deployable releases. | A project has its own business outcome, release decision, dependencies and recovery history. |
-| Platform implementation projects | The 16 repositories that provide shared delivery, runtime, data, security and operating capabilities. | A platform release changes a shared contract and must not be mistaken for an application release. |
+| Platform implementation projects | The 20 repositories that provide shared delivery, runtime, data, security and operating capabilities. | A platform release changes a shared contract and must not be mistaken for an application release. |
 | Runtime products | GitLab, Jenkins, AWX, Vault, Harbor, Kubernetes, PostgreSQL and the existing observability services documented in the current environment. | A running product is a deployment target or shared dependency; its presence does not prove that an application project is onboarded. |
 
 This distinction prevents a common false-positive: a healthy Kubernetes cluster
@@ -79,8 +83,12 @@ projects; it does not claim the use cases are implemented.
 | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` | Application build, scan and release orchestration | Existing GitLab runners and Jenkins | Delivery spine; Identity and secrets; Telemetry and release feedback | Active implementation | Prove one project release from immutable source through rollback evidence. |
 | `midhhealth/platform-delivery/jenkins-jobs` | Versioned Jenkins Job DSL | `jenkins.example.com` | Delivery spine; VM or native service | Implemented source and active controller | Prove generated jobs, configuration convergence and job-level recovery. |
 | `midhhealth/platform-delivery/jenkins-shared-library` | Reusable pipeline behavior | Jenkins controller and `jenkins-agent01` | Delivery spine; Operational readiness | Used by accepted Kubernetes delivery | Pin the library revision in every consuming project and record compatibility. |
+| `midhhealth/platform-delivery/ansible-jenkins` | Jenkins controller and dedicated-agent desired state | Existing Jenkins controller and `jenkins-agent01` | VM or native service; Identity and secrets; Operational readiness | Dedicated Kubernetes deployer accepted | Keep controller and agent changes source-managed, bounded and independently recoverable. |
+| `midhhealth/platform-delivery/ansible-awx` | AWX controller and execution-plane desired state | Existing AWX controller and `awx-execution.example.com` | VM or native service; Identity and secrets; Operational readiness | Execution plane accepted | Preserve the controller/runtime separation and exact offline dependency bundle. |
 | `midhhealth/platform-engineering/cloud-infra-automation-platform` | Terraform plans and approved infrastructure automation | `gitlab-runner-infra01`, AWX and existing inventory | Delivery spine; Identity and secrets; VM or native service; Operational readiness | Active implementation; cloud execution deferred | Link every applied plan to owner, impact, target, evidence and recovery. |
 | `midhhealth/platform-engineering/kubernetes-platform-gitops` | Kubernetes platform and application delivery contracts | Existing four-node application cluster | Delivery spine; Kubernetes workload; Network and service access; Operational readiness | Base cluster, ingress and Longhorn accepted; several planned add-ons absent | Onboard projects without claiming Argo CD or another uninstalled add-on. |
+| `midhhealth/platform-engineering/ansible-kubernetes` | Kubernetes host prerequisites and reviewed cluster configuration | Existing control plane and three workers | VM or native service; Kubernetes workload; Operational readiness | Ingress and storage source revisions accepted | Keep host configuration in AWX/Ansible and application Helm releases in Jenkins. |
+| `midhhealth/platform-engineering/awx-inventory` | Canonical product host groups consumed by AWX | Existing product inventory and synchronized source | VM or native service; Operational readiness | Production inventory synchronization accepted | Reject any playbook whose target group is absent or silently skipped. |
 | `midhhealth/platform-engineering/linux-systems-platform` | Host lifecycle and desired state | Existing hypervisors and Rocky Linux VM inventory | Delivery spine; VM or native service; Operational readiness | Active first slices | Make every product service traceable to a role, inventory limit and recovery task. |
 | `midhhealth/platform-engineering/network-engineering-platform` | DNS, TLS, ingress, egress and reachability contracts | Existing BIND, NGINX, KVM and Kubernetes paths | Network and service access; Operational readiness; Telemetry and release feedback | Active first slices | Give each project an owned service-path record with positive and denied-path evidence. |
 | `midhhealth/reliability-operations/observability-sre-platform` | Project telemetry, SLOs, alerts and release health | Existing Prometheus, Grafana, Loki, Tempo, OpenTelemetry and Elastic services | Telemetry and release feedback; Operational readiness | Shared telemetry foundations accepted | Add project/release identity, dashboard, alert and SLO evidence per application. |
@@ -113,7 +121,11 @@ its real GitLab repository. Start its handoff from the
 
 | Application project | Business capability | Owner | Runtime | Required chains | Upstream/downstream projects | Release evidence | Recovery evidence | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| _No concrete care-delivery or payer-operations application project has been registered yet._ | — | — | — | — | — | — | — | **Inventory required** |
+| [`midhhealth/applications/podinfo`](projects/applications/podinfo.md) | Non-PHI reference workload proving shared application delivery | Platform Delivery team | Existing application Kubernetes cluster; planned `podinfo` namespace | Delivery spine; Identity and secrets; Network and service access; Operational readiness; Telemetry and release feedback; Kubernetes workload | Upstream Podinfo source; nine named platform projects in the project record | [Pinned source review](evidence/APP-PODINFO-001-source-review.md); internal CI, image, deployment and telemetry pending | Stateless Helm rollback and route recovery pending | **Source pinned** |
+
+Podinfo is the first registered application project, but it does not fill the
+care-delivery or payer-operations portfolios. Those remain inventory gaps until
+their real repositories and owners are known.
 
 ## Deployment waves
 

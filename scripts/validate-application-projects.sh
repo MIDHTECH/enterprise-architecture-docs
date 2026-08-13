@@ -6,6 +6,7 @@ cd "$ROOT_DIR"
 
 python3 - "$ROOT_DIR" <<'PY'
 from pathlib import Path
+import json
 import re
 import sys
 import xml.etree.ElementTree as ET
@@ -15,8 +16,9 @@ register = root / "docs/application-project-deployment-register.md"
 template = root / "docs/projects/application-deployment-record-template.md"
 traceability = root / "docs/use-cases/enterprise-traceability.md"
 diagram = root / "docs/assets/application-project-deployment-model.svg"
+manifest = root / "docs/application-projects.json"
 
-for required in (register, template, traceability, diagram):
+for required in (register, template, traceability, diagram, manifest):
     if not required.is_file():
         raise SystemExit(f"Missing application-project artifact: {required}")
 
@@ -25,8 +27,12 @@ known_projects = (
     "midhhealth/platform-delivery/devsecops-cicd-orchestrator",
     "midhhealth/platform-delivery/jenkins-jobs",
     "midhhealth/platform-delivery/jenkins-shared-library",
+    "midhhealth/platform-delivery/ansible-jenkins",
+    "midhhealth/platform-delivery/ansible-awx",
     "midhhealth/platform-engineering/cloud-infra-automation-platform",
     "midhhealth/platform-engineering/kubernetes-platform-gitops",
+    "midhhealth/platform-engineering/ansible-kubernetes",
+    "midhhealth/platform-engineering/awx-inventory",
     "midhhealth/platform-engineering/linux-systems-platform",
     "midhhealth/platform-engineering/network-engineering-platform",
     "midhhealth/reliability-operations/observability-sre-platform",
@@ -75,7 +81,7 @@ for phrase in (
     "Application projects",
     "Platform implementation projects",
     "Runtime products",
-    "Inventory required",
+    "remain inventory gaps",
     "No placeholder application name should be invented",
 ):
     if phrase not in text:
@@ -114,8 +120,110 @@ for element in ("title", "desc"):
     if node is None or not (node.text or "").strip():
         raise SystemExit(f"{diagram}: accessible {element} is required")
 
+manifest_data = json.loads(manifest.read_text())
+if manifest_data.get("schema_version") != 1:
+    raise SystemExit(f"{manifest}: unsupported schema_version")
+applications = manifest_data.get("applications")
+if not isinstance(applications, list) or not applications:
+    raise SystemExit(f"{manifest}: at least one real application is required")
+
+allowed_chains = {
+    "delivery-spine",
+    "identity-and-secrets",
+    "network-and-service-access",
+    "operational-readiness",
+    "telemetry-and-release-feedback",
+    "kubernetes-workload",
+    "vm-or-native-service",
+    "stateful-application",
+    "data-producing-or-consuming-application",
+    "ai-or-model-enabled-application",
+}
+allowed_states = {
+    "inventory",
+    "source-pinned",
+    "ready",
+    "deployed",
+    "accepted",
+    "blocked",
+}
+application_ids = set()
+application_repositories = set()
+for application in applications:
+    application_id = application.get("id")
+    repository = application.get("repository")
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", application_id or ""):
+        raise SystemExit(f"{manifest}: invalid application id {application_id!r}")
+    if application_id in application_ids or repository in application_repositories:
+        raise SystemExit(f"{manifest}: duplicate application id or repository")
+    application_ids.add(application_id)
+    application_repositories.add(repository)
+    if not re.fullmatch(r"midhhealth/[a-z0-9._-]+/[a-z0-9._-]+", repository or ""):
+        raise SystemExit(f"{manifest}: invalid repository {repository!r}")
+    if application.get("deployment_state") not in allowed_states:
+        raise SystemExit(f"{manifest}: invalid deployment_state for {application_id}")
+    source = application.get("source", {})
+    if not re.fullmatch(r"[0-9a-f]{40}", source.get("commit", "")):
+        raise SystemExit(f"{manifest}: {application_id} must pin a full source commit")
+    if not re.fullmatch(r"[0-9a-f]{64}", source.get("license_sha256", "")):
+        raise SystemExit(f"{manifest}: {application_id} must pin a license SHA-256")
+    chains = application.get("required_chains", [])
+    unknown_chains = set(chains) - allowed_chains
+    if not chains or unknown_chains:
+        raise SystemExit(f"{manifest}: {application_id} has missing or unknown chains {unknown_chains}")
+    project_dependencies = application.get("platform_projects", [])
+    unknown_projects = set(project_dependencies) - set(known_projects)
+    if not project_dependencies or unknown_projects:
+        raise SystemExit(
+            f"{manifest}: {application_id} has missing or unknown platform projects {unknown_projects}"
+        )
+    for evidence in application.get("evidence", []):
+        if not (root / evidence).is_file():
+            raise SystemExit(f"{manifest}: {application_id} evidence does not exist: {evidence}")
+    gates = application.get("gates", [])
+    gate_ids = [gate.get("id") for gate in gates]
+    if len(gate_ids) != len(set(gate_ids)) or not gate_ids:
+        raise SystemExit(f"{manifest}: {application_id} must have unique acceptance gates")
+    if application.get("deployment_state") != "accepted" and not any(
+        gate.get("state") == "pending" for gate in gates
+    ):
+        raise SystemExit(f"{manifest}: non-accepted {application_id} must retain a pending gate")
+
+    record = root / f"docs/projects/applications/{application_id}.md"
+    application_diagram = root / f"docs/assets/applications/{application_id}-deployment.svg"
+    for artifact in (record, application_diagram):
+        if not artifact.is_file():
+            raise SystemExit(f"{manifest}: missing project artifact {artifact}")
+    record_text = record.read_text()
+    for required_value in (repository, source["commit"], application.get("deployment_state")):
+        if required_value not in record_text:
+            raise SystemExit(f"{record}: missing manifest value {required_value!r}")
+    application_svg = ET.parse(application_diagram).getroot()
+    if (
+        application_svg.attrib.get("role") != "img"
+        or application_svg.attrib.get("aria-labelledby") != "title desc"
+        or application_svg.attrib.get("data-application") != application_id
+    ):
+        raise SystemExit(f"{application_diagram}: invalid accessible application SVG contract")
+    for element in ("title", "desc"):
+        node = application_svg.find(f"svg:{element}", namespace)
+        if node is None or not (node.text or "").strip():
+            raise SystemExit(f"{application_diagram}: accessible {element} is required")
+
+all_docs = "\n".join(
+    path.read_text(errors="replace")
+    for path in (root / "docs").rglob("*.md")
+)
+for stale_path in (
+    "midhhealth/platform-engineering/ansible-jenkins",
+    "midhhealth/platform-delivery/awx-inventory",
+):
+    if stale_path in all_docs:
+        raise SystemExit(f"Stale repository path remains in documentation: {stale_path}")
+
 print(
     "Application project validation passed: "
-    f"{len(known_projects)} platform projects, {len(required_chains)} reusable chains."
+    f"{len(known_projects)} platform projects, {len(applications)} applications, "
+    f"{len(required_chains)} reusable chains."
 )
 PY

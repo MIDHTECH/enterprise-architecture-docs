@@ -1,6 +1,6 @@
 # UC-CICD-001: End-to-End CI/CD Pipeline Setup
 
-Last verified: 2026-08-02
+Last verified: 2026-08-13
 
 ## Use-case record
 
@@ -12,8 +12,8 @@ Last verified: 2026-08-02
 | Primary roles | Application developer, DevOps engineer, platform engineer, SRE, security reviewer |
 | Change record | `CHG-2026-002` |
 | Target | Podinfo application mirrored into on-premises GitLab, Jenkins, AWX, dedicated Jenkins agent, and Kubernetes cluster |
-| Current state | **In progress — source gates and the dedicated Jenkins agent are accepted; managed ingress-job runtime execution and rollback evidence remain pending** |
-| Current blocker | The managed Jenkins ingress job and protected secret-file kubeconfig are not yet accepted; Helm PLAN must pass before deployment begins. |
+| Current state | **In progress — Podinfo source is pinned and the shared Jenkins/ingress prerequisites are accepted; the internal application project, image, deployment, telemetry and application rollback remain pending** |
+| Current blocker | Authenticated access is required to create/import `midhhealth/applications/podinfo`; no application pipeline or runtime action may bypass the internal project. |
 | Owner | Platform Delivery team |
 
 ## Purpose
@@ -33,13 +33,16 @@ After an approved Git revision is selected, an operator can run a non-mutating
 Helm plan and then an explicitly confirmed deployment from Jenkins. The job
 runs only on `jenkins-agent01`, uses a protected kubeconfig, installs the pinned
 chart atomically, and proves that the release, rollout, IngressClass,
-NodePorts, and Headlamp route are healthy. An operator can then roll the release
-back to a known revision and prove service recovery.
+ClusterIP-only Service, approved application route, and negative backend-port
+checks are healthy. An operator can then roll the release back to a known
+revision and prove service recovery.
 
 The first application payload will be
 [`stefanprodan/podinfo`](https://github.com/stefanprodan/podinfo), copied into a
-new `midhhealth/applications/podinfo` GitLab project after its exact upstream
-commit and Apache-2.0 license are recorded. Podinfo is small, has health and
+new `midhhealth/applications/podinfo` GitLab project. Tag `6.14.1`, commit
+`eec06d1ea459af4cb4e10e806f8be7c7bd58b361`, and the Apache-2.0 license hash
+are recorded in [APP-PODINFO-001](../../evidence/APP-PODINFO-001-source-review.md).
+Podinfo is small, has health and
 readiness endpoints, structured logs, Prometheus and OpenTelemetry
 instrumentation, fault injection, a Dockerfile, tests, and a Helm chart. Those
 features let later SRE and observability stories reuse the same application
@@ -127,9 +130,11 @@ branch. Staff must:
 8. handle upstream refreshes as reviewed merge requests with repeatable tests
    and an explicit comparison from the previous upstream commit.
 
-For this documented capability, the approved candidate is Podinfo. The selection is a design
-decision; the import is not yet claimed as completed. Other public projects may
-be selected for later use cases only after the current use case is accepted.
+For this documented capability, the approved candidate is Podinfo release
+`6.14.1` at commit `eec06d1ea459af4cb4e10e806f8be7c7bd58b361`.
+The source identity and license review are complete; the internal import is not
+claimed as completed. Other public projects may be selected for later use
+cases only after the current use case is accepted.
 
 ## Architecture context
 
@@ -141,7 +146,7 @@ environment.
 | Context element | Architecture statement |
 | --- | --- |
 | Business and operational setting | Enterprise consumers: Enterprise DevSecOps Delivery Platform. The result must be explainable, repeatable, and owned. |
-| Current state | **In progress — source gates and the dedicated Jenkins agent are accepted; managed ingress-job runtime execution and rollback evidence remain pending** |
+| Current state | **In progress — source identity and shared delivery prerequisites are accepted; the internal Podinfo project and all application-specific runtime evidence remain pending** |
 | Desired state | A reviewed contract drives a bounded result, machine-readable evidence, and a safe stop or recovery decision. |
 | Existing target boundary | Podinfo application mirrored into on-premises GitLab, Jenkins, AWX, dedicated Jenkins agent, and Kubernetes cluster |
 | Infrastructure constraint | Fit is achieved by reusing documented existing repositories, control planes, services, and targets—not by inventing capacity or treating planned products as available. |
@@ -274,7 +279,7 @@ repository under `/Users/midhmaclab/Documents/MIDHTECHLAB`.
 
 | Repository | Code reference | Why an engineer looks here | Current evidence |
 | --- | --- | --- | --- |
-| `github.com/stefanprodan/podinfo` | `LICENSE`, `Dockerfile`, `go.mod`, `charts/podinfo`, `deploy`, `otel`, `test` | Upstream license, build, dependency, deployment, telemetry, and test source | Candidate reviewed from public repository; immutable import commit pending |
+| `github.com/stefanprodan/podinfo` | `LICENSE`, `Dockerfile`, `go.mod`, `charts/podinfo`, `deploy`, `otel`, `test` | Upstream license, build, dependency, deployment, telemetry, and test source | Tag `6.14.1`, commit `eec06d1ea459af4cb4e10e806f8be7c7bd58b361`, and Apache-2.0 license hash verified in `APP-PODINFO-001` |
 | `midhhealth/applications/podinfo` | `UPSTREAM.md`, `LICENSE`, `.gitlab-ci.yml`, `Dockerfile`, application source, tests, and chart/values overlay | Internal build source and provenance record | GitLab project/import not yet created |
 | `midhhealth/platform-engineering/ansible-kubernetes` | `.gitlab-ci.yml` | GitLab source-validation stages | Pipeline 354 passed |
 | `midhhealth/platform-engineering/cloud-infra-automation-platform` | `ansible/playbooks/awx-local-proxy.yml`, `ansible/roles/awx_local_proxy`, `ansible/roles/bind_dns`, and `gitlab-ci/terraform.gitlab-ci.yml` | Migrates AWX to service-local NGINX and the canonical `awx.example.com` DNS record without a shared-proxy or `.apps` dependency; avoids external package downloads when BIND is already installed and during Terraform CI bootstrap | Commit `e8873211`; branch pipeline 378 and canonical-main pipeline 380 passed; AWX sync 484, proxy jobs 485/492, and DNS jobs 502/514 accepted with clean second convergence |
@@ -286,7 +291,7 @@ repository under `/Users/midhmaclab/Documents/MIDHTECHLAB`.
 | `midhhealth/platform-delivery/jenkins-shared-library` | `vars/kubernetesHelmPipeline.groovy` | PLAN/DEPLOY/ROLLBACK validation, execution, and acceptance logic | Commit `b23d3a4`; pipeline 351 passed |
 | `midhhealth/platform-delivery/jenkins-jobs` | `jobs/deploy_kubernetes_ingress.groovy` | Managed job parameters, agent label, checkout, and shared-library call | Commit `950cc4f`; pipeline 352 passed |
 | same | `scripts/validate-job-dsl.sh` | Detects unsafe or invalid Job DSL before publication | Pipeline 352 passed |
-| `midhhealth/platform-engineering/ansible-jenkins` | `roles/jenkins_agent/tasks/main.yml` | Installs and validates the dedicated executor runtime | Commit `82adf11`; pipeline 360 passed |
+| `midhhealth/platform-delivery/ansible-jenkins` | `roles/jenkins_agent/tasks/main.yml` | Installs and validates the dedicated executor runtime | Commit `82adf11`; pipeline 360 passed |
 | same | `roles/jenkins_agent/defaults/main.yml` | Pinned agent tool versions and controller URL | Commit `82adf11` |
 | same | `roles/jenkins_agent/templates/jenkins-agent.service.j2` | Persistent inbound agent service definition | Commit `82adf11` |
 | `midhhealth/enterprise-architecture/enterprise-architecture-docs` | `docs/sequential-build-change-control.md` | Active change, permitted boundary, accepted evidence, and exit criteria | `CHG-2026-002` |
@@ -581,7 +586,7 @@ execution is captured, sanitized, committed, and reviewed.
 
 | ID | Story | Required evidence | Source | Status |
 | --- | --- | --- | --- | --- |
-| `ATT-CICD-000A` | 000 | Public GitHub repository at the recorded immutable commit with license visible | GitHub | Pending capture |
+| `ATT-CICD-000A` | 000 | Public GitHub repository at the recorded immutable commit with license visible | GitHub | Source identity and license hash verified in `APP-PODINFO-001`; optional screenshot pending |
 | `ATT-CICD-000B` | 000 | Internal GitLab project, protected default branch, and successful import pipeline | GitLab | Blocked |
 | `ART-CICD-000A` | 000 | `UPSTREAM.md`, license check, scan reports, and SHA comparison | GitLab artifact/log | Blocked |
 | `ATT-CICD-001` | 001 | Green pipeline overview showing pipeline 354 and commit `e34bd54` | GitLab | Pending capture |
@@ -589,10 +594,10 @@ execution is captured, sanitized, committed, and reviewed.
 | `ATT-CICD-002` | 002 | Green pipeline overview for shared-library pipeline 351 | GitLab | Pending capture |
 | `ATT-CICD-003` | 002 | Generated Jenkins job parameters and assigned label | Jenkins | Pending runtime capture |
 | `ART-CICD-002` | 002 | Job DSL validation log for pipeline 352 | GitLab artifact/log | Existing; link or export pending |
-| `ATT-CICD-004` | 003 | Jenkins node online with `kubernetes-deployer` label | Jenkins | Blocked |
-| `ATT-CICD-005` | 003 | AWX successful job summary and host result | AWX | Blocked |
-| `ART-CICD-003` | 003 | Sanitized tool-version and systemd evidence | AWX job artifact | Blocked |
-| `ART-CICD-004` | 003 | Second convergence with zero unexpected changes | AWX job artifact | Blocked |
+| `ATT-CICD-004` | 003 | Jenkins node online with `kubernetes-deployer` label | Jenkins | Accepted in `CHG-2026-002` |
+| `ATT-CICD-005` | 003 | AWX successful job summary and host result | AWX | Accepted in `CHG-2026-002`, jobs 536/541 |
+| `ART-CICD-003` | 003 | Sanitized tool-version and systemd evidence | AWX job artifact | Accepted in `CHG-2026-002` |
+| `ART-CICD-004` | 003 | Second convergence with zero unexpected changes | AWX job artifact | Accepted in `CHG-2026-002`, job 541 |
 | `ATT-CICD-006` | 004 | Successful Jenkins PLAN stages | Jenkins | Pending runtime |
 | `ART-CICD-005` | 004 | Sanitized server-side dry-run output and unchanged revision history | Jenkins artifact | Pending runtime |
 | `ATT-CICD-007` | 005 | Successful Jenkins DEPLOY stage view | Jenkins | Pending runtime |
@@ -632,13 +637,13 @@ Screenshot capture procedure:
 
 | Area | Expected | Current observation | Decision |
 | --- | --- | --- | --- |
-| Application provenance | Approved Podinfo commit copied to protected internal GitLab with license and scans | Candidate chosen; exact SHA and import pending | Pending |
-| Source validation | All relevant GitLab pipelines pass | Pipelines 354, 351, 352, 360, and 358 passed | Satisfied |
-| Managed Jenkins job | Job generated from reviewed DSL | Source exists; live generated-job evidence pending | Not yet accepted |
+| Application provenance | Approved Podinfo commit copied to protected internal GitLab with license and scans | Tag `6.14.1`, exact commit and license hash are pinned; internal import and scan remain pending | Partially satisfied |
+| Platform source validation | All relevant shared-platform pipelines pass | Pipelines 354, 351, 352, 360, and 358 passed | Satisfied for shared prerequisites |
+| Managed Jenkins platform path | Job generated from reviewed DSL and proven on the dedicated executor | CHG-2026-009 PLAN/deploy/rollback/restore builds 3-7 accepted the shared ingress path | Satisfied for platform prerequisite; no Podinfo job run |
 | Dedicated agent | Online, pinned tools, correct label, second convergence clean | Jenkins build 1 passed on the agent; AWX jobs 536/541 were clean | Satisfied |
-| Helm plan | Successful non-mutating server-side plan | Not yet run | Pending |
-| Deployment | Atomic release and all health checks pass | Not yet run | Pending |
-| Rollback | Prior revision restored and route healthy | Not yet run | Pending |
+| Podinfo Helm plan | Successful non-mutating server-side plan using the internal commit and Harbor digest | Not yet run | Pending |
+| Podinfo deployment | Atomic release and all project health checks pass | Not yet run | Pending |
+| Podinfo rollback | Prior application revision restored and project route healthy | Not yet run | Pending |
 | Evidence | Screenshots and artifacts reviewed and linked | Register defined; captures pending | Pending |
 
 ## Safety and security controls
@@ -663,9 +668,10 @@ wrong executor is selected, rollback fails, or evidence contains a secret.
 
 ## Acceptance decision
 
-`UC-CICD-001` is **not yet accepted**. Its source implementation and dedicated
-agent are verified, but the managed ingress job, secret-file kubeconfig, Helm
-PLAN/deployment, rollback, release convergence, and screenshot/artifact review
-remain open. No later use
-case should be started until this record is accepted or explicitly closed as a
-documented partial implementation under the sequential change process.
+`UC-CICD-001` is **not yet accepted**. Podinfo's upstream source identity is
+pinned, and the shared Jenkins agent plus Kubernetes ingress path are accepted.
+The internal Podinfo project, its GitLab pipeline, Harbor image digest,
+application-specific Helm PLAN/deployment, telemetry, rollback, convergence,
+and evidence review remain open. No later application should be promoted until
+this reference path is accepted or explicitly closed as a documented partial
+implementation under the sequential change process.

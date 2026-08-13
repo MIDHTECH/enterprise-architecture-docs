@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "last_verified": "2026-08-13",
+  "applications": [
+    {
+      "id": "podinfo",
+      "repository": "midhhealth/applications/podinfo",
+      "kind": "reference-application",
+      "purpose": "Prove the enterprise application delivery and operating path without clinical, payer, PHI, or production data.",
+      "owner": "Platform Delivery team",
+      "source": {
+        "upstream_url": "https://github.com/stefanprodan/podinfo",
+        "tag": "6.14.1",
+        "commit": "eec06d1ea459af4cb4e10e806f8be7c7bd58b361",
+        "license": "Apache-2.0",
+        "license_sha256": "00b6239a0f738010ba96855ac4c63fc221bc2875d9427e815e519ebae4f71bd1"
+      },
+      "deployment_state": "source-pinned",
+      "runtime": {
+        "platform": "application-kubernetes",
+        "cluster": "kubernetes-admin@kubernetes",
+        "namespace": "podinfo",
+        "ingress_host": null,
+        "persistent_state": false
+      },
+      "required_chains": [
+        "delivery-spine",
+        "identity-and-secrets",
+        "network-and-service-access",
+        "operational-readiness",
+        "telemetry-and-release-feedback",
+        "kubernetes-workload"
+      ],
+      "platform_projects": [
+        "midhhealth/platform-delivery/jenkins-jobs",
+        "midhhealth/platform-delivery/jenkins-shared-library",
+        "midhhealth/platform-delivery/ansible-jenkins",
+        "midhhealth/platform-engineering/ansible-kubernetes",
+        "midhhealth/platform-engineering/kubernetes-platform-gitops",
+        "midhhealth/platform-engineering/network-engineering-platform",
+        "midhhealth/reliability-operations/observability-sre-platform",
+        "midhhealth/reliability-operations/resilience-service-operations",
+        "midhhealth/security-governance/cloud-governance-ops-automation"
+      ],
+      "evidence": [
+        "docs/evidence/APP-PODINFO-001-source-review.md",
+        "docs/evidence/CHG-2026-002-jenkins-agent-acceptance.md",
+        "docs/evidence/CHG-2026-009-kubernetes-ingress-acceptance.md",
+        "docs/evidence/CHG-2026-010-kubernetes-persistent-storage-acceptance.md"
+      ],
+      "gates": [
+        {"id": "source-pinned", "state": "passed"},
+        {"id": "internal-project-created", "state": "pending"},
+        {"id": "internal-ci-passed", "state": "pending"},
+        {"id": "harbor-image-published", "state": "pending"},
+        {"id": "helm-plan-passed", "state": "pending"},
+        {"id": "application-deployed", "state": "pending"},
+        {"id": "telemetry-and-slo-accepted", "state": "pending"},
+        {"id": "rollback-and-recovery-passed", "state": "pending"}
+      ]
+    }
+  ]
+}

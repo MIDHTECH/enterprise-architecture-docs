@@ -12,6 +12,12 @@ and create one
 [Application Deployment Record](application-deployment-record-template.md)
 per real repository before planning its implementation.
 
+## Registered application projects
+
+| Project | Purpose | Current state |
+| --- | --- | --- |
+| [`midhhealth/applications/podinfo`](applications/podinfo.md) | Non-PHI reference workload for proving the connected delivery and operating path | Source pinned; internal project and deployment pending |
+
 | Domain | Page |
 | --- | --- |
 | DevSecOps delivery | [DevSecOps Delivery](devsecops-delivery.md) |
