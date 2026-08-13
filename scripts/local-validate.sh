@@ -48,6 +48,7 @@ required_docs=(
   "docs/projects/network-engineering.md"
   "docs/projects/healthcare-ai.md"
   "docs/projects/mlops-model-platform.md"
+  "scripts/validate-platform-detail-pages.sh"
   "docs/use-cases/README.md"
   "docs/use-cases/enterprise-traceability.md"
   "docs/use-cases/devsecops/README.md"
@@ -79,6 +80,7 @@ for path in "${required_docs[@]}"; do
 done
 
 ./scripts/validate-use-cases.sh
+./scripts/validate-platform-detail-pages.sh
 ./scripts/validate-application-projects.sh
 ./scripts/validate-interview-learning-labs.sh
 ./scripts/validate-platform-enhancement-plan.sh
