@@ -355,7 +355,7 @@ recoverable.
 
 | Use case | Coverage |
 | --- | --- |
-| Terraform Drift Detection | Scheduled Terraform plan detects resources changed outside approved code |
+| [Terraform Drift Detection](use-cases/infrastructure/UC-INFRA-001-terraform-drift-detection.md) | Scheduled Terraform plan detects resources changed outside approved code |
 | Azure Infrastructure Provisioning Using Terraform | Azure stack covers resource group, VNet, VM, storage, database, container platform |
 | AWS VPC Landing Zone Setup | AWS stack covers VPC, subnet, security group, storage, database, compute |
 | Terraform Plan Analyzer | Plan output summarizes creates, updates, destroys and replacement risk |
@@ -391,7 +391,7 @@ This diagram shows the project architecture, control boundaries, runtime targets
 | Use case | Coverage |
 | --- | --- |
 | AKS/EKS/GKE Cluster Provisioning Automation | Future scope: Terraform patterns remain planned; managed-cloud deployment and acceptance are deferred |
-| Kubernetes Configuration Drift | Live cluster state is compared with Git-defined desired state |
+| [Kubernetes Configuration Drift](use-cases/kubernetes/UC-K8S-001-kubernetes-configuration-drift.md) | Live cluster state is compared with Git-defined desired state |
 | Kubernetes Application Deployment | Helm/Kustomize deploy application workloads |
 | GitOps Reconciliation | Argo CD or Flux restores approved desired state and records sync health |
 | Continuous Verification | Rollouts check latency, errors, restarts and alert state before promotion |
@@ -432,7 +432,7 @@ and Splunk VMs are provisioned-only until their AWX runbooks complete.
 | Centralized Log Management | Logs from pods, VMs, and services collected centrally |
 | eBPF Observability | Kernel-level telemetry captures runtime behavior where code changes are not practical |
 | Alerting and On-Call Notification | Alerts route to incident channels or PagerDuty-style tools |
-| SLO as Code | Service objectives and alert thresholds are versioned in Git |
+| [SLO as Code](use-cases/observability/UC-OBS-001-slo-burn-rate-alerting.md) | Service objectives and alert thresholds are versioned in Git |
 | Production Incident Troubleshooting Dashboard | Single triage view for incidents |
 | Deployment Health Scoring | Release health combines latency, errors, restarts, logs, traces and synthetic checks |
 | API Error Rate Monitoring | Tracks 4xx, 5xx, timeout, and dependency failures |
@@ -442,7 +442,7 @@ and Splunk VMs are provisioned-only until their AWX runbooks complete.
 | Cloud-Native Monitoring | Cloud-managed services included in dashboards |
 | Change-to-Incident Correlation | Incidents link to recent commits, deployments, Terraform plans and GitOps syncs |
 | Automated Incident Triage | Triage output includes owner, dependency, dashboard, runbook and likely change source |
-| Burn-Rate Alerting | Fast and slow error-budget burn alerts replace noisy symptom-only paging |
+| [Burn-Rate Alerting](use-cases/observability/UC-OBS-001-slo-burn-rate-alerting.md) | Fast and slow error-budget burn alerts replace noisy symptom-only paging |
 
 ## Enterprise Cloud Governance and Operations Automation
 
@@ -465,7 +465,7 @@ This diagram shows the project architecture, control boundaries, runtime targets
 | Cloud IAM and RBAC Standardization | Least-privilege roles and access patterns |
 | Secrets Management with Key Vault | Azure-focused secrets implementation path |
 | Cloud Misconfiguration Detector | Policy scans find public exposure, weak IAM, missing encryption, backup and logging gaps |
-| Automated Compliance Scanning | Checkov/tfsec/policy checks run in pipelines |
+| [Automated Compliance Scanning](use-cases/governance/UC-GOV-001-compliance-evidence-collection.md) | Checkov/tfsec/policy checks run in pipelines |
 | Infrastructure Security Hardening | Enforces baseline cloud and Linux controls |
 | Private Endpoint Implementation | Restricts service access to private networks |
 | DNS and Certificate Management | Standardizes DNS and certificate lifecycle |
@@ -557,7 +557,7 @@ runtime targets, evidence flow, and operational feedback loop.
 | Database and Role Provisioning | Approved service onboarding |
 | Schema Migration Automation | Ordered, tested and reversible changes |
 | Backup and Point-in-Time Recovery | Defined recovery points and retention |
-| Automated Restore Validation | Evidence that backups are usable |
+| [Automated Restore Validation](use-cases/database/UC-DB-001-backup-restore-validation.md) | Evidence that backups are usable |
 | Major-Version Upgrade Automation | Rehearsed upgrade using supported methods |
 | Minor Patching | Controlled maintenance with health validation |
 | Database Performance Monitoring | Availability, latency, throughput and saturation |
@@ -613,7 +613,7 @@ runtime targets, evidence flow, and operational feedback loop.
 | Certificate and Secret Expiry Response | Proactive and automated renewal response |
 | AWX Automated Remediation | Guarded, auditable operational fixes |
 | Maintenance-Window Management | Planned service-impact coordination |
-| Operational Readiness Reviews | Production-readiness scorecards and gates |
+| [Operational Readiness Reviews](use-cases/resilience/UC-RSO-001-operational-readiness-review.md) | Production-readiness scorecards and gates |
 
 ## Enterprise Data Engineering and Integration Platform
 
@@ -641,7 +641,7 @@ boundaries, evidence flow, and operational feedback loop.
 | Change-Data Capture | Database changes published without application coupling |
 | ETL and ELT Pipelines | Standard extract, load and transform patterns |
 | Workflow Orchestration | Dependency, retry and scheduling control |
-| Data Quality Validation | Automated completeness, validity and freshness checks |
+| [Data Quality Validation](use-cases/data/UC-DATA-001-healthcare-feed-quality.md) | Automated completeness, validity and freshness checks |
 | Schema Registry and Evolution | Compatible event and dataset contracts |
 | Event-Contract Management | Ownership and versioning of event interfaces |
 | dbt Data Transformation | Tested SQL transformation and documentation |
@@ -715,7 +715,7 @@ boundary, connectivity domains, evidence flow, and operational feedback loop.
 | Network Configuration Compliance | Auditable device and service standards |
 | Network Incident Response | Repeatable diagnosis and restoration |
 | Capacity and Bandwidth Planning | Forecasted network growth |
-| Network Change Validation and Rollback | Pre/post checks and safe recovery |
+| [Network Change Validation and Rollback](use-cases/network/UC-NET-001-network-change-validation.md) | Pre/post checks and safe recovery |
 
 ## Enterprise Healthcare AI Platform
 
@@ -747,9 +747,9 @@ evaluation gates, human review, evidence flow, and operational feedback loop.
 | --- | --- |
 | Clinical AI Assistant Platform | Secure assistants for clinical workflow support |
 | Payer AI Assistant Platform | Claims, eligibility, authorization and member-service support |
-| Retrieval-Augmented Generation | Governed document and knowledge retrieval |
+| [Retrieval-Augmented Generation](use-cases/healthcare-ai/UC-AI-001-governed-enterprise-knowledge-rag.md) | Governed document and knowledge retrieval |
 | Agentic Workflow Automation | Tool-calling workflows with safe execution boundaries |
-| Healthcare Knowledge Base Indexing | Chunking, embeddings, ranking and searchable knowledge stores |
+| [Healthcare Knowledge Base Indexing](use-cases/healthcare-ai/UC-AI-001-governed-enterprise-knowledge-rag.md) | Chunking, embeddings, ranking and searchable knowledge stores |
 | FHIR-Aware AI APIs | Auditable clinical-data exchange for AI workflows |
 | AI Prompt and Response Evaluation | Regression, safety and quality evaluation |
 | Responsible AI Controls | Bias, transparency, approval and human-review guardrails |
@@ -798,8 +798,8 @@ validation gates, serving targets, evidence flow, and operational feedback loop.
 | --- | --- |
 | ML Training Pipeline Standardization | Repeatable training workflows |
 | Feature Engineering and Feature Stores | Governed reusable features |
-| Model Registry and Versioning | Traceable model lineage and promotion |
-| Model Validation Gates | Accuracy, fairness, safety and performance checks |
+| [Model Registry and Versioning](use-cases/mlops/UC-MLOPS-001-model-registration-validation.md) | Traceable model lineage and promotion |
+| [Model Validation Gates](use-cases/mlops/UC-MLOPS-001-model-registration-validation.md) | Accuracy, fairness, safety and performance checks |
 | CI/CT/CD for ML | Automated train, test, validate, deploy and promote workflows |
 | Batch Inference | Scheduled scoring and downstream delivery |
 | Real-Time Inference APIs | Low-latency model serving |
@@ -809,7 +809,7 @@ validation gates, serving targets, evidence flow, and operational feedback loop.
 | Model Rollback | Safe recovery to a prior approved model |
 | Experiment Tracking | Metrics, artifacts, parameters and reproducibility |
 | ML Infrastructure as Code | Reproducible cloud and Kubernetes model environments |
-| Model Governance Evidence | Audit records for regulated model operation |
+| [Model Governance Evidence](use-cases/mlops/UC-MLOPS-001-model-registration-validation.md) | Audit records for regulated model operation |
 | ML Incident Response | Runbooks for degraded, biased or unavailable models |
 
 The first useful MLOps slice should prove that a model can move through the

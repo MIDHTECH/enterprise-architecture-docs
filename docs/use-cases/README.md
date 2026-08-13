@@ -7,6 +7,32 @@ implement, test, operate, and audit. The portfolio summary remains in
 `enterprise-project-portfolio-and-usecases.md`; the detailed record for each
 use case lives here.
 
+The [enterprise traceability register](enterprise-traceability.md) maps all 12
+platforms and their 224 canonical use cases to provider, payer, shared digital
+platform, risk, and resilience outcomes. Use it to verify that a proposed page
+fits its owning platform and that the platform fits the enterprise model.
+
+## Detailed starting pages
+
+| Platform | Detailed implementation specification |
+| --- | --- |
+| DevSecOps delivery | [UC-CICD-001: End-to-End CI/CD Pipeline](devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md) |
+| Multi-cloud infrastructure | [UC-INFRA-001: Terraform Drift Detection](infrastructure/UC-INFRA-001-terraform-drift-detection.md) |
+| Kubernetes with GitOps | [UC-K8S-001: Kubernetes Configuration Drift](kubernetes/UC-K8S-001-kubernetes-configuration-drift.md) |
+| Observability and SRE | [UC-OBS-001: SLO as Code and Burn-Rate Alerting](observability/UC-OBS-001-slo-burn-rate-alerting.md) |
+| Governance and operations | [UC-GOV-001: Automated Compliance Evidence Collection](governance/UC-GOV-001-compliance-evidence-collection.md) |
+| Linux systems engineering | [24 detailed Linux use cases](linux/README.md) |
+| Database reliability | [UC-DB-001: Automated PostgreSQL Restore Validation](database/UC-DB-001-backup-restore-validation.md) |
+| Resilience and service operations | [UC-RSO-001: Operational Readiness Review](resilience/UC-RSO-001-operational-readiness-review.md) |
+| Data engineering and integration | [UC-DATA-001: Healthcare Feed Quality Validation](data/UC-DATA-001-healthcare-feed-quality.md) |
+| Network engineering and automation | [UC-NET-001: Network Change Validation and Rollback](network/UC-NET-001-network-change-validation.md) |
+| Healthcare AI | [UC-AI-001: Governed Enterprise Knowledge Retrieval](healthcare-ai/UC-AI-001-governed-enterprise-knowledge-rag.md) |
+| MLOps model platform | [UC-MLOPS-001: Model Artifact Registration and Validation](mlops/UC-MLOPS-001-model-registration-validation.md) |
+
+The first slices reuse the existing lab and are intended to be copied into the
+corresponding GitLab implementation repositories. They do not authorize new
+infrastructure. Runtime acceptance must flow back into these pages as evidence.
+
 Use cases are expanded and accepted one at a time. A later use case must not
 be started while the current use case has an unresolved implementation,
 runtime, rollback, evidence, incident, or publication gate.
