@@ -14,7 +14,7 @@ architecture, current lab boundary, security controls, failure behavior, recover
 evidence. When runtime evidence does not exist, the candidate should say what is designed
 or source-testable instead of inventing production experience.
 
-Use the companion [new-employee platform briefing](new-employee-platform-briefing.md)
+Use the companion [MidhHealth reference architecture](new-employee-platform-briefing.md)
 for the common architecture story.
 
 ## Follow-up ladder for any question

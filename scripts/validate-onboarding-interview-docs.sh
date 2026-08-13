@@ -11,13 +11,24 @@ test -f "$briefing"
 test -f "$bank"
 
 required_briefing_sections=(
-  "## Start with the reason it exists"
+  "## About this reference organization"
+  "## Business users and journeys"
+  "## Architecture goals"
+  "## Architecture at a glance"
+  "## The reference application estate"
+  "## Platform foundation"
+  "## Environment model"
   "## The short explanation"
-  "## Follow one change through the platform"
+  "## Worked scenario 1: release an application"
+  "## Worked scenario 2: exchange provider or payer data"
+  "## Worked scenario 3: investigate a service outage"
+  "## Worked scenario 4: evaluate an AI workflow"
   "## The twelve domains in plain language"
+  "## Important architecture decisions"
   "## What is real today and what is still a design"
   "## How to explain your contribution honestly"
   "## A useful interview answer shape"
+  "## A new employee's first-week tour"
 )
 
 for heading in "${required_briefing_sections[@]}"; do
