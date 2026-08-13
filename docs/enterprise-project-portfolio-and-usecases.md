@@ -320,20 +320,20 @@ This diagram shows the project architecture, control boundaries, runtime targets
 | Use case | Coverage |
 | --- | --- |
 | [End-to-End CI/CD Pipeline Setup](use-cases/devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md) | Source gates passed; dedicated agent, live Jenkins plan/deploy/rollback, and evidence acceptance remain pending under `CHG-2026-002` |
-| Automated Build Pipeline | Build process runs in pipeline instead of local machines |
-| Automated Unit Testing in CI | Tests run before package/deploy stages |
-| Code Quality Gate Integration | Pipeline has a place for quality scans and gating |
-| Artifact Management Automation | Build outputs and Docker images can be versioned and published |
-| Docker Image Build and Registry Push | Pipeline builds container images and can push to registry |
-| Environment-Based Release Promotion | Pipeline supports environment variables and promotion gates |
-| Automated Rollback Controller | Pipeline reverses deployments when health or SLO checks fail |
-| Pipeline Template Standardization | Jenkins shared library and job DSL standardize pipelines |
-| Secure CI/CD Pipeline Implementation | Security checks are embedded into delivery workflow |
-| Secrets Detection in Source Code | Pipeline can run Gitleaks/TruffleHog-style checks |
-| Container Image Vulnerability Scanning | Pipeline can scan images before deployment |
-| Dependency Vulnerability Management | Dependency scanning fits before image build/deploy |
-| Terraform Plan Automation | Merge requests publish reviewed Terraform plan artifacts |
-| Deployment Health Scoring | Release gates score health, SLO burn, alerts and rollback readiness |
+| [Automated Build Pipeline](use-cases/devsecops/UC-CICD-002-automated-build-pipeline.md) | Build process runs in pipeline instead of local machines |
+| [Automated Unit Testing in CI](use-cases/devsecops/UC-CICD-003-automated-unit-testing-in-ci.md) | Tests run before package/deploy stages |
+| [Code Quality Gate Integration](use-cases/devsecops/UC-CICD-004-code-quality-gate-integration.md) | Pipeline has a place for quality scans and gating |
+| [Artifact Management Automation](use-cases/devsecops/UC-CICD-005-artifact-management-automation.md) | Build outputs and Docker images can be versioned and published |
+| [Docker Image Build and Registry Push](use-cases/devsecops/UC-CICD-006-docker-image-build-and-registry-push.md) | Pipeline builds container images and can push to registry |
+| [Environment-Based Release Promotion](use-cases/devsecops/UC-CICD-007-environment-based-release-promotion.md) | Pipeline supports environment variables and promotion gates |
+| [Automated Rollback Controller](use-cases/devsecops/UC-CICD-008-automated-rollback-controller.md) | Pipeline reverses deployments when health or SLO checks fail |
+| [Pipeline Template Standardization](use-cases/devsecops/UC-CICD-009-pipeline-template-standardization.md) | Jenkins shared library and job DSL standardize pipelines |
+| [Secure CI/CD Pipeline Implementation](use-cases/devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md) | Security checks are embedded into delivery workflow |
+| [Secrets Detection in Source Code](use-cases/devsecops/UC-CICD-011-secrets-detection-in-source-code.md) | Pipeline can run Gitleaks/TruffleHog-style checks |
+| [Container Image Vulnerability Scanning](use-cases/devsecops/UC-CICD-012-container-image-vulnerability-scanning.md) | Pipeline can scan images before deployment |
+| [Dependency Vulnerability Management](use-cases/devsecops/UC-CICD-013-dependency-vulnerability-management.md) | Dependency scanning fits before image build/deploy |
+| [Terraform Plan Automation](use-cases/devsecops/UC-CICD-014-terraform-plan-automation.md) | Merge requests publish reviewed Terraform plan artifacts |
+| [Deployment Health Scoring](use-cases/devsecops/UC-CICD-015-deployment-health-scoring.md) | Release gates score health, SLO burn, alerts and rollback readiness |
 
 ## Enterprise Multi-Cloud Infrastructure Platform
 
@@ -356,17 +356,17 @@ recoverable.
 | Use case | Coverage |
 | --- | --- |
 | [Terraform Drift Detection](use-cases/infrastructure/UC-INFRA-001-terraform-drift-detection.md) | Scheduled Terraform plan detects resources changed outside approved code |
-| Azure Infrastructure Provisioning Using Terraform | Azure stack covers resource group, VNet, VM, storage, database, container platform |
-| AWS VPC Landing Zone Setup | AWS stack covers VPC, subnet, security group, storage, database, compute |
-| Terraform Plan Analyzer | Plan output summarizes creates, updates, destroys and replacement risk |
-| Server Configuration Automation Using Ansible | Ansible configures Linux hosts after provisioning |
-| Linux Server Patch Automation | Ansible common role handles package baseline and can run patching |
-| Infrastructure Change Impact Analysis | Planned changes map to services, owners, SLOs, data feeds and runbooks |
-| Cloud Resource Tagging Automation | Terraform variables and common tags standardize ownership/cost metadata |
-| Terraform State Integrity Monitoring | State backend, lock behavior and unexpected modifications are validated |
-| Environment Standardization Across Dev/Test/Prod | Same modules and variables can drive multiple environments |
-| Infrastructure Reconciliation Loop | Desired and actual infrastructure state are compared on a schedule |
-| Policy-Driven Provisioning | Terraform changes are blocked when they violate standards |
+| [Azure Infrastructure Provisioning Using Terraform](use-cases/infrastructure/UC-INFRA-002-azure-infrastructure-provisioning-using-terraform.md) | Azure stack covers resource group, VNet, VM, storage, database, container platform |
+| [AWS VPC Landing Zone Setup](use-cases/infrastructure/UC-INFRA-003-aws-vpc-landing-zone-setup.md) | AWS stack covers VPC, subnet, security group, storage, database, compute |
+| [Terraform Plan Analyzer](use-cases/infrastructure/UC-INFRA-004-terraform-plan-analyzer.md) | Plan output summarizes creates, updates, destroys and replacement risk |
+| [Server Configuration Automation Using Ansible](use-cases/infrastructure/UC-INFRA-005-server-configuration-automation-using-ansible.md) | Ansible configures Linux hosts after provisioning |
+| [Linux Server Patch Automation](use-cases/infrastructure/UC-INFRA-006-linux-server-patch-automation.md) | Ansible common role handles package baseline and can run patching |
+| [Infrastructure Change Impact Analysis](use-cases/infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) | Planned changes map to services, owners, SLOs, data feeds and runbooks |
+| [Cloud Resource Tagging Automation](use-cases/infrastructure/UC-INFRA-008-cloud-resource-tagging-automation.md) | Terraform variables and common tags standardize ownership/cost metadata |
+| [Terraform State Integrity Monitoring](use-cases/infrastructure/UC-INFRA-009-terraform-state-integrity-monitoring.md) | State backend, lock behavior and unexpected modifications are validated |
+| [Environment Standardization Across Dev/Test/Prod](use-cases/infrastructure/UC-INFRA-010-environment-standardization-across-dev-test-prod.md) | Same modules and variables can drive multiple environments |
+| [Infrastructure Reconciliation Loop](use-cases/infrastructure/UC-INFRA-011-infrastructure-reconciliation-loop.md) | Desired and actual infrastructure state are compared on a schedule |
+| [Policy-Driven Provisioning](use-cases/infrastructure/UC-INFRA-012-policy-driven-provisioning.md) | Terraform changes are blocked when they violate standards |
 
 ## Enterprise Kubernetes Platform with GitOps
 
@@ -390,19 +390,19 @@ This diagram shows the project architecture, control boundaries, runtime targets
 
 | Use case | Coverage |
 | --- | --- |
-| AKS/EKS/GKE Cluster Provisioning Automation | Future scope: Terraform patterns remain planned; managed-cloud deployment and acceptance are deferred |
+| [AKS/EKS/GKE Cluster Provisioning Automation](use-cases/kubernetes/UC-K8S-002-aks-eks-gke-cluster-provisioning-automation.md) | Future scope: Terraform patterns remain planned; managed-cloud deployment and acceptance are deferred |
 | [Kubernetes Configuration Drift](use-cases/kubernetes/UC-K8S-001-kubernetes-configuration-drift.md) | Live cluster state is compared with Git-defined desired state |
-| Kubernetes Application Deployment | Helm/Kustomize deploy application workloads |
-| GitOps Reconciliation | Argo CD or Flux restores approved desired state and records sync health |
-| Continuous Verification | Rollouts check latency, errors, restarts and alert state before promotion |
-| Kubernetes Security Baseline Implementation | Policies enforce pod and namespace standards |
-| Kubernetes Security Policy Enforcement | OPA Gatekeeper/Kyverno blocks unsafe workloads |
-| Kubernetes Policy-as-Code Governance | Cluster rules are version-controlled |
-| Ingress and Traffic Management Standardization | Common ingress, TLS, DNS, and routing pattern |
-| Workload Right-Sizing | CPU and memory requests are adjusted from observed utilization |
-| Container Registry and Image Supply Chain Security | Trusted registries and image scanning controls |
-| Event-Driven Autoscaling | Workloads scale from queues, events or custom metrics |
-| Kubernetes Cost Allocation | Namespace and workload usage is attributed to teams and applications |
+| [Kubernetes Application Deployment](use-cases/kubernetes/UC-K8S-003-kubernetes-application-deployment.md) | Helm/Kustomize deploy application workloads |
+| [GitOps Reconciliation](use-cases/kubernetes/UC-K8S-004-gitops-reconciliation.md) | Argo CD or Flux restores approved desired state and records sync health |
+| [Continuous Verification](use-cases/kubernetes/UC-K8S-005-continuous-verification.md) | Rollouts check latency, errors, restarts and alert state before promotion |
+| [Kubernetes Security Baseline Implementation](use-cases/kubernetes/UC-K8S-006-kubernetes-security-baseline-implementation.md) | Policies enforce pod and namespace standards |
+| [Kubernetes Security Policy Enforcement](use-cases/kubernetes/UC-K8S-007-kubernetes-security-policy-enforcement.md) | OPA Gatekeeper/Kyverno blocks unsafe workloads |
+| [Kubernetes Policy-as-Code Governance](use-cases/kubernetes/UC-K8S-008-kubernetes-policy-as-code-governance.md) | Cluster rules are version-controlled |
+| [Ingress and Traffic Management Standardization](use-cases/kubernetes/UC-K8S-009-ingress-and-traffic-management-standardization.md) | Common ingress, TLS, DNS, and routing pattern |
+| [Workload Right-Sizing](use-cases/kubernetes/UC-K8S-010-workload-right-sizing.md) | CPU and memory requests are adjusted from observed utilization |
+| [Container Registry and Image Supply Chain Security](use-cases/kubernetes/UC-K8S-011-container-registry-and-image-supply-chain-security.md) | Trusted registries and image scanning controls |
+| [Event-Driven Autoscaling](use-cases/kubernetes/UC-K8S-012-event-driven-autoscaling.md) | Workloads scale from queues, events or custom metrics |
+| [Kubernetes Cost Allocation](use-cases/kubernetes/UC-K8S-013-kubernetes-cost-allocation.md) | Namespace and workload usage is attributed to teams and applications |
 
 ## Enterprise Observability and SRE Reliability Platform
 
@@ -427,22 +427,22 @@ and Splunk VMs are provisioned-only until their AWX runbooks complete.
 
 | Use case | Coverage |
 | --- | --- |
-| Kubernetes Cluster Health Monitoring | Dashboards for pods, nodes, namespaces, restarts, and capacity |
-| OpenTelemetry Auto-Instrumentation | Standardized zero-touch metrics, logs and traces for supported workloads |
-| Centralized Log Management | Logs from pods, VMs, and services collected centrally |
-| eBPF Observability | Kernel-level telemetry captures runtime behavior where code changes are not practical |
-| Alerting and On-Call Notification | Alerts route to incident channels or PagerDuty-style tools |
-| [SLO as Code](use-cases/observability/UC-OBS-001-slo-burn-rate-alerting.md) | Service objectives and alert thresholds are versioned in Git |
-| Production Incident Troubleshooting Dashboard | Single triage view for incidents |
-| Deployment Health Scoring | Release health combines latency, errors, restarts, logs, traces and synthetic checks |
-| API Error Rate Monitoring | Tracks 4xx, 5xx, timeout, and dependency failures |
-| Database Performance Monitoring | Database health and query symptoms can be dashboarded |
-| Telemetry Cost Optimization | Noisy metrics, high-cardinality labels, verbose logs and retention costs are controlled |
-| Synthetic Monitoring | External checks validate user-facing availability |
-| Cloud-Native Monitoring | Cloud-managed services included in dashboards |
-| Change-to-Incident Correlation | Incidents link to recent commits, deployments, Terraform plans and GitOps syncs |
-| Automated Incident Triage | Triage output includes owner, dependency, dashboard, runbook and likely change source |
-| [Burn-Rate Alerting](use-cases/observability/UC-OBS-001-slo-burn-rate-alerting.md) | Fast and slow error-budget burn alerts replace noisy symptom-only paging |
+| [Kubernetes Cluster Health Monitoring](use-cases/observability/UC-OBS-002-kubernetes-cluster-health-monitoring.md) | Dashboards for pods, nodes, namespaces, restarts, and capacity |
+| [OpenTelemetry Auto-Instrumentation](use-cases/observability/UC-OBS-003-opentelemetry-auto-instrumentation.md) | Standardized zero-touch metrics, logs and traces for supported workloads |
+| [Centralized Log Management](use-cases/observability/UC-OBS-004-centralized-log-management.md) | Logs from pods, VMs, and services collected centrally |
+| [eBPF Observability](use-cases/observability/UC-OBS-005-ebpf-observability.md) | Kernel-level telemetry captures runtime behavior where code changes are not practical |
+| [Alerting and On-Call Notification](use-cases/observability/UC-OBS-006-alerting-and-on-call-notification.md) | Alerts route to incident channels or PagerDuty-style tools |
+| [SLO as Code](use-cases/observability/UC-OBS-001-slo-as-code.md) | Service objectives and alert thresholds are versioned in Git |
+| [Production Incident Troubleshooting Dashboard](use-cases/observability/UC-OBS-007-production-incident-troubleshooting-dashboard.md) | Single triage view for incidents |
+| [Deployment Health Scoring](use-cases/observability/UC-OBS-008-deployment-health-scoring.md) | Release health combines latency, errors, restarts, logs, traces and synthetic checks |
+| [API Error Rate Monitoring](use-cases/observability/UC-OBS-009-api-error-rate-monitoring.md) | Tracks 4xx, 5xx, timeout, and dependency failures |
+| [Database Performance Monitoring](use-cases/observability/UC-OBS-010-database-performance-monitoring.md) | Database health and query symptoms can be dashboarded |
+| [Telemetry Cost Optimization](use-cases/observability/UC-OBS-011-telemetry-cost-optimization.md) | Noisy metrics, high-cardinality labels, verbose logs and retention costs are controlled |
+| [Synthetic Monitoring](use-cases/observability/UC-OBS-012-synthetic-monitoring.md) | External checks validate user-facing availability |
+| [Cloud-Native Monitoring](use-cases/observability/UC-OBS-013-cloud-native-monitoring.md) | Cloud-managed services included in dashboards |
+| [Change-to-Incident Correlation](use-cases/observability/UC-OBS-014-change-to-incident-correlation.md) | Incidents link to recent commits, deployments, Terraform plans and GitOps syncs |
+| [Automated Incident Triage](use-cases/observability/UC-OBS-015-automated-incident-triage.md) | Triage output includes owner, dependency, dashboard, runbook and likely change source |
+| [Burn-Rate Alerting](use-cases/observability/UC-OBS-016-burn-rate-alerting.md) | Fast and slow error-budget burn alerts replace noisy symptom-only paging |
 
 ## Enterprise Cloud Governance and Operations Automation
 
@@ -460,25 +460,25 @@ This diagram shows the project architecture, control boundaries, runtime targets
 
 | Use case | Coverage |
 | --- | --- |
-| Secrets Management Automation | Centralize application and pipeline secrets |
-| Secure Secrets Management for Applications | Runtime secret injection avoids hardcoded credentials |
-| Cloud IAM and RBAC Standardization | Least-privilege roles and access patterns |
-| Secrets Management with Key Vault | Azure-focused secrets implementation path |
-| Cloud Misconfiguration Detector | Policy scans find public exposure, weak IAM, missing encryption, backup and logging gaps |
+| [Secrets Management Automation](use-cases/governance/UC-GOV-002-secrets-management-automation.md) | Centralize application and pipeline secrets |
+| [Secure Secrets Management for Applications](use-cases/governance/UC-GOV-003-secure-secrets-management-for-applications.md) | Runtime secret injection avoids hardcoded credentials |
+| [Cloud IAM and RBAC Standardization](use-cases/governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | Least-privilege roles and access patterns |
+| [Secrets Management with Key Vault](use-cases/governance/UC-GOV-005-secrets-management-with-key-vault.md) | Azure-focused secrets implementation path |
+| [Cloud Misconfiguration Detector](use-cases/governance/UC-GOV-006-cloud-misconfiguration-detector.md) | Policy scans find public exposure, weak IAM, missing encryption, backup and logging gaps |
 | [Automated Compliance Scanning](use-cases/governance/UC-GOV-001-compliance-evidence-collection.md) | Checkov/tfsec/policy checks run in pipelines |
-| Infrastructure Security Hardening | Enforces baseline cloud and Linux controls |
-| Private Endpoint Implementation | Restricts service access to private networks |
-| DNS and Certificate Management | Standardizes DNS and certificate lifecycle |
-| Certificate Expiry Monitoring | Alerts before certificate expiration |
-| Runbook Automation | Operational procedures become executable scripts or AWX workflows |
-| Event-Driven Remediation | Alerts, cloud events or policy findings trigger guarded automation |
-| Human-in-the-Loop Remediation | High-risk remediation pauses for approval before execution |
-| Closed-Loop Automation | Detect, remediate, validate and record recovery for low-risk failures |
-| Self-Healing Infrastructure | Known safe failures are repaired and verified automatically |
-| Cloud Cost Anomaly Detection | Spend or usage spikes are detected by owner and environment |
-| Resource Right-Sizing Automation | Utilization recommends CPU, memory, storage and replica adjustments |
-| Automated Root-Cause Analysis | Telemetry, deployment and infrastructure changes are correlated for RCA |
-| Intelligent Alert Deduplication | Repeated alerts are grouped into actionable incidents |
+| [Infrastructure Security Hardening](use-cases/governance/UC-GOV-007-infrastructure-security-hardening.md) | Enforces baseline cloud and Linux controls |
+| [Private Endpoint Implementation](use-cases/governance/UC-GOV-008-private-endpoint-implementation.md) | Restricts service access to private networks |
+| [DNS and Certificate Management](use-cases/governance/UC-GOV-009-dns-and-certificate-management.md) | Standardizes DNS and certificate lifecycle |
+| [Certificate Expiry Monitoring](use-cases/governance/UC-GOV-010-certificate-expiry-monitoring.md) | Alerts before certificate expiration |
+| [Runbook Automation](use-cases/governance/UC-GOV-011-runbook-automation.md) | Operational procedures become executable scripts or AWX workflows |
+| [Event-Driven Remediation](use-cases/governance/UC-GOV-012-event-driven-remediation.md) | Alerts, cloud events or policy findings trigger guarded automation |
+| [Human-in-the-Loop Remediation](use-cases/governance/UC-GOV-013-human-in-the-loop-remediation.md) | High-risk remediation pauses for approval before execution |
+| [Closed-Loop Automation](use-cases/governance/UC-GOV-014-closed-loop-automation.md) | Detect, remediate, validate and record recovery for low-risk failures |
+| [Self-Healing Infrastructure](use-cases/governance/UC-GOV-015-self-healing-infrastructure.md) | Known safe failures are repaired and verified automatically |
+| [Cloud Cost Anomaly Detection](use-cases/governance/UC-GOV-016-cloud-cost-anomaly-detection.md) | Spend or usage spikes are detected by owner and environment |
+| [Resource Right-Sizing Automation](use-cases/governance/UC-GOV-017-resource-right-sizing-automation.md) | Utilization recommends CPU, memory, storage and replica adjustments |
+| [Automated Root-Cause Analysis](use-cases/governance/UC-GOV-018-automated-root-cause-analysis.md) | Telemetry, deployment and infrastructure changes are correlated for RCA |
+| [Intelligent Alert Deduplication](use-cases/governance/UC-GOV-019-intelligent-alert-deduplication.md) | Repeated alerts are grouped into actionable incidents |
 
 ## Enterprise Linux Systems Engineering Platform
 
@@ -553,25 +553,25 @@ runtime targets, evidence flow, and operational feedback loop.
 
 | Use case | Coverage target |
 | --- | --- |
-| PostgreSQL Installation Through AWX | Versioned and repeatable installation |
-| Database and Role Provisioning | Approved service onboarding |
-| Schema Migration Automation | Ordered, tested and reversible changes |
-| Backup and Point-in-Time Recovery | Defined recovery points and retention |
+| [PostgreSQL Installation Through AWX](use-cases/database/UC-DB-002-postgresql-installation-through-awx.md) | Versioned and repeatable installation |
+| [Database and Role Provisioning](use-cases/database/UC-DB-003-database-and-role-provisioning.md) | Approved service onboarding |
+| [Schema Migration Automation](use-cases/database/UC-DB-004-schema-migration-automation.md) | Ordered, tested and reversible changes |
+| [Backup and Point-in-Time Recovery](use-cases/database/UC-DB-005-backup-and-point-in-time-recovery.md) | Defined recovery points and retention |
 | [Automated Restore Validation](use-cases/database/UC-DB-001-backup-restore-validation.md) | Evidence that backups are usable |
-| Major-Version Upgrade Automation | Rehearsed upgrade using supported methods |
-| Minor Patching | Controlled maintenance with health validation |
-| Database Performance Monitoring | Availability, latency, throughput and saturation |
-| Slow-Query Analysis | Query diagnosis and remediation evidence |
-| Index and Statistics Maintenance | Controlled database optimization |
-| Connection Pooling | PgBouncer lifecycle and capacity controls |
-| TLS and Credential Rotation | Encrypted access and managed identities |
-| Database Auditing | Privileged and sensitive activity evidence |
-| Capacity Forecasting | Storage, connection and workload growth |
-| Replication and Failover Exercises | Explicit cluster-only reliability testing |
-| RPO and RTO Validation | Measured recovery objectives |
-| Application Database Onboarding | Ownership, access, SLO and backup contract |
-| Data Retention and Archival | Policy-driven lifecycle management |
-| Database Incident Runbooks | Repeatable diagnosis, escalation and recovery |
+| [Major-Version Upgrade Automation](use-cases/database/UC-DB-006-major-version-upgrade-automation.md) | Rehearsed upgrade using supported methods |
+| [Minor Patching](use-cases/database/UC-DB-007-minor-patching.md) | Controlled maintenance with health validation |
+| [Database Performance Monitoring](use-cases/database/UC-DB-008-database-performance-monitoring.md) | Availability, latency, throughput and saturation |
+| [Slow-Query Analysis](use-cases/database/UC-DB-009-slow-query-analysis.md) | Query diagnosis and remediation evidence |
+| [Index and Statistics Maintenance](use-cases/database/UC-DB-010-index-and-statistics-maintenance.md) | Controlled database optimization |
+| [Connection Pooling](use-cases/database/UC-DB-011-connection-pooling.md) | PgBouncer lifecycle and capacity controls |
+| [TLS and Credential Rotation](use-cases/database/UC-DB-012-tls-and-credential-rotation.md) | Encrypted access and managed identities |
+| [Database Auditing](use-cases/database/UC-DB-013-database-auditing.md) | Privileged and sensitive activity evidence |
+| [Capacity Forecasting](use-cases/database/UC-DB-014-capacity-forecasting.md) | Storage, connection and workload growth |
+| [Replication and Failover Exercises](use-cases/database/UC-DB-015-replication-and-failover-exercises.md) | Explicit cluster-only reliability testing |
+| [RPO and RTO Validation](use-cases/database/UC-DB-016-rpo-and-rto-validation.md) | Measured recovery objectives |
+| [Application Database Onboarding](use-cases/database/UC-DB-017-application-database-onboarding.md) | Ownership, access, SLO and backup contract |
+| [Data Retention and Archival](use-cases/database/UC-DB-018-data-retention-and-archival.md) | Policy-driven lifecycle management |
+| [Database Incident Runbooks](use-cases/database/UC-DB-019-database-incident-runbooks.md) | Repeatable diagnosis, escalation and recovery |
 
 ## Enterprise Resilience and Service Operations Platform
 
@@ -594,25 +594,25 @@ runtime targets, evidence flow, and operational feedback loop.
 
 | Use case | Coverage target |
 | --- | --- |
-| SLI and SLO Governance | Standard service-level objectives |
-| Error-Budget Management | Release and reliability decisions based on risk |
-| Incident Detection and Classification | Consistent severity and ownership |
-| On-Call and Escalation Workflows | Defined response routing |
-| Automated Incident Evidence Collection | Logs, metrics, traces and changes captured |
-| Post-Incident Review | Blameless corrective-action tracking |
-| Problem Management | Recurring failure elimination |
-| Service Ownership | Named technical and business accountability |
-| Dependency Mapping | Runtime and service relationship visibility |
-| Synthetic Monitoring | User-path availability testing |
-| Capacity and Saturation Testing | Resource-limit discovery |
-| Load and Performance Testing | Repeatable workload validation |
-| Chaos and Failure Exercises | Controlled dependency and component failures |
-| Backup and Recovery Orchestration | Coordinated service recovery |
-| Disaster-Recovery Exercises | Full workflow rehearsal |
-| RTO and RPO Measurement | Evidence-based recovery objectives |
-| Certificate and Secret Expiry Response | Proactive and automated renewal response |
-| AWX Automated Remediation | Guarded, auditable operational fixes |
-| Maintenance-Window Management | Planned service-impact coordination |
+| [SLI and SLO Governance](use-cases/resilience/UC-RSO-002-sli-and-slo-governance.md) | Standard service-level objectives |
+| [Error-Budget Management](use-cases/resilience/UC-RSO-003-error-budget-management.md) | Release and reliability decisions based on risk |
+| [Incident Detection and Classification](use-cases/resilience/UC-RSO-004-incident-detection-and-classification.md) | Consistent severity and ownership |
+| [On-Call and Escalation Workflows](use-cases/resilience/UC-RSO-005-on-call-and-escalation-workflows.md) | Defined response routing |
+| [Automated Incident Evidence Collection](use-cases/resilience/UC-RSO-006-automated-incident-evidence-collection.md) | Logs, metrics, traces and changes captured |
+| [Post-Incident Review](use-cases/resilience/UC-RSO-007-post-incident-review.md) | Blameless corrective-action tracking |
+| [Problem Management](use-cases/resilience/UC-RSO-008-problem-management.md) | Recurring failure elimination |
+| [Service Ownership](use-cases/resilience/UC-RSO-009-service-ownership.md) | Named technical and business accountability |
+| [Dependency Mapping](use-cases/resilience/UC-RSO-010-dependency-mapping.md) | Runtime and service relationship visibility |
+| [Synthetic Monitoring](use-cases/resilience/UC-RSO-011-synthetic-monitoring.md) | User-path availability testing |
+| [Capacity and Saturation Testing](use-cases/resilience/UC-RSO-012-capacity-and-saturation-testing.md) | Resource-limit discovery |
+| [Load and Performance Testing](use-cases/resilience/UC-RSO-013-load-and-performance-testing.md) | Repeatable workload validation |
+| [Chaos and Failure Exercises](use-cases/resilience/UC-RSO-014-chaos-and-failure-exercises.md) | Controlled dependency and component failures |
+| [Backup and Recovery Orchestration](use-cases/resilience/UC-RSO-015-backup-and-recovery-orchestration.md) | Coordinated service recovery |
+| [Disaster-Recovery Exercises](use-cases/resilience/UC-RSO-016-disaster-recovery-exercises.md) | Full workflow rehearsal |
+| [RTO and RPO Measurement](use-cases/resilience/UC-RSO-017-rto-and-rpo-measurement.md) | Evidence-based recovery objectives |
+| [Certificate and Secret Expiry Response](use-cases/resilience/UC-RSO-018-certificate-and-secret-expiry-response.md) | Proactive and automated renewal response |
+| [AWX Automated Remediation](use-cases/resilience/UC-RSO-019-awx-automated-remediation.md) | Guarded, auditable operational fixes |
+| [Maintenance-Window Management](use-cases/resilience/UC-RSO-020-maintenance-window-management.md) | Planned service-impact coordination |
 | [Operational Readiness Reviews](use-cases/resilience/UC-RSO-001-operational-readiness-review.md) | Production-readiness scorecards and gates |
 
 ## Enterprise Data Engineering and Integration Platform
@@ -636,31 +636,31 @@ boundaries, evidence flow, and operational feedback loop.
 
 | Use case | Coverage target |
 | --- | --- |
-| Batch Data Ingestion | Scheduled and recoverable source ingestion |
-| Streaming Data Ingestion | Durable event-driven data movement |
-| Change-Data Capture | Database changes published without application coupling |
-| ETL and ELT Pipelines | Standard extract, load and transform patterns |
-| Workflow Orchestration | Dependency, retry and scheduling control |
+| [Batch Data Ingestion](use-cases/data/UC-DATA-002-batch-data-ingestion.md) | Scheduled and recoverable source ingestion |
+| [Streaming Data Ingestion](use-cases/data/UC-DATA-003-streaming-data-ingestion.md) | Durable event-driven data movement |
+| [Change-Data Capture](use-cases/data/UC-DATA-004-change-data-capture.md) | Database changes published without application coupling |
+| [ETL and ELT Pipelines](use-cases/data/UC-DATA-005-etl-and-elt-pipelines.md) | Standard extract, load and transform patterns |
+| [Workflow Orchestration](use-cases/data/UC-DATA-006-workflow-orchestration.md) | Dependency, retry and scheduling control |
 | [Data Quality Validation](use-cases/data/UC-DATA-001-healthcare-feed-quality.md) | Automated completeness, validity and freshness checks |
-| Schema Registry and Evolution | Compatible event and dataset contracts |
-| Event-Contract Management | Ownership and versioning of event interfaces |
-| dbt Data Transformation | Tested SQL transformation and documentation |
-| Distributed Data Processing | Scalable batch or stream computation |
-| Data Lake and Lakehouse Storage | Governed object and table storage |
-| Data Warehouse Integration | Controlled analytical serving |
-| Metadata Catalog and Discovery | Searchable datasets and ownership |
-| Data Lineage | Source-to-consumer traceability |
-| Data Classification | Sensitivity and regulatory metadata |
-| PII Controls | Restricted handling of personal data |
-| Data Retention and Archival | Policy-driven dataset lifecycle |
-| Pipeline Monitoring and Alerting | Freshness, failure and latency signals |
-| Pipeline Retry and Backfill | Safe historical reprocessing |
-| Dead-Letter Queues and Replay | Recoverable event-processing failures |
-| Data Reconciliation | Source and target correctness validation |
-| Dataset Ownership | Data-product accountability and support |
-| Data Access Governance | Approved, auditable consumer access |
-| Data-Pipeline Disaster Recovery | Restored orchestration, state and data |
-| Data Performance and Cost Optimization | Efficient compute, storage and retention |
+| [Schema Registry and Evolution](use-cases/data/UC-DATA-007-schema-registry-and-evolution.md) | Compatible event and dataset contracts |
+| [Event-Contract Management](use-cases/data/UC-DATA-008-event-contract-management.md) | Ownership and versioning of event interfaces |
+| [dbt Data Transformation](use-cases/data/UC-DATA-009-dbt-data-transformation.md) | Tested SQL transformation and documentation |
+| [Distributed Data Processing](use-cases/data/UC-DATA-010-distributed-data-processing.md) | Scalable batch or stream computation |
+| [Data Lake and Lakehouse Storage](use-cases/data/UC-DATA-011-data-lake-and-lakehouse-storage.md) | Governed object and table storage |
+| [Data Warehouse Integration](use-cases/data/UC-DATA-012-data-warehouse-integration.md) | Controlled analytical serving |
+| [Metadata Catalog and Discovery](use-cases/data/UC-DATA-013-metadata-catalog-and-discovery.md) | Searchable datasets and ownership |
+| [Data Lineage](use-cases/data/UC-DATA-014-data-lineage.md) | Source-to-consumer traceability |
+| [Data Classification](use-cases/data/UC-DATA-015-data-classification.md) | Sensitivity and regulatory metadata |
+| [PII Controls](use-cases/data/UC-DATA-016-pii-controls.md) | Restricted handling of personal data |
+| [Data Retention and Archival](use-cases/data/UC-DATA-017-data-retention-and-archival.md) | Policy-driven dataset lifecycle |
+| [Pipeline Monitoring and Alerting](use-cases/data/UC-DATA-018-pipeline-monitoring-and-alerting.md) | Freshness, failure and latency signals |
+| [Pipeline Retry and Backfill](use-cases/data/UC-DATA-019-pipeline-retry-and-backfill.md) | Safe historical reprocessing |
+| [Dead-Letter Queues and Replay](use-cases/data/UC-DATA-020-dead-letter-queues-and-replay.md) | Recoverable event-processing failures |
+| [Data Reconciliation](use-cases/data/UC-DATA-021-data-reconciliation.md) | Source and target correctness validation |
+| [Dataset Ownership](use-cases/data/UC-DATA-022-dataset-ownership.md) | Data-product accountability and support |
+| [Data Access Governance](use-cases/data/UC-DATA-023-data-access-governance.md) | Approved, auditable consumer access |
+| [Data-Pipeline Disaster Recovery](use-cases/data/UC-DATA-024-data-pipeline-disaster-recovery.md) | Restored orchestration, state and data |
+| [Data Performance and Cost Optimization](use-cases/data/UC-DATA-025-data-performance-and-cost-optimization.md) | Efficient compute, storage and retention |
 
 ## Enterprise Network Engineering and Automation Platform
 
@@ -685,36 +685,36 @@ boundary, connectivity domains, evidence flow, and operational feedback loop.
 
 | Use case | Coverage target |
 | --- | --- |
-| Enterprise IP Address Management | Governed address and prefix allocation |
-| VLAN and Subnet Design | Standard segmentation and routing domains |
-| DHCP Reservation Management | Controlled address-to-MAC assignments |
-| Authoritative and Recursive DNS | Managed internal name resolution |
-| Forward and Reverse DNS Automation | Synchronized A/PTR lifecycle |
-| Router and Switch Configuration Backup | Recoverable network state |
-| Network Configuration Automation | Version-controlled Ansible changes |
-| Network Configuration-Drift Detection | Desired versus running-state comparison |
-| Layer 2 Bridge Management | Host and virtualization switching |
-| Layer 3 Routing | Static and dynamic route control |
-| Firewall Policy Management | Reviewed least-privilege traffic policy |
-| NAT and Egress Management | Controlled outbound and translation paths |
-| Load Balancer and Reverse Proxy Configuration | Standard application entry points |
-| VPN and Remote Access | Managed encrypted administration connectivity |
-| Cloud VPC and VNet Networking | Reusable cloud network foundations |
-| Hybrid-Cloud Connectivity | Routed and secured environment integration |
-| Kubernetes Networking | Cluster dataplane and service networking |
-| CNI Policy and Troubleshooting | Cilium/Hubble policy and visibility |
-| Ingress and Egress Controls | Governed workload traffic paths |
-| MetalLB Address Management | Controlled service address pools |
-| Network Segmentation | Environment and trust-zone isolation |
-| Private Endpoint and Private DNS | Non-public managed-service access |
-| Certificate and TLS Routing | Trusted encrypted service entry |
-| Network Performance Monitoring | Latency, loss, throughput and saturation |
-| Flow-Log Analysis | Traffic behavior and security investigation |
-| Packet Capture and Troubleshooting | Evidence-based protocol diagnosis |
-| Network Availability Testing | Synthetic and blackbox validation |
-| Network Configuration Compliance | Auditable device and service standards |
-| Network Incident Response | Repeatable diagnosis and restoration |
-| Capacity and Bandwidth Planning | Forecasted network growth |
+| [Enterprise IP Address Management](use-cases/network/UC-NET-002-enterprise-ip-address-management.md) | Governed address and prefix allocation |
+| [VLAN and Subnet Design](use-cases/network/UC-NET-003-vlan-and-subnet-design.md) | Standard segmentation and routing domains |
+| [DHCP Reservation Management](use-cases/network/UC-NET-004-dhcp-reservation-management.md) | Controlled address-to-MAC assignments |
+| [Authoritative and Recursive DNS](use-cases/network/UC-NET-005-authoritative-and-recursive-dns.md) | Managed internal name resolution |
+| [Forward and Reverse DNS Automation](use-cases/network/UC-NET-006-forward-and-reverse-dns-automation.md) | Synchronized A/PTR lifecycle |
+| [Router and Switch Configuration Backup](use-cases/network/UC-NET-007-router-and-switch-configuration-backup.md) | Recoverable network state |
+| [Network Configuration Automation](use-cases/network/UC-NET-008-network-configuration-automation.md) | Version-controlled Ansible changes |
+| [Network Configuration-Drift Detection](use-cases/network/UC-NET-009-network-configuration-drift-detection.md) | Desired versus running-state comparison |
+| [Layer 2 Bridge Management](use-cases/network/UC-NET-010-layer-2-bridge-management.md) | Host and virtualization switching |
+| [Layer 3 Routing](use-cases/network/UC-NET-011-layer-3-routing.md) | Static and dynamic route control |
+| [Firewall Policy Management](use-cases/network/UC-NET-012-firewall-policy-management.md) | Reviewed least-privilege traffic policy |
+| [NAT and Egress Management](use-cases/network/UC-NET-013-nat-and-egress-management.md) | Controlled outbound and translation paths |
+| [Load Balancer and Reverse Proxy Configuration](use-cases/network/UC-NET-014-load-balancer-and-reverse-proxy-configuration.md) | Standard application entry points |
+| [VPN and Remote Access](use-cases/network/UC-NET-015-vpn-and-remote-access.md) | Managed encrypted administration connectivity |
+| [Cloud VPC and VNet Networking](use-cases/network/UC-NET-016-cloud-vpc-and-vnet-networking.md) | Reusable cloud network foundations |
+| [Hybrid-Cloud Connectivity](use-cases/network/UC-NET-017-hybrid-cloud-connectivity.md) | Routed and secured environment integration |
+| [Kubernetes Networking](use-cases/network/UC-NET-018-kubernetes-networking.md) | Cluster dataplane and service networking |
+| [CNI Policy and Troubleshooting](use-cases/network/UC-NET-019-cni-policy-and-troubleshooting.md) | Cilium/Hubble policy and visibility |
+| [Ingress and Egress Controls](use-cases/network/UC-NET-020-ingress-and-egress-controls.md) | Governed workload traffic paths |
+| [MetalLB Address Management](use-cases/network/UC-NET-021-metallb-address-management.md) | Controlled service address pools |
+| [Network Segmentation](use-cases/network/UC-NET-022-network-segmentation.md) | Environment and trust-zone isolation |
+| [Private Endpoint and Private DNS](use-cases/network/UC-NET-023-private-endpoint-and-private-dns.md) | Non-public managed-service access |
+| [Certificate and TLS Routing](use-cases/network/UC-NET-024-certificate-and-tls-routing.md) | Trusted encrypted service entry |
+| [Network Performance Monitoring](use-cases/network/UC-NET-025-network-performance-monitoring.md) | Latency, loss, throughput and saturation |
+| [Flow-Log Analysis](use-cases/network/UC-NET-026-flow-log-analysis.md) | Traffic behavior and security investigation |
+| [Packet Capture and Troubleshooting](use-cases/network/UC-NET-027-packet-capture-and-troubleshooting.md) | Evidence-based protocol diagnosis |
+| [Network Availability Testing](use-cases/network/UC-NET-028-network-availability-testing.md) | Synthetic and blackbox validation |
+| [Network Configuration Compliance](use-cases/network/UC-NET-029-network-configuration-compliance.md) | Auditable device and service standards |
+| [Network Incident Response](use-cases/network/UC-NET-030-network-incident-response.md) | Repeatable diagnosis and restoration |
+| [Capacity and Bandwidth Planning](use-cases/network/UC-NET-031-capacity-and-bandwidth-planning.md) | Forecasted network growth |
 | [Network Change Validation and Rollback](use-cases/network/UC-NET-001-network-change-validation.md) | Pre/post checks and safe recovery |
 
 ## Enterprise Healthcare AI Platform
@@ -745,21 +745,21 @@ evaluation gates, human review, evidence flow, and operational feedback loop.
 
 | Use case | Coverage target |
 | --- | --- |
-| Clinical AI Assistant Platform | Secure assistants for clinical workflow support |
-| Payer AI Assistant Platform | Claims, eligibility, authorization and member-service support |
-| [Retrieval-Augmented Generation](use-cases/healthcare-ai/UC-AI-001-governed-enterprise-knowledge-rag.md) | Governed document and knowledge retrieval |
-| Agentic Workflow Automation | Tool-calling workflows with safe execution boundaries |
-| [Healthcare Knowledge Base Indexing](use-cases/healthcare-ai/UC-AI-001-governed-enterprise-knowledge-rag.md) | Chunking, embeddings, ranking and searchable knowledge stores |
-| FHIR-Aware AI APIs | Auditable clinical-data exchange for AI workflows |
-| AI Prompt and Response Evaluation | Regression, safety and quality evaluation |
-| Responsible AI Controls | Bias, transparency, approval and human-review guardrails |
-| AI Workflow Audit Logging | Traceable prompts, context, tools and responses |
-| AI Cost and Latency Optimization | Token, model, cache and inference performance controls |
-| AI Security and Access Control | Least-privilege access to tools, data and model endpoints |
-| AI Release Governance | Reviewable promotion across development, QA, stage and production |
-| AI Observability | Metrics, traces, evaluations, failures and user feedback |
-| Clinical and Payer Workflow Integration | API-first integration into provider and insurance workflows |
-| AI Incident Response | Playbooks for unsafe output, tool failure and degraded models |
+| [Clinical AI Assistant Platform](use-cases/healthcare-ai/UC-AI-002-clinical-ai-assistant-platform.md) | Secure assistants for clinical workflow support |
+| [Payer AI Assistant Platform](use-cases/healthcare-ai/UC-AI-003-payer-ai-assistant-platform.md) | Claims, eligibility, authorization and member-service support |
+| [Retrieval-Augmented Generation](use-cases/healthcare-ai/UC-AI-001-retrieval-augmented-generation.md) | Governed document and knowledge retrieval |
+| [Agentic Workflow Automation](use-cases/healthcare-ai/UC-AI-004-agentic-workflow-automation.md) | Tool-calling workflows with safe execution boundaries |
+| [Healthcare Knowledge Base Indexing](use-cases/healthcare-ai/UC-AI-005-healthcare-knowledge-base-indexing.md) | Chunking, embeddings, ranking and searchable knowledge stores |
+| [FHIR-Aware AI APIs](use-cases/healthcare-ai/UC-AI-006-fhir-aware-ai-apis.md) | Auditable clinical-data exchange for AI workflows |
+| [AI Prompt and Response Evaluation](use-cases/healthcare-ai/UC-AI-007-ai-prompt-and-response-evaluation.md) | Regression, safety and quality evaluation |
+| [Responsible AI Controls](use-cases/healthcare-ai/UC-AI-008-responsible-ai-controls.md) | Bias, transparency, approval and human-review guardrails |
+| [AI Workflow Audit Logging](use-cases/healthcare-ai/UC-AI-009-ai-workflow-audit-logging.md) | Traceable prompts, context, tools and responses |
+| [AI Cost and Latency Optimization](use-cases/healthcare-ai/UC-AI-010-ai-cost-and-latency-optimization.md) | Token, model, cache and inference performance controls |
+| [AI Security and Access Control](use-cases/healthcare-ai/UC-AI-011-ai-security-and-access-control.md) | Least-privilege access to tools, data and model endpoints |
+| [AI Release Governance](use-cases/healthcare-ai/UC-AI-012-ai-release-governance.md) | Reviewable promotion across development, QA, stage and production |
+| [AI Observability](use-cases/healthcare-ai/UC-AI-013-ai-observability.md) | Metrics, traces, evaluations, failures and user feedback |
+| [Clinical and Payer Workflow Integration](use-cases/healthcare-ai/UC-AI-014-clinical-and-payer-workflow-integration.md) | API-first integration into provider and insurance workflows |
+| [AI Incident Response](use-cases/healthcare-ai/UC-AI-015-ai-incident-response.md) | Playbooks for unsafe output, tool failure and degraded models |
 
 The first useful AI slice should feel small and real: index approved runbooks,
 policy documents, service catalogs, and sanitized healthcare workflow notes;
@@ -796,21 +796,21 @@ validation gates, serving targets, evidence flow, and operational feedback loop.
 
 | Use case | Coverage target |
 | --- | --- |
-| ML Training Pipeline Standardization | Repeatable training workflows |
-| Feature Engineering and Feature Stores | Governed reusable features |
-| [Model Registry and Versioning](use-cases/mlops/UC-MLOPS-001-model-registration-validation.md) | Traceable model lineage and promotion |
-| [Model Validation Gates](use-cases/mlops/UC-MLOPS-001-model-registration-validation.md) | Accuracy, fairness, safety and performance checks |
-| CI/CT/CD for ML | Automated train, test, validate, deploy and promote workflows |
-| Batch Inference | Scheduled scoring and downstream delivery |
-| Real-Time Inference APIs | Low-latency model serving |
-| Model Observability | Latency, errors, throughput and quality signals |
-| Drift Detection | Data, prediction and concept drift monitoring |
-| Automated Retraining | Controlled retraining triggers and approvals |
-| Model Rollback | Safe recovery to a prior approved model |
-| Experiment Tracking | Metrics, artifacts, parameters and reproducibility |
-| ML Infrastructure as Code | Reproducible cloud and Kubernetes model environments |
-| [Model Governance Evidence](use-cases/mlops/UC-MLOPS-001-model-registration-validation.md) | Audit records for regulated model operation |
-| ML Incident Response | Runbooks for degraded, biased or unavailable models |
+| [ML Training Pipeline Standardization](use-cases/mlops/UC-MLOPS-002-ml-training-pipeline-standardization.md) | Repeatable training workflows |
+| [Feature Engineering and Feature Stores](use-cases/mlops/UC-MLOPS-003-feature-engineering-and-feature-stores.md) | Governed reusable features |
+| [Model Registry and Versioning](use-cases/mlops/UC-MLOPS-001-model-registry-versioning.md) | Traceable model lineage and promotion |
+| [Model Validation Gates](use-cases/mlops/UC-MLOPS-004-model-validation-gates.md) | Accuracy, fairness, safety and performance checks |
+| [CI/CT/CD for ML](use-cases/mlops/UC-MLOPS-005-ci-ct-cd-for-ml.md) | Automated train, test, validate, deploy and promote workflows |
+| [Batch Inference](use-cases/mlops/UC-MLOPS-006-batch-inference.md) | Scheduled scoring and downstream delivery |
+| [Real-Time Inference APIs](use-cases/mlops/UC-MLOPS-007-real-time-inference-apis.md) | Low-latency model serving |
+| [Model Observability](use-cases/mlops/UC-MLOPS-008-model-observability.md) | Latency, errors, throughput and quality signals |
+| [Drift Detection](use-cases/mlops/UC-MLOPS-009-drift-detection.md) | Data, prediction and concept drift monitoring |
+| [Automated Retraining](use-cases/mlops/UC-MLOPS-010-automated-retraining.md) | Controlled retraining triggers and approvals |
+| [Model Rollback](use-cases/mlops/UC-MLOPS-011-model-rollback.md) | Safe recovery to a prior approved model |
+| [Experiment Tracking](use-cases/mlops/UC-MLOPS-012-experiment-tracking.md) | Metrics, artifacts, parameters and reproducibility |
+| [ML Infrastructure as Code](use-cases/mlops/UC-MLOPS-013-ml-infrastructure-as-code.md) | Reproducible cloud and Kubernetes model environments |
+| [Model Governance Evidence](use-cases/mlops/UC-MLOPS-014-model-governance-evidence.md) | Audit records for regulated model operation |
+| [ML Incident Response](use-cases/mlops/UC-MLOPS-015-ml-incident-response.md) | Runbooks for degraded, biased or unavailable models |
 
 The first useful MLOps slice should prove that a model can move through the
 same discipline as application code. A small readmission-risk, claim-routing,

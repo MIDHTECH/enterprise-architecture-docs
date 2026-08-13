@@ -12,24 +12,25 @@ platforms and their 224 canonical use cases to provider, payer, shared digital
 platform, risk, and resilience outcomes. Use it to verify that a proposed page
 fits its owning platform and that the platform fits the enterprise model.
 
-## Detailed starting pages
+## Detailed platform indexes
 
-| Platform | Detailed implementation specification |
+| Platform | Detailed implementation specifications |
 | --- | --- |
-| DevSecOps delivery | [UC-CICD-001: End-to-End CI/CD Pipeline](devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md) |
-| Multi-cloud infrastructure | [UC-INFRA-001: Terraform Drift Detection](infrastructure/UC-INFRA-001-terraform-drift-detection.md) |
-| Kubernetes with GitOps | [UC-K8S-001: Kubernetes Configuration Drift](kubernetes/UC-K8S-001-kubernetes-configuration-drift.md) |
-| Observability and SRE | [UC-OBS-001: SLO as Code and Burn-Rate Alerting](observability/UC-OBS-001-slo-burn-rate-alerting.md) |
-| Governance and operations | [UC-GOV-001: Automated Compliance Evidence Collection](governance/UC-GOV-001-compliance-evidence-collection.md) |
++| DevSecOps delivery | [15 detailed use cases](devsecops/README.md) |
+| Multi-cloud infrastructure | [12 detailed use cases](infrastructure/README.md) |
+| Kubernetes with GitOps | [13 detailed use cases](kubernetes/README.md) |
+| Observability and SRE | [16 detailed use cases](observability/README.md) |
+| Governance and operations | [19 detailed use cases](governance/README.md) |
 | Linux systems engineering | [24 detailed Linux use cases](linux/README.md) |
-| Database reliability | [UC-DB-001: Automated PostgreSQL Restore Validation](database/UC-DB-001-backup-restore-validation.md) |
-| Resilience and service operations | [UC-RSO-001: Operational Readiness Review](resilience/UC-RSO-001-operational-readiness-review.md) |
-| Data engineering and integration | [UC-DATA-001: Healthcare Feed Quality Validation](data/UC-DATA-001-healthcare-feed-quality.md) |
-| Network engineering and automation | [UC-NET-001: Network Change Validation and Rollback](network/UC-NET-001-network-change-validation.md) |
-| Healthcare AI | [UC-AI-001: Governed Enterprise Knowledge Retrieval](healthcare-ai/UC-AI-001-governed-enterprise-knowledge-rag.md) |
-| MLOps model platform | [UC-MLOPS-001: Model Artifact Registration and Validation](mlops/UC-MLOPS-001-model-registration-validation.md) |
++| Database reliability | [19 detailed use cases](database/README.md) |
+| Resilience and service operations | [20 detailed use cases](resilience/README.md) |
+| Data engineering and integration | [25 detailed use cases](data/README.md) |
+| Network engineering and automation | [31 detailed use cases](network/README.md) |
+| Healthcare AI | [15 detailed use cases](healthcare-ai/README.md) |
+| MLOps model platform | [15 detailed use cases](mlops/README.md) |
 
-The first slices reuse the existing lab and are intended to be copied into the
+All 224 canonical use cases now have a detailed page. The specifications reuse
+the existing lab and are intended to be copied into the
 corresponding GitLab implementation repositories. They do not authorize new
 infrastructure. Runtime acceptance must flow back into these pages as evidence.
 

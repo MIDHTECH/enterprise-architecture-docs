@@ -1,4 +1,4 @@
-# UC-AI-001: Governed Enterprise Knowledge Retrieval
+# UC-AI-001: Retrieval-Augmented Generation
 
 Last verified: 2026-08-13
 
@@ -6,7 +6,7 @@ Last verified: 2026-08-13
 
 | Field | Value |
 | --- | --- |
-| Canonical portfolio use cases | Retrieval-Augmented Generation; Healthcare Knowledge Base Indexing |
+| Canonical portfolio use case | Retrieval-Augmented Generation |
 | Primary platform | Enterprise Healthcare AI Platform |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | Help staff locate cited, approved operational knowledge without exposing protected data or trusting uncited output |

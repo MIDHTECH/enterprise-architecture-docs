@@ -14,6 +14,16 @@ if [[ "${#USE_CASE_FILES[@]}" -eq 0 ]]; then
   exit 1
 fi
 
+portfolio="docs/enterprise-project-portfolio-and-usecases.md"
+declared_total="$({
+  awk -F'|' '/^\| \*\*Total\*\* \| \*\*[0-9]+\*\* \|$/ { print $3 }' "$portfolio"
+} | tr -d ' *')"
+
+if [[ "${#USE_CASE_FILES[@]}" -ne "$declared_total" ]]; then
+  echo "Detailed-page count ${#USE_CASE_FILES[@]} does not match canonical portfolio count $declared_total." >&2
+  exit 1
+fi
+
 required_headings=(
   "## Purpose"
   "## Expected outcome"
@@ -88,7 +98,6 @@ while IFS= read -r line; do
   LINUX_USE_CASE_FILES+=("$line")
 done < <(find docs/use-cases/linux -type f -name 'UC-LNX-*.md' -print | sort)
 
-portfolio="docs/enterprise-project-portfolio-and-usecases.md"
 declared_linux_count="$({
   awk -F'|' '/^\| 6\. Linux Systems Engineering \| [0-9]+ \|$/ { print $3 }' "$portfolio"
 } | tr -d ' ')"
@@ -185,5 +194,82 @@ PY
     exit 1
   fi
 done
+
+python3 - "$portfolio" <<'PY'
+from pathlib import Path
+import re
+import sys
+
+portfolio = Path(sys.argv[1])
+lines = portfolio.read_text().splitlines()
+platform_headings = {
+    "Enterprise DevSecOps Delivery Platform",
+    "Enterprise Multi-Cloud Infrastructure Platform",
+    "Enterprise Kubernetes Platform with GitOps",
+    "Enterprise Observability and SRE Reliability Platform",
+    "Enterprise Cloud Governance and Operations Automation",
+    "Enterprise Linux Systems Engineering Platform",
+    "Enterprise Database Engineering and Reliability Platform",
+    "Enterprise Resilience and Service Operations Platform",
+    "Enterprise Data Engineering and Integration Platform",
+    "Enterprise Network Engineering and Automation Platform",
+    "Enterprise Healthcare AI Platform",
+    "Enterprise MLOps Model Platform",
+}
+
+current = None
+in_use_case_table = False
+targets = []
+unlinked = []
+row_pattern = re.compile(r"^\| \[([^]]+)\]\((use-cases/[^)]+\.md)\) \|")
+
+for line in lines:
+    if line.startswith("## "):
+        heading = line[3:]
+        current = heading if heading in platform_headings else None
+        in_use_case_table = False
+        continue
+    if current and line.startswith("| Use case |"):
+        in_use_case_table = True
+        continue
+    if not current or not in_use_case_table or line.startswith("| ---"):
+        continue
+    if not line.startswith("|"):
+        in_use_case_table = False
+        continue
+    match = row_pattern.match(line)
+    if not match:
+        unlinked.append((current, line))
+        continue
+    targets.append(match.group(2))
+
+if unlinked:
+    details = "\n".join(f"{heading}: {line}" for heading, line in unlinked[:10])
+    raise SystemExit(f"Canonical use-case rows without detail links:\n{details}")
+
+declared = int(re.search(r"^\| \*\*Total\*\* \| \*\*(\d+)\*\* \|$", "\n".join(lines), re.M).group(1))
+if len(targets) != declared:
+    raise SystemExit(f"Portfolio links {len(targets)} detailed pages; expected {declared}.")
+if len(set(targets)) != declared:
+    raise SystemExit("Each canonical use case must link to its own unique detailed page.")
+
+missing = [target for target in targets if not (portfolio.parent / target).is_file()]
+if missing:
+    raise SystemExit("Portfolio links missing detailed pages: " + ", ".join(missing[:10]))
+
+actual = {
+    str(path.relative_to(portfolio.parent))
+    for path in (portfolio.parent / "use-cases").rglob("UC-*.md")
+}
+if set(targets) != actual:
+    unlisted = sorted(actual - set(targets))
+    unknown = sorted(set(targets) - actual)
+    raise SystemExit(
+        "Portfolio/detail mismatch. Unlisted pages: "
+        + ", ".join(unlisted[:10])
+        + "; unknown targets: "
+        + ", ".join(unknown[:10])
+    )
+PY
 
 echo "Detailed use-case documentation validation passed (${#USE_CASE_FILES[@]} document(s))."

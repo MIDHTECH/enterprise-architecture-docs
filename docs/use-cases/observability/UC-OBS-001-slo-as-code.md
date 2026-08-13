@@ -1,4 +1,4 @@
-# UC-OBS-001: SLO as Code and Burn-Rate Alerting
+# UC-OBS-001: SLO as Code
 
 Last verified: 2026-08-13
 
@@ -6,7 +6,7 @@ Last verified: 2026-08-13
 
 | Field | Value |
 | --- | --- |
-| Canonical portfolio use cases | SLO as Code; Burn-Rate Alerting |
+| Canonical portfolio use case | SLO as Code |
 | Primary platform | Enterprise Observability and SRE Reliability Platform |
 | Enterprise alignment | Operational resilience, shared digital platform |
 | Enterprise outcome | Detect sustained risk to provider, payer, and platform services before raw symptom alerts become outages |
