@@ -29,15 +29,15 @@ measurable platform responsibility within that value stream.
 | DevSecOps delivery | 15 | Converts reviewed provider, payer, and shared-service source into traceable releases with security and rollback gates. | [UC-CICD-001](devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md) |
 | Multi-cloud infrastructure | 12 | Governs the existing on-prem source and state while exposing drift, ownership, and change impact; cloud execution remains deferred. | [UC-INFRA-001](infrastructure/UC-INFRA-001-terraform-drift-detection.md) |
 | Kubernetes with GitOps | 13 | Provides a reconciled workload platform for care, payer, data, and AI services with bounded tenancy and recovery. | [UC-K8S-001](kubernetes/UC-K8S-001-kubernetes-configuration-drift.md) |
-| Observability and SRE | 16 | Turns service telemetry into SLO evidence, actionable alerts, incident context, and release feedback. | [UC-OBS-001](observability/UC-OBS-001-slo-burn-rate-alerting.md) |
+| Observability and SRE | 16 | Turns service telemetry into SLO evidence, actionable alerts, incident context, and release feedback. | [UC-OBS-001](observability/UC-OBS-001-slo-as-code.md) |
 | Governance and operations | 19 | Applies identity, secret, policy, compliance, and approved-remediation controls to the existing lab through current GitLab and AWX execution paths. | [UC-GOV-001](governance/UC-GOV-001-compliance-evidence-collection.md) |
 | Linux systems engineering | 24 | Maintains the secure, repeatable operating-system foundation beneath on-prem and hybrid enterprise services. | [Linux detailed index](linux/README.md) |
 | Database reliability | 19 | Protects transactional and operational data through controlled lifecycle, performance, security, backup, and recovery practices. | [UC-DB-001](database/UC-DB-001-backup-restore-validation.md) |
 | Resilience and service operations | 20 | Connects service ownership, SLOs, dependencies, incidents, exercises, and recovery into an operational readiness model. | [UC-RSO-001](resilience/UC-RSO-001-operational-readiness-review.md) |
 | Data engineering and integration | 25 | Moves provider and payer data through governed, observable, quality-controlled products with lineage and replay. | [UC-DATA-001](data/UC-DATA-001-healthcare-feed-quality.md) |
 | Network engineering and automation | 31 | Maintains the trusted connectivity, naming, segmentation, ingress, egress, and diagnostic paths used by every enterprise workflow. | [UC-NET-001](network/UC-NET-001-network-change-validation.md) |
-| Healthcare AI | 15 | Adds constrained, cited, human-reviewed knowledge retrieval over approved repository content using existing GitLab CI capacity. | [UC-AI-001](healthcare-ai/UC-AI-001-governed-enterprise-knowledge-rag.md) |
-| MLOps model platform | 15 | Makes model artifacts reproducible and governable with repository metadata and existing GitLab artifacts before any serving platform is approved. | [UC-MLOPS-001](mlops/UC-MLOPS-001-model-registration-validation.md) |
+| Healthcare AI | 15 | Adds constrained, cited, human-reviewed knowledge retrieval over approved repository content using existing GitLab CI capacity. | [UC-AI-001](healthcare-ai/UC-AI-001-retrieval-augmented-generation.md) |
+| MLOps model platform | 15 | Makes model artifacts reproducible and governable with repository metadata and existing GitLab artifacts before any serving platform is approved. | [UC-MLOPS-001](mlops/UC-MLOPS-001-model-registry-versioning.md) |
 | **Total** | **224** | The 12 platforms collectively cover delivery, runtime, data, intelligence, governance, and recovery for the integrated enterprise. | — |
 
 ## Fit rules for every use case

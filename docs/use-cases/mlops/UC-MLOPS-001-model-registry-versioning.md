@@ -1,4 +1,4 @@
-# UC-MLOPS-001: Model Artifact Registration and Validation
+# UC-MLOPS-001: Model Registry and Versioning
 
 Last verified: 2026-08-13
 
@@ -6,7 +6,7 @@ Last verified: 2026-08-13
 
 | Field | Value |
 | --- | --- |
-| Canonical portfolio use cases | Model Registry and Versioning; Model Validation Gates; Model Governance Evidence |
+| Canonical portfolio use case | Model Registry and Versioning |
 | Primary platform | Enterprise MLOps Model Platform |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | Prevent an untraceable or unvalidated model artifact from entering an enterprise workflow |
