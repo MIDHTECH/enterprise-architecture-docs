@@ -14,29 +14,33 @@ fits its owning platform and that the platform fits the enterprise model.
 
 ## Detailed platform indexes
 
-| Platform | Detailed implementation specifications |
+| Platform | Detailed use-case designs |
 | --- | --- |
-+| DevSecOps delivery | [15 detailed use cases](devsecops/README.md) |
+| DevSecOps delivery | [15 detailed use cases](devsecops/README.md) |
 | Multi-cloud infrastructure | [12 detailed use cases](infrastructure/README.md) |
 | Kubernetes with GitOps | [13 detailed use cases](kubernetes/README.md) |
 | Observability and SRE | [16 detailed use cases](observability/README.md) |
 | Governance and operations | [19 detailed use cases](governance/README.md) |
 | Linux systems engineering | [24 detailed Linux use cases](linux/README.md) |
-+| Database reliability | [19 detailed use cases](database/README.md) |
+| Database reliability | [19 detailed use cases](database/README.md) |
 | Resilience and service operations | [20 detailed use cases](resilience/README.md) |
 | Data engineering and integration | [25 detailed use cases](data/README.md) |
 | Network engineering and automation | [31 detailed use cases](network/README.md) |
 | Healthcare AI | [15 detailed use cases](healthcare-ai/README.md) |
 | MLOps model platform | [15 detailed use cases](mlops/README.md) |
 
-All 224 canonical use cases now have a detailed page. The specifications reuse
-the existing lab and are intended to be copied into the
-corresponding GitLab implementation repositories. They do not authorize new
-infrastructure. Runtime acceptance must flow back into these pages as evidence.
+All 224 canonical use cases have a dedicated page. The pages are architecture
+and delivery designs: they explain the organizational need, platform fit,
+enterprise value, actors, workflow, controls, dependencies, failure behavior,
+acceptance criteria, and a plan for later implementation. They do not claim
+that code or runtime execution exists, and they do not authorize new
+infrastructure. When implementation is scheduled later, verified evidence can
+flow back into the corresponding page.
 
-Use cases are expanded and accepted one at a time. A later use case must not
-be started while the current use case has an unresolved implementation,
-runtime, rollback, evidence, incident, or publication gate.
+Detailed designs may be developed across the portfolio without starting their
+implementation. Implementation and acceptance are separately scheduled and
+tracked so that a documentation update cannot be mistaken for authorization to
+change the lab.
 
 ## Required use-case content
 
