@@ -125,19 +125,6 @@ When a real project is identified, add one row to the register below and link
 its real GitLab repository. Start its handoff from the
 [application deployment record template](projects/application-deployment-record-template.md).
 
-## Verified internal application suite
-
-The local and GitHub repository audit found eight real MIDHTECH applications
-that form a workforce and placement workflow. They are documented separately
-in the [Workforce and Placement Application Suite](workforce-placement-application-suite.md)
-because they are not clinical or payer systems. Their discovery does not close
-the care-delivery or payer-operations inventory gaps.
-
-These applications are at `discovered-detailed-page-pending`: repository,
-revision, purpose and relationship evidence exist, but application-specific
-architecture pages, exact interface contracts and runtime verification are
-still required before they join the per-application documentation register.
-
 ## Per-application documentation register
 
 | Application project | Business capability | Owner | Runtime | Required chains | Upstream/downstream projects | Release evidence | Recovery evidence | Status |

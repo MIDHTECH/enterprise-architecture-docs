@@ -22,12 +22,6 @@ The application-to-platform relationships and the still-empty
 application-to-application inventory are recorded in
 [`application-integration-contracts.json`](../application-integration-contracts.json).
 
-Eight additional real MIDHTECH application repositories have been discovered
-and are being documented as the
-[Workforce and Placement Application Suite](../workforce-placement-application-suite.md).
-They remain discovery records until each receives its own detailed application
-page and contract classification.
-
 | Domain | Page |
 | --- | --- |
 | DevSecOps delivery | [DevSecOps Delivery](devsecops-delivery.md) |
