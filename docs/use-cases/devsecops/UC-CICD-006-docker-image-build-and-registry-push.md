@@ -400,3 +400,26 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: an image that can actually be trusted
+
+The useful failure is not merely “the push failed.” A release can also publish
+the wrong architecture, reuse a mutable tag, omit its source revision, lose its
+SBOM, or point Helm at a digest that the registry no longer serves.
+
+Extend the existing contract with source revision, image digest, platform,
+builder identity, SBOM checksum and registry location. The executable verifies
+those fields after push; the result schema distinguishes build, authentication,
+upload, scan and post-push verification failures. Fixtures cover a valid image,
+mutable-tag substitution, digest mismatch, missing SBOM, interrupted upload and
+recovery by republishing the same reviewed revision. CI runs every fixture and
+the runbook explains how to quarantine an uncertain artifact and return to the
+last verified digest.
+
+Evidence must show that the digest built is the digest retrieved and later
+rendered into the release. A registry screenshot or successful `docker push`
+line is supporting context, not acceptance.
+
+1. How would you prove the image deployed is the image built from the reviewed commit?
+2. What should happen when upload succeeds but digest verification fails?
+3. How do you recover without silently rebuilding different bytes under the same tag?

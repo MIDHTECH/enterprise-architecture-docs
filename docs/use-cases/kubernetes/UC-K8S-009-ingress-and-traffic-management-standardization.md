@@ -400,3 +400,23 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: troubleshoot the path from outside in
+
+An internal health check can stay green while users see DNS failures, TLS
+errors, routing mistakes, timeouts or the wrong backend. The lab must preserve
+each hop rather than collapsing ingress troubleshooting into one HTTP code.
+
+Extend the contract with hostname, authoritative answer, certificate identity,
+ingress class, route, service, endpoints, workload revision and expected denied
+paths. The executable gathers read-only hop evidence before any change. The
+schema records resolution, connection, TLS, HTTP routing, backend and user-path
+results. Fixtures cover NXDOMAIN, stale answer, expired or mismatched
+certificate, missing endpoints, wrong service port, wrong path and healthy
+internal service with failed external access. CI validates intended routes and
+denials; the runbook narrows the failure hop and reverts only the responsible
+configuration.
+
+1. Where do you start when the load balancer is healthy but users time out?
+2. How do you distinguish DNS, TLS, ingress and application failures?
+3. Which denied-path checks prevent a fix from widening exposure?

@@ -400,3 +400,23 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: trust the user path, not only the dashboard
+
+The strongest scenario begins with “all internal dashboards are green, but
+users cannot complete the journey.” A synthetic check must preserve DNS, TLS,
+routing, application and dependency stages so the failure remains diagnosable.
+
+Extend the contract with journey owner, source vantage point, hostname,
+request sequence, safe synthetic identity, expected response, timing budget,
+release identity and cleanup. The existing runner or Jenkins agent can execute
+the first HTTP/DNS probe; no new monitoring product is required. The schema
+records each stage and distinguishes application availability from external
+reachability. Fixtures cover DNS failure, TLS mismatch, wrong route, slow
+dependency, internal-green/external-red, stale successful result and recovery.
+CI validates journey definitions and redaction; the runbook compares the
+outside-in result with service and dependency signals before changing anything.
+
+1. Why can readiness probes stay green while customers fail?
+2. What makes a synthetic identity safe for a healthcare environment?
+3. How do you prove a route recovered without relying on a cached success?

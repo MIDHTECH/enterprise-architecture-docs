@@ -400,3 +400,24 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Automate the evidence before the repair
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds an AWX runbook pattern with two explicit phases: gather and decide. The
+gather phase is read-only and time-bounded. A repair phase exists only where an
+owner has named the target, safe action, canary, stop condition and recovery.
+
+### Questions an interviewer can press on
+
+- **“Which steps are always safe, and which need incident authorization?”**
+- **“How does the job prove it acted on the intended host or cluster object?”**
+- **“What evidence remains if the repair stops halfway?”**
+
+### Enhancement build and deployment binding
+
+Extend the playbook contract with phase, inventory identity, immutable revision,
+change/incident ID and recovery fields. CI fixtures prove diagnostic mode cannot
+reach mutating tasks. Deploy first as an AWX check-mode template against a
+canary inventory. A repair template remains separately approved; rollback uses
+the recorded prior revision and finishes with an independent zero-change check.

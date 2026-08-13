@@ -400,3 +400,31 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: keep remediation constrained and reversible
+
+The [incident-command lab](../../platform-engineering-interview-learning-labs.md#incident-command)
+allows AWX only for a pre-approved, inventory-bounded action with an idempotent
+playbook, explicit check/plan evidence, credential boundary, canary or limited
+batch, post-action health test and reversal path. Detection never directly
+grants permission to mutate production.
+
+### Questions an interviewer can press on
+
+- **“What did AWX automate?”** Name the playbook, inventory limit, variables,
+  credential and verification—not simply “server remediation.”
+- **“How do you stop a bad playbook spreading?”** Check mode where meaningful,
+  syntax/idempotence tests, reviewed limits, serial batches, abort thresholds
+  and an operator-owned approval.
+- **“What if the action succeeds but the service stays unhealthy?”** Mark the
+  remediation ineffective, stop expansion, preserve evidence and execute the
+  documented reverse or alternate recovery path.
+
+### Enhancement build and deployment binding
+
+Extend the contract, AWX/playbook source, result schema, fixtures, CI and
+runbook with inventory limit, check/preview result, credential class, serial
+batch, abort threshold, health verification and reverse action. Deploy the job
+template only through the approved AWX source path; live mutation requires a
+specific approval, stops after a failed canary and executes the recorded reverse
+or alternate recovery.

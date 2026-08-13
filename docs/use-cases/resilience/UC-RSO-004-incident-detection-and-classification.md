@@ -400,3 +400,29 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: practice declaring impact early
+
+The [incident-command lab](../../platform-engineering-interview-learning-labs.md#incident-command)
+adds timed exercises for Jenkins capacity failure, a Kubernetes service-path
+failure and a shared-dependency failure. The responder declares the affected
+user journey, current severity, confidence and next reassessment time before
+the root cause is known.
+
+### Questions an interviewer can press on
+
+- **“When did you declare the incident?”** Use impact and urgency signals, not
+  certainty about root cause.
+- **“How did severity change?”** Explain which evidence widened or narrowed
+  scope and who recorded the reclassification.
+- **“How do you avoid alert equals incident?”** Correlate multiple signals,
+  check user impact and preserve an explicit false-positive path.
+
+### Enhancement build and deployment binding
+
+Add user journey, affected scope, severity, confidence, reassessment time and
+classification history to the contract/evaluator/schema. CI fixtures cover
+confirmed impact, false positive, widening scope and reclassification. Deploy
+the classifier on the existing evidence path; it opens or updates records but
+does not mutate services, and rollback restores the previous rule while
+preserving the incident timeline.

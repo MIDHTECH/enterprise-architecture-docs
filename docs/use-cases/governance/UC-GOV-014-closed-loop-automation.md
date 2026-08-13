@@ -400,3 +400,25 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Close the loop only after independent verification
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds a controlled sequence—detect, qualify, authorize, canary, verify, expand
+or recover. The same signal that initiated an action cannot be the only proof
+of success; a second check must confirm service health and unchanged unrelated
+state.
+
+### Questions an interviewer can press on
+
+- **“Why is the triggering alert insufficient as the recovery check?”**
+- **“Which failure stops expansion beyond the canary?”**
+- **“How do you prevent a repair loop from oscillating?”**
+
+### Enhancement build and deployment binding
+
+Extend the existing evaluator with state transitions, idempotency key, retry
+budget, cooldown, independent verifier and recovery result. Fixtures cover
+success, failed canary, stale verification, oscillation and recovery failure.
+CI is simulation-only. Any AWX canary needs separate authorization; disable the
+trigger, restore the recorded revision and verify independently on failure.

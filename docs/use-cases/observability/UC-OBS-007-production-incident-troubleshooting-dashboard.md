@@ -400,3 +400,30 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: make the dashboard an incident workspace
+
+The [incident-command lab](../../platform-engineering-interview-learning-labs.md#incident-command)
+adds a shared incident clock, severity, affected journey, current hypothesis,
+deployment/configuration markers, queue and dependency health, mitigation state
+and links to retained evidence. The dashboard supports diagnosis; it does not
+replace a timeline or decide the cause by visual coincidence.
+
+### Questions an interviewer can press on
+
+- **“What did you look at first?”** Begin with user impact and the golden
+  signals, then narrow by service, dependency and recent change.
+- **“How did the dashboard speed recovery?”** Show the exact panel/query that
+  changed a decision, not a tour of every chart.
+- **“What if telemetry is missing?”** Record the blind spot, use a safe
+  alternative source and create a follow-up control instead of treating no data
+  as healthy.
+
+### Enhancement build and deployment binding
+
+Extend the dashboard contract, source, schema, fixtures, CI and runbook with
+incident clock, impact, severity, hypotheses, release/configuration markers,
+dependency state and mitigation links. CI renders complete, partial, stale and
+redacted evidence scenarios. Deploy the dashboard through the existing Grafana
+source path, independently verify its queries and restore the prior revision if
+the new view hides or misattributes an active symptom.

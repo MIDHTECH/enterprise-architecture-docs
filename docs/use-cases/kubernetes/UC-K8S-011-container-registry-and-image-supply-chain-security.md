@@ -400,3 +400,21 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: follow image identity to the pod
+
+Scanning an image before push does not prove the cluster pulled that digest or
+that admission and runtime evidence refer to the same artifact.
+
+Extend the contract with repository, digest, source revision, SBOM, scan result,
+exception, pull identity and workload revision. The evaluator compares build,
+registry, rendered manifest and observed pod image IDs. The schema exposes
+missing links rather than returning a single supply-chain score. Fixtures cover
+trusted digest, mutable-tag substitution, unknown registry, stale scan,
+expired exception, pull denial and runtime digest mismatch. CI blocks unsafe
+manifests; the runbook quarantines the artifact, restores the last trusted
+digest and verifies running pods independently.
+
+1. What is proven by an image scan, and what remains unproven?
+2. How can a mutable tag defeat otherwise green pipeline controls?
+3. What evidence connects source, SBOM, registry digest and observed pod image?

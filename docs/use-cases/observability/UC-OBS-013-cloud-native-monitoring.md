@@ -400,3 +400,35 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: one service identity across Azure and Kubernetes signals
+
+The [cloud and Kubernetes leadership track](../../platform-engineering-interview-learning-labs.md#cloud-kubernetes-leadership-track)
+defines common service, environment, cluster, namespace, release and
+correlation fields. A future Azure design may join approved Azure resource and
+activity signals with Prometheus/OpenTelemetry metrics, logs and traces, but
+the bridge, storage, retention and routing choices remain pending source,
+volume, residency and cost decisions. Existing MidhHealth telemetry stays the
+only current runtime evidence.
+
+### Questions an interviewer can press on
+
+- **“How would you observe Azure and AKS together?”** Start with shared service
+  and release identity, then map provider health, control-plane, node, workload,
+  application and dependency signals to SLOs and owner-routed alerts.
+- **“Would you send every signal to one backend?”** Decide by query need,
+  latency, volume, retention, residency and cost; one incident view does not
+  require one physical store.
+- **“How do you control telemetry cost?”** Set cardinality and retention budgets,
+  sample deliberately, drop low-value noise and preserve security/incident
+  evidence according to policy.
+
+### Enhancement build and deployment binding
+
+Add common service/environment/cluster/release identity, source provenance,
+residency, retention and cardinality fields to the six planned artifacts. CI
+builds existing-source, missing-source, Azure-fixture and excessive-cardinality
+cases. Deploy current rules and dashboards only through the accepted
+observability path; Azure collection remains blocked until a real source and
+identity exist, and rollback removes the new source/rule without deleting
+retained evidence.

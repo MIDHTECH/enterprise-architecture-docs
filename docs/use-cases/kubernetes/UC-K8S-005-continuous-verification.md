@@ -400,3 +400,33 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: verify the user path during rollout and recovery
+
+The [cloud and Kubernetes leadership track](../../platform-engineering-interview-learning-labs.md#cloud-kubernetes-leadership-track)
+extends verification beyond pod readiness. Promotion evaluates the synthetic
+user path, ingress/service endpoints, application errors and latency,
+dependency health, restarts, saturation and active alerts, all correlated to
+one release. Missing or stale evidence blocks promotion. Recovery is verified
+against the same path rather than by a green Kubernetes condition alone.
+
+### Questions an interviewer can press on
+
+- **“The pods are Ready but users get errors—what now?”** Trace DNS/TLS,
+  ingress, Service/EndpointSlice, application and dependencies while comparing
+  the prior healthy release.
+- **“When would you automatically roll back?”** Only with versioned thresholds,
+  trustworthy signals, a known rollback target and safeguards for migrations or
+  other irreversible effects.
+- **“How do you keep verification useful at scale?”** Reuse a common evidence
+  schema while letting each service own its SLO, synthetic journey, dependency
+  checks and failure budget.
+
+### Enhancement build and deployment binding
+
+Add user-journey, ingress/endpoints, application, dependency, saturation and
+release-correlation signals to the contract/evaluator/schema. CI builds healthy,
+degraded, missing-evidence, false-green readiness and rollback fixtures. Deploy
+the versioned verifier through the existing Jenkins/Kubernetes delivery path;
+promotion fails closed, and rollback verification uses the same synthetic path
+and confirms unrelated workloads remain unchanged.

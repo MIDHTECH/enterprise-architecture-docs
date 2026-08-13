@@ -400,3 +400,25 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Make connection exhaustion a practiced decision tree
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds a runbook that begins with symptoms and evidence rather than a command to
+kill sessions. It branches across leaked/idle-in-transaction clients, lock
+chains, slow queries and an undersized connection budget, and states who may
+cancel work, change a timeout or roll back an application revision.
+
+### Questions an interviewer can press on
+
+- **“What do you inspect before canceling a PostgreSQL backend?”**
+- **“How do you choose between client rollback, query cancellation and containment?”**
+- **“What proves the database recovered rather than briefly became quiet?”**
+
+### Enhancement build and deployment binding
+
+Encode the decision tree and allowed evidence queries in the named playbook;
+fixtures cover each branch, ambiguous evidence, denied authorization and failed
+recovery. CI proves mutating branches cannot run in diagnostic mode. A bounded
+exercise uses synthetic sessions only after approval; safe stop ends the
+exercise, restores client settings and verifies connections, locks and service health.

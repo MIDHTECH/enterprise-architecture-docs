@@ -400,3 +400,31 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: recommendations before automation
+
+The [cost-overrun response lab](../../platform-engineering-interview-learning-labs.md#cost-overrun-remediation)
+requires every right-sizing recommendation to include observed utilization,
+performance headroom, service criticality, expected savings, confidence,
+approval owner, canary path and rollback condition. Actual savings are measured
+after an approved change; forecast savings are not reported as realized value.
+
+### Questions an interviewer can press on
+
+- **“Why not resize everything below 20% CPU?”** CPU alone misses memory, I/O,
+  latency, burst and failover headroom; thresholds must reflect the service.
+- **“How would you roll out a recommendation?”** Use a low-risk scope or canary,
+  observe service and cost signals, and expand only when acceptance criteria
+  hold.
+- **“When should automation stop?”** On stale telemetry, conflicting changes,
+  missing ownership, protected capacity, failed health checks or an expired
+  approval.
+
+### Enhancement build and deployment binding
+
+Add utilization dimensions, headroom, criticality, expected savings,
+confidence, canary, approval and rollback fields to the contract and schema.
+Fixtures cover low CPU/high memory, bursty load, stale data, protected capacity
+and post-change SLO regression. Deploy recommendation generation on the
+existing evidence path; resizing remains separately approved, expands only
+after canary health, and reverses when acceptance thresholds fail.

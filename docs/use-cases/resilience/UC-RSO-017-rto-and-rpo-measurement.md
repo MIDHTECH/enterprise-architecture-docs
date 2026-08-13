@@ -400,3 +400,22 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: start and stop the recovery clock honestly
+
+RTO and RPO numbers are meaningless when teams choose different timestamps.
+The lab must capture business-impact detection, recovery authorization,
+restore start, technical availability, user verification and backlog recovery.
+
+Extend the contract with clock definitions, evidence sources, recovery point,
+transaction or record watermark, exclusions and owner-approved targets. The
+evaluator calculates several intervals rather than hiding them in one duration.
+The schema records source timestamps and confidence. Fixtures cover clean
+recovery, late detection, approval delay, stale backup, clock skew, technical
+green/user red and unresolved backlog. CI validates calculations; the runbook
+requires owner review of every exclusion and restores the prior measurement
+rule when a definition change breaks comparability.
+
+1. When does the RTO clock begin for the business and for the recovery team?
+2. How do you measure RPO when the last backup completed before the last valid transaction?
+3. Why should technical availability and user recovery have separate timestamps?

@@ -400,3 +400,31 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: make backend identity and recovery observable
+
+The [Terraform state and drift lab](../../platform-engineering-interview-learning-labs.md#terraform-state-drift)
+adds checks for endpoint, key, environment, lineage, serial, encryption,
+locking and recoverability. It also adds contention, wrong-key and isolated
+restore exercises. The current LocalStack examples are not evidence that a
+production remote backend or locking mechanism has been implemented.
+
+### Questions an interviewer can press on
+
+- **“How is remote state structured?”** Separate reusable modules from
+  environment roots, then name the backend identity and state key for each
+  root; do not let a module select its own backend.
+- **“What happens when two pipelines run?”** The second operation waits or
+  fails at the lock boundary and cannot mutate concurrently.
+- **“How do you recover state?”** Restore a version into an isolated test key,
+  validate lineage and outputs, reconcile carefully, and preserve the recovery
+  record. Never make blind force-unlock the answer.
+
+### Enhancement build and deployment binding
+
+Extend the six implementation artifacts with endpoint/key identity, lineage,
+serial, lock owner/age, encryption and backup/restore observations. CI builds
+contention, wrong-key, unexpected-serial, stale-lock and isolated-restore
+fixtures. Deploy only the read-only integrity evaluator on the current runner;
+a real backend monitor waits for an approved backend, and recovery must prove an
+isolated restore before any production-state action.

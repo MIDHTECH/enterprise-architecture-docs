@@ -400,3 +400,23 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: recover a service, not just files
+
+A successful restore command is not service recovery. The orchestrated path
+must order configuration, secrets, data, application and route restoration,
+then prove consistency from the user's side.
+
+Extend the contract with service dependency order, backup identities,
+checksums, secret references, target isolation, data-consistency check,
+application verification and cleanup. The executable remains read-only until a
+separate restore change identifies the target. The schema records every stage,
+elapsed time and blocked dependency. Fixtures cover missing backup, corrupt
+archive, incompatible configuration, expired secret, partial restore, failed
+user check and clean recovery. CI validates orchestration decisions; the
+runbook preserves failed restore evidence and never overwrites the only known
+good copy.
+
+1. Why can every backup component restore successfully while the service remains unusable?
+2. How do you choose recovery order across data, identity, application and network paths?
+3. Which independent check closes the recovery exercise?

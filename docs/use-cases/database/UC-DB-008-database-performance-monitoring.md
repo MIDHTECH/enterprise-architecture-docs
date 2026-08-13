@@ -400,3 +400,25 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Diagnose PostgreSQL saturation from database facts
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds a PostgreSQL 18 diagnostic profile for connection pressure, long-running
+transactions, lock waits and query latency. It preserves application identity
+and transaction age so a responder can decide whether the constraint is the
+client pool, a blocking transaction, a query or the server connection budget.
+
+### Questions an interviewer can press on
+
+- **“Which `pg_stat_activity` fields tell you the session is risky?”**
+- **“How do you distinguish a blocker from the session waiting behind it?”**
+- **“What data can you collect safely without exposing query parameters?”**
+
+### Enhancement build and deployment binding
+
+Add parameterized read-only queries and a redacted result model to the named
+playbook and schema. Fixtures cover healthy load, lock chains, old transactions,
+budget exhaustion and insufficient privilege. CI runs without a live database;
+an approved AWX check targets PostgreSQL 18 with a least-privilege monitor role.
+No session is canceled, and recovery proves collection left database state intact.

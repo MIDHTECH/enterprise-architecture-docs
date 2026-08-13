@@ -400,3 +400,31 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: a bounded cross-account audit identity
+
+The [Boto3 S3 audit lab](../../platform-engineering-interview-learning-labs.md#boto3-s3-audit)
+defines an Organizations discovery identity and a named read-only role in each
+approved account. Temporary STS credentials, external-ID policy, session name,
+allowed controls and denied actions must be explicit. The auditor never reads
+objects or modifies a bucket.
+
+### Questions an interviewer can press on
+
+- **“How do you audit every AWS account?”** Paginate active organization
+  accounts, assume the bounded role per account and preserve account coverage
+  even when one role cannot be assumed.
+- **“What permissions does the script need?”** Only account discovery, role
+  assumption and control-plane reads for the selected S3 controls; object reads
+  and all writes are outside scope.
+- **“What does AccessDenied mean?”** It is a reportable coverage gap tied to an
+  account, bucket and API, not a reason to omit that scope from the report.
+
+### Enhancement build and deployment binding
+
+Add organization/account discovery, role ARN, external-ID rule, session name,
+allowed APIs and denied actions to the existing contract and evidence schema.
+Mocked Organizations/STS/S3 fixtures validate pagination, suspended accounts,
+assume-role failure and least privilege in CI. The audit identity package is
+source-deployable; real role deployment waits for an approved AWS organization
+and uses revocation plus session expiry as its safe stop.

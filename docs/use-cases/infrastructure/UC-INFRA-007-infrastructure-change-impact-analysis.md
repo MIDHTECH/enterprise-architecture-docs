@@ -400,3 +400,31 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: connect infrastructure change to service and cost impact
+
+The [cost-overrun exercise](../../platform-engineering-interview-learning-labs.md#cost-overrun-remediation)
+requires every changed resource to map to its service owner,
+dependencies, expected cost movement and rollback path before remediation is
+approved. The assessment must distinguish measured provider cost from the
+lab’s Kubernetes showback estimate.
+
+### Questions an interviewer can press on
+
+- **“A resource cost tripled. What do you inspect first?”** Establish whether
+  the increase is usage, price, tagging or telemetry related, then correlate it
+  with a reviewed change and workload health.
+- **“Would you resize it immediately?”** Not without performance headroom,
+  service criticality, owner approval, a canary where possible and a reversible
+  plan.
+- **“How do you prove unrelated services were safe?”** Record the dependency
+  graph, scoped queries, health checks and post-change observation window.
+
+### Enhancement build and deployment binding
+
+Add resource-to-service, dependency, cost, SLO, owner and rollback projections
+to the planned contract, analyzer and result schema. CI fixtures cover unmapped
+resources, conflicting ownership, destructive changes, telemetry gaps and a
+safe recommendation. Deploy the evaluator on the existing runner before any
+mutating job; missing impact evidence blocks the change, and post-deployment
+verification confirms both the intended service and unrelated scope.

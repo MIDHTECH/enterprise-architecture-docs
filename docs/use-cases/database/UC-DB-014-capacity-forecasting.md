@@ -400,3 +400,25 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Forecast the limit that will arrive first
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds forecasts for storage, connections, transaction age, WAL growth and backup
+headroom. Each recommendation carries the observation window, missing samples,
+seasonality assumption and confidence; a single spike cannot masquerade as a
+capacity trend.
+
+### Questions an interviewer can press on
+
+- **“Why did you choose that observation window for the workload?”**
+- **“Which limit reaches risk first, and what dependency does it expose?”**
+- **“How do you validate a forecast before spending money or changing capacity?”**
+
+### Enhancement build and deployment binding
+
+Add bounded Prometheus/PostgreSQL inputs, trend calculations and confidence
+metadata to the existing playbook and result schema. CI replays growth, plateau,
+seasonal, sparse and reset fixtures. An approved read-only AWX run may publish a
+reviewed recommendation for PostgreSQL 18; it performs no resize. Rollback
+removes the query/report revision and confirms monitoring continuity.

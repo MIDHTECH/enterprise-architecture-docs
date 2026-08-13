@@ -2,7 +2,7 @@
 
 Last verified: 2026-08-13
 
-All 224 canonical use cases now have detailed organizational and platform
+All 226 canonical use cases now have detailed organizational and platform
 designs under the [use-case documentation standard](use-cases/README.md). Each
 page explains purpose, enterprise and platform fit, actors, prerequisites,
 workflow, controls, evidence, failure behavior, recovery, Jira work, and future
@@ -31,7 +31,7 @@ not by itself make an enterprise use case complete.
 
 | Measure | Count | Interpretation |
 | --- | ---: | --- |
-| Architecture-ready use-case designs | 224 | Documentation covers context, diagram, dependencies, quality, security, decisions, implementation paths, evidence, and recovery across all 12 platforms; code and execution remain separately governed |
+| Architecture-ready use-case designs | 226 | Documentation covers context, diagram, dependencies, quality, security, decisions, implementation paths, evidence, and recovery across all 12 platforms; code and execution remain separately governed |
 | Explicitly implemented first slices | 10 | Code exists for the bounded automation listed below |
 | Fully accepted portfolio use cases | Not yet centrally evidenced | Do not infer acceptance from infrastructure or repository presence |
 

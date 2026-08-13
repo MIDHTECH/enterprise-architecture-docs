@@ -400,3 +400,26 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Monitor whether batch work is moving, not merely running
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds queue age, start delay, last progress, completion latency, retry count and
+reason-coded failure to the pipeline health contract. A long-running job is not
+automatically unhealthy; the evaluator compares progress and deadline to the
+declared workload profile.
+
+### Questions an interviewer can press on
+
+- **“How do you tell slow useful work from a stuck job?”**
+- **“Which queue metric shows a capacity problem before deadlines are missed?”**
+- **“How are retry storms kept from hiding the original failure?”**
+
+### Enhancement build and deployment binding
+
+Extend the Python evaluator and schema with queue/progress timestamps, workload
+profile and retry lineage. Fixtures cover healthy slow work, no progress,
+queue saturation, retry storms and missing timestamps. GitLab runs them on the
+accepted runner; reviewed metrics and rules deploy through the current
+Prometheus path. Rollback restores the prior evaluator/rules and confirms
+pipeline execution itself was never coupled to monitoring availability.

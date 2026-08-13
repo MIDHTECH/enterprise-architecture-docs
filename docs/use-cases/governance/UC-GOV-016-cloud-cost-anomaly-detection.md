@@ -400,3 +400,32 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: tell one complete cost-overrun story
+
+The [cost-overrun response lab](../../platform-engineering-interview-learning-labs.md#cost-overrun-remediation)
+starts with a synthetic Kubernetes workload or billing fixture, establishes a
+baseline, detects a sustained deviation, attributes ownership, correlates the
+change, ranks reversible responses and measures the result. Kubernetes
+request-based showback is deliberately labeled an estimate; it is not presented
+as an AWS, Azure or GCP invoice.
+
+### Questions an interviewer can press on
+
+- **“Describe a major cost overrun you fixed.”** Walk through signal, scope,
+  cause, options, approval, mitigation, service-health verification and
+  realized savings. If this is a lab, say so plainly.
+- **“How do you avoid alerting on normal growth?”** Compare against seasonality,
+  deployment events, usage drivers and a sustained threshold rather than one
+  noisy sample.
+- **“What did the lesson change?”** Name a durable budget, tag, capacity or
+  review control and how its effectiveness will be measured.
+
+### Enhancement build and deployment binding
+
+Extend the existing evaluator and six artifacts with baseline interval,
+completeness, currency/rate source, owner, change correlation, forecast and
+actual-versus-estimated classification. CI builds normal growth, delayed data,
+tag gaps, synthetic overrun and resolved-anomaly fixtures. Deploy the detector
+on the existing runner/showback path; provider billing collection remains
+blocked until approved, and anomalies emit decisions rather than mutations.

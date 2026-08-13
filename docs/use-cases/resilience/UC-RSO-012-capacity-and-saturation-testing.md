@@ -400,3 +400,25 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Prove batch work cannot crowd out care traffic
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds a bounded saturation exercise for an online workload beside a batch job.
+The experiment watches latency, errors, CPU/memory pressure, pending pods,
+evictions and job completion time, and stops before the online service crosses
+its agreed safety threshold.
+
+### Questions an interviewer can press on
+
+- **“Which stop condition protects the online workload during the test?”**
+- **“How many runs are enough before recommending resource settings?”**
+- **“How do you tell application saturation from node or database saturation?”**
+
+### Enhancement build and deployment binding
+
+Add load-profile, safety-threshold and observation-window fields to the existing
+contract; build replayable telemetry fixtures and a no-impact result schema.
+CI exercises the evaluator without a cluster. A live run is limited to an
+approved namespace and canary window on the existing kubeadm cluster, with job
+termination and manifest rollback when any stop condition fires.

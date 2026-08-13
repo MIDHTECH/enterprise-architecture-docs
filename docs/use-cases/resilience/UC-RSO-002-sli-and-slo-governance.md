@@ -400,3 +400,24 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Review SLOs as service promises
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds a governance review that connects each objective to an owner, user journey,
+measurement source, release consequence and budget policy. A technically valid
+query is still blocked when the service cannot explain what decision it changes.
+
+### Questions an interviewer can press on
+
+- **“Who can change the objective, and who accepts the reliability trade-off?”**
+- **“What release decision follows when the budget is nearly exhausted?”**
+- **“How do you review an SLO after the service or traffic pattern changes?”**
+
+### Enhancement build and deployment binding
+
+Extend the contract and result schema with review status, owner, journey,
+budget action and expiry. Fixtures cover unowned, unmeasurable, stale and
+approved objectives. The playbook runs as a readiness gate on the accepted
+runner; it publishes evidence but changes no service. Rollback restores the
+previous contract revision and its corresponding Prometheus rule bundle.

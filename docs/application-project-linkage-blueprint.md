@@ -20,7 +20,7 @@ empty application-to-application list because no second real application
 project has been registered.
 
 The [application-to-use-case coverage](application-usecase-coverage.md)
-accounts for all 224 detailed pages without treating every platform capability
+accounts for all 226 detailed pages without treating every platform capability
 as a direct requirement of every application.
 
 ![A business journey crossing independent application projects through owned contracts](assets/application-project-linkage-blueprint.svg)

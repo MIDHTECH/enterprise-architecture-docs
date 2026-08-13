@@ -331,3 +331,31 @@ infrastructure or state changed.
 - Remediation belongs to a separate approved change and rollback plan.
 - Copy implementation stories to the infrastructure GitLab project; return
   pipeline and decision evidence to this documentation repository.
+
+## Enhancement: controlled drift, not automatic repair
+
+The [Terraform state and drift lab](../../platform-engineering-interview-learning-labs.md#terraform-state-drift)
+adds a bounded, out-of-band change to an allowlisted fixture resource. A
+read-only plan must identify who changed what, which state lineage was read and
+which environment is affected. Detection creates evidence and a decision; it
+does not silently apply Terraform or erase an emergency change.
+
+### Questions an interviewer can press on
+
+- **“How did you handle drift across environments?”** Describe separate roots
+  and state identities, scheduled read-only plans, normalized findings and
+  ownership—not one shared workspace or a production auto-apply.
+- **“What is the impact of drift?”** Trace the changed attribute to service,
+  dependency, policy and blast radius before recommending import, revert or a
+  code change.
+- **“How did you test this safely?”** Name the fixture, expected delta,
+  correlation ID, unchanged unrelated scope and cleanup evidence.
+
+### Enhancement build and deployment binding
+
+Extend the existing contract/evaluator/schema with state identity, drift
+provenance, service impact and disposition fields. Fixtures introduce an
+allowlisted out-of-band change, wrong environment, stale state and unrelated
+change; CI proves detection never reaches apply. Deploy the read-only evaluator
+on the existing infrastructure runner, publish routed findings and recover the
+fixture through reviewed code or an explicitly recorded import decision.

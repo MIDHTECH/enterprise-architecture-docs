@@ -400,3 +400,35 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: secure Azure begins with the application contract
+
+The [cloud and Kubernetes leadership track](../../platform-engineering-interview-learning-labs.md#cloud-kubernetes-leadership-track)
+adds a healthcare reference design covering tenant/subscription boundaries,
+workload identity, network isolation and private access, Key Vault ownership,
+encryption, database recovery, Azure Policy, telemetry, residency and cost.
+Compute selection follows workload, availability and data requirements; an AKS
+cluster or VM is not the starting assumption. Azure remains a planned target,
+not a deployed MidhHealth environment.
+
+### Questions an interviewer can press on
+
+- **“How would you secure an Azure healthcare workload?”** Start with data
+  classification and threat boundaries, then connect identity, private paths,
+  secrets/keys, policy, logging, recovery and accountable evidence.
+- **“How would Terraform be shared by several teams?”** Keep versioned modules
+  with platform owners and separate product/environment roots, state identities,
+  apply permissions and review ownership.
+- **“What proves the environment is ready for an application?”** Require
+  identity, route, policy, telemetry, backup/restore, SLO and rollback evidence;
+  a successful resource creation is not application readiness.
+
+### Enhancement build and deployment binding
+
+Extend the page’s six planned artifacts with Azure subscription/environment,
+identity, network/private access, key/secret, data, policy, telemetry, recovery
+and cost contract fields. Build provider-schema, plan and policy fixtures for
+approved and blocked healthcare patterns in repository CI. The source package
+is deployable; Azure runtime stays blocked until account, state, identity,
+network and change approval exist, after which canary verification and destroy
+or last-known-good reconciliation provide the recovery proof.

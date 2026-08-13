@@ -402,3 +402,25 @@ Primary scenario: **Disk-full alert fires after the filesystem is already read-o
 ## Acceptance decision
 
 UC-LNX-019 is **not yet accepted**. Acceptance requires implemented source, passing CI, controlled execution, runtime health, zero-change second convergence, exercised recovery, reviewed evidence, and publication on the canonical branch.
+
+## Enhancement: Put host evidence beside the incident timeline
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds a bounded evidence capture for a node that becomes NotReady or stops serving
+work. It collects clocks, service states, pressure, filesystem capacity, recent
+unit events and Kubernetes node conditions without copying secrets or an
+unbounded journal into the incident record.
+
+### Questions an interviewer can press on
+
+- **“Which evidence must be captured before restarting a failed service?”**
+- **“How do you align host, Kubernetes and deployment timestamps?”**
+- **“What keeps the incident bundle useful without exposing sensitive logs?”**
+
+### Enhancement build and deployment binding
+
+Extend the existing role and schema with a time-bounded, redacted evidence
+bundle and checksums. Fixtures cover clock skew, missing units, disk pressure
+and redaction. Execute source tests on GitLab, then collect from one approved
+host through AWX in read-only mode. Recovery removes temporary artifacts and
+proves services and monitoring have not changed.

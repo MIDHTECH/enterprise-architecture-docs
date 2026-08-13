@@ -47,6 +47,20 @@ provider acceptance before managed-cluster execution begins.
 - Workload right-sizing, event-driven autoscaling, and cost allocation.
 - Cluster configuration validation and runtime readiness checks.
 
+## Interview-led operating depth
+
+The [cloud and Kubernetes leadership track](../platform-engineering-interview-learning-labs.md#cloud-kubernetes-leadership-track)
+turns “Kubernetes at scale” into explicit fleet, workload and incident
+contracts. Fleet design covers lifecycle inventory, upgrade rings, conformance,
+capacity, cost and recovery. Application onboarding covers namespace tenancy,
+identity, policy, image, resources, ingress, telemetry and rollback. Incident
+practice follows the user path through DNS, ingress, service endpoints, pods,
+nodes, storage and dependencies before selecting mitigation.
+
+These additions strengthen the portable architecture; they do not change the
+accepted current target. The four-node on-premises application cluster remains
+the runtime boundary, and AKS/EKS/GKE remain deferred reference patterns.
+
 ## Longhorn Persistent-Storage Component
 
 Longhorn is the Kubernetes platform's persistent block-storage component. It

@@ -1,0 +1,258 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1020" viewBox="0 0 1600 1020" role="img" aria-labelledby="title desc">
+  <title id="title">MidhHealth platform and use-case learning enhancement plan</title>
+  <desc id="desc">A detailed flow showing independently owned application projects entering shared delivery, runtime, data, intelligence and assurance platform capability rails, producing enterprise outcomes and evidence that feeds interview learning back into use-case design without authorizing new infrastructure.</desc>
+  <defs>
+    <linearGradient id="header" x1="0" x2="1">
+      <stop offset="0" stop-color="#132a4f"/>
+      <stop offset="1" stop-color="#1f5f74"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" x2="1">
+      <stop offset="0" stop-color="#edf7ff"/>
+      <stop offset="1" stop-color="#f4fbf7"/>
+    </linearGradient>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#172033" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#0f9f75"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#d97706"/>
+    </marker>
+    <marker id="arrow-slate" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#475569"/>
+    </marker>
+    <style>
+      .title { font: 700 27px Inter, Arial, sans-serif; fill: #fff; }
+      .subtitle { font: 400 13px Inter, Arial, sans-serif; fill: #d9eef5; }
+      .section { font: 700 16px Inter, Arial, sans-serif; fill: #12213a; }
+      .label { font: 700 12px Inter, Arial, sans-serif; fill: #172033; }
+      .small { font: 400 10px Inter, Arial, sans-serif; fill: #40516b; }
+      .tiny { font: 400 9px Inter, Arial, sans-serif; fill: #506078; }
+      .gate { font: 700 10px Inter, Arial, sans-serif; fill: #fff; }
+      .outcome { font: 700 12px Inter, Arial, sans-serif; fill: #18324c; }
+      .card { fill: #fff; stroke: #b8c7d9; stroke-width: 1.2; }
+      .rail { fill: url(#flow); stroke: #8bb2cd; stroke-width: 1.5; }
+      .connector { fill: none; stroke: #2563eb; stroke-width: 2; marker-end: url(#arrow-blue); }
+      .feedback { fill: none; stroke: #d97706; stroke-width: 2; stroke-dasharray: 7 5; marker-end: url(#arrow-orange); }
+      .assurance { fill: none; stroke: #0f9f75; stroke-width: 1.8; marker-end: url(#arrow-green); }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1020" fill="#f6f8fb"/>
+  <rect x="22" y="20" width="1556" height="980" rx="20" fill="#fff" stroke="#cbd5e1" filter="url(#shadow)"/>
+  <rect x="22" y="20" width="1556" height="84" rx="20" fill="url(#header)"/>
+  <path d="M22 84 V104 H1578 V84" fill="url(#header)"/>
+  <text x="54" y="57" class="title">One goal: deployable projects on an integrated enterprise platform</text>
+  <text x="54" y="82" class="subtitle">Interview learning strengthens contracts, failure handling and evidence; it never creates unrelated infrastructure or false runtime claims.</text>
+
+  <!-- Application project intake -->
+  <rect x="50" y="136" width="270" height="614" rx="16" fill="#eef6ff" stroke="#3b82f6" stroke-width="1.7"/>
+  <text x="72" y="170" class="section">Independent application projects</text>
+  <text x="72" y="191" class="small">Real repository + owner required</text>
+
+  <circle cx="80" cy="236" r="15" fill="#2563eb"/><text x="76" y="240" class="gate">1</text>
+  <rect x="106" y="214" width="186" height="50" rx="8" class="card"/>
+  <text x="120" y="235" class="label">Project identity</text>
+  <text x="120" y="252" class="small">business outcome • owner • repo</text>
+
+  <circle cx="80" cy="307" r="15" fill="#2563eb"/><text x="76" y="311" class="gate">2</text>
+  <rect x="106" y="285" width="186" height="50" rx="8" class="card"/>
+  <text x="120" y="306" class="label">Release identity</text>
+  <text x="120" y="323" class="small">revision • artifact • version</text>
+
+  <circle cx="80" cy="378" r="15" fill="#2563eb"/><text x="76" y="382" class="gate">3</text>
+  <rect x="106" y="356" width="186" height="50" rx="8" class="card"/>
+  <text x="120" y="377" class="label">Runtime profile</text>
+  <text x="120" y="394" class="small">target • identity • capacity</text>
+
+  <circle cx="80" cy="449" r="15" fill="#2563eb"/><text x="76" y="453" class="gate">4</text>
+  <rect x="106" y="427" width="186" height="50" rx="8" class="card"/>
+  <text x="120" y="448" class="label">Integration contracts</text>
+  <text x="120" y="465" class="small">API • event • data • identity</text>
+
+  <circle cx="80" cy="520" r="15" fill="#2563eb"/><text x="76" y="524" class="gate">5</text>
+  <rect x="106" y="498" width="186" height="50" rx="8" class="card"/>
+  <text x="120" y="519" class="label">Operating contract</text>
+  <text x="120" y="536" class="small">SLO • alert • runbook • cost</text>
+
+  <circle cx="80" cy="591" r="15" fill="#2563eb"/><text x="76" y="595" class="gate">6</text>
+  <rect x="106" y="569" width="186" height="50" rx="8" class="card"/>
+  <text x="120" y="590" class="label">Recovery contract</text>
+  <text x="120" y="607" class="small">rollback • restore • authority</text>
+
+  <rect x="72" y="658" width="220" height="64" rx="9" fill="#fff7ed" stroke="#f59e0b"/>
+  <text x="88" y="680" class="label">Truth gate</text>
+  <text x="88" y="698" class="small">documented ≠ implemented ≠ runtime</text>
+  <text x="88" y="713" class="small">verified ≠ accepted</text>
+
+  <!-- Main platform rails -->
+  <rect x="358" y="136" width="838" height="614" rx="16" fill="#fbfdff" stroke="#88a2bd" stroke-width="1.7"/>
+  <text x="382" y="170" class="section">Twelve shared platform capability rails</text>
+  <text x="382" y="191" class="small">Each capability has one owner, versioned handoffs and a safe stop.</text>
+
+  <rect x="382" y="214" width="790" height="188" rx="12" class="rail"/>
+  <text x="402" y="239" class="label">DELIVERY + RUNTIME — turns source into an operable service</text>
+
+  <rect x="402" y="256" width="116" height="60" rx="8" class="card"/>
+  <text x="420" y="277" class="label">DevSecOps</text>
+  <text x="420" y="294" class="tiny">build • test • artifact</text>
+  <text x="420" y="307" class="tiny">promote • rollback</text>
+
+  <path d="M518 286 H538" class="connector"/>
+  <rect x="542" y="256" width="116" height="60" rx="8" class="card"/>
+  <text x="560" y="277" class="label">Infrastructure</text>
+  <text x="560" y="294" class="tiny">state • plan • drift</text>
+  <text x="560" y="307" class="tiny">impact • recovery</text>
+
+  <path d="M658 286 H678" class="connector"/>
+  <rect x="682" y="256" width="116" height="60" rx="8" class="card"/>
+  <text x="704" y="277" class="label">Kubernetes</text>
+  <text x="704" y="294" class="tiny">namespace • policy</text>
+  <text x="704" y="307" class="tiny">release • workload</text>
+
+  <path d="M798 286 H818" class="connector"/>
+  <rect x="822" y="256" width="116" height="60" rx="8" class="card"/>
+  <text x="850" y="277" class="label">Linux</text>
+  <text x="850" y="294" class="tiny">host • agent • service</text>
+  <text x="850" y="307" class="tiny">Ansible • Bash</text>
+
+  <path d="M938 286 H958" class="connector"/>
+  <rect x="962" y="256" width="90" height="60" rx="8" class="card"/>
+  <text x="978" y="277" class="label">Network</text>
+  <text x="978" y="294" class="tiny">DNS • TLS</text>
+  <text x="978" y="307" class="tiny">path • policy</text>
+
+  <path d="M1052 286 H1072" class="connector"/>
+  <rect x="1076" y="256" width="76" height="60" rx="8" class="card"/>
+  <text x="1088" y="277" class="label">Database</text>
+  <text x="1088" y="294" class="tiny">schema</text>
+  <text x="1088" y="307" class="tiny">restore</text>
+
+  <rect x="402" y="337" width="750" height="43" rx="7" fill="#dbeafe" stroke="#60a5fa"/>
+  <text x="418" y="355" class="label">Release/runtime evidence bus</text>
+  <text x="418" y="371" class="small">revision → artifact → target → identity → route → health → rollback</text>
+  <path d="M460 316 V337 M600 316 V337 M740 316 V337 M880 316 V337 M1007 316 V337 M1114 316 V337" stroke="#60a5fa" stroke-width="1.5"/>
+
+  <rect x="382" y="420" width="790" height="130" rx="12" fill="#f7f2ff" stroke="#9b70d3" stroke-width="1.5"/>
+  <text x="402" y="446" class="label">DATA + INTELLIGENCE — keeps information and model contracts attributable</text>
+  <rect x="402" y="464" width="226" height="60" rx="8" class="card"/>
+  <text x="420" y="485" class="label">Data engineering</text>
+  <text x="420" y="502" class="tiny">schema • quality • lineage • replay</text>
+  <rect x="664" y="464" width="226" height="60" rx="8" class="card"/>
+  <text x="682" y="485" class="label">Healthcare AI</text>
+  <text x="682" y="502" class="tiny">corpus • prompt • review • safety</text>
+  <rect x="926" y="464" width="226" height="60" rx="8" class="card"/>
+  <text x="944" y="485" class="label">MLOps</text>
+  <text x="944" y="502" class="tiny">model • validation • observe • rollback</text>
+  <path d="M628 494 H660" class="connector"/><path d="M890 494 H922" class="connector"/>
+
+  <rect x="382" y="568" width="790" height="158" rx="12" fill="#eefbf6" stroke="#42a987" stroke-width="1.5"/>
+  <text x="402" y="594" class="label">ASSURANCE + FEEDBACK — decides whether the system remains safe and useful</text>
+  <rect x="402" y="612" width="226" height="66" rx="8" class="card"/>
+  <text x="420" y="634" class="label">Governance + operations</text>
+  <text x="420" y="651" class="tiny">identity • control • audit • cost</text>
+  <text x="420" y="665" class="tiny">recommendation → owned approval</text>
+  <rect x="664" y="612" width="226" height="66" rx="8" class="card"/>
+  <text x="682" y="634" class="label">Observability + SRE</text>
+  <text x="682" y="651" class="tiny">SLO • alert • release correlation</text>
+  <text x="682" y="665" class="tiny">telemetry → health decision</text>
+  <rect x="926" y="612" width="226" height="66" rx="8" class="card"/>
+  <text x="944" y="634" class="label">Resilience + service ops</text>
+  <text x="944" y="651" class="tiny">owner • incident • recovery</text>
+  <text x="944" y="665" class="tiny">review → corrected control</text>
+  <path d="M628 645 H660" class="assurance"/><path d="M890 645 H922" class="assurance"/>
+  <path d="M1038 612 C1038 548 1148 550 1148 526" class="assurance"/>
+  <path d="M777 612 C777 392 1125 420 1125 381" class="assurance"/>
+
+  <!-- Intake and output connectors -->
+  <path d="M320 338 C338 338 338 286 378 286" class="connector"/>
+  <text x="324" y="320" class="tiny">required chains</text>
+  <path d="M320 449 C340 449 340 494 378 494" class="connector"/>
+  <text x="325" y="476" class="tiny">versioned interfaces</text>
+  <path d="M320 555 C340 555 340 645 378 645" class="assurance"/>
+  <text x="325" y="603" class="tiny">SLO + recovery</text>
+
+  <!-- Enterprise outcomes -->
+  <rect x="1234" y="136" width="316" height="614" rx="16" fill="#f8fafc" stroke="#53657c" stroke-width="1.7"/>
+  <text x="1256" y="170" class="section">Integrated enterprise outcomes</text>
+  <text x="1256" y="191" class="small">Platforms succeed together, not alone</text>
+
+  <rect x="1258" y="224" width="268" height="76" rx="10" fill="#eff6ff" stroke="#60a5fa"/>
+  <text x="1278" y="249" class="outcome">Provider operations</text>
+  <text x="1278" y="269" class="small">available, secure care and patient services</text>
+  <text x="1278" y="286" class="tiny">release • data • access • recovery</text>
+
+  <rect x="1258" y="320" width="268" height="76" rx="10" fill="#f0fdf4" stroke="#4ade80"/>
+  <text x="1278" y="345" class="outcome">Payer operations</text>
+  <text x="1278" y="365" class="small">governed claims and eligibility workflows</text>
+  <text x="1278" y="382" class="tiny">contracts • audit • quality • resilience</text>
+
+  <rect x="1258" y="416" width="268" height="76" rx="10" fill="#faf5ff" stroke="#c084fc"/>
+  <text x="1278" y="441" class="outcome">Shared digital platform</text>
+  <text x="1278" y="461" class="small">reusable contracts instead of snowflakes</text>
+  <text x="1278" y="478" class="tiny">delivery • runtime • data • intelligence</text>
+
+  <rect x="1258" y="512" width="268" height="76" rx="10" fill="#fff7ed" stroke="#fb923c"/>
+  <text x="1278" y="537" class="outcome">Risk and compliance</text>
+  <text x="1278" y="557" class="small">least privilege and attributable evidence</text>
+  <text x="1278" y="574" class="tiny">approval • audit • retention • rollback</text>
+
+  <rect x="1258" y="608" width="268" height="76" rx="10" fill="#f1f5f9" stroke="#64748b"/>
+  <text x="1278" y="633" class="outcome">Operational resilience</text>
+  <text x="1278" y="653" class="small">detect, own, restore and learn</text>
+  <text x="1278" y="670" class="tiny">SLO • incident • RTO/RPO • review</text>
+
+  <path d="M1196 286 C1216 286 1216 262 1254 262" class="connector"/>
+  <path d="M1196 360 C1216 360 1216 358 1254 358" class="connector"/>
+  <path d="M1196 494 C1216 494 1216 454 1254 454" class="connector"/>
+  <path d="M1196 645 C1216 645 1216 550 1254 550" class="assurance"/>
+  <path d="M1196 676 C1216 676 1216 646 1254 646" class="assurance"/>
+
+  <rect x="1258" y="704" width="268" height="28" rx="14" fill="#132a4f"/>
+  <text x="1304" y="723" class="gate">ACCEPT ONLY WITH PROJECT-SPECIFIC EVIDENCE</text>
+
+  <!-- Learning and evidence loop -->
+  <rect x="50" y="790" width="1500" height="176" rx="16" fill="#fffaf1" stroke="#e6a23c" stroke-width="1.5"/>
+  <text x="72" y="820" class="section">Learning and evidence loop</text>
+  <text x="72" y="840" class="small">Questions expose missing decisions; evidence changes architecture; architecture does not impersonate execution.</text>
+
+  <circle cx="116" cy="893" r="29" fill="#d97706"/><text x="107" y="898" class="gate">Q</text>
+  <text x="72" y="944" class="label">Interview probe</text>
+  <text x="61" y="958" class="tiny">scenario • tradeoff • failure</text>
+
+  <path d="M148 893 H274" class="feedback"/>
+  <rect x="280" y="859" width="210" height="68" rx="10" class="card"/>
+  <text x="302" y="883" class="label">Use-case enhancement</text>
+  <text x="302" y="901" class="small">context • architecture • recovery</text>
+  <text x="302" y="916" class="tiny">one owner + supporting handoffs</text>
+
+  <path d="M490 893 H568" class="feedback"/>
+  <rect x="574" y="859" width="210" height="68" rx="10" class="card"/>
+  <text x="596" y="883" class="label">Platform repository</text>
+  <text x="596" y="901" class="small">contract • fixture • CI • runbook</text>
+  <text x="596" y="916" class="tiny">existing capacity first</text>
+
+  <path d="M784 893 H862" class="feedback"/>
+  <rect x="868" y="859" width="210" height="68" rx="10" class="card"/>
+  <text x="890" y="883" class="label">Evidence state gates</text>
+  <text x="890" y="901" class="small">source → runtime → recovery</text>
+  <text x="890" y="916" class="tiny">review before acceptance</text>
+
+  <path d="M1078 893 H1156" class="feedback"/>
+  <rect x="1162" y="859" width="210" height="68" rx="10" class="card"/>
+  <text x="1184" y="883" class="label">Application contract</text>
+  <text x="1184" y="901" class="small">pin capability + retain evidence</text>
+  <text x="1184" y="916" class="tiny">independent release remains independent</text>
+
+  <path d="M1372 893 H1460" class="feedback"/>
+  <circle cx="1492" cy="893" r="29" fill="#0f9f75"/><text x="1483" y="898" class="gate">✓</text>
+  <text x="1430" y="944" class="label">Enterprise fit</text>
+  <text x="1408" y="958" class="tiny">provider • payer • shared control</text>
+
+  <path d="M1492 860 C1492 780 810 785 810 744" class="feedback"/>
+  <text x="1004" y="779" class="tiny">measured learning reprioritizes platform work</text>
+</svg>

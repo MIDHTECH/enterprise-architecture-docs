@@ -400,3 +400,22 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: make the budget change a decision
+
+An error budget becomes useful when it changes what the team does. The lab
+should connect fast and slow burn, recent releases, planned risk, exception
+ownership and recovery work instead of displaying a percentage alone.
+
+Extend the contract with SLO revision, window, consumed and remaining budget,
+burn windows, release identity, freeze or proceed rule, exception owner and
+expiry. The evaluator emits recommend-proceed, caution, freeze or
+coverage-incomplete; it cannot promote or roll back by itself. Fixtures cover
+healthy budget, fast burn, slow burn, missing data, changed SLO, expiring
+exception and recovery after corrective work. CI checks calculation and reason
+codes; the runbook explains who may override a recommendation and how the
+decision is revisited.
+
+1. When should an error budget slow releases rather than stop them?
+2. How do fast and slow burn windows change the response?
+3. What prevents a missing-data interval from looking like perfect reliability?

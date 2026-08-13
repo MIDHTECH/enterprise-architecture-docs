@@ -21,13 +21,13 @@ Last reviewed: 2026-08-13
 
 ## Purpose
 
-Connection Pooling defines the guarded database workflow for **PgBouncer lifecycle and capacity controls** on the existing PostgreSQL boundary.
+Connection Pooling defines the guarded database workflow for **application and PostgreSQL connection-budget controls** on the existing PostgreSQL boundary.
 
 For Connection Pooling, the design fixes the contract, dependency handoffs, target boundary, evidence, decision owners, and recovery path before implementation. Those choices keep the eventual build grounded in the lab that actually exists.
 
 ## Expected outcome
 
-The first delivery slice proves **PgBouncer lifecycle and capacity controls** on the documented
+The first delivery slice proves **application and PostgreSQL connection-budget controls** on the documented
 existing target boundary. It uses a versioned contract plus positive, negative,
 malformed-input, unauthorized-scope, and recovery fixtures, then publishes an
 attributable machine-readable result.
@@ -65,7 +65,7 @@ endpoint.
 - The named repository, source revision, and target resolve to current
   enterprise inventory; synthetic fixtures are permitted for source-only tests.
 - The implementation contract defines the scope required to demonstrate:
-  **PgBouncer lifecycle and capacity controls**
+  **application and PostgreSQL connection-budget controls**
 - Credentials, if later required, come only from an existing protected
   credential boundary and are never stored in source, logs, screenshots, or
   result artifacts.
@@ -108,7 +108,7 @@ Out of scope:
 
 Connection Pooling is evaluated inside the existing enterprise lab and the owning
 platform's current source-control and execution boundaries. The architectural
-unit is the governed outcome—**PgBouncer lifecycle and capacity controls**—rather than a new product or
+unit is the governed outcome—**application and PostgreSQL connection-budget controls**—rather than a new product or
 environment.
 
 | Context element | Architecture statement |
@@ -154,7 +154,7 @@ decisions and must not be invented.
 
 | Attribute | Required measure or invariant | Decision state |
 | --- | --- | --- |
-| Functional correctness | Every required input is validated; **PgBouncer lifecycle and capacity controls** is evaluated against positive, negative, missing-input, and unauthorized-scope cases. | Fixed design requirement |
+| Functional correctness | Every required input is validated; **application and PostgreSQL connection-budget controls** are evaluated against positive, negative, missing-input, and unauthorized-scope cases. | Fixed design requirement |
 | Performance and scale | Establish a baseline for query or job duration, connection impact, recovery objectives, and data correctness on existing capacity; the owner must approve warning and blocking thresholds before runtime promotion. | Thresholds `TBD` before implementation |
 | Reliability | Missing prerequisites, stale dependencies, malformed evidence, and partial results fail closed without widening scope. | Fixed design requirement |
 | Recovery | Record the maximum acceptable interruption and recovery time before runtime use; source-only validation must remain zero-change. | Owner decision required before runtime exercise |
@@ -330,7 +330,7 @@ Revert the source commit if the new gate misclassifies established behavior.
 ### STORY-DB-011-003: Verify the bounded outcome and recovery
 
 **Description:** Platform and enterprise reviewers need evidence that the
-future workflow satisfies **PgBouncer lifecycle and capacity controls** on its named scope without hidden
+future workflow satisfies **application and PostgreSQL connection-budget controls** on its named scope without hidden
 effects and can stop or recover safely.
 
 **Status:** Planned.
@@ -365,14 +365,14 @@ use case blocked.
 | `ART-DB-011-001A` | Reviewed contract, inventory, dependency, and fixture design | Architecture and implementation repository review | Pending future implementation |
 | `ART-DB-011-002A` | Positive and negative source-gate results | Existing GitLab and accepted runner | Pending future execution |
 | `ART-DB-011-002B` | Failed-decision proof showing the declared downstream path blocked | Existing delivery pipeline | Pending future execution |
-| `ART-DB-011-003A` | Bounded observed result compared with **PgBouncer lifecycle and capacity controls** | Approved existing execution path | Pending future execution |
+| `ART-DB-011-003A` | Bounded observed result compared with **application and PostgreSQL connection-budget controls** | Approved existing execution path | Pending future execution |
 | `ART-DB-011-003B` | Recovery, restore, idempotence, reconciliation, or zero-change proof | Approved existing execution path | Pending future execution |
 
 ## Expected versus current result
 
 | Measure | Expected future result | Current result |
 | --- | --- | --- |
-| Canonical coverage | PgBouncer lifecycle and capacity controls | Detailed behavior and decision semantics documented |
+| Canonical coverage | Application and PostgreSQL connection-budget controls | Detailed behavior and decision semantics documented |
 | Platform fit | Controlled result supports backup, recovery, performance, availability, security, and application-readiness decisions | Owning-platform relationships documented |
 | Enterprise fit | keep enterprise transactional and operational data secure, performant, and recoverable | Enterprise value, ownership, and evidence contract documented |
 | Infrastructure | Existing inventoried targets and accepted execution paths only | No new infrastructure authorized |
@@ -400,3 +400,26 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Govern connection budgets before adding a proxy
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds a connection-budget contract for every registered application: expected
+replicas, per-process pool size, overflow, timeout, transaction behavior and a
+reserved server margin. PostgreSQL is current. pgBouncer settings are not
+claimed or deployed until inventory records an approved pgBouncer service.
+
+### Questions an interviewer can press on
+
+- **“Can every application pool reach its maximum at once without exhausting PostgreSQL?”**
+- **“How do timeout, overflow and retry choices amplify a database incident?”**
+- **“What evidence would justify introducing pgBouncer later?”**
+
+### Enhancement build and deployment binding
+
+Extend the existing contract and playbook with a deterministic budget
+calculator and configuration adapters for registered applications. Fixtures
+cover safe totals, excessive overflow, replica growth and malformed settings.
+CI publishes a recommendation only. Any application configuration rollout uses
+its existing delivery path and canary; rollback restores the prior pool values
+and verifies connection headroom and request health.

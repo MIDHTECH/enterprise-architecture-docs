@@ -377,9 +377,9 @@ use_case_paths = {
     path.relative_to(root).as_posix(): path
     for path in use_case_root.glob("*/UC-*.md")
 }
-if len(use_case_paths) != 224:
+if len(use_case_paths) != 226:
     raise SystemExit(
-        f"{applicability_manifest}: expected 224 detailed use cases; found {len(use_case_paths)}"
+        f"{applicability_manifest}: expected 226 detailed use cases; found {len(use_case_paths)}"
     )
 use_case_domains = {
     path.relative_to(use_case_root).parts[0]
@@ -463,7 +463,7 @@ for item in applicability_applications:
         )
         for use_case in use_case_paths
     }
-    if len(classifications) != 224 or set(classifications) != set(use_case_paths):
+    if len(classifications) != 226 or set(classifications) != set(use_case_paths):
         raise SystemExit(f"{applicability_manifest}: {application_id} coverage is incomplete")
     coverage_totals[application_id] = {
         classification: list(classifications.values()).count(classification)
@@ -480,9 +480,9 @@ for item in unregistered_portfolios:
 
 coverage_text = coverage.read_text()
 for expected_phrase in (
-    "**224**",
+    "**226**",
     "**31**",
-    "**193 classified by application-domain rules**",
+    "**195 classified by application-domain rules**",
     "Podinfo remains not deployed",
 ):
     if expected_phrase not in coverage_text:

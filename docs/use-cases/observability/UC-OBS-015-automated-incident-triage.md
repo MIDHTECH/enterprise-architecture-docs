@@ -400,3 +400,25 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Build a useful first ten minutes
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds a triage bundle for sudden Kubernetes unavailability. It correlates the
+service alert with deployment revision, pod and node state, recent events,
+resource pressure, ingress health and PostgreSQL symptoms, while preserving
+timestamps and declaring every missing source.
+
+### Questions an interviewer can press on
+
+- **“What evidence would make you suspect the node rather than the application?”**
+- **“How do you prevent correlation from becoming an unsupported root-cause claim?”**
+- **“What must a responder see before choosing rollback over mitigation?”**
+
+### Enhancement build and deployment binding
+
+Add the evidence-bundle schema, correlation rules and fixtures for application,
+node, database and missing-source paths to the existing locations. Run the
+collector read-only through the accepted runner against fixtures first, then an
+approved cluster canary. Deployment grants no mutation permission; rollback
+removes the collector/rule revision and verifies telemetry remains available.

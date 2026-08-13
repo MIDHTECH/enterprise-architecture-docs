@@ -320,3 +320,25 @@ did not change during detection.
 - Automatic reconciliation remains a later, separately approved use case.
 - Copy code stories to the Kubernetes and Jenkins GitLab repositories; return
   accepted evidence and incident links here.
+
+## Enhancement: Explain why a node became different
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds a drift report that compares Kubernetes objects and node runtime facts to
+an immutable expected revision. It distinguishes an unreviewed change, a
+version mismatch, a missing object and an unreachable node, because each needs
+a different response.
+
+### Questions an interviewer can press on
+
+- **“What is the source of truth when Git, the API and the node disagree?”**
+- **“How do you avoid calling an unavailable node a configuration change?”**
+- **“Which drift can be reconciled safely while workloads are running?”**
+
+### Enhancement build and deployment binding
+
+Extend the contract and policy evaluator with object digests, node fact inputs,
+provenance and reason codes. CI replays clean, changed, missing, unreachable and
+stale-revision fixtures. An approved canary against the four-node cluster is
+read-only. Reconciliation stays a separate change; rollback removes the
+collector revision and confirms cluster objects were not modified.

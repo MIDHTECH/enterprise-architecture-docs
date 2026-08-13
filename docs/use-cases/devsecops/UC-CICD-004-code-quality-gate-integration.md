@@ -419,3 +419,34 @@ product was assumed, and evidence is linked here.
   controls.
 - `UC-CICD-013` covers vulnerable dependencies; it is not replaced by general
   maintainability analysis.
+
+## Enhancement: pipeline configuration is executable source
+
+The [AI-assisted pipeline and dependency track](../../platform-engineering-interview-learning-labs.md#ai-pipeline-dependency-track)
+adds structural validation for CI YAML, generated Jenkins jobs, shared-library
+interfaces, required stages, dependency order, conditions, timeouts, retry
+policy, artifacts and credential references. Cheap deterministic checks run
+before expensive build work. Buildkite configuration is not added to the
+MidhHealth platform; a Buildkite answer requires separate real evidence.
+
+### Questions an interviewer can press on
+
+- **“What exactly did you validate?”** Name syntax/schema, stage graph,
+  required/forbidden fields, generated job output, credential references and
+  positive/negative fixtures rather than saying “we linted YAML.”
+- **“How did you restructure the pipeline?”** Show the before/after dependency
+  graph and explain which checks moved earlier or ran in parallel without
+  weakening gates.
+- **“How did you know the configuration was deployable?”** Render or generate
+  it, run a synthetic project on the intended executor, retain the result and
+  prove the previous revision can be restored.
+
+### Enhancement build and deployment binding
+
+Extend the existing contract, Jenkins job/shared-library evaluator, schema,
+fixtures, CI and runbook with pipeline graph and configuration reason codes.
+Add `tools/pipeline_config_validation/` for repository-native parsers and
+`tests/fixtures/uc-cicd-004/pipeline-config/` for valid, cyclic, missing-gate,
+unsafe-credential, timeout and generated-job cases. Deploy through the existing
+Job DSL/shared-library path, compare generated configuration, run a synthetic
+project and roll back to the prior template revision on mismatch.

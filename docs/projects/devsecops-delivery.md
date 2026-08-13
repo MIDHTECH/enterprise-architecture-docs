@@ -35,3 +35,18 @@ teams.
 - Environment promotion and rollback.
 - Terraform plan automation for infrastructure changes.
 - Deployment health scoring using SLO, alert, and runtime checks.
+
+## Interview-led feedback and dependency analysis
+
+The [AI-assisted pipeline and dependency track](../platform-engineering-interview-learning-labs.md#ai-pipeline-dependency-track)
+adds two source-buildable capabilities to the existing delivery repository:
+`tools/pipeline_feedback/` measures explicitly defined queue and feedback
+intervals, and `tools/dependency_inventory/` normalizes approved manifest and
+lockfile fixtures into JSON and Markdown evidence. Jenkins jobs and the shared
+library remain the deployment path; Buildkite is neither installed nor added by
+the learning exercise.
+
+The team owns metric definitions, adapters, fixtures, schemas, pipeline
+integration and before/after evidence. AI may assist with skeletons and tests,
+but every generated line remains subject to deterministic validation, security
+review and human ownership before it reaches a shared template.

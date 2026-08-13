@@ -402,3 +402,25 @@ Primary scenario: **The scheduled scan reports hundreds of changes caused only b
 ## Acceptance decision
 
 UC-LNX-015 is **not yet accepted**. Acceptance requires implemented source, passing CI, controlled execution, runtime health, a zero-change second convergence, exercised recovery, reviewed evidence, and publication on the canonical branch.
+
+## Enhancement: Detect node drift without restarting the node
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds expected-state checks for kubelet, containerd and supporting systemd units,
+including package/config hashes, enabled state and recent restart evidence. The
+first response to a mismatch is a report tied to inventory and revision—not an
+automatic service restart during an outage.
+
+### Questions an interviewer can press on
+
+- **“Which differences are drift, and which are intentional local state?”**
+- **“How do you prove a node check did not alter production?”**
+- **“When would reconciliation be safer than rollback, and who decides?”**
+
+### Enhancement build and deployment binding
+
+Add read-only fact collection, expected-hash comparison and reason codes to the
+existing role, with matching, drifted, absent-unit and inaccessible-host
+fixtures. CI and an AWX check-mode canary must pass before any reconcile job is
+proposed. A reconcile remains a separate approved action; collector rollback
+restores the prior role revision and repeats the read-only comparison.

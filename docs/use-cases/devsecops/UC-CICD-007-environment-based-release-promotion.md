@@ -400,3 +400,24 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: promotion without rebuilding
+
+A fast pipeline is unsafe when each environment receives a fresh build or when
+environment variables quietly change application behavior. Promotion must move
+one immutable artifact while making configuration, contract compatibility,
+approval and risk differences visible.
+
+Extend the existing contract with source and artifact digests, originating and
+target environments, configuration checksum, required evidence, compatibility
+report from `UC-CICD-016`, approver and expiry. The executable performs
+read-only eligibility checks before offering the existing Jenkins promotion
+path. The schema records every accepted and missing prerequisite. Fixtures
+include identical promotion, rebuilt artifact, stale approval, configuration
+drift, incompatible consumer and expired exception. CI proves blocked fixtures
+cannot invoke the promotion stage; the runbook returns to the previous artifact
+and configuration revision.
+
+1. Why is rebuilding for production different from promoting an artifact?
+2. Which configuration differences are acceptable, and who decides?
+3. What evidence shows a blocked promotion left the target unchanged?

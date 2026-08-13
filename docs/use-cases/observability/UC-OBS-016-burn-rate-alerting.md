@@ -400,3 +400,25 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Use paired burn-rate windows
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds fast-burn and slow-burn conditions that pair a short confirmation window
+with a longer budget window. Thresholds are derived from the SLO and paging
+policy, not copied from an interview example, and low traffic or absent data
+produces an explicit reason instead of a misleading zero.
+
+### Questions an interviewer can press on
+
+- **“Why does a short window need confirmation from a longer window?”**
+- **“How did you derive the threshold from the objective and response time?”**
+- **“How do low-volume services avoid both false pages and silent failure?”**
+
+### Enhancement build and deployment binding
+
+Implement the paired Prometheus expressions in the named rule file and add
+steady, fast-burn, slow-burn, low-traffic and missing-series fixtures. CI checks
+the result schema and rule syntax. A reviewed rule bundle may then follow the
+accepted Prometheus path with a synthetic alert proof; restore the prior bundle
+if the page, resolve or cardinality acceptance checks fail.

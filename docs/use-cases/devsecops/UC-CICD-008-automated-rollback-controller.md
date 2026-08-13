@@ -400,3 +400,23 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: rollback is a controlled release
+
+Rollback can fail because the previous artifact is missing, a database change
+is irreversible, health evidence is ambiguous, or only part of a release moved.
+The controller must never equate “ran the rollback command” with recovery.
+
+Extend the contract with current and previous release identities, reversible
+components, data-migration boundary, trigger evidence, stop condition and
+independent user-path check. The executable first produces a rollback plan and
+refuses automation when artifact, ownership or reversibility is uncertain. The
+schema records planned and observed component states. Fixtures cover healthy
+release, clear regression, partial rollout, missing prior artifact,
+irreversible migration, failed rollback and successful recovery. CI validates
+the decision state machine; the runbook separates immediate mitigation from
+later root-cause work.
+
+1. When is rollback more dangerous than continuing the incident response?
+2. How should a partial deployment influence the recovery plan?
+3. Which independent signals prove users recovered after rollback?

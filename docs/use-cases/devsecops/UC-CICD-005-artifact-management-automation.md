@@ -400,3 +400,27 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview conversation: what makes a native artifact releasable
+
+Use the [native C/C++ build profile](../../platform-engineering-interview-learning-labs.md#native-cpp-build)
+to show that “artifact” means more than a mutable file copied from a workspace.
+
+- **“What exactly do you publish?”** Name the binary, debug symbols, licenses,
+  SBOM, checksums, test result and provenance record, all tied to one source
+  revision and toolchain.
+- **“Can a cache become the release artifact?”** No. Cache entries accelerate a
+  trusted rebuild; immutable release artifacts are separately verified,
+  retained and promoted by digest.
+- **“Could you reproduce it during an incident?”** Compare two builds of the
+  same revision, explain any byte differences and retain the inputs needed to
+  recreate the approved output.
+
+### Enhancement build and deployment binding
+
+Extend the existing six implementation artifacts with native binary, debug
+symbol, license, SBOM, checksum and provenance fields plus reproducibility and
+tamper fixtures. CI builds and validates an immutable package; the accepted
+artifact path publishes and promotes only by digest. A checksum, provenance or
+rebuild mismatch fails closed, quarantines the candidate and preserves the last
+accepted artifact for rollback.

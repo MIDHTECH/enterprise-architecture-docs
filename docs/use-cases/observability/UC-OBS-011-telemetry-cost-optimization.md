@@ -400,3 +400,23 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: keep signals that earn their cost
+
+Telemetry cost is not only a cloud bill. High-cardinality labels, unused logs,
+duplicate traces and excessive retention consume storage, CPU and operator
+attention in the existing Prometheus, Loki, Tempo and Elastic paths.
+
+Extend the contract with signal owner, incident or SLO purpose, volume,
+cardinality, retention, query frequency, sampling and deletion boundary. The
+evaluator produces recommendations and never deletes data. The schema records
+estimated reduction, diagnostic risk and owner decision. Fixtures model a
+runaway label, duplicate log stream, over-sampled trace, unused dashboard
+metric, protected audit signal and required incident evidence. CI checks policy
+and deterministic calculations; the runbook validates query usefulness before
+and after a separately approved configuration change and restores the previous
+retention or sampling revision if visibility regresses.
+
+1. How would you reduce logging cost without deleting the evidence needed during an incident?
+2. Why can one unbounded label damage a shared metrics platform?
+3. Which measurements show that a telemetry reduction preserved diagnostic value?

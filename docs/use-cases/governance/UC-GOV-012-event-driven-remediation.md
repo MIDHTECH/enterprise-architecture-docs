@@ -400,3 +400,25 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Turn an alert into a reviewed decision, not a reflex
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds a decision state between event detection and AWX execution. The evaluator
+checks freshness, deduplication, service ownership, maintenance state, target
+scope and confidence, then records `observe`, `recommend`, `approve`, `execute`
+or `block` with a reason.
+
+### Questions an interviewer can press on
+
+- **“What prevents an old or repeated alert from launching another repair?”**
+- **“Which evidence is strong enough for a recommendation but not execution?”**
+- **“How is human approval bound to the exact action and target?”**
+
+### Enhancement build and deployment binding
+
+Implement the state evaluator in the named playbook and schema with stale,
+duplicate, maintenance, unauthorized, approved and failed-action fixtures. CI
+uses mocked events and cannot reach AWX. Runtime begins in observe-only mode on
+the existing event and AWX paths; disabling the rule and revoking its launch
+permission is the safe stop, followed by a no-mutation evidence check.

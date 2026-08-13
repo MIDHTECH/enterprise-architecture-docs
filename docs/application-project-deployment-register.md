@@ -23,7 +23,7 @@ The [cross-project linkage blueprint](application-project-linkage-blueprint.md)
 defines how independently owned application projects participate in one
 enterprise workflow without becoming a monorepo or a shared release.
 The [application-to-use-case coverage](application-usecase-coverage.md)
-classifies all 224 detailed pages for each registered real application.
+classifies all 226 detailed pages for each registered real application.
 
 ![Separate application projects connected by shared platform contracts](assets/application-project-deployment-model.svg)
 

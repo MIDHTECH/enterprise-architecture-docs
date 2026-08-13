@@ -680,3 +680,29 @@ digest, application-specific Helm PLAN/deployment, telemetry, rollback,
 convergence, and evidence review remain open. Those are future implementation
 activities, not the next action in this documentation work. No application
 should be promoted from this page without a separate implementation decision.
+
+## Interview conversation: why this pipeline is split across tools
+
+Use the [pipeline-tool selection lab](../../platform-engineering-interview-learning-labs.md#pipeline-tool-selection)
+to explain the handoffs as engineering decisions, not as a product list.
+
+- **“Why not put everything in Jenkins?”** GitLab CI gives source changes fast,
+  review-visible feedback; Jenkins owns the approved orchestration and evidence
+  join; AWX owns inventory-bounded host changes; Helm owns the release package.
+  The separation narrows credentials and makes each mutation attributable.
+- **“How do you keep releases fast without letting a developer break
+  production?”** Describe the cheap gates first, immutable artifact promotion,
+  protected environment approval, health verification and a rehearsed rollback.
+- **“Show me one release.”** Walk from commit and merge request through test
+  evidence, artifact digest, approval, deployment identity, health result and
+  rollback decision. If that evidence has not been executed, call it a designed
+  workflow rather than production experience.
+
+### Enhancement build and deployment binding
+
+Extend the six artifacts under `Implementation design` with a tool-ownership
+matrix, immutable handoff schema and fixtures for missing/stale gate evidence,
+wrong executor and rollback. CI builds the orchestration contract; the approved
+Jenkins/AWX/Helm path deploys one bounded release only after review. Acceptance
+requires the source-to-health evidence chain and a verified rollback, while an
+absent target or conflicting reconciler stops deployment.

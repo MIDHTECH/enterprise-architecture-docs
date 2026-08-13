@@ -400,3 +400,29 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: collect a decision-ready evidence pack
+
+The [incident-command lab](../../platform-engineering-interview-learning-labs.md#incident-command)
+requires a correlation ID, UTC timeline, alerts, selected metric/log queries,
+change records, build/deploy/AWX identifiers, topology snapshot, commands and
+results, mitigation verification and redaction record. Collection is read-only
+by default and bounded so an evidence job cannot worsen the incident.
+
+### Questions an interviewer can press on
+
+- **“What did automation collect?”** Name the fields that supported a decision
+  and their source, rather than saying “all logs.”
+- **“How do you protect secrets and patient data?”** Apply source allowlists,
+  least privilege, redaction, access control and retention before publishing.
+- **“What if collection fails?”** Mark partial coverage, preserve the error and
+  continue with safe sources; missing evidence must remain visible.
+
+### Enhancement build and deployment binding
+
+Add correlation, UTC timeline, source allowlist, query/command, provenance,
+redaction, partial coverage and retention to the planned collector and schema.
+CI fixtures cover complete, denied, timed-out, malformed and sensitive results.
+Deploy the read-only collector through the existing GitLab/Jenkins/AWX evidence
+path with bounded time and scope; stop collection on exposure and preserve the
+last sanitized pack for review.

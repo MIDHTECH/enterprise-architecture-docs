@@ -400,3 +400,29 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: roles, acknowledgement and escalation under pressure
+
+The [incident-command lab](../../platform-engineering-interview-learning-labs.md#incident-command)
+requires named incident commander, operations lead, communications lead and
+scribe roles, even when one person temporarily holds more than one. Every page
+records acknowledgement time, escalation timer, service/dependency owner and
+handoff state.
+
+### Questions an interviewer can press on
+
+- **“Who was in charge?”** Name the decision role and how technical work was
+  delegated so the commander could maintain scope and priorities.
+- **“What happened when the first owner did not respond?”** Follow the timed
+  escalation path and preserve acknowledgement evidence.
+- **“How did you hand off?”** Transfer impact, timeline, active hypothesis,
+  completed actions, risks and next decision—not just a chat link.
+
+### Enhancement build and deployment binding
+
+Extend the six artifacts with role assignments, owner source, acknowledgement,
+timer, escalation, delegation and handoff fields. CI fixtures exercise timely
+acknowledgement, no response, stale ownership, multi-role staffing and handoff.
+Deploy the routing workflow through the accepted notification/evidence path;
+failed delivery escalates without authorizing technical action, and rollback
+returns to the last reviewed routing policy.

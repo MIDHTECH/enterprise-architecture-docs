@@ -400,3 +400,25 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Size from repeated workload evidence
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds a recommendation based on repeated CPU/memory observations, throttling,
+OOM events, queue time and completion latency. It reports percentiles and sample
+coverage, preserves startup headroom, and never converts a short quiet window
+directly into lower production limits.
+
+### Questions an interviewer can press on
+
+- **“Which percentile and safety margin fit an online service versus a batch job?”**
+- **“How do you account for cold start, bursts and memory that cannot be reclaimed?”**
+- **“What evidence would make you reject an apparently cheaper setting?”**
+
+### Enhancement build and deployment binding
+
+Extend the policy evaluator and schema with workload class, observation window,
+coverage, percentiles, safety margin and rejection reasons. CI replays steady,
+bursty, OOM, throttled and sparse fixtures. A reviewed recommendation may be
+canaried through the existing cluster delivery path; rollback restores the
+previous manifest and verifies latency, errors, restarts and pending pods.

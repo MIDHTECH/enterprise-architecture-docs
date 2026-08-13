@@ -402,3 +402,25 @@ Primary scenario: **CPU is low but application latency rises while disk utilizat
 ## Acceptance decision
 
 UC-LNX-014 is **not yet accepted**. Acceptance requires implemented source, passing CI, controlled execution, runtime health, a zero-change second convergence, exercised recovery, reviewed evidence, and publication on the canonical branch.
+
+## Enhancement: Turn host pressure into a capacity decision
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds a Linux pressure investigation that reads CPU run queue, memory pressure,
+swap, disk latency, filesystem headroom and network errors alongside workload
+timestamps. The report explains whether pressure is sustained, bursty or a
+measurement gap before recommending any resize or configuration change.
+
+### Questions an interviewer can press on
+
+- **“Which host signal would change your diagnosis rather than merely confirm it?”**
+- **“How do you separate a capacity problem from a bad release?”**
+- **“What evidence supports a resize recommendation and its expected duration?”**
+
+### Enhancement build and deployment binding
+
+Extend the named Ansible role with read-only collection and a reason-coded
+capacity report; add normal, CPU, memory, storage and stale-sample fixtures.
+GitLab validates the schema before an AWX check-mode run on one inventory host.
+No resize is included. Remove the collector revision and verify Node Exporter
+and the managed service remain healthy if collection causes unexpected load.

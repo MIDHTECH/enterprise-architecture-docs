@@ -400,3 +400,25 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Page on decisions people can act on
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds an alert-routing exercise built around a real service owner and a useful
+decision. An alert carries service, severity, symptom, affected journey,
+dashboard, runbook and change context; a page without an owner or a next action
+is rejected before deployment.
+
+### Questions an interviewer can press on
+
+- **“Why does this symptom deserve a page instead of a dashboard annotation?”**
+- **“How do you prove routing works without creating alert fatigue?”**
+- **“What should responders do when the owner or runbook is missing?”**
+
+### Enhancement build and deployment binding
+
+Add routing metadata and inhibition expectations to the existing contract,
+compile rule fixtures through the named evaluator, and test firing, resolved,
+duplicate and missing-owner cases. The accepted Prometheus/Alertmanager path is
+the target; deployment starts with a labeled test alert and rolls back by
+restoring the last reviewed rule bundle and confirming the test route clears.

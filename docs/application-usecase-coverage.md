@@ -4,7 +4,7 @@ Last verified: 2026-08-13
 
 ## Why this register exists
 
-The enterprise portfolio contains 224 detailed use cases. They collectively
+The enterprise portfolio contains 226 detailed use cases. They collectively
 describe the shared platforms, but it would be misleading to attach every use
 case directly to every application. A stateless Kubernetes service should not
 pretend to own database failover, a Linux host baseline, a healthcare data
@@ -38,19 +38,19 @@ its applicability.
 
 | Platform domain | Portfolio pages | Directly required | Remaining classification | Architectural reason |
 | --- | ---: | ---: | --- | --- |
-| DevSecOps delivery | 15 | 8 | 7 platform-managed or conditional | The application needs the core build, quality, artifact, promotion, security and rollback path; other delivery capabilities remain shared decisions. |
+| DevSecOps delivery | 16 | 8 | 8 platform-managed or conditional | The application needs the core build, quality, artifact, promotion, security and rollback path; cross-project compatibility becomes directly required only after another real application contract is registered. |
 | Multi-cloud infrastructure | 12 | 0 | 12 platform-managed | Podinfo is documented against an existing target and owns no infrastructure provisioning. |
 | Kubernetes | 13 | 5 | 8 platform-managed or conditional | Workload deployment, security, ingress, sizing and image supply chain apply directly; cluster lifecycle stays with the platform. |
 | Observability and SRE | 16 | 5 | 11 platform-managed or conditional | Release-correlated signals, logs, alerts and health apply; broader practices depend on future criticality. |
 | Governance and operations | 19 | 3 | 16 platform-managed or conditional | Secrets, application identity and RBAC apply; other controls depend on later risk and data scope. |
 | Linux systems | 24 | 0 | 24 not applicable to the current application | The application does not own a VM or native service; the Kubernetes platform still owns its Linux foundation. |
 | Database reliability | 19 | 0 | 19 not applicable to the current application | The documented slice is stateless. |
-| Resilience and service operations | 20 | 6 | 14 platform-managed or conditional | Readiness, SLO intent, escalation, ownership, dependency mapping and secret-expiry response apply directly. |
+| Resilience and service operations | 21 | 6 | 15 platform-managed or conditional | Readiness, SLO intent, escalation, ownership, dependency mapping and secret-expiry response apply directly; dependency containment becomes required when a real critical edge is registered. |
 | Data engineering and integration | 25 | 0 | 25 not applicable to the current application | No provider, payer or analytical business data crosses the Podinfo boundary. |
 | Network engineering | 31 | 4 | 27 platform-managed or conditional | DNS, ingress/egress, TLS routing and availability testing apply; broader network lifecycle stays platform-owned. |
 | Healthcare AI | 15 | 0 | 15 not applicable to the current application | No clinical knowledge or AI-assisted behavior exists in scope. |
 | MLOps | 15 | 0 | 15 not applicable to the current application | No model artifact or serving lifecycle exists in scope. |
-| **Total** | **224** | **31** | **193 classified by application-domain rules** | Every detailed page is accounted for without making irrelevant use cases mandatory. |
+| **Total** | **226** | **31** | **195 classified by application-domain rules** | Every detailed page is accounted for without making irrelevant use cases mandatory. |
 
 ## The 31 direct requirements
 
@@ -86,7 +86,7 @@ not invented claims about applications that have not been named.
 ## Scope boundary
 
 This coverage is complete as documentation classification. It does not mean
-31 use cases are implemented or that 193 use cases were executed elsewhere.
+31 use cases are implemented or that 195 use cases were executed elsewhere.
 Podinfo remains not deployed, runtime evidence is not collected, and the care
 and payer portfolio classification remains deferred until real application
 projects and owners are registered.

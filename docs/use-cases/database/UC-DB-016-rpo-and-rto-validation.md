@@ -400,3 +400,24 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: measure data loss and service recovery separately
+
+Database RPO comes from the last recoverable transaction or log position, not
+the backup filename. Database RTO also ends before or after application
+recovery depending on which clock is being discussed; both timestamps must be
+visible.
+
+Extend the contract with failure timestamp, last confirmed transaction,
+backup/WAL position, restore start, database consistency, application
+reconnection, user verification and backlog completion. The evaluator computes
+data-loss interval, database recovery and service recovery separately. The
+schema retains timestamp sources and uncertainty. Fixtures cover current
+backup, stale backup, missing WAL, corrupt restore, clock skew, database-green/
+application-red and completed recovery. CI validates calculations; the runbook
+requires an isolated restore target and independent record reconciliation
+before acceptance.
+
+1. How do you calculate RPO from transaction evidence rather than backup age?
+2. When does database RTO end, and when does service RTO end?
+3. What should happen when the database is consistent but the application cannot reconnect?

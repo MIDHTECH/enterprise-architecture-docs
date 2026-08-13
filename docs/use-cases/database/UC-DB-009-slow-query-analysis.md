@@ -400,3 +400,23 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: follow the wait before tuning SQL
+
+High database CPU does not automatically mean a bad query, and a slow request
+does not automatically mean the database. The lab begins with workload,
+waiting, blocking, plan and application timing evidence before recommending a
+change.
+
+Extend the contract with database and query identity, normalized fingerprint,
+application/release context, observation window, calls, duration, rows, wait
+class, locks and plan checksum. The collector uses approved read-only
+PostgreSQL views and sanitized statements. The schema separates observation
+from recommendation. Fixtures cover slow plan, lock wait, connection wait,
+application delay with fast SQL, missing statistics, parameter sensitivity and
+recovery. CI validates parsers and redaction; the runbook preserves the
+original plan and requires a reversible bounded change before retesting.
+
+1. How do you decide whether PostgreSQL is causing application latency?
+2. What is the troubleshooting order for CPU, locks, connections and execution plans?
+3. Which before-and-after evidence justifies a query or configuration change?

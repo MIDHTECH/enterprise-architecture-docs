@@ -25,6 +25,9 @@ required_docs=(
   "docs/product-installation-splunk.md"
   "docs/sre-incident-register.md"
   "docs/jenkins-awx-ansible-operations.md"
+  "docs/platform-engineering-interview-learning-labs.md"
+  "docs/platform-usecase-learning-enhancement-plan.md"
+  "docs/assets/platform-usecase-learning-enhancement-plan.svg"
   "docs/kubernetes-helm-delivery-runbook.md"
   "docs/gitlab-organization-model.md"
   "docs/engineer-interview-guide.md"
@@ -77,6 +80,8 @@ done
 
 ./scripts/validate-use-cases.sh
 ./scripts/validate-application-projects.sh
+./scripts/validate-interview-learning-labs.sh
+./scripts/validate-platform-enhancement-plan.sh
 
 portfolio="docs/enterprise-project-portfolio-and-usecases.md"
 grep -q "cloud-infra-automation-platform" "$portfolio"

@@ -400,3 +400,25 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: See connection pressure before clients time out
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds a PostgreSQL 18 connection-saturation view. It relates active, idle,
+idle-in-transaction and waiting sessions to the database connection budget and
+keeps `application_name`, wait class and transaction age visible so operators
+can distinguish leaked sessions from legitimate work.
+
+### Questions an interviewer can press on
+
+- **“Which signals separate a slow query from an exhausted connection budget?”**
+- **“Why is killing every idle session an unsafe first response?”**
+- **“How will the dashboard behave when exporter data is stale?”**
+
+### Enhancement build and deployment binding
+
+Extend the existing rule/query evaluator with safe `pg_stat_activity`-derived
+metrics, budget thresholds and stale-data reason codes. Use synthetic session
+fixtures in CI before deploying reviewed rule and dashboard source through the
+accepted Prometheus/Grafana path. No query terminates sessions; recovery is rule
+rollback plus confirmation that PostgreSQL and unrelated dashboards are healthy.

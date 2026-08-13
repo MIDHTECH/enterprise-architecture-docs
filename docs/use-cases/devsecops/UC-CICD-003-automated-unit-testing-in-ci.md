@@ -479,3 +479,28 @@ the runner and data boundaries are respected, and the result is linked here.
 - `UC-CICD-010` composes unit, quality, secret, dependency, and image controls
   into the secure delivery workflow.
 - `UC-CICD-015` uses later runtime evidence; it is not replaced by unit tests.
+
+## Interview conversation: proving tests protect delivery
+
+The [native-build exercise](../../platform-engineering-interview-learning-labs.md#native-cpp-build)
+adds evidence that interpreted-language or container-only examples cannot
+provide.
+
+- **“What happens when a native test fails?”** The pipeline publishes the CTest
+  result, blocks artifact promotion and keeps enough compiler, source and agent
+  identity to reproduce the failure.
+- **“What does a sanitizer add?”** It exposes memory and undefined-behavior
+  defects that ordinary assertions may miss; it is a separate build profile,
+  not a replacement for unit tests.
+- **“How do you know the gate really works?”** Introduce one intentional failing
+  test, retain the blocked run, correct it, and link the successful rerun to the
+  same scenario. A green screenshot alone is weak evidence.
+
+### Enhancement build and deployment binding
+
+Add the native test profile to the existing contract and executable, publish
+CTest/sanitizer results through the result schema, and add passing, failing,
+malformed-result and toolchain-mismatch fixtures to CI. The deployable unit is
+the versioned test gate on the existing runner/Jenkins path, not a production
+binary. Promotion stays blocked when tests or evidence fail; recovery is a
+corrected source revision and clean rerun.

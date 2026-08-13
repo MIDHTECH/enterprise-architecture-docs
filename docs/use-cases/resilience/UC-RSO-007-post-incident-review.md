@@ -400,3 +400,29 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: convert the exercise into changed behavior
+
+After each [incident-command exercise](../../platform-engineering-interview-learning-labs.md#incident-command),
+the review records impact, detection and recovery times, a factual timeline,
+contributing conditions, effective and ineffective actions, evidence gaps and
+small owned follow-ups with due dates. A repeat exercise must demonstrate
+whether the control improved; publishing a document is not closure.
+
+### Questions an interviewer can press on
+
+- **“What was the lesson?”** State the mistaken assumption or weak control and
+  the behavior that changed because of it.
+- **“Was the review blameless?”** It can be blameless and still precise about
+  decisions, incentives, missing guardrails and accountability.
+- **“How did you know the fix worked?”** Re-run the trigger or a safe equivalent
+  and compare detection, decision and recovery evidence.
+
+### Enhancement build and deployment binding
+
+Extend the review contract, generator/schema, fixtures, CI and runbook with
+impact, timeline, contributing conditions, effective/ineffective actions,
+owner/due date and repeat-exercise proof. Deploy the versioned review generator
+to the existing evidence path; it cannot close actions automatically. A review
+remains open when evidence or ownership is missing, and corrected source
+supersedes rather than erases the prior record.

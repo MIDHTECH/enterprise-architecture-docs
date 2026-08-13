@@ -400,3 +400,24 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: failover includes the application path
+
+Promoting a database does not prove the service recovered. Clients may retain
+old DNS answers, exhausted pools, read-only sessions or transactions that need
+reconciliation.
+
+Extend the contract with primary and replica identities, replication position,
+lag, application connection target, promotion authority, fencing condition,
+transaction watermark and failback plan. Source and fixtures model the state
+machine first; a live exercise remains separately approved and limited to the
+verified PostgreSQL topology. The schema records data position, client
+reconnection, user verification and split-brain safeguards. Fixtures cover
+healthy replication, excessive lag, unreachable replica, unsafe promotion,
+client pinned to old primary, ambiguous writer and clean failover/failback. CI
+validates decisions; the runbook prioritizes fencing and data reconciliation
+over speed.
+
+1. What must be true before promoting a PostgreSQL replica?
+2. How do you prove applications stopped writing to the old primary?
+3. Which evidence distinguishes database failover from full service recovery?

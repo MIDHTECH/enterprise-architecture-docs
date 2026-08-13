@@ -400,3 +400,32 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: test a concrete S3 control set
+
+Use the [read-only Boto3 audit](../../platform-engineering-interview-learning-labs.md#boto3-s3-audit)
+to evaluate public-access block, default encryption, versioning, ownership
+controls, logging and the owner-approved lifecycle or replication rules. Each
+finding carries account, bucket, region, control, observed state, reason and
+collection time. Fixture tests cover pagination, missing configuration,
+throttling and partial access before any real account is considered.
+
+### Questions an interviewer can press on
+
+- **“Can you write the audit quickly?”** Explain client pagination, STS session
+  creation, per-control exception handling and structured output before showing
+  code.
+- **“Does a missing setting equal noncompliance?”** Only when the policy says
+  so; the report separates `not-configured`, `denied`, `error` and observed
+  values.
+- **“Did you run it across AWS?”** Claim a fixture or mocked-client run unless a
+  named account scope and retained execution evidence actually exist.
+
+### Enhancement build and deployment binding
+
+Extend the contract, detector, schema, fixtures, CI and runbook with the S3
+control set and explicit `observed`, `not-configured`, `access-denied` and
+`error` states. CI builds mocked paginated, throttled, partial-access and mixed
+bucket cases with no object reads. Deploy the versioned read-only evaluator on
+the existing runner; real-account collection remains blocked until the bounded
+role exists, and no finding authorizes bucket mutation.

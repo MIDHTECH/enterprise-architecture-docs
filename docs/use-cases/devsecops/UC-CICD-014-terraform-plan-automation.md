@@ -400,3 +400,26 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview conversation: a plan is only as trustworthy as its state
+
+Tie this pipeline to the [Terraform state and drift lab](../../platform-engineering-interview-learning-labs.md#terraform-state-drift).
+
+- **“How do you prevent a plan for dev from touching production state?”** Check
+  the expected environment, backend endpoint, state key, workspace/root and
+  identity before initialization and again before apply authorization.
+- **“What do reviewers receive?”** A redacted plan artifact, source revision,
+  module/provider locks, backend identity, state lineage/serial, policy result
+  and an expiry so a stale plan cannot be promoted.
+- **“What if the state is already locked?”** Wait within the defined limit and
+  fail clearly. Force-unlock requires owner evidence and a recovery procedure;
+  it is not normal pipeline cleanup.
+
+### Enhancement build and deployment binding
+
+Extend the contract, plan executable, schema, fixtures, CI and runbook with
+environment, backend endpoint/key, lock, lineage/serial and plan-expiry fields.
+CI builds a redacted, checksummed plan artifact and tests wrong-state,
+contention, stale-plan and denied-apply cases. Deployment means releasing the
+plan gate on the existing infrastructure runner; apply stays separately
+approved and rollback uses the last accepted code/state recovery procedure.

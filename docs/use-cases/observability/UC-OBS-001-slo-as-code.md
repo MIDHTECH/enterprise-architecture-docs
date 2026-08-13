@@ -323,3 +323,24 @@ recovery, idempotence, and documentation publication.
 - Add release gating only after the alert proves stable in the lab.
 - Copy implementation stories to the observability GitLab repositories and
   return accepted runtime evidence here.
+
+## Enhancement: Make the SLO an operational contract
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+turns the SLO from a dashboard label into a reviewable agreement. The contract
+must name the user journey, good and total events, objective, rolling window,
+planned exclusions, missing-data behavior and accountable service owner.
+
+### Questions an interviewer can press on
+
+- **“Which user outcome does the SLI represent, and what would it hide?”**
+- **“How do you keep maintenance exclusions from disguising poor reliability?”**
+- **“What happens when telemetry is absent rather than explicitly bad?”**
+
+### Enhancement build and deployment binding
+
+Extend the named contract with SLI numerator/denominator queries and ownership;
+compile it through `rules/slo-as-code.yaml`; validate sparse, reset, exclusion
+and threshold fixtures against the result schema. Deploy only reviewed recording
+rules to the accepted Prometheus path, render them through the existing Grafana
+source, and remove the rule revision if query or cardinality checks regress.

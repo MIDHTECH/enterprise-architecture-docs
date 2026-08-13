@@ -400,3 +400,22 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: connect a failed journey to an owner
+
+Observability owns the probe mechanics; resilience operations owns what happens
+when a business journey fails. The enhancement turns a failed synthetic stage
+into severity, dependency, owner, escalation and recovery evidence.
+
+Extend the contract with service record, journey revision, business moment,
+stage result, SLO effect, release correlation, dependency edge and escalation
+policy. The evaluator classifies impact without issuing a page when ownership
+or evidence is incomplete. Fixtures cover isolated probe failure, repeated
+user-path failure, internal-green/external-red, dependency degradation, stale
+result and confirmed recovery. CI validates routing and deduplication; the
+runbook requires a fresh outside-in success plus stable service signals before
+resolution.
+
+1. When should one failed synthetic check page a human?
+2. How do you avoid duplicate incidents from several probes of the same path?
+3. Which evidence establishes user recovery rather than alert recovery?

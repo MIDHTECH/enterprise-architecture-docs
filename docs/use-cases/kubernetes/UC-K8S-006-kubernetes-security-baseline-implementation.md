@@ -400,3 +400,25 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Give batch work a safe lane
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds enforceable workload isolation for batch jobs: explicit requests/limits,
+namespace quota and limits, a restricted security context, and scheduling rules
+that cannot silently consume capacity reserved for online services. Dedicated
+nodes are optional and require inventory evidence; none are assumed here.
+
+### Questions an interviewer can press on
+
+- **“What stops a batch pod from bypassing the intended scheduling boundary?”**
+- **“How do security controls and resource isolation reinforce each other?”**
+- **“What should admission do when an owner or resource request is missing?”**
+
+### Enhancement build and deployment binding
+
+Add batch-profile policy and manifests to the named implementation with fixtures
+for accepted, unbounded, privileged, wrong-namespace and invalid-affinity
+workloads. CI renders and validates every object. A bounded namespace canary on
+the current cluster needs separate approval; rollback deletes only canary
+objects and confirms existing namespaces, workloads and policies are unchanged.

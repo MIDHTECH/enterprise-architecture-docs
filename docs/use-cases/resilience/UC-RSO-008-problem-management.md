@@ -400,3 +400,29 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: distinguish symptom recovery from recurring cause
+
+The [incident-command lab](../../platform-engineering-interview-learning-labs.md#incident-command)
+feeds repeated Jenkins-capacity, service-path or dependency symptoms into one
+problem record. It links incidents, clusters common conditions, names a control
+owner and measures recurrence after the corrective change.
+
+### Questions an interviewer can press on
+
+- **“The service recovered—why open a problem?”** Recovery ends immediate
+  impact; repeated or high-risk contributing conditions still need durable
+  treatment.
+- **“How did you prioritize it?”** Use recurrence, impact, detectability,
+  workaround risk and dependency reach.
+- **“What closed it?”** Verified control effectiveness and an observation
+  period, not merely merging a change.
+
+### Enhancement build and deployment binding
+
+Add linked incident IDs, recurring condition, impact/risk score, workaround,
+control owner, effectiveness measure and observation window to the six planned
+artifacts. CI fixtures cover recurrence, unrelated incidents, overdue actions
+and verified correction. Deploy the read-only grouping/evidence workflow on the
+existing runner; closure fails when recurrence evidence is stale, and reopening
+preserves the full decision history.

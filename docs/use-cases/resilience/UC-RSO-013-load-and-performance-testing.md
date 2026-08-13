@@ -400,3 +400,22 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: discover the knee, not a vanity maximum
+
+The useful result is where latency, errors, saturation or queue age begins to
+change—not the largest request count a script can generate. The exercise must
+protect shared capacity and leave no test backlog behind.
+
+Extend the contract with workload shape, ramp, steady window, concurrency,
+request mix, SLO, resource ceiling, stop condition and cleanup owner. The
+evaluator compares runs and locates the first sustained constraint. The schema
+records load, latency distribution, errors, CPU, memory, connections, queue age
+and recovery time. Fixtures cover healthy scaling, connection saturation,
+memory growth, retry amplification, noisy neighbor, stop-condition activation
+and incomplete cleanup. CI validates profiles without producing load; the
+runbook requires capacity review and separate approval before a bounded run.
+
+1. How do you distinguish a load generator limit from an application limit?
+2. Which signals reveal the system's saturation knee?
+3. How do you prove a performance exercise did not harm unrelated workloads?

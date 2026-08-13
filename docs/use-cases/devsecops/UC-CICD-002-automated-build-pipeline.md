@@ -448,3 +448,40 @@ result is returned to this page.
 - `UC-CICD-006` turns an eligible application output into a container image.
 - `UC-CICD-007` and `UC-CICD-008` govern promotion and rollback after the
   artifact has passed all required gates.
+
+## Interview conversation: builds, agents and concurrency
+
+This page now shares two practical exercises: [elastic Jenkins agents](../../platform-engineering-interview-learning-labs.md#elastic-jenkins-agents)
+and a [native C/C++ build](../../platform-engineering-interview-learning-labs.md#native-cpp-build).
+
+- **“Were builds local, static or elastic?”** Start with the verified truth: the
+  controller has zero executors and the lab has one exclusive static agent.
+  Then explain the conditional ephemeral-pod design and the evidence still
+  required before calling it implemented.
+- **“Can you run several builds simultaneously?”** Distinguish parallel stages,
+  executor count, queueing and independently provisioned agents. More
+  concurrency is not automatically safer or faster when downstream systems and
+  credentials are shared.
+- **“Have you built C or C++?”** Demonstrate the compiler/CMake pin, CTest and
+  sanitizer results, cache key, binary checksum and reproducibility comparison;
+  do not substitute a container image build for native-build evidence.
+
+### Enhancement build and deployment binding
+
+Extend the planned contract, Jenkins job/shared-library step, result schema,
+fixtures, CI file and runbook with workload class, agent label, concurrency,
+native toolchain and cleanup fields. Build fixtures cover queueing, unavailable
+capacity, compiler/test/sanitizer failure and orphan cleanup. Deployment uses
+the existing approved Jenkins agent path; ephemeral agents remain blocked until
+their Kubernetes change is approved and independently verified.
+
+#### Developer-feedback timing addition
+
+Build `tools/pipeline_feedback/` in the existing delivery repository as a
+read-only Python analyzer invoked by the planned Jenkins/shared-library path.
+It emits queue delay, first-actionable-failure, minimum-trusted-feedback,
+dependency-setup and full-duration fields through the existing result schema.
+Fixtures under `tests/fixtures/uc-cicd-002/feedback/` cover cache hit/miss,
+queue delay, failed early gate, skipped job, retry and incomplete timestamps.
+Deployment is the versioned analyzer/template on the accepted runner and
+Jenkins path; it neither adds a runner nor changes application runtime.

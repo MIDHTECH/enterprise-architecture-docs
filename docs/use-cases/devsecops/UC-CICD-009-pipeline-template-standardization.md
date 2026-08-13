@@ -400,3 +400,27 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview conversation: choosing a Jenkins job shape
+
+The [pipeline-tool and job-type lab](../../platform-engineering-interview-learning-labs.md#pipeline-tool-selection)
+provides the decision record behind standardization.
+
+- **“Multibranch, declarative, scripted or freestyle?”** Choose from repository
+  discovery, workflow predictability and reuse needs. Freestyle remains a
+  documented legacy exception, not the default escape hatch.
+- **“How did you manage many Jenkins jobs?”** Explain reviewed Job DSL for
+  folders/jobs and a version-pinned shared library for behavior, with tests and
+  compatibility notes before rollout.
+- **“How do templates avoid becoming a bottleneck?”** Keep application-owned
+  inputs small, make policy defaults visible, version changes, offer a migration
+  window and measure adoption and exception debt.
+
+### Enhancement build and deployment binding
+
+Add job-type choice, discovery scope, shared-library version and generated-job
+expectations to the planned contract/schema. Fixtures render valid and invalid
+multibranch, declarative, scripted, Job DSL and legacy-exception cases in CI.
+Deployment reconciles reviewed templates through the existing Jenkins job path;
+verification compares generated configuration and a synthetic run, and rollback
+restores the prior template/library revision.

@@ -400,3 +400,31 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: correlate without declaring guilt
+
+The [incident-command lab](../../platform-engineering-interview-learning-labs.md#incident-command)
+joins correlation ID, time, source revision, artifact digest, Jenkins build and
+agent, deployment identity, Terraform plan/state lineage and AWX job where they
+exist. A nearby change is a hypothesis until symptoms, scope and recovery
+behavior support causation.
+
+### Questions an interviewer can press on
+
+- **“How did you know a deployment caused the incident?”** Compare the change
+  boundary and affected population, inspect the symptom onset, and verify that
+  rollback or forward-fix changes the signal.
+- **“What if three changes happened together?”** Separate them by service,
+  dependency and correlation data; avoid selecting the most visible deployer by
+  instinct.
+- **“What evidence survives?”** Preserve timestamps in one timezone, immutable
+  revisions/job IDs, queries and the decision trail with secrets removed.
+
+### Enhancement build and deployment binding
+
+Extend the existing join contract/evaluator/schema with correlation ID, UTC
+time, source/artifact, Jenkins agent/build, deployment, Terraform state/plan and
+AWX identifiers. CI fixtures cover one cause, competing changes, clock skew,
+missing IDs and refuted correlation. Deploy the read-only correlator on the
+existing observability path; rollback restores the prior join rules and never
+changes the application or infrastructure under investigation.

@@ -2,7 +2,7 @@
 
 Last verified: 2026-08-13
 
-This index contains all 20 canonical use cases owned by the
+This index contains all 21 canonical use cases owned by the
 Enterprise Resilience and Service Operations Platform. Together they connect service ownership, evidence, incident response, and recovery for enterprise workflows. Implementation belongs
 in `midhhealth/reliability-operations/resilience-service-operations` and must reuse existing GitLab, Jenkins, AWX, observability APIs, service records, and runbooks.
 
@@ -31,6 +31,7 @@ runtime, rollback, and evidence gates are met.
 | `UC-RSO-018` | [Certificate and Secret Expiry Response](UC-RSO-018-certificate-and-secret-expiry-response.md) | Proactive and automated renewal response |
 | `UC-RSO-019` | [AWX Automated Remediation](UC-RSO-019-awx-automated-remediation.md) | Guarded, auditable operational fixes |
 | `UC-RSO-020` | [Maintenance-Window Management](UC-RSO-020-maintenance-window-management.md) | Planned service-impact coordination |
+| `UC-RSO-021` | [Dependency Failure Containment](UC-RSO-021-dependency-failure-containment.md) | Timeouts, retries, concurrency, degradation and recovery contain dependency failures |
 | `UC-RSO-001` | [Operational Readiness Reviews](UC-RSO-001-operational-readiness-review.md) | Production-readiness scorecards and gates |
 
 ## GitLab handoff
@@ -42,4 +43,3 @@ runtime, rollback, and evidence gates are met.
    evidence to the architecture page.
 5. Stop and request a separate architecture decision if new infrastructure,
    capacity, products, or protected-data integration would be required.
-

@@ -400,3 +400,24 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: deployment is more than `kubectl apply`
+
+The first realistic application exercise follows Podinfo from rendered Helm
+source to namespace, immutable image, resources, probes, rollout, service path
+and rollback. Current documentation remains honest: the namespace and runtime
+release do not exist yet.
+
+Extend the contract with cluster identity, namespace, release and image digest,
+service account, requests and limits, probe behavior, service, ingress handoff
+and recovery revision. The executable renders and validates first, then uses
+the approved Jenkins path only after a separate change. The schema records
+render, policy, scheduling, probe, rollout and post-check stages. Fixtures cover
+valid deployment, wrong cluster, mutable image, missing resource limits,
+CrashLoopBackOff, failed readiness, unschedulable pod and rollback. CI owns the
+source checks; the runbook starts with events and pod state before logs or
+restarts.
+
+1. How do you distinguish a bad application revision from scheduling or probe failure?
+2. Why can every pod be Running while the user path still fails?
+3. What evidence proves rollback restored the intended release and route?

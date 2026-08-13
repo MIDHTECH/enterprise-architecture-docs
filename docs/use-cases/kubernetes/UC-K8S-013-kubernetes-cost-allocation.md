@@ -400,3 +400,32 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: honest platform showback
+
+The [cost-overrun response lab](../../platform-engineering-interview-learning-labs.md#cost-overrun-remediation)
+uses existing Prometheus workload metrics, namespace/workload ownership and a
+versioned static rate card to produce a repeatable showback exercise. It
+compares requests, limits and observed usage so teams can see both reserved and
+consumed capacity. The result is a platform allocation estimate, not a cloud
+provider bill or a promise of cash savings.
+
+### Questions an interviewer can press on
+
+- **“How do you allocate shared cluster cost?”** State the CPU, memory, storage
+  and shared-overhead rules, their effective date, and how unallocated usage is
+  reported rather than hidden.
+- **“Requests or actual usage?”** Show both: requests reveal reserved capacity;
+  observed usage reveals consumption and possible inefficiency.
+- **“How would this support a cost incident?”** Correlate the deviation to a
+  workload revision and owner, then validate that any adjustment preserves SLO
+  and scheduling headroom.
+
+### Enhancement build and deployment binding
+
+Extend the contract, allocation evaluator and schema with namespace/workload
+ownership, request/usage dimensions, persistent storage, shared-overhead rule,
+rate-card revision and unallocated amount. CI fixtures cover missing labels,
+idle reservations, noisy workloads and incomplete metrics. Deploy the report on
+the existing Prometheus/evidence path; it never mutates resources and rollback
+restores the prior allocation/rate rule.

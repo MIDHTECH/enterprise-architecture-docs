@@ -400,3 +400,33 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: scale the fleet contract, not cluster exceptions
+
+The [cloud and Kubernetes leadership track](../../platform-engineering-interview-learning-labs.md#cloud-kubernetes-leadership-track)
+adds fleet inventory, ownership, lifecycle, upgrade rings, conformance,
+availability domains, node-pool purpose, tenancy, identity, admission policy,
+capacity reserve, cost allocation, observability and recovery. Managed AKS,
+EKS and GKE remain reference patterns until accounts, state, connectivity,
+cost, target ownership and provider-specific acceptance are approved.
+
+### Questions an interviewer can press on
+
+- **“How would you operate hundreds of clusters?”** Standardize a small number
+  of versioned cluster profiles, automate conformance and upgrades in rings,
+  and keep inventory, exceptions and end-of-life visible.
+- **“One large cluster or many smaller clusters?”** Decide from isolation,
+  failure domain, regulatory, latency, cost and operating-team constraints;
+  there is no universal count.
+- **“What does an application team receive?”** A stable namespace/workload
+  contract for identity, policy, ingress, resources, telemetry and recovery,
+  not cluster-admin access or provider-specific instructions.
+
+### Enhancement build and deployment binding
+
+Extend the six planned artifacts with fleet/profile version, lifecycle,
+upgrade-ring, conformance, tenancy, capacity, cost and recovery fields. CI
+builds provider-neutral profile and failure fixtures without cloud access. The
+profile source is deployable; managed-cluster execution remains blocked until
+provider accounts and foundations are approved, while any bounded current-lab
+check targets only the existing four-node cluster and has a zero-change stop.

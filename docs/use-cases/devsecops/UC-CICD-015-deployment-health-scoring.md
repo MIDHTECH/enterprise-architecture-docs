@@ -400,3 +400,29 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview conversation: include the delivery system in health
+
+The [elastic-agent exercise](../../platform-engineering-interview-learning-labs.md#elastic-jenkins-agents)
+makes the score account for delivery capacity as well as application metrics.
+
+- **“The application is healthy, but no agent can start. Is the release
+  healthy?”** No. Queue age, scheduling, image pull, handshake and credential
+  failures affect release readiness even when the previous version serves
+  traffic.
+- **“What keeps one noisy pipeline from distorting the score?”** Use
+  service-specific windows and correlation IDs, distinguish platform-capacity
+  signals from application signals, and record missing telemetry explicitly.
+- **“When does the score trigger rollback?”** Only when its inputs, threshold,
+  decision owner and rollback safety conditions are versioned. The score
+  supports a decision; it does not hide an uncontrolled mutation.
+
+### Enhancement build and deployment binding
+
+Add queue age, agent provisioning, scheduling, image pull, handshake,
+credential and cleanup observations to the existing scoring contract and
+schema. Fixtures cover healthy application/unavailable delivery capacity,
+missing telemetry and conflicting signals; CI validates deterministic scoring.
+Deploy the versioned evaluator through the existing pipeline path, verify its
+decision against retained signals and roll back the rule revision if scoring
+misclassifies a release.

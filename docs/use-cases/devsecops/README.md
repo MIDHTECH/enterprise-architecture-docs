@@ -2,7 +2,7 @@
 
 Last verified: 2026-08-13
 
-This index contains all 15 canonical use cases owned by the
+This index contains all 16 canonical use cases owned by the
 Enterprise DevSecOps Delivery Platform. Together they deliver reviewed changes safely to provider, payer, and shared platform services. Implementation belongs
 in `midhhealth/platform-delivery/devsecops-cicd-orchestrator` and must reuse existing GitLab, accepted runners, Jenkins, AWX, and Kubernetes delivery paths.
 
@@ -27,6 +27,7 @@ runtime, rollback, and evidence gates are met.
 | `UC-CICD-013` | [Dependency Vulnerability Management](UC-CICD-013-dependency-vulnerability-management.md) | Dependency scanning fits before image build/deploy |
 | `UC-CICD-014` | [Terraform Plan Automation](UC-CICD-014-terraform-plan-automation.md) | Merge requests publish reviewed Terraform plan artifacts |
 | `UC-CICD-015` | [Deployment Health Scoring](UC-CICD-015-deployment-health-scoring.md) | Release gates score health, SLO burn, alerts and rollback readiness |
+| `UC-CICD-016` | [Cross-Project Release Contract Validation](UC-CICD-016-cross-project-release-contract-validation.md) | Producer, consumer, API, event and migration compatibility is proven before cross-project promotion |
 
 ## GitLab handoff
 
@@ -37,4 +38,3 @@ runtime, rollback, and evidence gates are met.
    evidence to the architecture page.
 5. Stop and request a separate architecture decision if new infrastructure,
    capacity, products, or protected-data integration would be required.
-

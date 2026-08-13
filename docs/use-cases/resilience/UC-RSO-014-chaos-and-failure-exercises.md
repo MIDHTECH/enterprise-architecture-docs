@@ -400,3 +400,29 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: bounded failure exercises with abort conditions
+
+The [incident-command lab](../../platform-engineering-interview-learning-labs.md#incident-command)
+defines three scenarios but does not authorize fault injection. Any future run
+needs an approved non-production scope, steady-state measure, smallest useful
+fault, observer, time limit, abort signal, recovery method and proof that
+unrelated namespaces or services did not change.
+
+### Questions an interviewer can press on
+
+- **“What failure did you inject?”** Name the exact object/path and expected
+  signal; “we broke Kubernetes” is neither safe nor reproducible.
+- **“When would you stop?”** On unexpected blast radius, loss of observation,
+  failed recovery readiness or the predefined user-impact threshold.
+- **“What did chaos teach that a runbook review did not?”** Point to a measured
+  detection, escalation, dependency or recovery assumption that was disproved.
+
+### Enhancement build and deployment binding
+
+Add target allowlist, steady state, fault, observer, time limit, abort signal,
+recovery and unrelated-scope checks to the contract/executor/schema. CI builds
+dry-run, denied-target, abort, failed-recovery and successful fixture cases.
+Deploy only the dry-run/evidence package until a bounded non-production change
+is approved; every live exercise uses a canary and automatic safe stop, with
+recovery independently verified.

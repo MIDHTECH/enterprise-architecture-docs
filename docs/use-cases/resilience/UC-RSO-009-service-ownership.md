@@ -399,3 +399,30 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: make ownership usable during incidents and cost decisions
+
+The [cost-overrun](../../platform-engineering-interview-learning-labs.md#cost-overrun-remediation)
+and [incident-command](../../platform-engineering-interview-learning-labs.md#incident-command)
+labs require each service and shared platform dependency to resolve to a
+technical owner, escalation path, business impact, cost owner and recovery
+authority. Stale or missing ownership is reported as a control failure instead
+of being filled with an invented contact.
+
+### Questions an interviewer can press on
+
+- **“Who approves a risky mitigation at 2 a.m.?”** Follow the service’s recorded
+  recovery authority and escalation path.
+- **“Who owns a shared cluster cost?”** Separate platform allocation ownership
+  from the application team’s workload demand and business decision.
+- **“How do you keep the catalog useful?”** Validate ownership through delivery,
+  incident and review workflows, then measure unresolved and stale entries.
+
+### Enhancement build and deployment binding
+
+Extend the service-record contract/schema with technical owner, escalation,
+business impact, cost owner, recovery authority, dependency and verification
+time. CI fixtures cover complete, stale, conflicting and absent ownership.
+Deploy the catalog validator on the existing delivery/readiness path; unresolved
+ownership blocks application acceptance, and rollback restores the prior schema
+without manufacturing a replacement owner.

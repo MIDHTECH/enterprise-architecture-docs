@@ -400,3 +400,23 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: rehearse only what the lab can prove
+
+The current environment cannot prove regional failover. It can prove that
+owners, dependencies, backups, DNS decisions, service restoration and evidence
+work together during a bounded component or site-loss tabletop and restore
+exercise.
+
+Extend the contract with declared disaster boundary, unavailable components,
+decision authority, communication checkpoints, recovery sequence, RTO/RPO
+targets and stop conditions. The evaluator produces a timeline and gap report;
+it does not simulate unavailable cloud regions as successful runtime. Fixtures
+cover control-plane loss, database loss, DNS decision, unavailable backup,
+conflicting owner instructions and recovery over target. CI validates scenario
+completeness; the runbook separates tabletop, isolated restore and any future
+runtime exercise.
+
+1. What DR claims can the existing single-site lab honestly support?
+2. How do you keep a tabletop finding from being reported as tested failover?
+3. Which dependencies most often prevent a service from meeting its recovery target?

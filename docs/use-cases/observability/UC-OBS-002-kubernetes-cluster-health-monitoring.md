@@ -400,3 +400,33 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: a path-oriented Kubernetes triage view
+
+The [cloud and Kubernetes leadership track](../../platform-engineering-interview-learning-labs.md#cloud-kubernetes-leadership-track)
+adds a troubleshooting path from user symptom through DNS/TLS, ingress,
+Service/EndpointSlice, controller replicas, pod readiness/restarts/events,
+node pressure, CNI/network policy, storage and dependencies. Fleet-level views
+show version, capacity, upgrade and policy posture, while service views retain
+namespace, workload and release identity.
+
+### Questions an interviewer can press on
+
+- **“An application suddenly disappeared. Where do you start?”** Confirm user
+  impact and affected scope, then follow the request path before drilling into
+  individual containers.
+- **“How do you distinguish cluster failure from application failure?”** Compare
+  API/node/system workload health, other namespaces, shared ingress/storage/DNS
+  and the service’s own release and dependency signals.
+- **“What evidence belongs in the incident?”** Preserve queries, events, recent
+  changes, object/release identities, decisions and recovery checks—not an
+  unbounded dashboard export.
+
+### Enhancement build and deployment binding
+
+Add path-stage, fleet posture, object/release identity and evidence-link fields
+to the planned rules/dashboard/schema. CI renders and tests fixtures for ingress,
+endpoint, pod, node, storage, policy and dependency failures. Deploy the
+versioned monitoring assets through the existing observability path, verify
+queries against bounded current-cluster data and roll back the rule/dashboard
+revision if it produces false health or unsafe cardinality.

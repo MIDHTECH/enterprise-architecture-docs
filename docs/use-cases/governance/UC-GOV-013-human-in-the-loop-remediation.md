@@ -400,3 +400,32 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: make the cost decision reviewable
+
+The [cost-overrun lab](../../platform-engineering-interview-learning-labs.md#cost-overrun-remediation)
+turns a recommendation into a compact decision record: anomaly evidence,
+affected service, likely cause, safe options, expected savings, performance
+risk, approver, expiry, execution reference and verification result. Approval
+authorizes one bounded action; it does not grant an automation system standing
+permission to resize or stop resources.
+
+### Questions an interviewer can press on
+
+- **“Why keep a person in the loop?”** Cost signals can be delayed or
+  misattributed, while a cheap-looking shutdown can violate service or recovery
+  requirements.
+- **“How do you avoid approval theater?”** Give the reviewer alternatives,
+  quantified impact, fresh telemetry, rollback conditions and an expiring
+  action—not a button with no context.
+- **“What if nobody responds?”** Escalate to the service and cost owners; do not
+  reinterpret silence as authorization.
+
+### Enhancement build and deployment binding
+
+Add anomaly evidence, options, expected benefit, service risk, approver,
+expiry, bounded target, reversal and verification to the existing decision
+contract and schema. CI fixtures cover approve, reject, expire, stale telemetry,
+missing owner and failed post-check. Deploy the approval gate through the
+existing workflow path; only the selected action gains temporary authority,
+and failed verification triggers the recorded stop or reversal.

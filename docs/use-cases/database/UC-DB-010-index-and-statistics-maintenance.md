@@ -400,3 +400,23 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Interview-derived lab enhancement: treat an index as a workload tradeoff
+
+An index may speed one read while increasing write cost, storage, vacuum work
+and recovery time. Maintenance decisions therefore need workload evidence,
+not an automatic response to one slow query.
+
+Extend the contract with table and index identity, query fingerprints, usage,
+size, write rate, bloat evidence, statistics age, proposed action, lock risk and
+reversal plan. The first executable is read-only and recommends analyze,
+reindex, create, retain or investigate. The schema records confidence and
+conflicting evidence. Fixtures cover useful index, unused-but-required index,
+stale statistics, overlapping index, write-heavy table, blocking risk and
+post-change regression. CI tests decisions; the runbook uses an approved
+bounded operation and restores or drops only the named change after independent
+query and write-path verification.
+
+1. Why might an apparently unused index still be operationally necessary?
+2. When can fresh statistics solve a problem without adding an index?
+3. How do you measure the read benefit against write, storage and locking cost?
