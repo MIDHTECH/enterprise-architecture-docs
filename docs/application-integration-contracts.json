@@ -22,8 +22,13 @@
       ],
       "use_cases": [
         "docs/use-cases/devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md",
+        "docs/use-cases/devsecops/UC-CICD-002-automated-build-pipeline.md",
+        "docs/use-cases/devsecops/UC-CICD-003-automated-unit-testing-in-ci.md",
+        "docs/use-cases/devsecops/UC-CICD-004-code-quality-gate-integration.md",
+        "docs/use-cases/devsecops/UC-CICD-005-artifact-management-automation.md",
         "docs/use-cases/devsecops/UC-CICD-007-environment-based-release-promotion.md",
-        "docs/use-cases/devsecops/UC-CICD-008-automated-rollback-controller.md"
+        "docs/use-cases/devsecops/UC-CICD-008-automated-rollback-controller.md",
+        "docs/use-cases/devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md"
       ],
       "failure_behavior": "Missing provenance, immutable artifact identity or explicit promotion evidence keeps every runtime action pending.",
       "future_evidence": "A later approved phase would provide build, scan, SBOM, digest, plan, promotion and rollback identifiers tied to one source revision.",

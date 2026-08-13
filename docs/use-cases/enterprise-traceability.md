@@ -8,12 +8,17 @@ cases remains in
 [Enterprise Project Portfolio and Use Case Coverage](../enterprise-project-portfolio-and-usecases.md).
 Detailed pages add execution depth; they do not create a separate backlog.
 
-The [Application Project Deployment Register](../application-project-deployment-register.md)
+The [Application Project Architecture and Linkage Register](../application-project-deployment-register.md)
 connects those platform capabilities to independently owned application
 projects. It deliberately keeps application repositories, platform
 implementation repositories and running platform products as three separate
 inventories so that platform readiness is never reported as application
 deployment.
+
+The [Application-to-Use-Case Coverage](../application-usecase-coverage.md)
+classifies all 224 detailed pages for every registered application as directly
+required, platform-managed, conditional, or not applicable to that verified
+application shape.
 
 ## Enterprise capability model
 

@@ -20,6 +20,8 @@ linkage = root / "docs/application-project-linkage-blueprint.md"
 linkage_diagram = root / "docs/assets/application-project-linkage-blueprint.svg"
 manifest = root / "docs/application-projects.json"
 integration_manifest = root / "docs/application-integration-contracts.json"
+applicability_manifest = root / "docs/application-usecase-applicability.json"
+coverage = root / "docs/application-usecase-coverage.md"
 
 for required in (
     register,
@@ -30,6 +32,8 @@ for required in (
     linkage_diagram,
     manifest,
     integration_manifest,
+    applicability_manifest,
+    coverage,
 ):
     if not required.is_file():
         raise SystemExit(f"Missing application-project artifact: {required}")
@@ -114,7 +118,7 @@ for heading in (
     if heading not in template_text:
         raise SystemExit(f"{template}: missing required heading {heading}")
 
-for document in (register, template, traceability, linkage):
+for document in (register, template, traceability, linkage, coverage):
     document_text = document.read_text()
     for target in re.findall(r"\[[^]]+\]\(([^)]+)\)", document_text):
         if target.startswith(("http://", "https://", "#")):
@@ -360,6 +364,130 @@ for gap in inventory_gaps:
     if len(gap.get("missing", [])) < 8:
         raise SystemExit(f"{integration_manifest}: inventory gap must name missing project facts")
 
+applicability_data = json.loads(applicability_manifest.read_text())
+if applicability_data.get("schema_version") != 1:
+    raise SystemExit(f"{applicability_manifest}: unsupported schema_version")
+if applicability_data.get("scope") != "documentation-only":
+    raise SystemExit(f"{applicability_manifest}: scope must remain documentation-only")
+if applicability_data.get("implementation_authorized") is not False:
+    raise SystemExit(f"{applicability_manifest}: must not imply implementation authorization")
+
+use_case_root = root / "docs/use-cases"
+use_case_paths = {
+    path.relative_to(root).as_posix(): path
+    for path in use_case_root.glob("*/UC-*.md")
+}
+if len(use_case_paths) != 224:
+    raise SystemExit(
+        f"{applicability_manifest}: expected 224 detailed use cases; found {len(use_case_paths)}"
+    )
+use_case_domains = {
+    path.relative_to(use_case_root).parts[0]
+    for path in use_case_paths.values()
+}
+
+applicability_applications = applicability_data.get("applications")
+if not isinstance(applicability_applications, list):
+    raise SystemExit(f"{applicability_manifest}: applications must be a list")
+if {item.get("application_id") for item in applicability_applications} != application_ids:
+    raise SystemExit(
+        f"{applicability_manifest}: applications must exactly match application-projects.json"
+    )
+
+contracts_by_application = {application_id: [] for application_id in application_ids}
+for contract in platform_contracts:
+    contracts_by_application[contract["application_id"]].append(contract)
+
+allowed_default_classifications = {
+    "platform-managed-or-conditional",
+    "platform-managed",
+    "not-applicable-to-current-application",
+}
+coverage_totals = {}
+for item in applicability_applications:
+    application_id = item["application_id"]
+    if item.get("required_use_cases_source") != "docs/application-integration-contracts.json":
+        raise SystemExit(
+            f"{applicability_manifest}: {application_id} must derive requirements from integration contracts"
+        )
+    if item.get("documentation_state") != "fully-classified":
+        raise SystemExit(f"{applicability_manifest}: {application_id} is not fully classified")
+    if item.get("runtime_evidence_state") != "not-collected":
+        raise SystemExit(f"{applicability_manifest}: {application_id} implies runtime evidence")
+    characteristics = item.get("characteristics")
+    required_characteristics = {
+        "runtime",
+        "stateful",
+        "business_data_producer",
+        "business_data_consumer",
+        "ai_or_model_enabled",
+        "vm_or_native_service",
+        "protected_health_or_payer_data",
+    }
+    if not isinstance(characteristics, dict) or set(characteristics) != required_characteristics:
+        raise SystemExit(
+            f"{applicability_manifest}: {application_id} must record all classification characteristics"
+        )
+    domain_rules = item.get("domain_rules")
+    if not isinstance(domain_rules, dict) or set(domain_rules) != use_case_domains:
+        raise SystemExit(
+            f"{applicability_manifest}: {application_id} domain rules must cover every use-case domain"
+        )
+    for domain, rule in domain_rules.items():
+        if rule.get("default_classification") not in allowed_default_classifications:
+            raise SystemExit(
+                f"{applicability_manifest}: {application_id}/{domain} has invalid default classification"
+            )
+        if not isinstance(rule.get("reason"), str) or len(rule["reason"].strip()) < 20:
+            raise SystemExit(
+                f"{applicability_manifest}: {application_id}/{domain} needs a useful reason"
+            )
+
+    required_paths = {
+        use_case
+        for contract in contracts_by_application[application_id]
+        for use_case in contract["use_cases"]
+    }
+    unknown_required = required_paths - set(use_case_paths)
+    if unknown_required:
+        raise SystemExit(
+            f"{applicability_manifest}: {application_id} has unknown required pages {unknown_required}"
+        )
+    classifications = {
+        use_case: (
+            "explicit-required-use-case"
+            if use_case in required_paths
+            else domain_rules[use_case_paths[use_case].relative_to(use_case_root).parts[0]][
+                "default_classification"
+            ]
+        )
+        for use_case in use_case_paths
+    }
+    if len(classifications) != 224 or set(classifications) != set(use_case_paths):
+        raise SystemExit(f"{applicability_manifest}: {application_id} coverage is incomplete")
+    coverage_totals[application_id] = {
+        classification: list(classifications.values()).count(classification)
+        for classification in {"explicit-required-use-case", *allowed_default_classifications}
+    }
+
+required_unregistered_portfolios = required_gap_portfolios
+unregistered_portfolios = applicability_data.get("unregistered_portfolios", [])
+if {item.get("portfolio") for item in unregistered_portfolios} != required_unregistered_portfolios:
+    raise SystemExit(f"{applicability_manifest}: unregistered care and payer portfolios must remain explicit")
+for item in unregistered_portfolios:
+    if item.get("classification_state") != "deferred-until-real-application-projects-are-registered":
+        raise SystemExit(f"{applicability_manifest}: invalid unregistered portfolio state")
+
+coverage_text = coverage.read_text()
+for expected_phrase in (
+    "**224**",
+    "**31**",
+    "**193 classified by application-domain rules**",
+    "Podinfo remains not deployed",
+):
+    if expected_phrase not in coverage_text:
+        raise SystemExit(f"{coverage}: missing coverage statement {expected_phrase!r}")
+
 all_docs = "\n".join(
     path.read_text(errors="replace")
     for path in (root / "docs").rglob("*.md")
@@ -376,6 +504,7 @@ print(
     f"{len(known_projects)} platform projects, {len(applications)} applications, "
     f"{len(required_chains)} reusable chains, {len(platform_contracts)} documented "
     f"application-to-platform contracts, {len(application_contracts)} "
-    "application-to-application contracts."
+    f"application-to-application contracts, {len(use_case_paths)} application-use-case "
+    f"classifications per registered application ({coverage_totals})."
 )
 PY

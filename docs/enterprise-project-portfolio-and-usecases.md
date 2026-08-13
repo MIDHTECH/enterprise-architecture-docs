@@ -165,7 +165,7 @@ The detailed component explanation lives in
 
 The deployment relationship among separate application repositories, shared
 platform projects and linked use-case chains is maintained in the
-[Application Project Deployment Register](application-project-deployment-register.md).
+[Application Project Architecture and Linkage Register](application-project-deployment-register.md).
 
 ## Organization Model
 
