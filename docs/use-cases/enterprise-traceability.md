@@ -8,6 +8,13 @@ cases remains in
 [Enterprise Project Portfolio and Use Case Coverage](../enterprise-project-portfolio-and-usecases.md).
 Detailed pages add execution depth; they do not create a separate backlog.
 
+The [Application Project Deployment Register](../application-project-deployment-register.md)
+connects those platform capabilities to independently owned application
+projects. It deliberately keeps application repositories, platform
+implementation repositories and running platform products as three separate
+inventories so that platform readiness is never reported as application
+deployment.
+
 ## Enterprise capability model
 
 MidhHealth is an integrated provider-payer organization. Every platform must

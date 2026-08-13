@@ -10,6 +10,7 @@ operators and engineers a common operating record for the platform.
 ## Documents
 
 - [Enterprise Project Portfolio and Use Case Coverage](docs/enterprise-project-portfolio-and-usecases.md)
+- [Application Project Deployment Register](docs/application-project-deployment-register.md)
 - [Advanced Use Case Comparison](docs/advanced-usecase-comparison.md)
 - [Use-Case Implementation Status](docs/use-case-implementation-status.md)
 - [On-Premises Platform Build Runbook](docs/on-prem-platform-build-runbook.md)
@@ -38,6 +39,7 @@ operators and engineers a common operating record for the platform.
 - [Enterprise Branching Strategy](docs/branching-strategy.md)
 - [Component Architecture Diagram](docs/component-architecture.md)
 - [Platform Domain Pages](docs/projects/README.md)
+- [Application Deployment Record Template](docs/projects/application-deployment-record-template.md)
 
 ## Repository Purpose
 

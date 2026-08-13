@@ -5,6 +5,13 @@ inside one provider-payer organization. Each page includes the repository,
 team size, team-member responsibilities, key interfaces, and executable
 use-case scope.
 
+Business applications remain separate projects from these platform domains.
+Register them in the
+[Application Project Deployment Register](../application-project-deployment-register.md)
+and create one
+[Application Deployment Record](application-deployment-record-template.md)
+per real repository before planning its implementation.
+
 | Domain | Page |
 | --- | --- |
 | DevSecOps delivery | [DevSecOps Delivery](devsecops-delivery.md) |

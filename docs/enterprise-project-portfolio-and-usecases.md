@@ -163,6 +163,10 @@ The architecture should be read left to right:
 The detailed component explanation lives in
 [Component Architecture](component-architecture.md).
 
+The deployment relationship among separate application repositories, shared
+platform projects and linked use-case chains is maintained in the
+[Application Project Deployment Register](application-project-deployment-register.md).
+
 ## Organization Model
 
 | Layer | Shared organizational capability |

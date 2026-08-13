@@ -8,6 +8,8 @@ required_docs=(
   ".gitlab-ci.yml"
   "README.md"
   "docs/enterprise-project-portfolio-and-usecases.md"
+  "docs/application-project-deployment-register.md"
+  "docs/assets/application-project-deployment-model.svg"
   "docs/use-case-implementation-status.md"
   "docs/component-architecture.md"
   "docs/environment-details.md"
@@ -24,6 +26,7 @@ required_docs=(
   "docs/engineer-training-standard.md"
   "docs/marketing-role-engineer-guide.md"
   "docs/projects/README.md"
+  "docs/projects/application-deployment-record-template.md"
   "docs/projects/devsecops-delivery.md"
   "docs/projects/multi-cloud-infrastructure.md"
   "docs/projects/kubernetes-platform.md"
@@ -67,6 +70,7 @@ for path in "${required_docs[@]}"; do
 done
 
 ./scripts/validate-use-cases.sh
+./scripts/validate-application-projects.sh
 
 portfolio="docs/enterprise-project-portfolio-and-usecases.md"
 grep -q "cloud-infra-automation-platform" "$portfolio"
