@@ -32,6 +32,22 @@ application cluster, and publishes differences for objects owned by the
 selected component. The first targets are accepted ingress-nginx, Headlamp
 routing objects, and Longhorn configuration. The job never applies or prunes.
 
+## Platform and enterprise fit
+
+| Relationship | Detailed fit |
+| --- | --- |
+| Owning platform | **Kubernetes Configuration Drift** belongs to the Enterprise Kubernetes Platform with GitOps because that platform turns reviewed workload intent into Helm/GitOps reconciliation, policy, health verification, and revision recovery. |
+| Enterprise consumers | The capability supports containerized provider, payer, data, AI, and shared-platform workloads. |
+| Enterprise outcome | Its planned result advances: Keep the existing application cluster aligned with reviewed source before it hosts additional provider or payer services. |
+| Control contribution | The design adds cluster/namespace ownership, policy enforcement, workload health, and auditable rollback. |
+| Cross-platform handoff | Supporting platforms consume a reviewed result or evidence artifact; they do not take ownership away from the primary platform. |
+| Infrastructure boundary | Fit is achieved by reusing documented existing repositories, control planes, services, and targets—not by inventing capacity or treating planned products as available. |
+
+The platform fit is therefore based on ownership and a reusable decision, not
+on the presence of a particular tool. Enterprise fit requires evidence that the
+named outcome was observed for the bounded scope; completing documentation or
+running an isolated technology demonstration is insufficient.
+
 ## Trigger and actors
 
 | Item | Definition |
