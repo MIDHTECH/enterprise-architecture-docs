@@ -153,32 +153,9 @@ listed below.
 
 ## Architecture diagram
 
-```mermaid
-sequenceDiagram
-    actor Dev as Developer
-    actor Op as Release operator
-    participant GH as Public GitHub upstream
-    participant GL as GitLab CI
-    participant JC as Jenkins controller
-    participant JA as jenkins-agent01
-    participant K8s as Kubernetes API
-    participant Edge as nginx.example.com
+![UC-CICD-001 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-CICD-001/UC-CICD-001-architecture.svg)
 
-    Dev->>GH: Select reviewed immutable upstream commit
-    Dev->>GL: Import source and provenance, then open merge request
-    GL->>GL: Validate source, policy, Job DSL, and Helm chart
-    GL-->>Dev: Publish pipeline result and artifacts
-    Op->>JC: Select reviewed Git ref and ACTION=PLAN
-    JC->>JA: Schedule only on kubernetes-deployer
-    JA->>K8s: Helm server-side dry run
-    K8s-->>JA: Rendered and validated plan
-    Op->>JC: Select ACTION=DEPLOY and CONFIRM_CHANGE
-    JA->>K8s: helm upgrade --install --atomic --wait
-    JA->>K8s: Verify rollout, class, services, and Headlamp ingress
-    JA->>Edge: Verify routed Headlamp response
-    Op->>JC: Select ACTION=ROLLBACK and prior revision
-    JA->>K8s: Roll back and verify recovery
-```
+The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
 
 ## Dependencies and handoffs
 

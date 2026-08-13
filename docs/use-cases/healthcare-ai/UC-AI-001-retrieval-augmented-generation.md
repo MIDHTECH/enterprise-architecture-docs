@@ -101,16 +101,9 @@ listed below.
 
 ## Architecture diagram
 
-```mermaid
-flowchart LR
-    Docs["Approved GitLab documentation commits"] --> Policy["Corpus allowlist and content checks"]
-    Policy --> Index["Ephemeral CI retrieval index"]
-    Questions["Versioned provider, payer, and platform questions"] --> Retrieve["Rank passages"]
-    Index --> Retrieve
-    Retrieve --> Cite["Path, commit, section, and score"]
-    Cite --> Eval["Quality, refusal, injection, and latency report"]
-    Eval --> Gate["Separate approval before generation or runtime service"]
-```
+![UC-AI-001 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-AI-001/UC-AI-001-architecture.svg)
+
+The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
 
 ## Dependencies and handoffs
 

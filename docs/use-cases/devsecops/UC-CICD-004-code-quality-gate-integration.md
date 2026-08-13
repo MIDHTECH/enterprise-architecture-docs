@@ -146,72 +146,9 @@ listed below.
 
 ## Architecture diagram
 
-1. A merge request identifies an immutable source revision and its target
-   branch or approved baseline revision.
-2. Prerequisite build and unit-test results for the same SHA pass.
-3. The pipeline resolves the repository's declared analyzer, version, rule set,
-   scope, baseline method, thresholds, and approved exclusions.
-4. An existing accepted runner performs analysis in an isolated workspace with
-   no deployment credentials.
-5. Raw tool output is normalized into findings by rule, severity, location,
-   status, and whether each finding is new, existing, resolved, or excluded.
-6. The policy engine evaluates new-code requirements and any applicable
-   whole-codebase floor. Invalid configuration or missing results fail closed.
-7. A failing decision blocks artifact, image, publication, and deployment jobs.
-   The merge request exposes actionable, sanitized diagnostics.
-8. A passing decision and its provenance are retained for later gates. Existing
-   debt remains visible and assigned; it is not silently erased by a green
-   new-code result.
+![UC-CICD-004 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-CICD-004/UC-CICD-004-architecture.svg)
 
-```mermaid
-flowchart LR
-    Source["Reviewed commit and baseline"] --> Precheck["Build and unit tests passed"]
-    Precheck --> Policy["Resolve analyzer and quality policy"]
-    Policy --> Scan["Analyze on existing runner"]
-    Scan --> Normalize["Normalize findings and debt status"]
-    Normalize --> Decision{"Quality gate passed?"}
-    Decision -->|No| Block["Block publication and deployment"]
-    Decision -->|Yes| Evidence["Publish decision for later source gates"]
-```
-
-## Decision rules
-
-- Findings are evaluated against the immutable source SHA and explicit baseline
-  SHA; a mutable branch name alone is insufficient evidence.
-- New blocking-severity defects fail the gate.
-- Missing output, malformed output, analyzer crash, incomplete shard, or
-  policy-resolution failure is a failed gate, not a warning-only success.
-- Historical debt remains visible. The application owner must define whether a
-  repository also enforces a whole-codebase floor in addition to new-code rules.
-- A suppression requires a rule identifier, bounded source location, rationale,
-  owner, reviewer, issue reference, and expiry or review date.
-- Generated, vendored, and migration files may be excluded only through
-  reviewed path policy; ad hoc command-line exclusions are prohibited.
-- Quality success never bypasses unit, security, artifact, promotion, or
-  runtime-health controls.
-- The gate does not contact provisioned-only SonarQube. Until that service is
-  separately accepted, planned implementation uses repository-native tools on
-  existing runners or remains unimplemented.
-
-## Evidence contract
-
-The future machine-readable result should contain:
-
-| Evidence field | Purpose |
-| --- | --- |
-| Project, commit SHA, target ref, and baseline SHA | Identifies the evaluated change and comparison point |
-| Pipeline, job, and runner identifiers | Identifies controlled execution |
-| Analyzer, version, and rule-set digest | Makes the decision reproducible and reviewable |
-| Analysis scope and excluded paths | Shows what was and was not evaluated |
-| Finding counts by severity and state | Distinguishes new, existing, resolved, and suppressed findings |
-| Metric values and thresholds | Explains complexity, duplication, or other quantitative decisions |
-| Active exception identifiers and expiry dates | Prevents invisible permanent bypasses |
-| Final decision and blocking reasons | Controls later pipeline eligibility |
-| Start/end time and report checksum | Supports provenance and integrity review |
-
-Reports must not expose credentials, private source beyond normal repository
-access, or protected healthcare data. Screenshots may supplement a review but
-do not replace the normalized result.
+The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
 
 ## Dependencies and handoffs
 

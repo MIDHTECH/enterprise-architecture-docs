@@ -126,95 +126,9 @@ listed below.
 
 ## Architecture diagram
 
-```mermaid
-flowchart LR
-    subgraph Source["Existing source and intent boundary"]
-        A["Versioned AI behavior contract and approved synthetic evaluation set"]
-    end
-    subgraph Planned["Planned AI Workflow Audit Logging control"]
-        B["Offline safety and quality evaluation"]
-        C["Contract, policy, and negative fixtures"]
-        D{"Evidence satisfies the use-case gate?"}
-    end
-    subgraph Runtime["Existing approved execution boundary"]
-        E["Existing GitLab shared runner"]
-        F["Approved repository artifacts only"]
-    end
-    subgraph Assurance["Evidence and recovery boundary"]
-        G["Safety, quality, lineage, refusal, and reviewer evidence"]
-        H["Owner review, safe stop, or recovery"]
-    end
+![UC-AI-009 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-AI-009/UC-AI-009-architecture.svg)
 
-    A --> B --> C --> D
-    D -->|No| G --> H
-    D -->|Yes; read-only| G
-    D -->|Yes; separately approved action| E --> F --> G
-    H -. recover accepted revision .-> A
-```
-
-The diagram distinguishes existing boundaries from the planned use-case
-control. The arrow into the execution boundary is conditional: documentation,
-source validation, or a passing fixture never authorizes a runtime change.
-
-### Operating sequence
-
-1. The request binds AI Workflow Audit Logging to immutable source, an inventory-resolved target,
-   an accountable owner, and the expected enterprise result.
-2. GitLab validates the contract, exact scope, dependency evidence, and positive
-   and negative fixtures without target-changing credentials.
-3. The use-case control produces a machine-readable result with provenance,
-   decision reasons, timing, and the next permitted action.
-4. Read-only evidence can complete on the accepted runner. Any mutation waits
-   for the existing change, approval, credential, and canary controls.
-5. Independent post-checks compare expected and observed state. Failure stops
-   expansion, preserves diagnostics, and invokes the page's recovery boundary.
-
-## Design considerations
-
-| Concern | Required design treatment |
-| --- | --- |
-| Telemetry integrity | Preserve timestamps, labels, correlation identifiers, source coverage, retention boundaries, and visibility of gaps or sampling. |
-| Model and data lineage | Pin model, code, data, features, parameters, and evaluation versions; define human oversight, safety thresholds, drift response, and retirement behavior. |
-| Grounding and human oversight | Measure retrieval relevance and unsupported claims, constrain sources and prompt versions, protect sensitive context, and require human review for consequential output. |
-| Healthcare safety | Use approved data, bounded behavior, human oversight, traceable sources, safety evaluation, and an explicit stop or fallback path. |
-| Auditability | Record immutable input and policy versions, executor identity, target, timestamps, result, evidence checksum, reviewer, and related change/incident identifiers. |
-| Safe failure | Missing data, unavailable dependencies, ambiguous scope, or incomplete evidence blocks the decision instead of producing a false success. |
-
-
-## Decision and control rules
-
-- The canonical coverage test is: **Traceable prompts, context, tools and responses**
-- Immutable identifiers are used for source, policy, data, configuration, and
-  evaluated target wherever the underlying platform provides them.
-- The workflow fails closed when a required input, result, or provenance field
-  is missing, malformed, stale, or outside its allowed scope.
-- Read-only and fixture modes never receive credentials capable of changing the
-  target.
-- A mutating mode, if relevant, requires explicit approval, an allowlisted
-  target, a bounded canary, stop conditions, and a verified recovery source.
-- Exceptions require rationale, owner, reviewer, issue/change reference, scope,
-  and expiry; an expired exception fails the gate.
-- Success enables only the explicitly named downstream decision. It does not
-  imply that adjacent security, reliability, data, release, or runtime gates
-  passed.
-- A screenshot can support human review but cannot replace machine-readable
-  evidence.
-
-## Information and evidence contract
-
-| Evidence element | Requirement |
-| --- | --- |
-| Identity | Use-case ID, repository/project, immutable revision, target, and environment or dataset scope |
-| Execution | Pipeline/build/job/run ID, executor or runner, mode, start/end time, and tool/API version |
-| Inputs | Sanitized parameter names, contract/policy digest, baseline or comparison point, and owner |
-| Result | Expected statement, observed value, threshold/policy evaluation, decision, and explicit blocking reason |
-| Safety | Approval/change ID when required, canary boundary, non-mutation or before/after proof, and unexpected effects |
-| Recovery | Rollback/restore source, recovery execution ID, post-recovery verification, or documented zero-change stop |
-| Governance | Reviewer, exceptions, incident/action links, evidence checksum, retention class, and final status |
-
-Evidence must be concise enough for a reviewer to evaluate but complete enough
-for another engineer to reproduce the reasoning. Secrets, credentials, private
-keys, tokens, kubeconfigs, and protected healthcare data are prohibited.
+The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
 
 ## Dependencies and handoffs
 

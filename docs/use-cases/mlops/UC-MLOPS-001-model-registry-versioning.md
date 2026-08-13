@@ -99,16 +99,9 @@ listed below.
 
 ## Architecture diagram
 
-```mermaid
-flowchart LR
-    Data["Synthetic versioned dataset"] --> Build["Existing shared GitLab runner"]
-    Source["Protected model source and dependency lock"] --> Build
-    Build --> Package["Model, checksum, card, metrics, lineage"]
-    Package --> Gates["Schema, quality, safety, and reproducibility gates"]
-    Gates --> Artifact["Protected immutable CI bundle"]
-    Artifact --> Decision["Approve, reject, or supersede"]
-    Decision --> Stop["Separate serving approval required"]
-```
+![UC-MLOPS-001 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-MLOPS-001/UC-MLOPS-001-architecture.svg)
+
+The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
 
 ## Dependencies and handoffs
 

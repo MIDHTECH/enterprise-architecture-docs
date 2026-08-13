@@ -96,15 +96,9 @@ listed below.
 
 ## Architecture diagram
 
-```mermaid
-flowchart LR
-    Backup["Existing backup artifact"] --> Verify["Checksum and metadata"]
-    Verify --> Approval["Approved restore drill"]
-    Approval --> Temp["Temporary database on existing PostgreSQL"]
-    Temp --> Tests["Schema and bounded data checks"]
-    Tests --> Evidence["RPO/RTO and validation artifact"]
-    Evidence --> Cleanup["Drop only the temporary database"]
-```
+![UC-DB-001 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-DB-001/UC-DB-001-architecture.svg)
+
+The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
 
 ## Dependencies and handoffs
 

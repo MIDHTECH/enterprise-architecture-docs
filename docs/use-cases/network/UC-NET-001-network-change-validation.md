@@ -96,15 +96,9 @@ listed below.
 
 ## Architecture diagram
 
-```mermaid
-flowchart LR
-    Source["Reviewed network source"] --> Pre["Read-only prechecks"]
-    Pre --> Approval["Change and explicit confirmation"]
-    Approval --> Canary["One bounded existing target"]
-    Canary --> Post["DNS, route, port, protocol, and service postchecks"]
-    Post --> Rollback["Restore prior source/runtime state"]
-    Rollback --> Proof["Recovery and zero-change evidence"]
-```
+![UC-NET-001 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-NET-001/UC-NET-001-architecture.svg)
+
+The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
 
 ## Dependencies and handoffs
 

@@ -118,16 +118,9 @@ Out of scope:
    feasible, or by a documented equivalence rule when timestamps, signatures,
    or ecosystem metadata prevent byte-for-byte identity.
 
-```mermaid
-flowchart LR
-    MR["Reviewed GitLab revision"] --> Validate["Validate build contract"]
-    Validate --> Runner["Existing accepted runner"]
-    Runner --> Build["Clean build from declared inputs"]
-    Build --> Result{"Build passed?"}
-    Result -->|No| Stop["Block artifact and deployment stages"]
-    Result -->|Yes| Evidence["Output, checksum, and provenance"]
-    Evidence --> Gates["Test, quality, security, and artifact gates"]
-```
+The detailed architecture SVG above is authoritative for component boundaries
+and handoffs. This operating sequence supplies the build-specific behavior
+inside its validation, control, evidence, and downstream-gate components.
 
 ## Information and evidence contract
 
@@ -170,48 +163,9 @@ listed below.
 
 ## Architecture diagram
 
-```mermaid
-flowchart LR
-    subgraph Source["Existing source and intent boundary"]
-        A["Reviewed application and pipeline source"]
-    end
-    subgraph Planned["Planned Automated Build Pipeline control"]
-        B["GitLab source gate"]
-        C["Contract, policy, and negative fixtures"]
-        D{"Evidence satisfies the use-case gate?"}
-    end
-    subgraph Runtime["Existing approved execution boundary"]
-        E["Jenkins shared-library workflow"]
-        F["Approved existing delivery target"]
-    end
-    subgraph Assurance["Evidence and recovery boundary"]
-        G["Build, artifact, promotion, and recovery evidence"]
-        H["Owner review, safe stop, or recovery"]
-    end
+![UC-CICD-002 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-CICD-002/UC-CICD-002-architecture.svg)
 
-    A --> B --> C --> D
-    D -->|No| G --> H
-    D -->|Yes; read-only| G
-    D -->|Yes; separately approved action| E --> F --> G
-    H -. recover accepted revision .-> A
-```
-
-The diagram distinguishes existing boundaries from the planned use-case
-control. The arrow into the execution boundary is conditional: documentation,
-source validation, or a passing fixture never authorizes a runtime change.
-
-### Operating sequence
-
-1. The request binds Automated Build Pipeline to immutable source, an inventory-resolved target,
-   an accountable owner, and the expected enterprise result.
-2. GitLab validates the contract, exact scope, dependency evidence, and positive
-   and negative fixtures without target-changing credentials.
-3. The use-case control produces a machine-readable result with provenance,
-   decision reasons, timing, and the next permitted action.
-4. Read-only evidence can complete on the accepted runner. Any mutation waits
-   for the existing change, approval, credential, and canary controls.
-5. Independent post-checks compare expected and observed state. Failure stops
-   expansion, preserves diagnostics, and invokes the page's recovery boundary.
+The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
 
 ## Dependencies and handoffs
 

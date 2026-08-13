@@ -96,16 +96,9 @@ listed below.
 
 ## Architecture diagram
 
-```mermaid
-flowchart LR
-    Owner["Service owner and user journey"] --> SLO["SLO definition in GitLab"]
-    SLO --> CI["Schema and promtool tests"]
-    CI --> AWX["Approved AWX rule deployment"]
-    AWX --> Prom["Existing Prometheus"]
-    Prom --> Alert["Existing Alertmanager"]
-    Prom --> Grafana["Existing Grafana dashboard"]
-    Alert --> Runbook["Owner, impact, and runbook context"]
-```
+![UC-OBS-001 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-OBS-001/UC-OBS-001-architecture.svg)
+
+The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
 
 ## Dependencies and handoffs
 

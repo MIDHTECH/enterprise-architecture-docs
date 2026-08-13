@@ -73,8 +73,11 @@ plan without authorizing infrastructure or runtime work. Required content is:
 1. an operating context that distinguishes the enterprise need, current state,
    desired state, accountable platform, target boundary, and no-new-
    infrastructure constraint;
-2. a Mermaid or SVG architecture diagram that separates source, planned
-   control logic, accepted execution boundary, target, evidence, and recovery;
+2. a detailed, accessible SVG architecture diagram that shows enterprise
+   actors, source and dependency contracts, planned control logic, decision
+   gates, accepted execution boundary, existing target, assurance controls,
+   evidence, owner acceptance, and recovery. Simple Mermaid block flows do not
+   satisfy this requirement;
 3. explicit upstream and assurance dependencies linked by canonical use-case
    ID, including the artifact exchanged and the effect of missing evidence;
 4. functional, performance, scale, reliability, recovery, observability, and

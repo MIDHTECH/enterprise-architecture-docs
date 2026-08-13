@@ -112,7 +112,9 @@ Every detailed page must identify:
 - the enterprise capability and provider/payer/shared-service outcome;
 - the current environment boundary and the infrastructure it is not authorized
   to create;
-- a use-case-specific architecture context and component or workflow diagram;
+- a use-case-specific, repository-owned SVG architecture diagram with actors,
+  component interactions, control and runtime boundaries, assurance inputs,
+  evidence flow, and recovery feedback;
 - linked supporting use cases, the artifact exchanged at each handoff, and the
   failure behavior when dependency evidence is missing or stale;
 - measurable quality attributes, including named owners for thresholds that

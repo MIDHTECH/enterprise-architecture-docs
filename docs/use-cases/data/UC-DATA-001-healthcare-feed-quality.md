@@ -95,15 +95,9 @@ listed below.
 
 ## Architecture diagram
 
-```mermaid
-flowchart LR
-    Contract["Versioned feed contract"] --> CI["Existing shared GitLab runner"]
-    Fixtures["Synthetic healthcare fixtures"] --> CI
-    CI --> Checks["Freshness, schema, completeness, uniqueness, reconciliation"]
-    Checks --> Report["Sanitized quality report"]
-    Report --> Owner["Source and consumer decision"]
-    Owner --> Gate["Separate approval before live integration"]
-```
+![UC-DATA-001 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-DATA-001/UC-DATA-001-architecture.svg)
+
+The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
 
 ## Dependencies and handoffs
 

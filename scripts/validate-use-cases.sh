@@ -199,8 +199,50 @@ for document in documents:
             f"{document}: supporting-use-case record {supporting_ids} does not match handoff table {handoff_ids}"
         )
 
-    if document.parent.name != "linux" and "```mermaid" not in text:
-        raise SystemExit(f"{document}: non-Linux architecture must contain a Mermaid diagram")
+    architecture_path = (
+        root
+        / "docs/assets/use-cases"
+        / own_id
+        / f"{own_id}-architecture.svg"
+    )
+    architecture_link = f"../../assets/use-cases/{own_id}/{own_id}-architecture.svg"
+    architecture_section = text.split("## Architecture diagram", 1)[1].split(
+        "## Dependencies and handoffs", 1
+    )[0]
+    if not architecture_path.is_file():
+        raise SystemExit(f"{document}: missing architecture SVG {architecture_path}")
+    if architecture_section.count(f"({architecture_link})") != 1:
+        raise SystemExit(
+            f"{document}: architecture section must link {architecture_link} exactly once"
+        )
+    if "```mermaid" in architecture_section:
+        raise SystemExit(f"{document}: architecture section must use the detailed SVG, not Mermaid")
+    try:
+        import xml.etree.ElementTree as ET
+
+        svg_root = ET.parse(architecture_path).getroot()
+    except ET.ParseError as error:
+        raise SystemExit(f"{architecture_path}: invalid SVG XML: {error}")
+    namespace = {"svg": "http://www.w3.org/2000/svg"}
+    svg_title = svg_root.find("svg:title", namespace)
+    svg_description = svg_root.find("svg:desc", namespace)
+    if svg_root.attrib.get("role") != "img" or svg_root.attrib.get("aria-labelledby") != "title desc":
+        raise SystemExit(f"{architecture_path}: SVG must expose role=img and aria-labelledby='title desc'")
+    if svg_title is None or not (svg_title.text or "").strip():
+        raise SystemExit(f"{architecture_path}: SVG must contain an accessible title")
+    if svg_description is None or not (svg_description.text or "").strip():
+        raise SystemExit(f"{architecture_path}: SVG must contain an accessible description")
+    serialized_svg = architecture_path.read_text()
+    required_visual_concepts = (
+        "Source and dependency layer",
+        "Automation control plane",
+        "Existing runtime, outcome, and recovery",
+        "Enterprise assurance",
+    )
+    if document.parent.name != "linux":
+        for concept in required_visual_concepts:
+            if concept not in serialized_svg:
+                raise SystemExit(f"{architecture_path}: missing detailed visual concept {concept!r}")
 
     for target in re.findall(r"\[[^\]]+\]\(([^)#]+\.md)(?:#[^)]+)?\)", text):
         resolved = (document.parent / target).resolve()

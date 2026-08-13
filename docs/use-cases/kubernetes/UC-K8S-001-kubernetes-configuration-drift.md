@@ -97,16 +97,9 @@ listed below.
 
 ## Architecture diagram
 
-```mermaid
-flowchart LR
-    Source["Protected Helm/manifests"] --> Jenkins["Existing Jenkins PLAN job"]
-    Jenkins --> Agent["jenkins-agent01"]
-    Agent --> Guard["Verify application cluster identity"]
-    Guard --> Diff["Render and compare allowlisted objects"]
-    Diff --> Health["Add rollout, pod, PVC, and event context"]
-    Health --> Artifact["Sanitized drift report"]
-    Artifact --> Change["Separate approval for reconciliation"]
-```
+![UC-K8S-001 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-K8S-001/UC-K8S-001-architecture.svg)
+
+The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
 
 ## Dependencies and handoffs
 

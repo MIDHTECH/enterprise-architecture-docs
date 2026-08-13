@@ -96,15 +96,9 @@ listed below.
 
 ## Architecture diagram
 
-```mermaid
-flowchart LR
-    Service["Existing service record"] --> Collect["Collect delivery and runtime evidence"]
-    Collect --> Check["Validate owner, dependencies, SLO, security, recovery"]
-    Check --> Review["Cross-platform review"]
-    Review --> Ready["Ready"]
-    Review --> Exception["Ready with expiring exception"]
-    Review --> Blocked["Not ready with owned actions"]
-```
+![UC-RSO-001 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-RSO-001/UC-RSO-001-architecture.svg)
+
+The solid paths show how reviewed demand becomes a bounded decision and evidence. The dashed return path makes recovery and owner acceptance part of the architecture, not an afterthought. Planned control logic remains separate from the existing execution and target boundaries.
 
 ## Dependencies and handoffs
 
