@@ -27,7 +27,7 @@ The machine-readable inventory and relationship evidence are in
 
 | Project | Business promise evidenced in its repository | Boundary that must remain visible |
 | --- | --- | --- |
-| [MAAS](projects/applications/maas.md) | Operates company, consultant, job, submission and interview workflows with reports and automation. | Remains the operational source for shared records during the current intelligence-app transition. |
+| [MAAS](https://github.com/MIDHTECH/maas) | Operates company, consultant, job, submission and interview workflows with reports and automation. | Remains the operational source for shared records during the current intelligence-app transition. |
 | [MTAS](https://github.com/MIDHTECH/mtas) | Finds and qualifies candidate leads, captures intake compliance, maps roles and drives outreach. | Owns candidate intake; it does not certify completed training or approve jobs. |
 | [MTLS](https://github.com/MIDHTECH/mtls) | Owns training proof, playbooks, lab evidence, mock feedback and readiness review. | Approved training evidence may inform MAAS; draft content must not become market evidence. |
 | [MCIS](https://github.com/MIDHTECH/mcis) | Decides whether a company is suitable for consultant placement using sponsorship and outcome evidence. | Owns company fit, not job intake, submission execution or interviews. |
@@ -82,7 +82,7 @@ Each repository will receive its own application architecture page and SVG.
 The pages should be written in journey order because each one supplies context
 for the next:
 
-1. [MAAS](projects/applications/maas.md) as the operational record and shared identity anchor. Its detailed page is now complete.
+1. MAAS as the operational record and shared identity anchor.
 2. MTAS and MTLS for candidate intake and readiness.
 3. MCIS and MJIS for company and job decisions.
 4. MSIS and MIIS for submission and interview learning.

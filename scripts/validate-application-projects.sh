@@ -529,79 +529,10 @@ for application in suite_applications:
     for field in ("business_role", "ownership_boundary"):
         if not isinstance(application.get(field), str) or len(application[field].strip()) < 40:
             raise SystemExit(f"{suite_inventory}: {application_id} needs a useful {field}")
-    if application.get("architecture_record_state") not in {
-        "discovered-detailed-page-pending",
-        "detailed-and-linked",
-    }:
+    if application.get("architecture_record_state") != "discovered-detailed-page-pending":
         raise SystemExit(f"{suite_inventory}: {application_id} has invalid architecture state")
     if application.get("runtime_state") != "not-verified-by-this-documentation":
         raise SystemExit(f"{suite_inventory}: {application_id} implies verified runtime state")
-    if application.get("architecture_record_state") == "detailed-and-linked":
-        record_value = application.get("architecture_record")
-        diagram_value = application.get("architecture_diagram")
-        if not isinstance(record_value, str) or not isinstance(diagram_value, str):
-            raise SystemExit(f"{suite_inventory}: {application_id} detailed artifacts are missing")
-        record_path = root / record_value
-        diagram_path = root / diagram_value
-        for artifact in (record_path, diagram_path):
-            if not artifact.is_file():
-                raise SystemExit(f"{suite_inventory}: {application_id} missing detailed artifact {artifact}")
-        record_text = record_path.read_text()
-        for phrase in (
-            repository,
-            application["readme_evidence_commit"],
-            "detailed-and-linked",
-            "not-verified-by-this-documentation",
-            "Implementation authorization: **Not granted**",
-        ):
-            if phrase not in record_text:
-                raise SystemExit(f"{record_path}: missing suite manifest value {phrase!r}")
-        for target in re.findall(r"\[[^]]+\]\(([^)]+)\)", record_text):
-            if target.startswith(("http://", "https://", "#")):
-                continue
-            target_path = (record_path.parent / target.split("#", 1)[0]).resolve()
-            if not target_path.exists():
-                raise SystemExit(f"{record_path}: unresolved local link {target}")
-        application_svg = ET.parse(diagram_path).getroot()
-        if (
-            application_svg.attrib.get("role") != "img"
-            or application_svg.attrib.get("aria-labelledby") != "title desc"
-            or application_svg.attrib.get("data-application") != application_id
-        ):
-            raise SystemExit(f"{diagram_path}: invalid accessible suite-application SVG")
-        for element in ("title", "desc"):
-            node = application_svg.find(f"svg:{element}", namespace)
-            if node is None or not (node.text or "").strip():
-                raise SystemExit(f"{diagram_path}: accessible {element} is required")
-        source_architecture = application.get("source_architecture")
-        if not isinstance(source_architecture, dict) or len(source_architecture) < 7:
-            raise SystemExit(f"{suite_inventory}: {application_id} source architecture is incomplete")
-        chains = application.get("required_platform_chains")
-        if not isinstance(chains, list) or not chains:
-            raise SystemExit(f"{suite_inventory}: {application_id} platform chains are missing")
-        chain_names = [chain.get("chain") for chain in chains]
-        if len(chain_names) != len(set(chain_names)) or not set(chain_names) <= allowed_chains:
-            raise SystemExit(f"{suite_inventory}: {application_id} platform chains are invalid")
-        selected_use_cases = []
-        for chain in chains:
-            chain_use_cases = chain.get("use_cases")
-            if not isinstance(chain_use_cases, list) or not chain_use_cases:
-                raise SystemExit(
-                    f"{suite_inventory}: {application_id}/{chain.get('chain')} needs use cases"
-                )
-            for use_case in chain_use_cases:
-                use_case_path = root / use_case
-                if not use_case.startswith("docs/use-cases/") or not use_case_path.is_file():
-                    raise SystemExit(f"{suite_inventory}: unresolved suite use case {use_case}")
-                if Path(use_case).name not in record_text:
-                    raise SystemExit(f"{record_path}: selected use case is not linked: {use_case}")
-                selected_use_cases.append(use_case)
-        if len(selected_use_cases) != len(set(selected_use_cases)):
-            raise SystemExit(f"{suite_inventory}: {application_id} repeats a selected use case")
-        if application_id == "maas" and (
-            len(chains) != 9 or len(selected_use_cases) != 48
-        ):
-            raise SystemExit(f"{suite_inventory}: MAAS must retain 9 chains and 48 direct use cases")
 
 suite_relationships = suite_data.get("relationship_contracts")
 if not isinstance(suite_relationships, list) or not suite_relationships:
