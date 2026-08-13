@@ -23,6 +23,88 @@ care, payer, platform, data, AI, and observability workloads.
 - Publishes workload runtime patterns to delivery, observability, governance, data, AI, and MLOps.
 - Sends runtime telemetry to SRE and operational evidence to governance.
 
+## The workload contract
+
+Kubernetes is a shared runtime, not a deployment shortcut. An application
+receives a namespace and runtime contract only after it can identify its owner,
+immutable image, service identity, resource envelope, network paths, storage,
+health behavior, telemetry and recovery choice.
+
+![Kubernetes platform architecture](../assets/project-3-kubernetes-gitops-architecture.svg)
+
+| Contract area | Application supplies | Platform guarantees after acceptance |
+| --- | --- | --- |
+| Ownership | Project, technical owner, support route and business purpose | Namespace and workload can be attributed and escalated |
+| Supply chain | Immutable image reference and provenance/security results | Only the reviewed digest enters the release path |
+| Identity | Service-account need and external secret references | Namespace-scoped RBAC and no embedded credentials |
+| Resources | Requests, limits, replicas, startup profile and scaling signal | Scheduling and capacity decisions are visible rather than implicit |
+| Network | Inbound route, callers, dependencies and required egress | Reviewed Service/Ingress and policy shape with negative exposure checks |
+| Storage | Data class, capacity, access mode, retention and recovery need | Approved StorageClass behavior and documented failure boundary |
+| Operation | Probes, signals, SLO intent, rollout and rollback behavior | Release health, platform telemetry and a bounded recovery path |
+
+The platform owns cluster components and admission boundaries. Application
+teams own their Deployments, Services, configuration and behavior inside the
+approved namespace. Jenkins, Helm and Argo CD ownership is assigned per
+component; two reconcilers never share an object simply for convenience.
+
+## Runtime request path
+
+Traffic reaches the authoritative lab DNS name, then the approved NGINX route,
+the private ingress-nginx Service, an Ingress, the application Service and its
+ready endpoints. Troubleshooting follows that order before restarting a pod.
+For stateful work, the path also includes the PVC, StorageClass, Longhorn
+volume, replicas and worker disks.
+
+The existing four-node kubeadm cluster, private ingress path and worker-only
+Longhorn installation are accepted. A route that returns HTTP 200 proves only
+that path; it does not establish the application's SLO, data recovery or
+security acceptance.
+
+## Tenancy, rollout and capacity decisions
+
+- Namespaces separate ownership and policy, but they are not equivalent to
+  physically separate security or failure domains.
+- Requests are the scheduler's capacity contract; limits protect neighbors.
+  Both come from measurement and are revised with evidence.
+- Rolling, canary or blue-green delivery is selected from compatibility,
+  state and rollback needs. Progressive delivery is not assumed installed.
+- Horizontal or event-driven scaling needs a meaningful signal, stabilization
+  behavior, maximum capacity and dependency budget. Scaling pods cannot repair
+  a saturated database or missing node capacity.
+- Cost allocation uses owner/project labels and resource observations. It is
+  showback until joined to actual infrastructure cost.
+
+## Failure model
+
+| Symptom | Investigation boundary | Recovery choice |
+| --- | --- | --- |
+| Name does not resolve | Authoritative DNS, client path and record serial | Correct through the network change path |
+| Route returns no service | NGINX, ingress controller, Ingress, Service and endpoints | Restore the last accepted route or workload revision |
+| Pods fail readiness | Events, image, config/secret references, probes and dependencies | Hold rollout; correct or roll back the release |
+| Pending pods | Requests, taints, affinity, storage binding and node capacity | Change placement only after understanding the constraint |
+| Node unavailable | Node conditions, network, kubelet/runtime and workload disruption | Cordon/drain or recover under the cluster runbook |
+| Persistent workload fails | PVC/PV, Longhorn volume/replicas, disk and application consistency | Preserve data and use the storage recovery boundary |
+
+## Implementation ownership
+
+Cluster and add-on changes begin with source and fixture validation, then a
+Jenkins plan against the explicit kubeconfig target. AWX owns node operating-
+system prerequisites; Helm owns a component bootstrap until a reviewed handoff
+delegates that exact resource set to Argo CD. Application desired state enters
+only after namespace, identity, image, network, resource, telemetry and
+rollback contracts are complete. Each component moves independently through
+plan, deploy, verification, rollback, restore and convergence, so acceptance
+of ingress or storage cannot be used to claim GitOps, policy or autoscaling.
+
+## Platform acceptance
+
+Onboarding acceptance records desired-state and image digests, namespace/RBAC,
+policy checks, route and negative exposure checks, resources, scheduling,
+telemetry, rollout, rollback and—where applicable—persistence/recovery. Cluster
+changes additionally prove version skew, upgrade/rollback, component health,
+capacity and failure-domain impact. The detailed backlog remains in the
+[Kubernetes use-case index](../use-cases/kubernetes/README.md).
+
 ## Current Delivery Boundary
 
 The current completion milestone targets the existing four-node on-premises
