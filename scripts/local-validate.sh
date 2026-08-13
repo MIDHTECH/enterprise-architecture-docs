@@ -27,6 +27,8 @@ required_docs=(
   "docs/jenkins-awx-ansible-operations.md"
   "docs/platform-engineering-interview-learning-labs.md"
   "docs/platform-usecase-learning-enhancement-plan.md"
+  "docs/new-employee-platform-briefing.md"
+  "docs/use-case-interview-question-bank.md"
   "docs/assets/platform-usecase-learning-enhancement-plan.svg"
   "docs/kubernetes-helm-delivery-runbook.md"
   "docs/gitlab-organization-model.md"
@@ -49,6 +51,8 @@ required_docs=(
   "docs/projects/healthcare-ai.md"
   "docs/projects/mlops-model-platform.md"
   "scripts/validate-platform-detail-pages.sh"
+  "scripts/generate-use-case-interview-bank.py"
+  "scripts/validate-onboarding-interview-docs.sh"
   "docs/use-cases/README.md"
   "docs/use-cases/enterprise-traceability.md"
   "docs/use-cases/devsecops/README.md"
@@ -81,6 +85,7 @@ done
 
 ./scripts/validate-use-cases.sh
 ./scripts/validate-platform-detail-pages.sh
+./scripts/validate-onboarding-interview-docs.sh
 ./scripts/validate-application-projects.sh
 ./scripts/validate-interview-learning-labs.sh
 ./scripts/validate-platform-enhancement-plan.sh

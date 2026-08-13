@@ -1,5 +1,10 @@
 # Engineering Question Bank: Enterprise Architecture Documentation
 
+For architecture-led questions grouped by all twelve platforms and tied to
+every canonical detailed use case, use the
+[MidhHealth Use-Case Interview Question Bank](use-case-interview-question-bank.md).
+The questions below remain the broader role and technology collection.
+
 These questions are selected from MAAS production interview-question sources, including company interview captures, scenario packs, technology packs, and curated MAAS database entries. Wording is normalized only for readability.
 
 Source labels are kept with each question so engineers can trace preparation back to MAAS interview intelligence.

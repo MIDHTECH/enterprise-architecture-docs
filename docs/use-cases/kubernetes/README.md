@@ -13,7 +13,7 @@ runtime, rollback, and evidence gates are met.
 | ID | Use case | Canonical coverage |
 | --- | --- | --- |
 | `UC-K8S-002` | [AKS/EKS/GKE Cluster Provisioning Automation](UC-K8S-002-aks-eks-gke-cluster-provisioning-automation.md) | Future scope: Terraform patterns remain planned; managed-cloud deployment and acceptance are deferred |
-| `undefined` | [Kubernetes Configuration Drift](UC-K8S-001-kubernetes-configuration-drift.md) | Live cluster state is compared with Git-defined desired state |
+| `UC-K8S-001` | [Kubernetes Configuration Drift](UC-K8S-001-kubernetes-configuration-drift.md) | Live cluster state is compared with Git-defined desired state |
 | `UC-K8S-003` | [Kubernetes Application Deployment](UC-K8S-003-kubernetes-application-deployment.md) | Helm/Kustomize deploy application workloads |
 | `UC-K8S-004` | [GitOps Reconciliation](UC-K8S-004-gitops-reconciliation.md) | Argo CD or Flux restores approved desired state and records sync health |
 | `UC-K8S-005` | [Continuous Verification](UC-K8S-005-continuous-verification.md) | Rollouts check latency, errors, restarts and alert state before promotion |
@@ -35,4 +35,3 @@ runtime, rollback, and evidence gates are met.
    evidence to the architecture page.
 5. Stop and request a separate architecture decision if new infrastructure,
    capacity, products, or protected-data integration would be required.
-
