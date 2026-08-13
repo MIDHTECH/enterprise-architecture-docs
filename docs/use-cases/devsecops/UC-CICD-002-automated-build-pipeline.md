@@ -8,6 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Automated Build Pipeline |
 | Primary platform | Enterprise DevSecOps Delivery Platform |
+| Supporting use cases | [UC-CICD-001](UC-CICD-001-end-to-end-cicd-pipeline.md), [UC-CICD-007](UC-CICD-007-environment-based-release-promotion.md), [UC-OBS-008](../observability/UC-OBS-008-deployment-health-scoring.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md) |
 | Enterprise outcome | Produce repeatable, traceable application build outputs for provider, payer, and shared-platform services |
 | Primary actors | Application developer, delivery engineer, security reviewer, platform owner |
 | Primary GitLab repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
@@ -24,7 +25,7 @@ review, secure, and audit. Local tool versions, uncommitted files, cached
 dependencies, or manual packaging steps can produce an artifact that cannot be
 recreated from the repository revision recorded for a release.
 
-This use case moves the build boundary into the enterprise delivery platform.
+The enterprise delivery platform becomes the build boundary.
 For every eligible revision, the pipeline should create the same logical output
 from declared source and dependencies, associate that output with its source
 revision, and make the result available to later quality, security, artifact,
@@ -48,7 +49,7 @@ from runtime systems and does not create infrastructure.
 | Risk and compliance | Source revision, dependency lock state, toolchain identity, result, and checksum form an auditable provenance record. |
 | Operational resilience | A reproducible build can be rerun during rollback, recovery, or forensic investigation without depending on an engineer's workstation. |
 
-The use case is successful only when the output can be traced back to protected
+Success requires the output to be traceable to protected
 source and consumed by the platform's later gates. A script that merely compiles
 locally does not satisfy the enterprise outcome.
 
@@ -147,6 +148,181 @@ kubeconfigs, and protected healthcare data. Evidence is retained according to
 the existing GitLab and enterprise retention policy; this page does not create
 a new retention service.
 
+## Architecture context
+
+Automated Build Pipeline is evaluated inside the existing enterprise lab and the owning
+platform's current source-control and execution boundaries. The architectural
+unit is the governed outcome—**Produce repeatable, traceable application build outputs for provider, payer, and shared-platform services**—rather than a new product or
+environment.
+
+| Context element | Architecture statement |
+| --- | --- |
+| Business and operational setting | Enterprise consumers: Enterprise DevSecOps Delivery Platform. The result must be explainable, repeatable, and owned. |
+| Current state | **Planned — detailed design only; no implementation or execution evidence is claimed** |
+| Desired state | A reviewed contract drives a bounded result, machine-readable evidence, and a safe stop or recovery decision. |
+| Existing target boundary | Approved existing delivery target |
+| Infrastructure constraint | Reuse the existing lab; no new infrastructure is authorized |
+| Accountable platform owner | Enterprise DevSecOps Delivery Platform team; the consuming service, data, security, or workflow owner remains accountable for accepting business impact. |
+
+The page owns the contract, control logic, evidence, and recovery behavior for
+Automated Build Pipeline. It does not absorb the responsibilities of the dependency use cases
+listed below.
+
+## Architecture diagram
+
+```mermaid
+flowchart LR
+    subgraph Source["Existing source and intent boundary"]
+        A["Reviewed application and pipeline source"]
+    end
+    subgraph Planned["Planned Automated Build Pipeline control"]
+        B["GitLab source gate"]
+        C["Contract, policy, and negative fixtures"]
+        D{"Evidence satisfies the use-case gate?"}
+    end
+    subgraph Runtime["Existing approved execution boundary"]
+        E["Jenkins shared-library workflow"]
+        F["Approved existing delivery target"]
+    end
+    subgraph Assurance["Evidence and recovery boundary"]
+        G["Build, artifact, promotion, and recovery evidence"]
+        H["Owner review, safe stop, or recovery"]
+    end
+
+    A --> B --> C --> D
+    D -->|No| G --> H
+    D -->|Yes; read-only| G
+    D -->|Yes; separately approved action| E --> F --> G
+    H -. recover accepted revision .-> A
+```
+
+The diagram distinguishes existing boundaries from the planned use-case
+control. The arrow into the execution boundary is conditional: documentation,
+source validation, or a passing fixture never authorizes a runtime change.
+
+### Operating sequence
+
+1. The request binds Automated Build Pipeline to immutable source, an inventory-resolved target,
+   an accountable owner, and the expected enterprise result.
+2. GitLab validates the contract, exact scope, dependency evidence, and positive
+   and negative fixtures without target-changing credentials.
+3. The use-case control produces a machine-readable result with provenance,
+   decision reasons, timing, and the next permitted action.
+4. Read-only evidence can complete on the accepted runner. Any mutation waits
+   for the existing change, approval, credential, and canary controls.
+5. Independent post-checks compare expected and observed state. Failure stops
+   expansion, preserves diagnostics, and invokes the page's recovery boundary.
+
+## Dependencies and handoffs
+
+Automated Build Pipeline remains accountable to its primary platform. The dependencies below
+provide explicit contracts or assurance evidence; they do not become alternate owners.
+
+| Relationship | Use case | Required handoff | Failure propagation |
+| --- | --- | --- | --- |
+| Required upstream contract | [UC-CICD-001: End-to-End CI/CD Pipeline Setup](UC-CICD-001-end-to-end-cicd-pipeline.md) | source-to-artifact pipeline provenance and stage outcome | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-CICD-007: Environment-Based Release Promotion](UC-CICD-007-environment-based-release-promotion.md) | environment promotion contract and approval evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-OBS-008: Deployment Health Scoring](../observability/UC-OBS-008-deployment-health-scoring.md) | deployment-health score and promotion/rollback signal | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | approved secret reference, redaction rule, and rotation owner | Missing, stale, or failed evidence blocks promotion or runtime action. |
+
+Before Automated Build Pipeline is implemented, every handoff must resolve to an immutable
+revision and machine-readable artifact. A URL, screenshot, or verbal approval
+alone is not sufficient dependency evidence.
+
+## Quality attributes
+
+For Automated Build Pipeline, quality is measured against the bounded enterprise outcome—not
+document length or a green job. Unapproved business thresholds remain explicit
+decisions and must not be invented.
+
+| Attribute | Required measure or invariant | Decision state |
+| --- | --- | --- |
+| Functional correctness | Every required input is validated; **Produce repeatable, traceable application build outputs for provider, payer, and shared-platform services** is evaluated against positive, negative, missing-input, and unauthorized-scope cases. | Fixed design requirement |
+| Performance and scale | Establish a baseline for pipeline duration, queue delay, reproducibility, and false-pass rate on existing capacity; the owner must approve warning and blocking thresholds before runtime promotion. | Thresholds `TBD` before implementation |
+| Reliability | Missing prerequisites, stale dependencies, malformed evidence, and partial results fail closed without widening scope. | Fixed design requirement |
+| Recovery | Record the maximum acceptable interruption and recovery time before runtime use; source-only validation must remain zero-change. | Owner decision required before runtime exercise |
+| Observability | Emit use-case ID, revision, target, executor, start/end time, duration, decision, reason code, and recovery reference. | Required in the result schema |
+| Evidence retention | Assign classification, retention period, and deletion owner before storing runtime evidence. | Security/compliance decision required |
+
+Load, latency, availability, retention, RTO, and RPO values for Automated Build Pipeline become
+requirements only after the named service or business owner approves them. Until
+then, the implementation gate records them as unresolved instead of quietly
+choosing defaults.
+
+## Security and privacy architecture
+
+The Automated Build Pipeline design separates source validation, privileged execution, target
+access, and evidence review. Those boundaries remain in force even when one
+engineer can access more than one system.
+
+| Trust boundary | Allowed flow | Required control |
+| --- | --- | --- |
+| Contributor → GitLab | Reviewed source, contract, and synthetic/sanitized fixtures | Protected branch rules, peer review, secret scanning, and immutable commit identity |
+| GitLab runner → result artifact | Read-only evaluation inputs and machine-readable output | No target-changing credential; pinned tool versions; artifact checksum and expiry |
+| Approval plane → executor | Approved revision, target allowlist, mode, canary, and change reference | Separate authorization through the existing Jenkins/AWX or platform control path |
+| Executor → existing target | Minimum commands or API operations required for Automated Build Pipeline | Least-privilege identity, explicit target limit, timeout, and stop condition |
+| Target → evidence store | Sanitized metadata, measurements, decision, and recovery result | Exclude credentials, tokens, private keys, kubeconfigs, packet payloads, PHI, PII, and unrelated records |
+
+For Automated Build Pipeline, the primary threat is **untrusted source or dependency content reaching a privileged runner**. The mandatory response is
+protected refs, isolated build context, pinned dependencies, least-privilege credentials, and artifact provenance. Authentication and authorization mappings must name
+the existing identity source, principal or service account, permitted actions,
+credential owner, rotation path, and emergency revocation procedure before a
+runtime story can move beyond `Planned`.
+
+## Architecture decisions and trade-offs
+
+| Decision | Selected architecture | Alternative deferred or rejected | Rationale and status |
+| --- | --- | --- | --- |
+| First implementation slice | Contract, schema, fixtures, and read-only evidence on the existing GitLab runner | Product installation or broad runtime rollout | Proves behavior without expanding infrastructure; **approved design direction** |
+| Runtime execution | Use only Jenkins shared-library workflow when current inventory and change approval confirm it is available | Direct operator changes or credentials in CI | Preserves separation of duties; **conditional on implementation review** |
+| Evidence | Machine-readable result is authoritative; screenshots are optional supporting material | Screenshot-only acceptance | Enables repeatable audit and automated gates; **approved design direction** |
+| Failure handling | Fail closed, preserve bounded diagnostics, and recover only the named scope | Continue with partial or stale evidence | Prevents false success and hidden blast radius; **approved design direction** |
+| New capacity or product | Stop and raise a separate architecture decision | Silently add a VM, service, cloud dependency, or cluster add-on | Maintains the existing-lab constraint; **mandatory** |
+
+### Open decisions before implementation
+
+| Open decision | Decision owner | Resolution gate |
+| --- | --- | --- |
+| Exact inventory object and first canary | Platform owner plus consuming service/data owner | Must resolve before the implementation story leaves `Planned` |
+| Performance, scale, and reliability thresholds | Service owner and SRE | Must be recorded before a runtime acceptance run |
+| Identity-to-action authorization matrix | Platform owner and security reviewer | Must be approved before target credentials are attached |
+| Evidence classification and retention | Data/security owner | Must be approved before runtime artifacts are retained |
+
+If any selected approach changes, record the rationale beside UC-CICD-002 in
+the implementation repository before code review. A documentation edit alone
+does not approve the new architecture.
+
+## Implementation design
+
+The first Automated Build Pipeline implementation is deliberately source-only. Its planned files live in the existing repository; none provisions infrastructure.
+
+| Planned source responsibility | Exact planned location |
+| --- | --- |
+| Use-case contract and target allowlist | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/contracts/uc-cicd-002.yaml` |
+| Primary implementation | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/jobs/automated-build-pipeline.groovy`; entry point: the `automated-build-pipeline` Jenkins job and its shared-library step |
+| Machine-readable result schema | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/schemas/uc-cicd-002-result.schema.json` |
+| Positive, negative, malformed, and recovery fixtures | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/tests/fixtures/uc-cicd-002/` |
+| GitLab source gate | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/.gitlab/ci/uc-cicd-002.yml` |
+| Operator diagnosis and recovery | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/docs/runbooks/uc-cicd-002.md` |
+
+### Delivery stages
+
+1. **Contract:** add the contract, schema, owners, dependency revisions, target
+   allowlist, modes, reason codes, and open-decision values.
+2. **Source validation:** lint exact paths, validate schema compatibility, scan
+   for sensitive content, and run every fixture on the existing runner.
+3. **Read-only proof:** execute the `automated-build-pipeline` Jenkins job and its shared-library step, publish a checksummed result, and
+   prove that blocked cases cannot reach a mutating path.
+4. **Bounded execution:** only after separate approval, pass the immutable
+   revision, target, mode, canary, and change ID to Jenkins shared-library workflow.
+5. **Independent verification:** measure the expected result, confirm unrelated
+   state is unchanged, run recovery or zero-change proof, and obtain owner
+   review.
+
+The implementation merge request must link this page, the dependency artifacts,
+the decision values above, and the eventual pipeline/job/run identifiers. Code
+completion alone cannot promote the page to runtime verified.
+
 ## Code and configuration map
 
 These are future implementation touchpoints, not existing or completed files.
@@ -183,10 +359,10 @@ The implementation team must confirm them against the repository before work.
 | Toolchain version differs | Build fails its preflight control | Pin or restore the approved version; do not accept a workstation-generated artifact |
 | Output checksum changes unexpectedly | Reproducibility check fails | Compare inputs and build metadata; quarantine both outputs until explained |
 | Secret or protected data appears in output | Artifact is rejected | Remove exposure, rotate affected credential if necessary, and record an incident |
-| Runner unavailable | Job remains pending or fails visibly | Use another already accepted compatible runner only; do not provision capacity under this use case |
+| Runner unavailable | Job remains pending or fails visibly | Use another already accepted compatible runner only; do not provision capacity under this documented capability |
 | Build succeeds but evidence is incomplete | Downstream gates remain blocked | Regenerate complete evidence before publication |
 
-Because this use case is non-mutating outside its CI workspace, rollback means
+Because this documented capability is non-mutating outside its CI workspace, rollback means
 discarding the output and reverting the build-definition change. It does not
 authorize a runtime rollback.
 
@@ -303,7 +479,7 @@ explained; no runtime system is changed.
 ## Acceptance decision
 
 **Planned.** This page is the detailed design and future implementation plan.
-The use case becomes code complete only after reviewed source and passing CI
+Code completion requires reviewed source and passing CI
 exist in the named implementation repository. It becomes accepted only after
 the existing runner produces a traceable output, negative-path tests block
 downstream work, repeatability is evaluated, evidence is reviewed, and the

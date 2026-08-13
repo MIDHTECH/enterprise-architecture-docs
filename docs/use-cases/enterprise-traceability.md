@@ -110,8 +110,20 @@ Every detailed page must identify:
 
 - the canonical portfolio use-case name and primary platform;
 - the enterprise capability and provider/payer/shared-service outcome;
-- supporting platforms and the handoff between them;
+- the current environment boundary and the infrastructure it is not authorized
+  to create;
+- a use-case-specific architecture context and component or workflow diagram;
+- linked supporting use cases, the artifact exchanged at each handoff, and the
+  failure behavior when dependency evidence is missing or stale;
+- measurable quality attributes, including named owners for thresholds that
+  remain undecided;
+- trust boundaries, least-privilege execution, evidence classification, and
+  credential revocation expectations;
+- selected architecture decisions, rejected or deferred alternatives, and the
+  decision gate for every unresolved choice;
 - the Jira epic and testable implementation stories;
+- exact planned contract, implementation, result-schema, fixture, CI, and
+  runbook paths in the existing platform repository;
 - the runtime evidence required for acceptance; and
 - the rollback, recovery, or non-mutating stop point.
 

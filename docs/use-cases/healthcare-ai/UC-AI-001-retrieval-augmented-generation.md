@@ -8,6 +8,7 @@ Last verified: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Retrieval-Augmented Generation |
 | Primary platform | Enterprise Healthcare AI Platform |
+| Supporting use cases | [UC-DATA-015](../data/UC-DATA-015-data-classification.md), [UC-DATA-023](../data/UC-DATA-023-data-access-governance.md), [UC-AI-011](UC-AI-011-ai-security-and-access-control.md), [UC-MLOPS-004](../mlops/UC-MLOPS-004-model-validation-gates.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | Help staff locate cited, approved operational knowledge without exposing protected data or trusting uncited output |
 | Supporting platforms | Data engineering, governance, DevSecOps delivery, observability |
@@ -78,7 +79,27 @@ and audit metadata. LLM generation, embeddings services, vector databases,
 agents, tool execution, FHIR connections, clinical advice, claims decisions,
 new compute, and protected data are excluded.
 
-## End-to-end execution flow
+## Architecture context
+
+Retrieval-Augmented Generation is evaluated inside the existing enterprise lab and the owning
+platform's current source-control and execution boundaries. The architectural
+unit is the governed outcome—**Help staff locate cited, approved operational knowledge without exposing protected data or trusting uncited output**—rather than a new product or
+environment.
+
+| Context element | Architecture statement |
+| --- | --- |
+| Business and operational setting | Enterprise consumers: Provider operations, payer operations, shared digital platform, risk and compliance. The result must be explainable, repeatable, and owned. |
+| Current state | **Planned — repository scaffold exists; no AI runtime is claimed** |
+| Desired state | A reviewed contract drives a bounded result, machine-readable evidence, and a safe stop or recovery decision. |
+| Existing target boundary | Existing healthcare-AI GitLab project, accepted shared runner, and approved documentation snapshots |
+| Infrastructure constraint | No model server, vector database, VM, cluster workload, cloud API, or new storage is created |
+| Accountable platform owner | Healthcare AI Platform team; the consuming service, data, security, or workflow owner remains accountable for accepting business impact. |
+
+The page owns the contract, control logic, evidence, and recovery behavior for
+Retrieval-Augmented Generation. It does not absorb the responsibilities of the dependency use cases
+listed below.
+
+## Architecture diagram
 
 ```mermaid
 flowchart LR
@@ -90,6 +111,116 @@ flowchart LR
     Cite --> Eval["Quality, refusal, injection, and latency report"]
     Eval --> Gate["Separate approval before generation or runtime service"]
 ```
+
+## Dependencies and handoffs
+
+Retrieval-Augmented Generation remains accountable to its primary platform. The dependencies below
+provide explicit contracts or assurance evidence; they do not become alternate owners.
+
+| Relationship | Use case | Required handoff | Failure propagation |
+| --- | --- | --- | --- |
+| Required upstream contract | [UC-DATA-015: Data Classification](../data/UC-DATA-015-data-classification.md) | data classification and permitted handling rules | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-DATA-023: Data Access Governance](../data/UC-DATA-023-data-access-governance.md) | dataset role, purpose-of-use, and access-review evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-AI-011: AI Security and Access Control](UC-AI-011-ai-security-and-access-control.md) | AI principal, tool/data scope, and authorization decision | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-MLOPS-004: Model Validation Gates](../mlops/UC-MLOPS-004-model-validation-gates.md) | model quality/safety gate and reviewer decision | Missing, stale, or failed evidence blocks promotion or runtime action. |
+
+Before Retrieval-Augmented Generation is implemented, every handoff must resolve to an immutable
+revision and machine-readable artifact. A URL, screenshot, or verbal approval
+alone is not sufficient dependency evidence.
+
+## Quality attributes
+
+For Retrieval-Augmented Generation, quality is measured against the bounded enterprise outcome—not
+document length or a green job. Unapproved business thresholds remain explicit
+decisions and must not be invented.
+
+| Attribute | Required measure or invariant | Decision state |
+| --- | --- | --- |
+| Functional correctness | Every required input is validated; **Help staff locate cited, approved operational knowledge without exposing protected data or trusting uncited output** is evaluated against positive, negative, missing-input, and unauthorized-scope cases. | Fixed design requirement |
+| Performance and scale | Establish a baseline for safety-case coverage, citation or decision accuracy, latency baseline, and review burden on existing capacity; the owner must approve warning and blocking thresholds before runtime promotion. | Thresholds `TBD` before implementation |
+| Reliability | Missing prerequisites, stale dependencies, malformed evidence, and partial results fail closed without widening scope. | Fixed design requirement |
+| Recovery | Record the maximum acceptable interruption and recovery time before runtime use; source-only validation must remain zero-change. | Owner decision required before runtime exercise |
+| Observability | Emit use-case ID, revision, target, executor, start/end time, duration, decision, reason code, and recovery reference. | Required in the result schema |
+| Evidence retention | Assign classification, retention period, and deletion owner before storing runtime evidence. | Security/compliance decision required |
+
+Load, latency, availability, retention, RTO, and RPO values for Retrieval-Augmented Generation become
+requirements only after the named service or business owner approves them. Until
+then, the implementation gate records them as unresolved instead of quietly
+choosing defaults.
+
+## Security and privacy architecture
+
+The Retrieval-Augmented Generation design separates source validation, privileged execution, target
+access, and evidence review. Those boundaries remain in force even when one
+engineer can access more than one system.
+
+| Trust boundary | Allowed flow | Required control |
+| --- | --- | --- |
+| Contributor → GitLab | Reviewed source, contract, and synthetic/sanitized fixtures | Protected branch rules, peer review, secret scanning, and immutable commit identity |
+| GitLab runner → result artifact | Read-only evaluation inputs and machine-readable output | No target-changing credential; pinned tool versions; artifact checksum and expiry |
+| Approval plane → executor | Approved revision, target allowlist, mode, canary, and change reference | Separate authorization through the existing Jenkins/AWX or platform control path |
+| Executor → existing target | Minimum commands or API operations required for Retrieval-Augmented Generation | Least-privilege identity, explicit target limit, timeout, and stop condition |
+| Target → evidence store | Sanitized metadata, measurements, decision, and recovery result | Exclude credentials, tokens, private keys, kubeconfigs, packet payloads, PHI, PII, and unrelated records |
+
+For Retrieval-Augmented Generation, the primary threat is **prompt, retrieved content, model output, or tool request crossing a data or authorization boundary**. The mandatory response is
+synthetic/de-identified fixtures, role-aware policy, untrusted-content isolation, refusal tests, human review, and artifact redaction. Authentication and authorization mappings must name
+the existing identity source, principal or service account, permitted actions,
+credential owner, rotation path, and emergency revocation procedure before a
+runtime story can move beyond `Planned`.
+
+## Architecture decisions and trade-offs
+
+| Decision | Selected architecture | Alternative deferred or rejected | Rationale and status |
+| --- | --- | --- | --- |
+| First implementation slice | Contract, schema, fixtures, and read-only evidence on the existing GitLab runner | Product installation or broad runtime rollout | Proves behavior without expanding infrastructure; **approved design direction** |
+| Runtime execution | Use only Existing GitLab shared runner when current inventory and change approval confirm it is available | Direct operator changes or credentials in CI | Preserves separation of duties; **conditional on implementation review** |
+| Evidence | Machine-readable result is authoritative; screenshots are optional supporting material | Screenshot-only acceptance | Enables repeatable audit and automated gates; **approved design direction** |
+| Failure handling | Fail closed, preserve bounded diagnostics, and recover only the named scope | Continue with partial or stale evidence | Prevents false success and hidden blast radius; **approved design direction** |
+| New capacity or product | Stop and raise a separate architecture decision | Silently add a VM, service, cloud dependency, or cluster add-on | Maintains the existing-lab constraint; **mandatory** |
+
+### Open decisions before implementation
+
+| Open decision | Decision owner | Resolution gate |
+| --- | --- | --- |
+| Exact inventory object and first canary | Platform owner plus consuming service/data owner | Must resolve before the implementation story leaves `Planned` |
+| Performance, scale, and reliability thresholds | Service owner and SRE | Must be recorded before a runtime acceptance run |
+| Identity-to-action authorization matrix | Platform owner and security reviewer | Must be approved before target credentials are attached |
+| Evidence classification and retention | Data/security owner | Must be approved before runtime artifacts are retained |
+
+If any selected approach changes, record the rationale beside UC-AI-001 in
+the implementation repository before code review. A documentation edit alone
+does not approve the new architecture.
+
+## Implementation design
+
+The first Retrieval-Augmented Generation implementation is deliberately source-only. Its planned files live in the existing repository; none provisions infrastructure.
+
+| Planned source responsibility | Exact planned location |
+| --- | --- |
+| Use-case contract and target allowlist | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/contracts/uc-ai-001.yaml` |
+| Primary implementation | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/src/evaluations/retrieval-augmented-generation.py`; entry point: the `evaluate_retrieval_augmented_generation` offline evaluator |
+| Machine-readable result schema | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/schemas/uc-ai-001-result.schema.json` |
+| Positive, negative, malformed, and recovery fixtures | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/tests/fixtures/uc-ai-001/` |
+| GitLab source gate | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/.gitlab/ci/uc-ai-001.yml` |
+| Operator diagnosis and recovery | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/docs/runbooks/uc-ai-001.md` |
+
+### Delivery stages
+
+1. **Contract:** add the contract, schema, owners, dependency revisions, target
+   allowlist, modes, reason codes, and open-decision values.
+2. **Source validation:** lint exact paths, validate schema compatibility, scan
+   for sensitive content, and run every fixture on the existing runner.
+3. **Read-only proof:** execute the `evaluate_retrieval_augmented_generation` offline evaluator, publish a checksummed result, and
+   prove that blocked cases cannot reach a mutating path.
+4. **Bounded execution:** only after separate approval, pass the immutable
+   revision, target, mode, canary, and change ID to Existing GitLab shared runner.
+5. **Independent verification:** measure the expected result, confirm unrelated
+   state is unchanged, run recovery or zero-change proof, and obtain owner
+   review.
+
+The implementation merge request must link this page, the dependency artifacts,
+the decision values above, and the eventual pipeline/job/run identifiers. Code
+completion alone cannot promote the page to runtime verified.
 
 ## Code and configuration map
 

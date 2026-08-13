@@ -8,6 +8,7 @@ Last verified: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Automated Restore Validation |
 | Primary platform | Enterprise Database Engineering and Reliability Platform |
+| Supporting use cases | [UC-RSO-015](../resilience/UC-RSO-015-backup-and-recovery-orchestration.md), [UC-RSO-017](../resilience/UC-RSO-017-rto-and-rpo-measurement.md), [UC-LNX-010](../linux/UC-LNX-010-filesystem-lvm-storage-management.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md) |
 | Enterprise alignment | Provider operations, payer operations, operational resilience |
 | Enterprise outcome | Prove that a database backup supporting enterprise workflows is usable before an incident |
 | Supporting platforms | Resilience operations, Linux systems, governance, observability |
@@ -73,7 +74,27 @@ assertions, timing, cleanup, and evidence. Restoring over a live database,
 creating a new server or VM, changing retention, production failover, and use
 of protected healthcare data in artifacts are excluded.
 
-## End-to-end execution flow
+## Architecture context
+
+Automated PostgreSQL Restore Validation is evaluated inside the existing enterprise lab and the owning
+platform's current source-control and execution boundaries. The architectural
+unit is the governed outcome—**Prove that a database backup supporting enterprise workflows is usable before an incident**—rather than a new product or
+environment.
+
+| Context element | Architecture statement |
+| --- | --- |
+| Business and operational setting | Enterprise consumers: Provider operations, payer operations, operational resilience. The result must be explainable, repeatable, and owned. |
+| Current state | **Planned — PostgreSQL is active; restore acceptance is not claimed** |
+| Desired state | A reviewed contract drives a bounded result, machine-readable evidence, and a safe stop or recovery decision. |
+| Existing target boundary | Existing PostgreSQL 18 service, `backup.example.com`, MinIO, GitLab, Jenkins, and AWX paths |
+| Infrastructure constraint | No VM, database server, storage system, or product is created |
+| Accountable platform owner | Database Reliability team; the consuming service, data, security, or workflow owner remains accountable for accepting business impact. |
+
+The page owns the contract, control logic, evidence, and recovery behavior for
+Automated PostgreSQL Restore Validation. It does not absorb the responsibilities of the dependency use cases
+listed below.
+
+## Architecture diagram
 
 ```mermaid
 flowchart LR
@@ -84,6 +105,116 @@ flowchart LR
     Tests --> Evidence["RPO/RTO and validation artifact"]
     Evidence --> Cleanup["Drop only the temporary database"]
 ```
+
+## Dependencies and handoffs
+
+Automated PostgreSQL Restore Validation remains accountable to its primary platform. The dependencies below
+provide explicit contracts or assurance evidence; they do not become alternate owners.
+
+| Relationship | Use case | Required handoff | Failure propagation |
+| --- | --- | --- | --- |
+| Required upstream contract | [UC-RSO-015: Backup and Recovery Orchestration](../resilience/UC-RSO-015-backup-and-recovery-orchestration.md) | backup identity, recovery orchestration, and restoration evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-RSO-017: RTO and RPO Measurement](../resilience/UC-RSO-017-rto-and-rpo-measurement.md) | owned RTO/RPO targets and measurement method | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-LNX-010: Filesystem, LVM and Storage Management](../linux/UC-LNX-010-filesystem-lvm-storage-management.md) | filesystem capacity, mount identity, and recovery boundary | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | approved secret reference, redaction rule, and rotation owner | Missing, stale, or failed evidence blocks promotion or runtime action. |
+
+Before Automated PostgreSQL Restore Validation is implemented, every handoff must resolve to an immutable
+revision and machine-readable artifact. A URL, screenshot, or verbal approval
+alone is not sufficient dependency evidence.
+
+## Quality attributes
+
+For Automated PostgreSQL Restore Validation, quality is measured against the bounded enterprise outcome—not
+document length or a green job. Unapproved business thresholds remain explicit
+decisions and must not be invented.
+
+| Attribute | Required measure or invariant | Decision state |
+| --- | --- | --- |
+| Functional correctness | Every required input is validated; **Prove that a database backup supporting enterprise workflows is usable before an incident** is evaluated against positive, negative, missing-input, and unauthorized-scope cases. | Fixed design requirement |
+| Performance and scale | Establish a baseline for query or job duration, connection impact, recovery objectives, and data correctness on existing capacity; the owner must approve warning and blocking thresholds before runtime promotion. | Thresholds `TBD` before implementation |
+| Reliability | Missing prerequisites, stale dependencies, malformed evidence, and partial results fail closed without widening scope. | Fixed design requirement |
+| Recovery | Record owner-approved RTO/RPO and consistency point before a stateful drill; use `TBD` with owner and decision date until approved. | Owner decision required before runtime exercise |
+| Observability | Emit use-case ID, revision, target, executor, start/end time, duration, decision, reason code, and recovery reference. | Required in the result schema |
+| Evidence retention | Assign classification, retention period, and deletion owner before storing runtime evidence. | Security/compliance decision required |
+
+Load, latency, availability, retention, RTO, and RPO values for Automated PostgreSQL Restore Validation become
+requirements only after the named service or business owner approves them. Until
+then, the implementation gate records them as unresolved instead of quietly
+choosing defaults.
+
+## Security and privacy architecture
+
+The Automated PostgreSQL Restore Validation design separates source validation, privileged execution, target
+access, and evidence review. Those boundaries remain in force even when one
+engineer can access more than one system.
+
+| Trust boundary | Allowed flow | Required control |
+| --- | --- | --- |
+| Contributor → GitLab | Reviewed source, contract, and synthetic/sanitized fixtures | Protected branch rules, peer review, secret scanning, and immutable commit identity |
+| GitLab runner → result artifact | Read-only evaluation inputs and machine-readable output | No target-changing credential; pinned tool versions; artifact checksum and expiry |
+| Approval plane → executor | Approved revision, target allowlist, mode, canary, and change reference | Separate authorization through the existing Jenkins/AWX or platform control path |
+| Executor → existing target | Minimum commands or API operations required for Automated PostgreSQL Restore Validation | Least-privilege identity, explicit target limit, timeout, and stop condition |
+| Target → evidence store | Sanitized metadata, measurements, decision, and recovery result | Exclude credentials, tokens, private keys, kubeconfigs, packet payloads, PHI, PII, and unrelated records |
+
+For Automated PostgreSQL Restore Validation, the primary threat is **administrative credentials or row content escaping the database control boundary**. The mandatory response is
+separate read/admin identities, database allowlists, temporary-object guards, encrypted credentials, and metadata-only evidence. Authentication and authorization mappings must name
+the existing identity source, principal or service account, permitted actions,
+credential owner, rotation path, and emergency revocation procedure before a
+runtime story can move beyond `Planned`.
+
+## Architecture decisions and trade-offs
+
+| Decision | Selected architecture | Alternative deferred or rejected | Rationale and status |
+| --- | --- | --- | --- |
+| First implementation slice | Contract, schema, fixtures, and read-only evidence on the existing GitLab runner | Product installation or broad runtime rollout | Proves behavior without expanding infrastructure; **approved design direction** |
+| Runtime execution | Use only Approved Jenkins/AWX database workflow when current inventory and change approval confirm it is available | Direct operator changes or credentials in CI | Preserves separation of duties; **conditional on implementation review** |
+| Evidence | Machine-readable result is authoritative; screenshots are optional supporting material | Screenshot-only acceptance | Enables repeatable audit and automated gates; **approved design direction** |
+| Failure handling | Fail closed, preserve bounded diagnostics, and recover only the named scope | Continue with partial or stale evidence | Prevents false success and hidden blast radius; **approved design direction** |
+| New capacity or product | Stop and raise a separate architecture decision | Silently add a VM, service, cloud dependency, or cluster add-on | Maintains the existing-lab constraint; **mandatory** |
+
+### Open decisions before implementation
+
+| Open decision | Decision owner | Resolution gate |
+| --- | --- | --- |
+| Exact inventory object and first canary | Platform owner plus consuming service/data owner | Must resolve before the implementation story leaves `Planned` |
+| Performance, scale, and reliability thresholds | Service owner and SRE | Must be recorded before a runtime acceptance run |
+| Identity-to-action authorization matrix | Platform owner and security reviewer | Must be approved before target credentials are attached |
+| Evidence classification and retention | Data/security owner | Must be approved before runtime artifacts are retained |
+
+If any selected approach changes, record the rationale beside UC-DB-001 in
+the implementation repository before code review. A documentation edit alone
+does not approve the new architecture.
+
+## Implementation design
+
+The first Automated PostgreSQL Restore Validation implementation is deliberately source-only. Its planned files live in the existing repository; none provisions infrastructure.
+
+| Planned source responsibility | Exact planned location |
+| --- | --- |
+| Use-case contract and target allowlist | `midhhealth/data-and-integration/database-reliability-platform/contracts/uc-db-001.yaml` |
+| Primary implementation | `midhhealth/data-and-integration/database-reliability-platform/playbooks/backup-restore-validation.yml`; entry point: the `backup-restore-validation` database playbook and report validator |
+| Machine-readable result schema | `midhhealth/data-and-integration/database-reliability-platform/schemas/uc-db-001-result.schema.json` |
+| Positive, negative, malformed, and recovery fixtures | `midhhealth/data-and-integration/database-reliability-platform/tests/fixtures/uc-db-001/` |
+| GitLab source gate | `midhhealth/data-and-integration/database-reliability-platform/.gitlab/ci/uc-db-001.yml` |
+| Operator diagnosis and recovery | `midhhealth/data-and-integration/database-reliability-platform/docs/runbooks/uc-db-001.md` |
+
+### Delivery stages
+
+1. **Contract:** add the contract, schema, owners, dependency revisions, target
+   allowlist, modes, reason codes, and open-decision values.
+2. **Source validation:** lint exact paths, validate schema compatibility, scan
+   for sensitive content, and run every fixture on the existing runner.
+3. **Read-only proof:** execute the `backup-restore-validation` database playbook and report validator, publish a checksummed result, and
+   prove that blocked cases cannot reach a mutating path.
+4. **Bounded execution:** only after separate approval, pass the immutable
+   revision, target, mode, canary, and change ID to Approved Jenkins/AWX database workflow.
+5. **Independent verification:** measure the expected result, confirm unrelated
+   state is unchanged, run recovery or zero-change proof, and obtain owner
+   review.
+
+The implementation merge request must link this page, the dependency artifacts,
+the decision values above, and the eventual pipeline/job/run identifiers. Code
+completion alone cannot promote the page to runtime verified.
 
 ## Code and configuration map
 

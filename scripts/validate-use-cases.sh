@@ -31,6 +31,13 @@ required_headings=(
   "## Trigger and actors"
   "## Preconditions"
   "## Scope and exclusions"
+  "## Architecture context"
+  "## Architecture diagram"
+  "## Dependencies and handoffs"
+  "## Quality attributes"
+  "## Security and privacy architecture"
+  "## Architecture decisions and trade-offs"
+  "## Implementation design"
   "## Code and configuration map"
   "## Jira breakdown"
   "## Evidence and screenshot register"
@@ -45,6 +52,35 @@ for document in "${USE_CASE_FILES[@]}"; do
       exit 1
     fi
   done
+
+  if ! grep -Fq '| Supporting use cases |' "$document"; then
+    echo "$document: missing supporting use-case links in the record." >&2
+    exit 1
+  fi
+
+  planned_path_markers=(
+    "/contracts/"
+    "/schemas/"
+    "/tests/fixtures/"
+    "/.gitlab/ci/"
+    "/docs/runbooks/"
+  )
+  for marker in "${planned_path_markers[@]}"; do
+    if ! grep -Fq "$marker" "$document"; then
+      echo "$document: missing planned implementation location containing $marker" >&2
+      exit 1
+    fi
+  done
+
+  if ! grep -Fq 'Thresholds `TBD` before implementation' "$document"; then
+    echo "$document: missing owned quality-attribute threshold decision." >&2
+    exit 1
+  fi
+
+  if grep -Eqi 'addresses a specific operating need inside the|For an approved scope, the future workflow evaluates|turns a versioned platform intent into a repeatable decision|Exact paths and tool choices must be confirmed|same enterprise control language used across|\b(this|the) use case\b|as a .*,? i need' "$document"; then
+    echo "$document: contains prohibited stock or robotic wording." >&2
+    exit 1
+  fi
 
   story_count="$(grep -c '^### STORY-' "$document" || true)"
   if [[ "$story_count" -lt 3 ]]; then
@@ -93,6 +129,69 @@ for document in "${USE_CASE_FILES[@]}"; do
     }
   ' "$document"
 done
+
+python3 - "$ROOT_DIR" <<'PY'
+from pathlib import Path
+import re
+import sys
+
+root = Path(sys.argv[1])
+documents = sorted((root / "docs/use-cases").glob("*/UC-*.md"))
+id_to_path = {}
+for document in documents:
+    match = re.match(r"(UC-[A-Z0-9]+-\d{3})", document.name)
+    if not match:
+        raise SystemExit(f"{document}: filename does not begin with a canonical use-case ID")
+    id_to_path[match.group(1)] = document
+
+for document in documents:
+    text = document.read_text()
+    own_id = re.match(r"(UC-[A-Z0-9]+-\d{3})", document.name).group(1)
+    required_architecture_headings = (
+        "Architecture context",
+        "Architecture diagram",
+        "Dependencies and handoffs",
+        "Quality attributes",
+        "Security and privacy architecture",
+        "Architecture decisions and trade-offs",
+        "Implementation design",
+    )
+    for heading in required_architecture_headings:
+        count = len(re.findall(rf"^## {re.escape(heading)}\s*$", text, re.M))
+        if count != 1:
+            raise SystemExit(f"{document}: architecture heading {heading!r} occurs {count} times")
+
+    if text.count("```") % 2:
+        raise SystemExit(f"{document}: unbalanced fenced code blocks")
+
+    handoff_section = text.split("## Dependencies and handoffs", 1)[1].split("## Quality attributes", 1)[0]
+    handoff_ids = re.findall(
+        r"\[(UC-[A-Z0-9]+-\d{3})(?::[^]]+)?\]\([^)]*\.md\)",
+        handoff_section,
+    )
+    supporting_row = re.search(r"^\| Supporting use cases \| (.+) \|$", text, re.M)
+    supporting_ids = (
+        re.findall(r"\[(UC-[A-Z0-9]+-\d{3})\]", supporting_row.group(1))
+        if supporting_row
+        else []
+    )
+    if own_id in handoff_ids:
+        raise SystemExit(f"{document}: dependency table contains self-dependency {own_id}")
+    if len(set(handoff_ids)) < 3:
+        raise SystemExit(f"{document}: architecture must link at least three dependency use cases")
+    if supporting_ids != handoff_ids:
+        raise SystemExit(
+            f"{document}: supporting-use-case record {supporting_ids} does not match handoff table {handoff_ids}"
+        )
+
+    if document.parent.name != "linux" and "```mermaid" not in text:
+        raise SystemExit(f"{document}: non-Linux architecture must contain a Mermaid diagram")
+
+    for target in re.findall(r"\[[^\]]+\]\(([^)#]+\.md)(?:#[^)]+)?\)", text):
+        resolved = (document.parent / target).resolve()
+        if not resolved.is_file():
+            raise SystemExit(f"{document}: broken internal Markdown link: {target}")
+PY
 
 LINUX_USE_CASE_FILES=()
 while IFS= read -r line; do

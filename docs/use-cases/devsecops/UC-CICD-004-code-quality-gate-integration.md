@@ -8,6 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Code Quality Gate Integration |
 | Primary platform | Enterprise DevSecOps Delivery Platform |
+| Supporting use cases | [UC-CICD-002](UC-CICD-002-automated-build-pipeline.md), [UC-CICD-005](UC-CICD-005-artifact-management-automation.md), [UC-CICD-010](UC-CICD-010-secure-ci-cd-pipeline-implementation.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md) |
 | Enterprise outcome | Prevent maintainability, reliability, and reviewability defects from entering deployable artifacts |
 | Primary actors | Application developer, code reviewer, delivery engineer, platform owner |
 | Primary GitLab repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
@@ -123,7 +124,27 @@ unprotected pipeline variables. A stricter application policy may extend the
 enterprise minimum. Lowering a blocking threshold or disabling a rule is itself
 a reviewed policy change.
 
-## End-to-end execution flow
+## Architecture context
+
+Code Quality Gate Integration is evaluated inside the existing enterprise lab and the owning
+platform's current source-control and execution boundaries. The architectural
+unit is the governed outcome—**Prevent maintainability, reliability, and reviewability defects from entering deployable artifacts**—rather than a new product or
+environment.
+
+| Context element | Architecture statement |
+| --- | --- |
+| Business and operational setting | Enterprise consumers: Enterprise DevSecOps Delivery Platform. The result must be explainable, repeatable, and owned. |
+| Current state | **Planned — detailed design only; no quality job, service integration, or execution evidence is claimed** |
+| Desired state | A reviewed contract drives a bounded result, machine-readable evidence, and a safe stop or recovery decision. |
+| Existing target boundary | Approved existing delivery target |
+| Infrastructure constraint | Reuse existing GitLab and accepted runners; do not install SonarQube or create a runner, VM, database, cluster, or scanning service |
+| Accountable platform owner | Enterprise DevSecOps Delivery Platform team with participating application owners; the consuming service, data, security, or workflow owner remains accountable for accepting business impact. |
+
+The page owns the contract, control logic, evidence, and recovery behavior for
+Code Quality Gate Integration. It does not absorb the responsibilities of the dependency use cases
+listed below.
+
+## Architecture diagram
 
 1. A merge request identifies an immutable source revision and its target
    branch or approved baseline revision.
@@ -192,6 +213,116 @@ Reports must not expose credentials, private source beyond normal repository
 access, or protected healthcare data. Screenshots may supplement a review but
 do not replace the normalized result.
 
+## Dependencies and handoffs
+
+Code Quality Gate Integration remains accountable to its primary platform. The dependencies below
+provide explicit contracts or assurance evidence; they do not become alternate owners.
+
+| Relationship | Use case | Required handoff | Failure propagation |
+| --- | --- | --- | --- |
+| Required upstream contract | [UC-CICD-002: Automated Build Pipeline](UC-CICD-002-automated-build-pipeline.md) | reviewed contract and evidence required by the bounded workflow | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-CICD-005: Artifact Management Automation](UC-CICD-005-artifact-management-automation.md) | reviewed contract and evidence required by the bounded workflow | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-CICD-010: Secure CI/CD Pipeline Implementation](UC-CICD-010-secure-ci-cd-pipeline-implementation.md) | secure pipeline baseline and protected execution boundary | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | approved secret reference, redaction rule, and rotation owner | Missing, stale, or failed evidence blocks promotion or runtime action. |
+
+Before Code Quality Gate Integration is implemented, every handoff must resolve to an immutable
+revision and machine-readable artifact. A URL, screenshot, or verbal approval
+alone is not sufficient dependency evidence.
+
+## Quality attributes
+
+For Code Quality Gate Integration, quality is measured against the bounded enterprise outcome—not
+document length or a green job. Unapproved business thresholds remain explicit
+decisions and must not be invented.
+
+| Attribute | Required measure or invariant | Decision state |
+| --- | --- | --- |
+| Functional correctness | Every required input is validated; **Prevent maintainability, reliability, and reviewability defects from entering deployable artifacts** is evaluated against positive, negative, missing-input, and unauthorized-scope cases. | Fixed design requirement |
+| Performance and scale | Establish a baseline for pipeline duration, queue delay, reproducibility, and false-pass rate on existing capacity; the owner must approve warning and blocking thresholds before runtime promotion. | Thresholds `TBD` before implementation |
+| Reliability | Missing prerequisites, stale dependencies, malformed evidence, and partial results fail closed without widening scope. | Fixed design requirement |
+| Recovery | Record the maximum acceptable interruption and recovery time before runtime use; source-only validation must remain zero-change. | Owner decision required before runtime exercise |
+| Observability | Emit use-case ID, revision, target, executor, start/end time, duration, decision, reason code, and recovery reference. | Required in the result schema |
+| Evidence retention | Assign classification, retention period, and deletion owner before storing runtime evidence. | Security/compliance decision required |
+
+Load, latency, availability, retention, RTO, and RPO values for Code Quality Gate Integration become
+requirements only after the named service or business owner approves them. Until
+then, the implementation gate records them as unresolved instead of quietly
+choosing defaults.
+
+## Security and privacy architecture
+
+The Code Quality Gate Integration design separates source validation, privileged execution, target
+access, and evidence review. Those boundaries remain in force even when one
+engineer can access more than one system.
+
+| Trust boundary | Allowed flow | Required control |
+| --- | --- | --- |
+| Contributor → GitLab | Reviewed source, contract, and synthetic/sanitized fixtures | Protected branch rules, peer review, secret scanning, and immutable commit identity |
+| GitLab runner → result artifact | Read-only evaluation inputs and machine-readable output | No target-changing credential; pinned tool versions; artifact checksum and expiry |
+| Approval plane → executor | Approved revision, target allowlist, mode, canary, and change reference | Separate authorization through the existing Jenkins/AWX or platform control path |
+| Executor → existing target | Minimum commands or API operations required for Code Quality Gate Integration | Least-privilege identity, explicit target limit, timeout, and stop condition |
+| Target → evidence store | Sanitized metadata, measurements, decision, and recovery result | Exclude credentials, tokens, private keys, kubeconfigs, packet payloads, PHI, PII, and unrelated records |
+
+For Code Quality Gate Integration, the primary threat is **untrusted source or dependency content reaching a privileged runner**. The mandatory response is
+protected refs, isolated build context, pinned dependencies, least-privilege credentials, and artifact provenance. Authentication and authorization mappings must name
+the existing identity source, principal or service account, permitted actions,
+credential owner, rotation path, and emergency revocation procedure before a
+runtime story can move beyond `Planned`.
+
+## Architecture decisions and trade-offs
+
+| Decision | Selected architecture | Alternative deferred or rejected | Rationale and status |
+| --- | --- | --- | --- |
+| First implementation slice | Contract, schema, fixtures, and read-only evidence on the existing GitLab runner | Product installation or broad runtime rollout | Proves behavior without expanding infrastructure; **approved design direction** |
+| Runtime execution | Use only Jenkins shared-library workflow when current inventory and change approval confirm it is available | Direct operator changes or credentials in CI | Preserves separation of duties; **conditional on implementation review** |
+| Evidence | Machine-readable result is authoritative; screenshots are optional supporting material | Screenshot-only acceptance | Enables repeatable audit and automated gates; **approved design direction** |
+| Failure handling | Fail closed, preserve bounded diagnostics, and recover only the named scope | Continue with partial or stale evidence | Prevents false success and hidden blast radius; **approved design direction** |
+| New capacity or product | Stop and raise a separate architecture decision | Silently add a VM, service, cloud dependency, or cluster add-on | Maintains the existing-lab constraint; **mandatory** |
+
+### Open decisions before implementation
+
+| Open decision | Decision owner | Resolution gate |
+| --- | --- | --- |
+| Exact inventory object and first canary | Platform owner plus consuming service/data owner | Must resolve before the implementation story leaves `Planned` |
+| Performance, scale, and reliability thresholds | Service owner and SRE | Must be recorded before a runtime acceptance run |
+| Identity-to-action authorization matrix | Platform owner and security reviewer | Must be approved before target credentials are attached |
+| Evidence classification and retention | Data/security owner | Must be approved before runtime artifacts are retained |
+
+If any selected approach changes, record the rationale beside UC-CICD-004 in
+the implementation repository before code review. A documentation edit alone
+does not approve the new architecture.
+
+## Implementation design
+
+The first Code Quality Gate Integration implementation is deliberately source-only. Its planned files live in the existing repository; none provisions infrastructure.
+
+| Planned source responsibility | Exact planned location |
+| --- | --- |
+| Use-case contract and target allowlist | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/contracts/uc-cicd-004.yaml` |
+| Primary implementation | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/jobs/code-quality-gate-integration.groovy`; entry point: the `code-quality-gate-integration` Jenkins job and its shared-library step |
+| Machine-readable result schema | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/schemas/uc-cicd-004-result.schema.json` |
+| Positive, negative, malformed, and recovery fixtures | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/tests/fixtures/uc-cicd-004/` |
+| GitLab source gate | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/.gitlab/ci/uc-cicd-004.yml` |
+| Operator diagnosis and recovery | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/docs/runbooks/uc-cicd-004.md` |
+
+### Delivery stages
+
+1. **Contract:** add the contract, schema, owners, dependency revisions, target
+   allowlist, modes, reason codes, and open-decision values.
+2. **Source validation:** lint exact paths, validate schema compatibility, scan
+   for sensitive content, and run every fixture on the existing runner.
+3. **Read-only proof:** execute the `code-quality-gate-integration` Jenkins job and its shared-library step, publish a checksummed result, and
+   prove that blocked cases cannot reach a mutating path.
+4. **Bounded execution:** only after separate approval, pass the immutable
+   revision, target, mode, canary, and change ID to Jenkins shared-library workflow.
+5. **Independent verification:** measure the expected result, confirm unrelated
+   state is unchanged, run recovery or zero-change proof, and obtain owner
+   review.
+
+The implementation merge request must link this page, the dependency artifacts,
+the decision values above, and the eventual pipeline/job/run identifiers. Code
+completion alone cannot promote the page to runtime verified.
+
 ## Code and configuration map
 
 The locations below are future implementation touchpoints. They are not
@@ -207,7 +338,7 @@ represented as existing files or completed source.
 | Planned operating notes | Explain diagnosis, exception review, rerun, baseline change, and safe stop |
 
 If SonarQube is installed and accepted through a later approved change, an
-adapter may be added without changing this use case's decision and evidence
+adapter may be added without changing this documented capability's decision and evidence
 contract. This document does not schedule or authorize that installation.
 
 ## Failure and troubleshooting model

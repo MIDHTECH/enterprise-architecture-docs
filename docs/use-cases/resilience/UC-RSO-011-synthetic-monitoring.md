@@ -8,6 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Synthetic Monitoring |
 | Primary platform | Enterprise Resilience and Service Operations Platform |
+| Supporting use cases | [UC-OBS-001](../observability/UC-OBS-001-slo-as-code.md), [UC-RSO-009](UC-RSO-009-service-ownership.md), [UC-RSO-010](UC-RSO-010-dependency-mapping.md), [UC-NET-028](../network/UC-NET-028-network-availability-testing.md) |
 | Enterprise alignment | Provider operations, payer operations, operational resilience |
 | Enterprise outcome | connect service ownership, evidence, incident response, and recovery for enterprise workflows |
 | Primary GitLab repository | `midhhealth/reliability-operations/resilience-service-operations` |
@@ -20,38 +21,33 @@ Last reviewed: 2026-08-13
 
 ## Purpose
 
-**Synthetic Monitoring** addresses a specific operating need inside the
-Enterprise Resilience and Service Operations Platform: **User-path availability testing**. Without a shared design, teams can perform
-the activity differently, omit critical controls, or report success without
-enough context for another engineer or reviewer to reproduce the decision.
+Synthetic Monitoring makes **User-path availability testing** an owned and rehearsable resilience outcome instead of a runbook assumption.
 
-The design connects service-resilience objective, operating signal, and named existing service scope to a controlled result. It gives
-service owner, SRE, incident commander, operations engineer, and risk reviewer a common description of the trigger, inputs, boundaries,
-failure behavior, evidence, and ownership. Documentation here defines the
-future implementation contract; it does not claim that the capability has been
-built or exercised.
+For Synthetic Monitoring, the design fixes the contract, dependency handoffs, target boundary, evidence, decision owners, and recovery path before implementation. Those choices keep the eventual build grounded in the lab that actually exists.
 
 ## Expected outcome
 
-For an approved scope, the future workflow evaluates **Synthetic Monitoring** through
-read-only readiness or failure analysis followed by an approved bounded drill or remediation through existing automation when applicable. It produces a deterministic allow, block, escalate, or
-not-applicable decision tied to immutable source and the named target. The
-decision supports incident, continuity, recovery, capacity, change, and service-acceptance decisions and advances continuity and controlled recovery of provider, payer, and shared-platform services.
+The first delivery slice proves **User-path availability testing** on the documented
+existing target boundary. It uses a versioned contract plus positive, negative,
+malformed-input, unauthorized-scope, and recovery fixtures, then publishes an
+attributable machine-readable result.
 
-A missing prerequisite, unauthorized target, malformed result, unavailable
-product, or failed safety check stops the workflow. No new infrastructure is
-created under this design.
+Acceptance for Synthetic Monitoring requires rejected cases to stop safely and unrelated
+state to remain unchanged. Live integration or mutation still requires the
+separate approval, identity, canary, and rollback controls named below; this
+design does not authorize a product installation, new capacity, or an unlisted
+endpoint.
 
 ## Platform and enterprise fit
 
-| Relationship | Detailed fit |
+| Relationship | Architecture fit |
 | --- | --- |
-| Owning platform | Synthetic Monitoring turns a versioned platform intent into a repeatable decision rather than an isolated operator action. |
-| Platform workflow | drills and automation use existing services and control planes; no standby environment, monitoring product, or recovery capacity is created. |
-| Enterprise outcome | The result contributes to connect service ownership, evidence, incident response, and recovery for enterprise workflows and remains traceable to its owner and source. |
-| Provider and payer value | The control reduces inconsistent or unreviewed behavior in systems supporting healthcare and enterprise operations. |
-| Risk and compliance | Decisions, exceptions, evidence, and review ownership are explicit and auditable. |
-| Operational resilience | Fail-closed behavior, bounded execution, and recovery evidence prevent an ambiguous result from becoming a wider service change. |
+| Owning responsibility | **Enterprise Resilience and Service Operations Platform** owns the contract, control behavior, evidence schema, and recovery boundary for Synthetic Monitoring. |
+| Enterprise use | connect service ownership, evidence, incident response, and recovery for enterprise workflows. |
+| Required inputs | service identity, dependency map, objective, scenario, stop condition, and recovery authority. |
+| Produced handoff | readiness or exercise result tied to observed service recovery. |
+| Supporting platforms | The dependency table below names the exact use cases and artifacts; passing this page never implies that those controls passed. |
+| Existing-lab boundary | Reuse the existing lab; do not create a new service-management product, VM, monitoring stack, or unapproved disruptive exercise. |
 
 ## Trigger and actors
 
@@ -108,42 +104,70 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
-## Detailed operational flow
+## Architecture context
 
-1. The request identifies **Synthetic Monitoring**, the enterprise outcome, owner, immutable
-   source or policy revision, named target, and expected coverage.
-2. Preflight resolves the target against canonical inventory and verifies that
-   every required product and execution path is currently accepted, not merely
-   planned or provisioned.
-3. The future workflow loads the versioned contract, validates required inputs,
-   rejects secrets and protected data, and computes a digest for decision-
-   affecting configuration.
-4. Positive and negative source fixtures establish the intended behavior before
-   any live evaluation. An invalid contract or unexpected fixture result stops.
-5. A read-only plan, query, comparison, or offline evaluation measures the
-   bounded target and predicts the decision and possible impact.
-6. If mutation is necessary, the owner obtains the required change approval and
-   limits execution to the documented canary. Otherwise, the workflow remains
-   non-mutating.
-7. The result records service and scenario, run ID, timeline, observed impact, objective result, decision, recovery proof, and incident/action links and explains why the coverage was or
-   was not satisfied.
-8. An independent post-check proves expected state and detects partial,
-   ambiguous, or out-of-scope effects. Failed post-checks invoke safe stop or
-   the documented recovery path.
-9. Platform and enterprise reviewers accept, reject, or assign follow-up work.
-   Only reviewed evidence changes the status of this page.
+Synthetic Monitoring is evaluated inside the existing enterprise lab and the owning
+platform's current source-control and execution boundaries. The architectural
+unit is the governed outcome—**User-path availability testing**—rather than a new product or
+environment.
+
+| Context element | Architecture statement |
+| --- | --- |
+| Business and operational setting | Enterprise consumers: Provider operations, payer operations, operational resilience. The result must be explainable, repeatable, and owned. |
+| Current state | **Planned — detailed design only; implementation and runtime evidence are not claimed** |
+| Desired state | A reviewed contract drives a bounded result, machine-readable evidence, and a safe stop or recovery decision. |
+| Existing target boundary | existing GitLab, Jenkins, AWX, observability APIs, service records, and runbooks |
+| Infrastructure constraint | Reuse the existing lab; do not create a new service-management product, VM, monitoring stack, or unapproved disruptive exercise |
+| Accountable platform owner | Enterprise Resilience and Service Operations Platform team; the consuming service, data, security, or workflow owner remains accountable for accepting business impact. |
+
+The page owns the contract, control logic, evidence, and recovery behavior for
+Synthetic Monitoring. It does not absorb the responsibilities of the dependency use cases
+listed below.
+
+## Architecture diagram
 
 ```mermaid
 flowchart LR
-    Need["Enterprise need and owner"] --> Contract["Versioned Synthetic Monitoring contract"]
-    Contract --> Preflight["Inventory and prerequisite check"]
-    Preflight --> Evaluate["Fixture and read-only evaluation"]
-    Evaluate --> Decision{"Decision satisfies policy?"}
-    Decision -->|No| Stop["Block, explain, and preserve evidence"]
-    Decision -->|Yes| Review["Owner review or approved bounded action"]
-    Review --> Verify["Independent result and recovery check"]
-    Verify --> Publish["Publish evidence and follow-up"]
+    subgraph Source["Existing source and intent boundary"]
+        A["Service ownership, dependency, SLO, and runbook records"]
+    end
+    subgraph Planned["Planned Synthetic Monitoring control"]
+        B["Readiness and exercise source gate"]
+        C["Contract, policy, and negative fixtures"]
+        D{"Evidence satisfies the use-case gate?"}
+    end
+    subgraph Runtime["Existing approved execution boundary"]
+        E["Approved Jenkins/AWX exercise path"]
+        F["One inventoried service or dependency"]
+    end
+    subgraph Assurance["Evidence and recovery boundary"]
+        G["Incident, recovery, timing, and owner-decision evidence"]
+        H["Owner review, safe stop, or recovery"]
+    end
+
+    A --> B --> C --> D
+    D -->|No| G --> H
+    D -->|Yes; read-only| G
+    D -->|Yes; separately approved action| E --> F --> G
+    H -. recover accepted revision .-> A
 ```
+
+The diagram distinguishes existing boundaries from the planned use-case
+control. The arrow into the execution boundary is conditional: documentation,
+source validation, or a passing fixture never authorizes a runtime change.
+
+### Operating sequence
+
+1. The request binds Synthetic Monitoring to immutable source, an inventory-resolved target,
+   an accountable owner, and the expected enterprise result.
+2. GitLab validates the contract, exact scope, dependency evidence, and positive
+   and negative fixtures without target-changing credentials.
+3. The use-case control produces a machine-readable result with provenance,
+   decision reasons, timing, and the next permitted action.
+4. Read-only evidence can complete on the accepted runner. Any mutation waits
+   for the existing change, approval, credential, and canary controls.
+5. Independent post-checks compare expected and observed state. Failure stops
+   expansion, preserves diagnostics, and invokes the page's recovery boundary.
 
 ## Design considerations
 
@@ -153,9 +177,6 @@ flowchart LR
 | Auditability | Record immutable input and policy versions, executor identity, target, timestamps, result, evidence checksum, reviewer, and related change/incident identifiers. |
 | Safe failure | Missing data, unavailable dependencies, ambiguous scope, or incomplete evidence blocks the decision instead of producing a false success. |
 
-These considerations make the page specific to **Synthetic Monitoring** while preserving the
-same enterprise control language used across the owning platform. In particular,
-the later implementation must demonstrate service continuity.
 
 ## Decision and control rules
 
@@ -192,24 +213,135 @@ Evidence must be concise enough for a reviewer to evaluate but complete enough
 for another engineer to reproduce the reasoning. Secrets, credentials, private
 keys, tokens, kubeconfigs, and protected healthcare data are prohibited.
 
+## Dependencies and handoffs
+
+Synthetic Monitoring remains accountable to its primary platform. The dependencies below
+provide explicit contracts or assurance evidence; they do not become alternate owners.
+
+| Relationship | Use case | Required handoff | Failure propagation |
+| --- | --- | --- | --- |
+| Required upstream contract | [UC-OBS-001: SLO as Code](../observability/UC-OBS-001-slo-as-code.md) | service-level indicator, objective, and measurement window | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-RSO-009: Service Ownership](UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-RSO-010: Dependency Mapping](UC-RSO-010-dependency-mapping.md) | upstream/downstream service dependency and failure effect | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-NET-028: Network Availability Testing](../network/UC-NET-028-network-availability-testing.md) | layered service-path availability evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
+
+Before Synthetic Monitoring is implemented, every handoff must resolve to an immutable
+revision and machine-readable artifact. A URL, screenshot, or verbal approval
+alone is not sufficient dependency evidence.
+
+## Quality attributes
+
+For Synthetic Monitoring, quality is measured against the bounded enterprise outcome—not
+document length or a green job. Unapproved business thresholds remain explicit
+decisions and must not be invented.
+
+| Attribute | Required measure or invariant | Decision state |
+| --- | --- | --- |
+| Functional correctness | Every required input is validated; **User-path availability testing** is evaluated against positive, negative, missing-input, and unauthorized-scope cases. | Fixed design requirement |
+| Performance and scale | Establish a baseline for detection time, recovery time, objective coverage, and repeatability on existing capacity; the owner must approve warning and blocking thresholds before runtime promotion. | Thresholds `TBD` before implementation |
+| Reliability | Missing prerequisites, stale dependencies, malformed evidence, and partial results fail closed without widening scope. | Fixed design requirement |
+| Recovery | Record the maximum acceptable interruption and recovery time before runtime use; source-only validation must remain zero-change. | Owner decision required before runtime exercise |
+| Observability | Emit use-case ID, revision, target, executor, start/end time, duration, decision, reason code, and recovery reference. | Required in the result schema |
+| Evidence retention | Assign classification, retention period, and deletion owner before storing runtime evidence. | Security/compliance decision required |
+
+Load, latency, availability, retention, RTO, and RPO values for Synthetic Monitoring become
+requirements only after the named service or business owner approves them. Until
+then, the implementation gate records them as unresolved instead of quietly
+choosing defaults.
+
+## Security and privacy architecture
+
+The Synthetic Monitoring design separates source validation, privileged execution, target
+access, and evidence review. Those boundaries remain in force even when one
+engineer can access more than one system.
+
+| Trust boundary | Allowed flow | Required control |
+| --- | --- | --- |
+| Contributor → GitLab | Reviewed source, contract, and synthetic/sanitized fixtures | Protected branch rules, peer review, secret scanning, and immutable commit identity |
+| GitLab runner → result artifact | Read-only evaluation inputs and machine-readable output | No target-changing credential; pinned tool versions; artifact checksum and expiry |
+| Approval plane → executor | Approved revision, target allowlist, mode, canary, and change reference | Separate authorization through the existing Jenkins/AWX or platform control path |
+| Executor → existing target | Minimum commands or API operations required for Synthetic Monitoring | Least-privilege identity, explicit target limit, timeout, and stop condition |
+| Target → evidence store | Sanitized metadata, measurements, decision, and recovery result | Exclude credentials, tokens, private keys, kubeconfigs, packet payloads, PHI, PII, and unrelated records |
+
+For Synthetic Monitoring, the primary threat is **an exercise expanding beyond its approved service, dependency, or operator boundary**. The mandatory response is
+named exercise authority, explicit blast-radius limits, stop conditions, scoped credentials, and incident escalation. Authentication and authorization mappings must name
+the existing identity source, principal or service account, permitted actions,
+credential owner, rotation path, and emergency revocation procedure before a
+runtime story can move beyond `Planned`.
+
+## Architecture decisions and trade-offs
+
+| Decision | Selected architecture | Alternative deferred or rejected | Rationale and status |
+| --- | --- | --- | --- |
+| First implementation slice | Contract, schema, fixtures, and read-only evidence on the existing GitLab runner | Product installation or broad runtime rollout | Proves behavior without expanding infrastructure; **approved design direction** |
+| Runtime execution | Use only Approved Jenkins/AWX exercise path when current inventory and change approval confirm it is available | Direct operator changes or credentials in CI | Preserves separation of duties; **conditional on implementation review** |
+| Evidence | Machine-readable result is authoritative; screenshots are optional supporting material | Screenshot-only acceptance | Enables repeatable audit and automated gates; **approved design direction** |
+| Failure handling | Fail closed, preserve bounded diagnostics, and recover only the named scope | Continue with partial or stale evidence | Prevents false success and hidden blast radius; **approved design direction** |
+| New capacity or product | Stop and raise a separate architecture decision | Silently add a VM, service, cloud dependency, or cluster add-on | Maintains the existing-lab constraint; **mandatory** |
+
+### Open decisions before implementation
+
+| Open decision | Decision owner | Resolution gate |
+| --- | --- | --- |
+| Exact inventory object and first canary | Platform owner plus consuming service/data owner | Must resolve before the implementation story leaves `Planned` |
+| Performance, scale, and reliability thresholds | Service owner and SRE | Must be recorded before a runtime acceptance run |
+| Identity-to-action authorization matrix | Platform owner and security reviewer | Must be approved before target credentials are attached |
+| Evidence classification and retention | Data/security owner | Must be approved before runtime artifacts are retained |
+
+If any selected approach changes, record the rationale beside UC-RSO-011 in
+the implementation repository before code review. A documentation edit alone
+does not approve the new architecture.
+
+## Implementation design
+
+The first Synthetic Monitoring implementation is deliberately source-only. Its planned files live in the existing repository; none provisions infrastructure.
+
+| Planned source responsibility | Exact planned location |
+| --- | --- |
+| Use-case contract and target allowlist | `midhhealth/reliability-operations/resilience-service-operations/contracts/uc-rso-011.yaml` |
+| Primary implementation | `midhhealth/reliability-operations/resilience-service-operations/playbooks/synthetic-monitoring.yml`; entry point: the `synthetic-monitoring` readiness check or bounded exercise |
+| Machine-readable result schema | `midhhealth/reliability-operations/resilience-service-operations/schemas/uc-rso-011-result.schema.json` |
+| Positive, negative, malformed, and recovery fixtures | `midhhealth/reliability-operations/resilience-service-operations/tests/fixtures/uc-rso-011/` |
+| GitLab source gate | `midhhealth/reliability-operations/resilience-service-operations/.gitlab/ci/uc-rso-011.yml` |
+| Operator diagnosis and recovery | `midhhealth/reliability-operations/resilience-service-operations/docs/runbooks/uc-rso-011.md` |
+
+### Delivery stages
+
+1. **Contract:** add the contract, schema, owners, dependency revisions, target
+   allowlist, modes, reason codes, and open-decision values.
+2. **Source validation:** lint exact paths, validate schema compatibility, scan
+   for sensitive content, and run every fixture on the existing runner.
+3. **Read-only proof:** execute the `synthetic-monitoring` readiness check or bounded exercise, publish a checksummed result, and
+   prove that blocked cases cannot reach a mutating path.
+4. **Bounded execution:** only after separate approval, pass the immutable
+   revision, target, mode, canary, and change ID to Approved Jenkins/AWX exercise path.
+5. **Independent verification:** measure the expected result, confirm unrelated
+   state is unchanged, run recovery or zero-change proof, and obtain owner
+   review.
+
+The implementation merge request must link this page, the dependency artifacts,
+the decision values above, and the eventual pipeline/job/run identifiers. Code
+completion alone cannot promote the page to runtime verified.
+
 ## Code and configuration map
 
-The following locations are planned implementation responsibilities. They are
-not represented as existing files until a future reviewed commit is linked.
+These are exact **planned** repository-relative locations in the existing
+GitLab project. Their inclusion is an implementation contract, not a claim that
+the files already exist.
 
-| Planned location | Responsibility |
-| --- | --- |
-| `midhhealth/reliability-operations/resilience-service-operations` | Own the future platform implementation and use-case-specific operating notes |
-| Planned `UC-RSO-011/contract` | Define inputs, owner, target allowlist, mode, coverage, policy, outputs, and safe stop |
-| Planned `UC-RSO-011/result-schema` | Normalize provenance, observed values, decision, safety, recovery, and review fields |
-| Planned `UC-RSO-011/fixtures` | Exercise passing, blocking, malformed, unauthorized, unavailable-dependency, and recovery cases |
-| Existing GitLab CI path or planned reviewed include | Validate source and fixtures on an accepted existing runner |
-| Existing Jenkins/AWX/platform path, if applicable | Perform only a separately approved bounded action against an inventoried target |
-| Planned operating documentation | Explain prerequisites, evaluation, evidence review, troubleshooting, exception handling, and recovery |
+| Repository and planned path | Responsibility | Current state |
+| --- | --- | --- |
+| `midhhealth/reliability-operations/resilience-service-operations/contracts/uc-rso-011.yaml` | Inputs, owner, dependency revisions, target allowlist, modes, thresholds, and stop conditions | Planned |
+| `midhhealth/reliability-operations/resilience-service-operations/playbooks/synthetic-monitoring.yml` | Primary implementation through the `synthetic-monitoring` readiness check or bounded exercise | Planned |
+| `midhhealth/reliability-operations/resilience-service-operations/schemas/uc-rso-011-result.schema.json` | Provenance, observations, decision, reason codes, safety, and recovery result | Planned |
+| `midhhealth/reliability-operations/resilience-service-operations/tests/fixtures/uc-rso-011/` | Passing, blocking, malformed, unauthorized, stale-dependency, and recovery cases | Planned |
+| `midhhealth/reliability-operations/resilience-service-operations/.gitlab/ci/uc-rso-011.yml` | Source validation on an accepted existing runner | Planned |
+| `midhhealth/reliability-operations/resilience-service-operations/docs/runbooks/uc-rso-011.md` | Preconditions, execution, diagnosis, evidence review, safe stop, and recovery | Planned |
 
-Exact paths and tool choices must be confirmed against the named repository at
-implementation planning time. This design intentionally avoids inventing source
-files or implying that an unavailable product exists.
+Implementation must verify the repository and current execution path before
+creating these files. Discovery of a missing product or capacity stops the
+story and raises a separate decision; it does not change this page's
+infrastructure boundary.
 
 ## Failure and recovery model
 
@@ -228,9 +360,7 @@ files or implying that an unavailable product exists.
 
 ### STORY-RSO-011-001: Define the Synthetic Monitoring contract
 
-**Description:** The platform owner and enterprise consumer need Synthetic Monitoring defined
-as a versioned, reviewable contract so its scope, decision, evidence, and safety
-boundary are consistent before implementation begins.
+**Description:** Exercise one approved scope and publish evidence that the observed result matches the contract, unrelated state remains unchanged, and recovery or zero-change behavior works. The accountable owner records acceptance or rejection.
 
 **Status:** Planned.
 
@@ -240,10 +370,7 @@ coverage statement, policy or threshold, output, evidence, exception process,
 and safe stop; it rejects unavailable products, sensitive inputs, and new-
 infrastructure actions.
 
-**Implementation steps:** Confirm the named repository and current target;
-identify producers and consumers; define inputs, decision states, thresholds,
-evidence, and recovery semantics; add future positive and negative fixtures;
-obtain platform and enterprise-owner review.
+**Implementation steps:** Write `midhhealth/reliability-operations/resilience-service-operations/docs/runbooks/uc-rso-011.md`; reconfirm inventory and dependency evidence; run source and read-only modes; obtain separate approval for one canary if mutation is required; collect the schema-valid result, independent post-check, recovery proof, and owner decision.
 
 **Completed work:** The purpose, platform fit, enterprise outcome, operational
 flow, controls, and future delivery contract are documented on this page. No
@@ -337,8 +464,7 @@ use case blocked.
 
 ## Acceptance decision
 
-**Planned.** The page is a detailed organizational and platform design, not an
-implementation-completion claim. Code complete will require reviewed source and
+**Planned.** The architecture baseline is documented; implementation and runtime acceptance remain separate governed work. Code complete will require reviewed source and
 passing positive and negative validation in `midhhealth/reliability-operations/resilience-service-operations`. Runtime verified requires
 the expected result on the named existing scope plus independent post-check and
 recovery/non-mutation evidence. Accepted additionally requires owner review,
@@ -347,8 +473,7 @@ architecture repository.
 
 ## Operational, security, and follow-up notes
 
-- Schedule implementation separately; documentation approval does not authorize
-  code execution or a lab change.
+- Move into implementation only through the planned source story; this page does not authorize code execution or a lab change.
 - Recheck current environment state before selecting any product, endpoint,
   runner, inventory, cluster, database, model, dataset, or network target.
 - Use synthetic or approved de-identified fixtures and sanitize diagnostics.

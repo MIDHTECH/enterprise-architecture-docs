@@ -1,6 +1,6 @@
 # Use-Case Documentation Standard
 
-Last verified: 2026-08-02
+Last verified: 2026-08-13
 
 This directory turns the enterprise portfolio into work that an engineer can
 implement, test, operate, and audit. The portfolio summary remains in
@@ -59,6 +59,39 @@ Every use-case document must contain:
 8. actual versus expected results and an honest completion decision;
 9. screenshot and artifact references; and
 10. operational, incident, security, and follow-up notes.
+
+## Architecture-readiness contract
+
+Every detailed page must also make the architecture executable as a future
+plan without authorizing infrastructure or runtime work. Required content is:
+
+1. an operating context that distinguishes the enterprise need, current state,
+   desired state, accountable platform, target boundary, and no-new-
+   infrastructure constraint;
+2. a Mermaid or SVG architecture diagram that separates source, planned
+   control logic, accepted execution boundary, target, evidence, and recovery;
+3. explicit upstream and assurance dependencies linked by canonical use-case
+   ID, including the artifact exchanged and the effect of missing evidence;
+4. functional, performance, scale, reliability, recovery, observability, and
+   retention requirements. Unapproved numeric targets remain owned `TBD`
+   decisions rather than invented values;
+5. trust boundaries covering source contribution, CI evaluation, privileged
+   execution, target access, evidence, identity, credential ownership,
+   rotation, and emergency revocation;
+6. selected architecture decisions, deferred alternatives, rationale, and open
+   decisions with an owner and resolution gate;
+7. exact planned repository-relative locations for the contract,
+   implementation, result schema, fixtures, CI include, and operator runbook;
+   and
+8. staged delivery from contract and source validation through read-only proof,
+   separately approved canary execution, independent verification, and
+   recovery.
+
+Shared control language is permitted where it expresses a genuine enterprise
+standard. Stock prose that merely substitutes a use-case name into the same
+paragraph is not detailed architecture. Purpose, expected outcome, diagrams,
+dependencies, risks, and implementation responsibilities must describe the
+actual capability.
 
 ## Linux end-to-end IaC contract
 
