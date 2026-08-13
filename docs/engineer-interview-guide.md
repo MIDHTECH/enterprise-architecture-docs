@@ -27,7 +27,7 @@ The linked use-case pages carry the detailed architecture and their own
 follow-up questions; this narrative guide remains the portfolio-level view.
 
 New employees can build the common story from the
-[MidhHealth Platform Briefing](new-employee-platform-briefing.md). Interviewers
+[MidhHealth Integrated Care Reference Architecture](new-employee-platform-briefing.md). Interviewers
 and candidates can then select platform and scenario questions from the
 [Use-Case Interview Question Bank](use-case-interview-question-bank.md), which
 links every canonical detailed use case exactly once.
