@@ -27,6 +27,7 @@ fi
 required_headings=(
   "## Purpose"
   "## Expected outcome"
+  "## Platform and enterprise fit"
   "## Trigger and actors"
   "## Preconditions"
   "## Scope and exclusions"
@@ -46,8 +47,8 @@ for document in "${USE_CASE_FILES[@]}"; do
   done
 
   story_count="$(grep -c '^### STORY-' "$document" || true)"
-  if [[ "$story_count" -lt 1 ]]; then
-    echo "$document: must contain at least one Jira story." >&2
+  if [[ "$story_count" -lt 3 ]]; then
+    echo "$document: must contain at least three Jira stories covering design, source validation, and outcome/recovery." >&2
     exit 1
   fi
 

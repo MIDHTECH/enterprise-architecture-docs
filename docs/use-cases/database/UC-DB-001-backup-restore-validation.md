@@ -31,6 +31,22 @@ checksum and metadata, restores it into an isolated temporary database on the
 existing PostgreSQL service, runs schema and bounded data checks, records
 duration against RTO, and drops the temporary database after evidence capture.
 
+## Platform and enterprise fit
+
+| Relationship | Detailed fit |
+| --- | --- |
+| Owning platform | **Automated PostgreSQL Restore Validation** belongs to the Enterprise Database Engineering and Reliability Platform because that platform turns database policy and operations into read-only validation, approved automation, performance evidence, and recoverability. |
+| Enterprise consumers | The capability supports transactional and operational data services supporting provider, payer, and shared applications. |
+| Enterprise outcome | Its planned result advances: Prove that a database backup supporting enterprise workflows is usable before an incident. |
+| Control contribution | The design adds data protection, least privilege, bounded workload, backup integrity, and recovery proof. |
+| Cross-platform handoff | Supporting platforms consume a reviewed result or evidence artifact; they do not take ownership away from the primary platform. |
+| Infrastructure boundary | Fit is achieved by reusing documented existing repositories, control planes, services, and targets—not by inventing capacity or treating planned products as available. |
+
+The platform fit is therefore based on ownership and a reusable decision, not
+on the presence of a particular tool. Enterprise fit requires evidence that the
+named outcome was observed for the bounded scope; completing documentation or
+running an isolated technology demonstration is insufficient.
+
 ## Trigger and actors
 
 | Item | Definition |

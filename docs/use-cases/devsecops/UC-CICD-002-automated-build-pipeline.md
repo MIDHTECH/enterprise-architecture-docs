@@ -38,7 +38,7 @@ provenance record and checksum. An invalid input or unsuccessful build blocks
 artifact publication and every deployment path. The build remains isolated
 from runtime systems and does not create infrastructure.
 
-## How the use case fits the platform and enterprise
+## Platform and enterprise fit
 
 | Relationship | Explanation |
 | --- | --- |

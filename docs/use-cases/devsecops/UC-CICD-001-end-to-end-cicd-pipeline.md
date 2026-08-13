@@ -48,6 +48,22 @@ The use case is not accepted merely because the repositories and pipelines
 exist. Acceptance requires Jenkins plan, deployment, health, rollback, second
 convergence, and evidence attachments from the live environment.
 
+## Platform and enterprise fit
+
+| Relationship | Detailed fit |
+| --- | --- |
+| Owning platform | **End-to-End CI/CD Pipeline Setup** belongs to the the documented enterprise outcome because that platform turns reviewed source into controlled build, test, security, artifact, promotion, and recovery decisions. |
+| Enterprise consumers | The capability supports provider, payer, and shared-platform software changes. |
+| Enterprise outcome | Its planned result advances: the documented enterprise outcome. |
+| Control contribution | The design adds traceable delivery evidence, separation of duties, and fail-closed gates. |
+| Cross-platform handoff | Supporting platforms consume a reviewed result or evidence artifact; they do not take ownership away from the primary platform. |
+| Infrastructure boundary | Fit is achieved by reusing documented existing repositories, control planes, services, and targets—not by inventing capacity or treating planned products as available. |
+
+The platform fit is therefore based on ownership and a reusable decision, not
+on the presence of a particular tool. Enterprise fit requires evidence that the
+named outcome was observed for the bounded scope; completing documentation or
+running an isolated technology demonstration is insufficient.
+
 ## Trigger and actors
 
 | Item | Definition |

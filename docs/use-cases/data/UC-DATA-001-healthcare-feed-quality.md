@@ -31,6 +31,22 @@ invalid fixtures, classify failures, identify the feed owner and consumers,
 and publish a report with no protected health information. The pattern can be
 promoted to a live source only through a separate approved integration change.
 
+## Platform and enterprise fit
+
+| Relationship | Detailed fit |
+| --- | --- |
+| Owning platform | **Healthcare Feed Quality Validation** belongs to the Enterprise Data Engineering and Integration Platform because that platform turns versioned data contracts and pipelines into quality, lineage, replay, reconciliation, and governed consumption. |
+| Enterprise consumers | The capability supports provider, payer, analytics, AI, and shared-platform data flows. |
+| Enterprise outcome | Its planned result advances: Detect late, malformed, incomplete, or duplicated healthcare feeds before downstream decisions use them. |
+| Control contribution | The design adds data ownership, protected-data boundaries, traceability, failure isolation, and recoverable processing. |
+| Cross-platform handoff | Supporting platforms consume a reviewed result or evidence artifact; they do not take ownership away from the primary platform. |
+| Infrastructure boundary | Fit is achieved by reusing documented existing repositories, control planes, services, and targets—not by inventing capacity or treating planned products as available. |
+
+The platform fit is therefore based on ownership and a reusable decision, not
+on the presence of a particular tool. Enterprise fit requires evidence that the
+named outcome was observed for the bounded scope; completing documentation or
+running an isolated technology demonstration is insufficient.
+
 ## Trigger and actors
 
 | Item | Definition |
