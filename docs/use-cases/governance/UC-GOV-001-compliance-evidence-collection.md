@@ -32,6 +32,22 @@ an approved AWX evidence playbook collects non-secret host facts from existing
 inventory groups. A manifest joins results to control IDs, owners, source
 commits, timestamps, exceptions, and expiry dates.
 
+## Platform and enterprise fit
+
+| Relationship | Detailed fit |
+| --- | --- |
+| Owning platform | **Automated Compliance Evidence Collection** belongs to the Enterprise Cloud Governance and Operations Automation because that platform turns versioned controls and operational requests into review, approval, evidence, exception, and bounded remediation. |
+| Enterprise consumers | The capability supports cross-platform risk, compliance, identity, change, and operational accountability. |
+| Enterprise outcome | Its planned result advances: Prove that changes supporting provider and payer workflows pass common source and host controls. |
+| Control contribution | The design adds policy ownership, least privilege, expiring exceptions, and auditable decisions. |
+| Cross-platform handoff | Supporting platforms consume a reviewed result or evidence artifact; they do not take ownership away from the primary platform. |
+| Infrastructure boundary | Fit is achieved by reusing documented existing repositories, control planes, services, and targets—not by inventing capacity or treating planned products as available. |
+
+The platform fit is therefore based on ownership and a reusable decision, not
+on the presence of a particular tool. Enterprise fit requires evidence that the
+named outcome was observed for the bounded scope; completing documentation or
+running an isolated technology demonstration is insufficient.
+
 ## Trigger and actors
 
 | Item | Definition |
