@@ -22,6 +22,9 @@ manifest = root / "docs/application-projects.json"
 integration_manifest = root / "docs/application-integration-contracts.json"
 applicability_manifest = root / "docs/application-usecase-applicability.json"
 coverage = root / "docs/application-usecase-coverage.md"
+suite_inventory = root / "docs/workforce-placement-application-inventory.json"
+suite_document = root / "docs/workforce-placement-application-suite.md"
+suite_diagram = root / "docs/assets/workforce-placement-application-suite.svg"
 
 for required in (
     register,
@@ -34,6 +37,9 @@ for required in (
     integration_manifest,
     applicability_manifest,
     coverage,
+    suite_inventory,
+    suite_document,
+    suite_diagram,
 ):
     if not required.is_file():
         raise SystemExit(f"Missing application-project artifact: {required}")
@@ -118,7 +124,7 @@ for heading in (
     if heading not in template_text:
         raise SystemExit(f"{template}: missing required heading {heading}")
 
-for document in (register, template, traceability, linkage, coverage):
+for document in (register, template, traceability, linkage, coverage, suite_document):
     document_text = document.read_text()
     for target in re.findall(r"\[[^]]+\]\(([^)]+)\)", document_text):
         if target.startswith(("http://", "https://", "#")):
@@ -128,7 +134,7 @@ for document in (register, template, traceability, linkage, coverage):
             raise SystemExit(f"{document}: unresolved local link {target}")
 
 namespace = {"svg": "http://www.w3.org/2000/svg"}
-for svg_path in (diagram, linkage_diagram):
+for svg_path in (diagram, linkage_diagram, suite_diagram):
     svg = ET.parse(svg_path).getroot()
     if svg.attrib.get("role") != "img" or svg.attrib.get("aria-labelledby") != "title desc":
         raise SystemExit(f"{svg_path}: accessible image role and label are required")
@@ -488,6 +494,94 @@ for expected_phrase in (
     if expected_phrase not in coverage_text:
         raise SystemExit(f"{coverage}: missing coverage statement {expected_phrase!r}")
 
+suite_data = json.loads(suite_inventory.read_text())
+if suite_data.get("schema_version") != 1:
+    raise SystemExit(f"{suite_inventory}: unsupported schema_version")
+if suite_data.get("scope") != "documentation-only-discovery":
+    raise SystemExit(f"{suite_inventory}: scope must remain documentation-only discovery")
+if suite_data.get("implementation_authorized") is not False:
+    raise SystemExit(f"{suite_inventory}: must not imply implementation authorization")
+
+expected_suite_ids = {"maas", "mtas", "mtls", "mcis", "mjis", "msis", "miis", "mcss"}
+suite_applications = suite_data.get("applications")
+if not isinstance(suite_applications, list):
+    raise SystemExit(f"{suite_inventory}: applications must be a list")
+suite_ids = {application.get("id") for application in suite_applications}
+if suite_ids != expected_suite_ids or len(suite_applications) != len(expected_suite_ids):
+    raise SystemExit(f"{suite_inventory}: expected the eight verified workforce applications")
+
+suite_repositories = set()
+for application in suite_applications:
+    application_id = application["id"]
+    repository = application.get("repository")
+    if repository != f"MIDHTECH/{application_id}":
+        raise SystemExit(f"{suite_inventory}: unexpected repository for {application_id}")
+    if repository in suite_repositories:
+        raise SystemExit(f"{suite_inventory}: duplicate suite repository {repository}")
+    suite_repositories.add(repository)
+    if application.get("repository_url") != f"https://github.com/{repository}":
+        raise SystemExit(f"{suite_inventory}: invalid repository URL for {application_id}")
+    if application.get("observed_branch") not in {"main", "development"}:
+        raise SystemExit(f"{suite_inventory}: invalid observed branch for {application_id}")
+    for field in ("readme_evidence_commit", "remote_head_at_inventory"):
+        if not re.fullmatch(r"[0-9a-f]{40}", application.get(field, "")):
+            raise SystemExit(f"{suite_inventory}: {application_id} missing full {field}")
+    for field in ("business_role", "ownership_boundary"):
+        if not isinstance(application.get(field), str) or len(application[field].strip()) < 40:
+            raise SystemExit(f"{suite_inventory}: {application_id} needs a useful {field}")
+    if application.get("architecture_record_state") != "discovered-detailed-page-pending":
+        raise SystemExit(f"{suite_inventory}: {application_id} has invalid architecture state")
+    if application.get("runtime_state") != "not-verified-by-this-documentation":
+        raise SystemExit(f"{suite_inventory}: {application_id} implies verified runtime state")
+
+suite_relationships = suite_data.get("relationship_contracts")
+if not isinstance(suite_relationships, list) or not suite_relationships:
+    raise SystemExit(f"{suite_inventory}: relationship contracts are required")
+relationship_ids = set()
+participating_suite_apps = set()
+for relationship in suite_relationships:
+    relationship_id = relationship.get("id")
+    producer = relationship.get("producer")
+    consumer = relationship.get("consumer")
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", relationship_id or ""):
+        raise SystemExit(f"{suite_inventory}: invalid relationship id {relationship_id!r}")
+    if relationship_id in relationship_ids:
+        raise SystemExit(f"{suite_inventory}: duplicate relationship {relationship_id}")
+    relationship_ids.add(relationship_id)
+    if producer not in suite_ids or consumer not in suite_ids or producer == consumer:
+        raise SystemExit(f"{suite_inventory}: relationship endpoints must be distinct suite apps")
+    participating_suite_apps.update((producer, consumer))
+    for field in ("business_moment", "known_contract", "failure_promise"):
+        if not isinstance(relationship.get(field), str) or len(relationship[field].strip()) < 30:
+            raise SystemExit(f"{suite_inventory}: {relationship_id} needs a useful {field}")
+    if relationship.get("interface_state") not in {
+        "relationship-verified-interface-undocumented",
+        "shared-data-transition-contract-needs-versioning",
+        "source-evidenced-schema-and-operations-pending-review",
+    }:
+        raise SystemExit(f"{suite_inventory}: invalid interface state for {relationship_id}")
+if participating_suite_apps != suite_ids:
+    raise SystemExit(f"{suite_inventory}: every suite application must participate in a relationship")
+
+mcss_neighbors = {
+    relationship["producer"] if relationship["consumer"] == "mcss" else relationship["consumer"]
+    for relationship in suite_relationships
+    if "mcss" in {relationship["producer"], relationship["consumer"]}
+}
+if mcss_neighbors != {"maas", "mtas", "msis"}:
+    raise SystemExit(f"{suite_inventory}: MCSS relationships exceed source-evidenced clients")
+if len(suite_data.get("discovery_gaps", [])) < 7:
+    raise SystemExit(f"{suite_inventory}: discovery gaps must remain explicit")
+
+suite_text = suite_document.read_text()
+for expected_phrase in (
+    "Eight real MIDHTECH repositories",
+    "They are not care-delivery or payer applications",
+    "not-verified-by-this-documentation",
+):
+    if expected_phrase not in suite_text:
+        raise SystemExit(f"{suite_document}: missing boundary statement {expected_phrase!r}")
+
 all_docs = "\n".join(
     path.read_text(errors="replace")
     for path in (root / "docs").rglob("*.md")
@@ -505,6 +599,8 @@ print(
     f"{len(required_chains)} reusable chains, {len(platform_contracts)} documented "
     f"application-to-platform contracts, {len(application_contracts)} "
     f"application-to-application contracts, {len(use_case_paths)} application-use-case "
-    f"classifications per registered application ({coverage_totals})."
+    f"classifications per registered application ({coverage_totals}), and "
+    f"{len(suite_applications)} verified suite discoveries with "
+    f"{len(suite_relationships)} documented relationships."
 )
 PY
