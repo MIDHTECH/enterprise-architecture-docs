@@ -33,6 +33,22 @@ publishes a sanitized report containing the commit, workspace, provider lock,
 resource summary, and detailed exit code. A non-empty plan opens a review item;
 it never changes infrastructure automatically.
 
+## Platform and enterprise fit
+
+| Relationship | Detailed fit |
+| --- | --- |
+| Owning platform | **Terraform Drift Detection** belongs to the Enterprise Multi-Cloud Infrastructure Platform because that platform turns reviewed desired state into inventory checks, plans, approvals, bounded automation, and recovery evidence. |
+| Enterprise consumers | The capability supports the infrastructure foundations used by provider, payer, data, and shared services. |
+| Enterprise outcome | Its planned result advances: Detect unreviewed change before it affects provider, payer, or shared platform services. |
+| Control contribution | The design adds controlled blast radius, ownership, drift visibility, and reversible change. |
+| Cross-platform handoff | Supporting platforms consume a reviewed result or evidence artifact; they do not take ownership away from the primary platform. |
+| Infrastructure boundary | Fit is achieved by reusing documented existing repositories, control planes, services, and targets—not by inventing capacity or treating planned products as available. |
+
+The platform fit is therefore based on ownership and a reusable decision, not
+on the presence of a particular tool. Enterprise fit requires evidence that the
+named outcome was observed for the bounded scope; completing documentation or
+running an isolated technology demonstration is insufficient.
+
 ## Trigger and actors
 
 | Item | Definition |
