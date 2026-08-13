@@ -31,6 +31,22 @@ dependencies, SLO, dashboards, alerts, runbooks, backup/recovery expectations,
 security boundary, and rollback. An automated collector validates references
 and produces `Ready`, `Ready with expiring exception`, or `Not ready`.
 
+## Platform and enterprise fit
+
+| Relationship | Detailed fit |
+| --- | --- |
+| Owning platform | **Operational Readiness Review** belongs to the Enterprise Resilience and Service Operations Platform because that platform turns service ownership, objectives, telemetry, exercises, incidents, and recovery into an operating-readiness decision. |
+| Enterprise consumers | The capability supports continuity of provider, payer, and shared-platform services. |
+| Enterprise outcome | Its planned result advances: Prevent a service from being declared ready without ownership, dependencies, telemetry, recovery, and evidence. |
+| Control contribution | The design adds measurable resilience, bounded failure exercises, accountable recovery, and follow-up closure. |
+| Cross-platform handoff | Supporting platforms consume a reviewed result or evidence artifact; they do not take ownership away from the primary platform. |
+| Infrastructure boundary | Fit is achieved by reusing documented existing repositories, control planes, services, and targets—not by inventing capacity or treating planned products as available. |
+
+The platform fit is therefore based on ownership and a reusable decision, not
+on the presence of a particular tool. Enterprise fit requires evidence that the
+named outcome was observed for the bounded scope; completing documentation or
+running an isolated technology demonstration is insufficient.
+
 ## Trigger and actors
 
 | Item | Definition |
