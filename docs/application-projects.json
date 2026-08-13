@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "last_verified": "2026-08-13",
+  "applications": [
+    {
+      "id": "podinfo",
+      "repository": "midhhealth/applications/podinfo",
+      "kind": "reference-application",
+      "purpose": "Prove the enterprise application delivery and operating path without clinical, payer, PHI, or production data.",
+      "owner": "Platform Delivery team",
+      "source": {
+        "upstream_url": "https://github.com/stefanprodan/podinfo",
+        "tag": "6.14.1",
+        "commit": "eec06d1ea459af4cb4e10e806f8be7c7bd58b361",
+        "license": "Apache-2.0",
+        "license_sha256": "00b6239a0f738010ba96855ac4c63fc221bc2875d9427e815e519ebae4f71bd1"
+      },
+      "internal_repository": {
+        "url": "http://gitlab.example.com/midhhealth/applications/podinfo",
+        "project_id": 29,
+        "default_branch": "main",
+        "protected_branch": true,
+        "commit": "81e02a9825bb4adbb353ebe23c62e26740f7550c",
+        "last_passing_pipeline_id": 653,
+        "latest_pipeline_id": 659,
+        "latest_pipeline_state": "canceled"
+      },
+      "delivery_contracts": {
+        "shared_library": {
+          "repository": "midhhealth/platform-delivery/jenkins-shared-library",
+          "commit": "71c5b28811630aa1bdc5ac2d5395660f8f6afec6",
+          "pipeline_id": 656
+        },
+        "job_dsl": {
+          "repository": "midhhealth/platform-delivery/jenkins-jobs",
+          "commit": "8adccc2e6de77d37bf6104f82d8832030409fc62",
+          "pipeline_id": 657
+        }
+      },
+      "documentation_state": "detailed-and-linked",
+      "implementation_authorized": false,
+      "deployment_state": "not-deployed",
+      "runtime": {
+        "platform": "application-kubernetes",
+        "cluster": "kubernetes-admin@kubernetes",
+        "namespace": "podinfo",
+        "ingress_host": null,
+        "persistent_state": false,
+        "status": "documented-target-only"
+      },
+      "required_chains": [
+        "delivery-spine",
+        "identity-and-secrets",
+        "network-and-service-access",
+        "operational-readiness",
+        "telemetry-and-release-feedback",
+        "kubernetes-workload"
+      ],
+      "platform_projects": [
+        "midhhealth/platform-delivery/jenkins-jobs",
+        "midhhealth/platform-delivery/jenkins-shared-library",
+        "midhhealth/platform-delivery/ansible-jenkins",
+        "midhhealth/platform-engineering/ansible-kubernetes",
+        "midhhealth/platform-engineering/kubernetes-platform-gitops",
+        "midhhealth/platform-engineering/network-engineering-platform",
+        "midhhealth/reliability-operations/observability-sre-platform",
+        "midhhealth/reliability-operations/resilience-service-operations",
+        "midhhealth/security-governance/cloud-governance-ops-automation"
+      ],
+      "evidence": [
+        "docs/evidence/APP-PODINFO-001-source-review.md",
+        "docs/evidence/APP-PODINFO-002-internal-project-ci.md",
+        "docs/evidence/APP-PODINFO-003-release-contract-source.md",
+        "docs/evidence/APP-PODINFO-004-documentation-scope-stop.md",
+        "docs/evidence/CHG-2026-002-jenkins-agent-acceptance.md",
+        "docs/evidence/CHG-2026-009-kubernetes-ingress-acceptance.md",
+        "docs/evidence/CHG-2026-010-kubernetes-persistent-storage-acceptance.md"
+      ],
+      "gates": [
+        {"id": "source-pinned", "state": "passed"},
+        {"id": "internal-project-created", "state": "passed"},
+        {"id": "internal-ci-passed", "state": "passed"},
+        {"id": "application-release-contract-source", "state": "passed"},
+        {"id": "harbor-image-published", "state": "pending"},
+        {"id": "helm-plan-passed", "state": "pending"},
+        {"id": "application-deployed", "state": "pending"},
+        {"id": "telemetry-and-slo-accepted", "state": "pending"},
+        {"id": "rollback-and-recovery-passed", "state": "pending"}
+      ]
+    }
+  ]
+}

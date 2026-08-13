@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1120" viewBox="0 0 1800 1120" role="img" aria-labelledby="title desc" data-use-case="UC-RSO-021" data-archetype="service-path">
+  <title id="title">UC-RSO-021 dependency failure containment architecture</title>
+  <desc id="desc">A user request travels through a caller budget and resilience controls to a dependency while telemetry drives a human decision and bounded recovery loop.</desc>
+  <defs>
+    <style>
+      .bg{fill:#f8fafc}.ink{fill:#0f172a}.muted{fill:#475569}.lane{fill:#fff;stroke:#cbd5e1;stroke-width:2}.blue{fill:#eff6ff;stroke:#2563eb;stroke-width:2}.green{fill:#ecfdf5;stroke:#059669;stroke-width:2}.orange{fill:#fff7ed;stroke:#ea580c;stroke-width:2}.purple{fill:#faf5ff;stroke:#7c3aed;stroke-width:2}.dark{fill:#0f172a;stroke:#0f172a;stroke-width:2}.title{font:700 30px Arial,sans-serif}.kicker{font:700 12px Arial,sans-serif;fill:#2563eb;letter-spacing:1.4px}.h2{font:700 19px Arial,sans-serif}.h3{font:700 15px Arial,sans-serif}.body{font:12px Arial,sans-serif}.small{font:11px Arial,sans-serif}.inverse{fill:#fff}.arrow{fill:none;stroke:#2563eb;stroke-width:3;marker-end:url(#arrow)}.error{fill:none;stroke:#ea580c;stroke-width:2.6;stroke-dasharray:8 6;marker-end:url(#orange)}.signal{fill:none;stroke:#7c3aed;stroke-width:2.3;stroke-dasharray:6 5;marker-end:url(#purple)}.decision{fill:#fff7ed;stroke:#ea580c;stroke-width:2.5}.note{font:italic 14px Georgia,serif;fill:#475569}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="5" orient="auto"><path d="M0,0 L0,10 L11,5 z" fill="#2563eb"/></marker>
+    <marker id="orange" markerWidth="12" markerHeight="12" refX="10" refY="5" orient="auto"><path d="M0,0 L0,10 L11,5 z" fill="#ea580c"/></marker>
+    <marker id="purple" markerWidth="12" markerHeight="12" refX="10" refY="5" orient="auto"><path d="M0,0 L0,10 L11,5 z" fill="#7c3aed"/></marker>
+  </defs>
+  <rect class="bg" width="1800" height="1120"/>
+  <text class="title ink" x="48" y="50">UC-RSO-021 — Dependency Failure Containment</text>
+  <text class="kicker" x="48" y="88">WHAT WE’RE TRYING TO MAKE TRUE</text>
+  <text class="body muted" x="48" y="116" style="font-size:20px">One slow dependency changes one user experience intentionally; it does not exhaust the whole platform.</text>
+
+  <rect class="lane" x="45" y="150" width="1710" height="105" rx="16"/>
+  <text class="h2 ink" x="70" y="185">A request has one finite budget</text>
+  <text class="body muted" x="70" y="214">Every timeout, attempt, queue wait and fallback consumes that same budget. Retries create load and must earn their place.</text>
+
+  <rect class="lane" x="45" y="290" width="1710" height="470" rx="18"/>
+  <text class="h2 ink" x="70" y="328">User path and containment controls</text>
+
+  <rect class="blue" x="75" y="380" width="190" height="120" rx="16"/>
+  <text class="h3 ink" x="95" y="412">User journey</text><text class="body muted" x="95" y="441"><tspan x="95">Request class + deadline</tspan><tspan x="95" dy="17">success, degraded or failed</tspan></text>
+  <path class="arrow" d="M265 440 H350"/>
+
+  <rect class="dark" x="355" y="350" width="260" height="180" rx="16"/>
+  <text class="h3 inverse" x="380" y="385">Calling service budget</text>
+  <text class="body inverse" x="380" y="418"><tspan x="380">Total deadline</tspan><tspan x="380" dy="19">Per-attempt timeout</tspan><tspan x="380" dy="19">Retry eligibility</tspan><tspan x="380" dy="19">Concurrency ceiling</tspan><tspan x="380" dy="19">Idempotency rule</tspan></text>
+
+  <path class="arrow" d="M615 440 H700"/>
+  <rect class="purple" x="705" y="335" width="300" height="210" rx="18"/>
+  <text class="h3 ink" x="730" y="370">Containment envelope</text>
+  <rect class="lane" x="730" y="390" width="115" height="55" rx="9"/><text class="small ink" x="788" y="414" text-anchor="middle">backoff</text><text class="small muted" x="788" y="430" text-anchor="middle">+ jitter</text>
+  <rect class="lane" x="865" y="390" width="115" height="55" rx="9"/><text class="small ink" x="923" y="414" text-anchor="middle">attempt</text><text class="small muted" x="923" y="430" text-anchor="middle">budget</text>
+  <rect class="lane" x="730" y="465" width="115" height="55" rx="9"/><text class="small ink" x="788" y="489" text-anchor="middle">circuit</text><text class="small muted" x="788" y="505" text-anchor="middle">stop state</text>
+  <rect class="lane" x="865" y="465" width="115" height="55" rx="9"/><text class="small ink" x="923" y="489" text-anchor="middle">bulkhead</text><text class="small muted" x="923" y="505" text-anchor="middle">concurrency</text>
+
+  <path class="arrow" d="M1005 440 H1090"/>
+  <rect class="orange" x="1095" y="350" width="260" height="180" rx="16"/>
+  <text class="h3 ink" x="1120" y="385">Dependency states</text>
+  <text class="body muted" x="1120" y="418"><tspan x="1120">fast success • slow success</tspan><tspan x="1120" dy="19">timeout • intermittent 5xx</tspan><tspan x="1120" dy="19">duplicate • unavailable</tspan><tspan x="1120" dy="19">probe green, backlog high</tspan></text>
+
+  <path class="arrow" d="M1355 440 H1440"/>
+  <rect class="green" x="1445" y="365" width="260" height="150" rx="16"/>
+  <text class="h3 ink" x="1470" y="400">Intentional user outcome</text>
+  <text class="body muted" x="1470" y="431"><tspan x="1470">success within deadline</tspan><tspan x="1470" dy="18">owned degraded response</tspan><tspan x="1470" dy="18">fast, attributable failure</tspan></text>
+
+  <path class="error" d="M1225 530 C1225 640 855 650 855 550"/>
+  <text class="small muted" x="1000" y="638">failure feeds stop state, not an unbounded loop</text>
+
+  <rect class="blue" x="350" y="590" width="300" height="120" rx="14"/>
+  <text class="h3 ink" x="375" y="622">Resource protection</text><text class="body muted" x="375" y="651"><tspan x="375">threads • connections • CPU</tspan><tspan x="375" dy="17">queue age • pending work</tspan></text>
+  <rect class="purple" x="715" y="590" width="300" height="120" rx="14"/>
+  <text class="h3 ink" x="740" y="622">Evidence on every attempt</text><text class="body muted" x="740" y="651"><tspan x="740">caller • dependency • release</tspan><tspan x="740" dy="17">timeout • attempt • outcome</tspan></text>
+  <rect class="green" x="1080" y="590" width="300" height="120" rx="14"/>
+  <text class="h3 ink" x="1105" y="622">Recovery is multi-signal</text><text class="body muted" x="1105" y="651"><tspan x="1105">probe + error + saturation</tspan><tspan x="1105" dy="17">+ backlog + user journey</tspan></text>
+  <path class="signal" d="M500 590 C500 550 500 545 500 530"/><path class="signal" d="M865 590 V550"/><path class="signal" d="M1230 590 V535"/>
+
+  <rect class="lane" x="45" y="795" width="1710" height="150" rx="18"/>
+  <text class="h2 ink" x="70" y="832">Human decision loop</text>
+  <rect class="blue" x="270" y="850" width="250" height="65" rx="12"/><text class="h3 ink" x="395" y="878" text-anchor="middle">Observe user + platform</text><text class="small muted" x="395" y="898" text-anchor="middle">logs • metrics • traces • SLO</text>
+  <polygon class="decision" points="760,840 870,882 760,924 650,882"/><text class="h3 ink" x="760" y="879" text-anchor="middle">Contained?</text><text class="small muted" x="760" y="898" text-anchor="middle">budget + blast radius</text>
+  <rect class="orange" x="1005" y="850" width="250" height="65" rx="12"/><text class="h3 ink" x="1130" y="878" text-anchor="middle">Rollback / reduce / isolate</text><text class="small muted" x="1130" y="898" text-anchor="middle">incident authority decides</text>
+  <rect class="green" x="1390" y="850" width="250" height="65" rx="12"/><text class="h3 ink" x="1515" y="878" text-anchor="middle">Verify stable recovery</text><text class="small muted" x="1515" y="898" text-anchor="middle">dependency + caller + backlog</text>
+  <path class="arrow" d="M520 882 H640"/><path class="arrow" d="M870 882 H995"/><path class="arrow" d="M1255 882 H1380"/>
+  <path class="error" d="M1515 850 C1515 780 395 780 395 845"/>
+
+  <text class="note" x="70" y="987">A dependency coming back is only the beginning of recovery; the caller and queued work must recover too.</text>
+  <rect class="orange" x="45" y="1010" width="1710" height="72" rx="14"/>
+  <text class="h3 ink" x="70" y="1040">The line we do not cross in this design</text>
+  <text class="body muted" x="70" y="1064">No infinite retries, hidden user failure, protected payloads, new resilience product, or runtime fault injection without named scope, abort authority and separate approval.</text>
+</svg>

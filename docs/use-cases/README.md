@@ -1,6 +1,6 @@
 # Use-Case Documentation Standard
 
-Last verified: 2026-08-02
+Last verified: 2026-08-13
 
 This directory turns the enterprise portfolio into work that an engineer can
 implement, test, operate, and audit. The portfolio summary remains in
@@ -8,7 +8,7 @@ implement, test, operate, and audit. The portfolio summary remains in
 use case lives here.
 
 The [enterprise traceability register](enterprise-traceability.md) maps all 12
-platforms and their 224 canonical use cases to provider, payer, shared digital
+platforms and their 226 canonical use cases to provider, payer, shared digital
 platform, risk, and resilience outcomes. Use it to verify that a proposed page
 fits its owning platform and that the platform fits the enterprise model.
 
@@ -16,27 +16,32 @@ fits its owning platform and that the platform fits the enterprise model.
 
 | Platform | Detailed use-case designs | Design status |
 | --- | ---: | --- |
-| DevSecOps delivery | [15](devsecops/README.md) | Complete |
+| DevSecOps delivery | [16](devsecops/README.md) | Complete |
 | Multi-cloud infrastructure | [12](infrastructure/README.md) | Complete |
 | Kubernetes with GitOps | [13](kubernetes/README.md) | Complete |
 | Observability and SRE | [16](observability/README.md) | Complete |
 | Governance and operations | [19](governance/README.md) | Complete |
 | Linux systems engineering | [24](linux/README.md) | Complete |
 | Database reliability | [19](database/README.md) | Complete |
-| Resilience and service operations | [20](resilience/README.md) | Complete |
+| Resilience and service operations | [21](resilience/README.md) | Complete |
 | Data engineering and integration | [25](data/README.md) | Complete |
 | Network engineering and automation | [31](network/README.md) | Complete |
 | Healthcare AI | [15](healthcare-ai/README.md) | Complete |
 | MLOps model platform | [15](mlops/README.md) | Complete |
-| **Total** | **224** | **Design complete; implementation separately scheduled** |
+| **Total** | **226** | **Design complete; implementation separately scheduled** |
 
-All 224 canonical use cases have a dedicated page. The pages are architecture
+All 226 canonical use cases have a dedicated page. The pages are architecture
 and delivery designs: they explain the organizational need, platform fit,
 enterprise value, actors, workflow, controls, dependencies, failure behavior,
 acceptance criteria, and a plan for later implementation. They do not claim
 that code or runtime execution exists, and they do not authorize new
 infrastructure. When implementation is scheduled later, verified evidence can
 flow back into the corresponding page.
+
+Start from the canonical portfolio when reviewing enterprise coverage, or use
+the platform indexes above when reviewing a platform backlog. Both navigation
+paths link to every detailed page; no use-case design should require browsing
+the repository tree to find it.
 
 Detailed designs may be developed across the portfolio without starting their
 implementation. Implementation and acceptance are separately scheduled and
@@ -59,6 +64,45 @@ Every use-case document must contain:
 8. actual versus expected results and an honest completion decision;
 9. screenshot and artifact references; and
 10. operational, incident, security, and follow-up notes.
+
+## Architecture-readiness contract
+
+Every detailed page must also make the architecture executable as a future
+plan without authorizing infrastructure or runtime work. Required content is:
+
+1. an operating context that distinguishes the enterprise need, current state,
+   desired state, accountable platform, target boundary, and no-new-
+   infrastructure constraint;
+2. a detailed, accessible SVG architecture diagram that shows enterprise
+   actors, source and dependency contracts, planned control logic, decision
+   gates, accepted execution boundary, existing target, assurance controls,
+   evidence, owner acceptance, and recovery. Simple Mermaid block flows do not
+   satisfy this requirement. The visual form must fit the work: use a delivery
+   pipeline, data flow, feedback loop, controlled lifecycle, service path,
+   decision map, or response timeline as appropriate instead of forcing every
+   capability into the same layout;
+3. explicit upstream and assurance dependencies linked by canonical use-case
+   ID, including the artifact exchanged and the effect of missing evidence;
+4. functional, performance, scale, reliability, recovery, observability, and
+   retention requirements. Unapproved numeric targets remain owned `TBD`
+   decisions rather than invented values;
+5. trust boundaries covering source contribution, CI evaluation, privileged
+   execution, target access, evidence, identity, credential ownership,
+   rotation, and emergency revocation;
+6. selected architecture decisions, deferred alternatives, rationale, and open
+   decisions with an owner and resolution gate;
+7. exact planned repository-relative locations for the contract,
+   implementation, result schema, fixtures, CI include, and operator runbook;
+   and
+8. staged delivery from contract and source validation through read-only proof,
+   separately approved canary execution, independent verification, and
+   recovery.
+
+Shared control language is permitted where it expresses a genuine enterprise
+standard. Stock prose that merely substitutes a use-case name into the same
+paragraph is not detailed architecture. Purpose, expected outcome, diagrams,
+dependencies, risks, and implementation responsibilities must describe the
+actual capability.
 
 ## Linux end-to-end IaC contract
 
@@ -114,6 +158,32 @@ Each story must include these fields:
 
 Passing source validation is `Code complete`; it is not runtime acceptance.
 Screenshots are supporting evidence and never replace machine-readable results.
+
+## Enhancement buildability rule
+
+An enhancement added after the original detailed design must bind back to the
+same implementation contract. It cannot remain only explanatory prose or an
+interview question. Before the enhancement is considered architecture-ready,
+its page must state how the added behavior changes all six planned artifacts:
+
+1. the use-case contract and target allowlist;
+2. the primary executable implementation;
+3. the machine-readable result schema;
+4. positive, blocking, malformed and recovery fixtures;
+5. the repository CI gate; and
+6. the operator diagnosis and recovery runbook.
+
+The page must also name the existing execution or deployment target, the
+separate approval required for mutation, the independent post-deployment check
+and the rollback or safe stop. For a read-only detector, policy or evidence
+collector, “deploy” means releasing its versioned evaluator, rule, job or
+dashboard through the accepted platform path; it does not mean creating the
+resource being evaluated.
+
+If the enhancement needs a missing cloud account, VM, cluster, product,
+credential, protected dataset or capacity, its source and fixtures may still be
+built, but runtime deployment remains blocked behind a separate architecture
+decision. Documentation must never hide that boundary.
 Do not use mock images, edited success states, or screenshots from a different
 environment as acceptance evidence.
 

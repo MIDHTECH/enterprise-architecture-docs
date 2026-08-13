@@ -1,6 +1,6 @@
 # Current Environment State
 
-Last verified: 2026-08-08
+Last verified: 2026-08-13
 
 ## Enterprise project portfolio
 
@@ -40,7 +40,7 @@ persistent-storage changes completed through 2026-08-08:
 | AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
 | AWX execution plane | AWX 24.6.1 instance 3 on `awx-execution.example.com` is Ready at capacity 76 only in `lab-infrastructure`; NGINX exposes hostname TCP 443 and Receptor remains loopback-only on 27199 |
 | AWX inventories | 50 records across nine populated inventories plus the empty Demo inventory; 39 distinct names. Purpose-specific delivery inventories remain isolated, and `awx-execution-plane` contains only the execution node and canary localhost. |
-| Git repositories | AWX inventory, Kubernetes ingress, Longhorn storage automation/design, and cloud-infrastructure corrections are published; incident documentation is updated as each sequential change closes |
+| Git repositories | AWX inventory, Kubernetes ingress, Longhorn storage automation/design, and cloud-infrastructure corrections are published; private application project `midhhealth/applications/podinfo` retains upstream history and has protected `main` at `81e02a9825bb4adbb353ebe23c62e26740f7550c`; its latest pipeline was canceled when work returned to documentation-only scope |
 
 The directly verified provisioned-only product VMs include `governance`,
 `backup`, `artifactory`, `sonarqube`, and `splunk`.
@@ -71,6 +71,15 @@ zero-change AWX job 704 passed. `jenkins-agent01` is accepted: its
 WebSocket service is enabled and active, Jenkins reports one exclusive
 `kubernetes-deployer` executor online, the controller has zero executors, and
 AWX jobs 536/541 both converged with zero changes or failures.
+
+Podinfo project pipeline 653 passed source policy, Go module verification,
+tests, vet, and binary packaging as jobs 1943–1945 on application runner ID 3.
+This proves the independent project source/CI boundary only. A Harbor image,
+Kubernetes namespace, route, telemetry acceptance, and rollback still do not
+exist for the application.
+Pipeline 659 was canceled when the work was clarified as documentation-only;
+see [APP-PODINFO-004](evidence/APP-PODINFO-004-documentation-scope-stop.md).
+No application runtime action followed that pipeline.
 
 Legacy GitLab runner ID 2 (`ansible-jenkins-runner-01`) is paused and its
 container is absent from `gitlab.example.com`. Retirement, rollback restore,

@@ -10,6 +10,8 @@ operators and engineers a common operating record for the platform.
 ## Documents
 
 - [Enterprise Project Portfolio and Use Case Coverage](docs/enterprise-project-portfolio-and-usecases.md)
+- [Application Project Deployment Register](docs/application-project-deployment-register.md)
+- [Podinfo Application Deployment Record](docs/projects/applications/podinfo.md)
 - [Advanced Use Case Comparison](docs/advanced-usecase-comparison.md)
 - [Use-Case Implementation Status](docs/use-case-implementation-status.md)
 - [On-Premises Platform Build Runbook](docs/on-prem-platform-build-runbook.md)
@@ -18,6 +20,8 @@ operators and engineers a common operating record for the platform.
 - [GitLab Repository Onboarding](docs/gitlab-repository-onboarding.md)
 - [GitLab Organization Model](docs/gitlab-organization-model.md)
 - [Jenkins AWX Ansible Operations](docs/jenkins-awx-ansible-operations.md)
+- [Platform Engineering Interview Learning Labs](docs/platform-engineering-interview-learning-labs.md)
+- [Platform and Use-Case Learning Enhancement Plan](docs/platform-usecase-learning-enhancement-plan.md)
 - [Kubernetes Helm Delivery](docs/kubernetes-helm-delivery-runbook.md)
 - [PostgreSQL 18 Installation](docs/product-installation-postgresql.md)
 - [Lab DNS and Copper9100 Configuration](docs/product-installation-dns.md)
@@ -38,6 +42,7 @@ operators and engineers a common operating record for the platform.
 - [Enterprise Branching Strategy](docs/branching-strategy.md)
 - [Component Architecture Diagram](docs/component-architecture.md)
 - [Platform Domain Pages](docs/projects/README.md)
+- [Application Deployment Record Template](docs/projects/application-deployment-record-template.md)
 
 ## Repository Purpose
 

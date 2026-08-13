@@ -8,6 +8,7 @@ Last verified: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Network Change Validation and Rollback |
 | Primary platform | Enterprise Network Engineering and Automation Platform |
+| Supporting use cases | [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md), [UC-LNX-011](../linux/UC-LNX-011-dns-ntp-host-networking.md), [UC-GOV-007](../governance/UC-GOV-007-infrastructure-security-hardening.md), [UC-OBS-012](../observability/UC-OBS-012-synthetic-monitoring.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, provider and payer operations |
 | Enterprise outcome | Protect service connectivity and name resolution during changes to the existing lab |
 | Supporting platforms | Linux systems, Kubernetes, observability, resilience operations |
@@ -73,17 +74,141 @@ and endpoint checks; bounded canary changes; rollback; and evidence. New
 addresses, VLANs, appliances, VPNs, load balancers, CNI replacement, or cloud
 networking are excluded.
 
-## End-to-end execution flow
+## Architecture context
 
-```mermaid
-flowchart LR
-    Source["Reviewed network source"] --> Pre["Read-only prechecks"]
-    Pre --> Approval["Change and explicit confirmation"]
-    Approval --> Canary["One bounded existing target"]
-    Canary --> Post["DNS, route, port, protocol, and service postchecks"]
-    Post --> Rollback["Restore prior source/runtime state"]
-    Rollback --> Proof["Recovery and zero-change evidence"]
-```
+Network Change Validation and Rollback is evaluated inside the existing enterprise lab and the owning
+platform's current source-control and execution boundaries. The architectural
+unit is the governed outcome—**Protect service connectivity and name resolution during changes to the existing lab**—rather than a new product or
+environment.
+
+| Context element | Architecture statement |
+| --- | --- |
+| Business and operational setting | Enterprise consumers: Shared digital platform, operational resilience, provider and payer operations. The result must be explainable, repeatable, and owned. |
+| Current state | **Planned — several component changes have evidence; reusable cross-path workflow is pending** |
+| Desired state | A reviewed contract drives a bounded result, machine-readable evidence, and a safe stop or recovery decision. |
+| Existing target boundary | Existing DNS, NGINX, KVM bridges, Kubernetes paths, GitLab, Jenkins, and AWX inventories |
+| Infrastructure constraint | No router, switch, VM, IP, VLAN, load balancer, CNI, or network product is created |
+| Accountable platform owner | Network Engineering and Automation team; the consuming service, data, security, or workflow owner remains accountable for accepting business impact. |
+
+The page owns the contract, control logic, evidence, and recovery behavior for
+Network Change Validation and Rollback. It does not absorb the responsibilities of the dependency use cases
+listed below.
+
+## Architecture diagram
+
+![UC-NET-001 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-NET-001/UC-NET-001-architecture.svg)
+
+Trace the requested conversation from source zone to destination. Each boundary answers a different question—identity, intent, policy, path, and proof—and a drawn arrow never substitutes for permission.
+
+## Dependencies and handoffs
+
+Network Change Validation and Rollback remains accountable to its primary platform. The dependencies below
+provide explicit contracts or assurance evidence; they do not become alternate owners.
+
+| Relationship | Use case | Required handoff | Failure propagation |
+| --- | --- | --- | --- |
+| Required upstream contract | [UC-INFRA-007: Infrastructure Change Impact Analysis](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) | resource-to-service impact and affected-owner list | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-LNX-011: DNS, NTP and Host Networking](../linux/UC-LNX-011-dns-ntp-host-networking.md) | host DNS, time, and network readiness evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-GOV-007: Infrastructure Security Hardening](../governance/UC-GOV-007-infrastructure-security-hardening.md) | security-hardening baseline and exception record | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-OBS-012: Synthetic Monitoring](../observability/UC-OBS-012-synthetic-monitoring.md) | synthetic path definition and observed response | Missing, stale, or failed evidence blocks promotion or runtime action. |
+
+Before Network Change Validation and Rollback is implemented, every handoff must resolve to an immutable
+revision and machine-readable artifact. A URL, screenshot, or verbal approval
+alone is not sufficient dependency evidence.
+
+## Quality attributes
+
+For Network Change Validation and Rollback, quality is measured against the bounded enterprise outcome—not
+document length or a green job. Unapproved business thresholds remain explicit
+decisions and must not be invented.
+
+| Attribute | Required measure or invariant | Decision state |
+| --- | --- | --- |
+| Functional correctness | Every required input is validated; **Protect service connectivity and name resolution during changes to the existing lab** is evaluated against positive, negative, missing-input, and unauthorized-scope cases. | Fixed design requirement |
+| Performance and scale | Establish a baseline for reachability accuracy, convergence time, latency baseline, and configuration drift on existing capacity; the owner must approve warning and blocking thresholds before runtime promotion. | Thresholds `TBD` before implementation |
+| Reliability | Missing prerequisites, stale dependencies, malformed evidence, and partial results fail closed without widening scope. | Fixed design requirement |
+| Recovery | Record the maximum acceptable interruption and recovery time before runtime use; source-only validation must remain zero-change. | Owner decision required before runtime exercise |
+| Observability | Emit use-case ID, revision, target, executor, start/end time, duration, decision, reason code, and recovery reference. | Required in the result schema |
+| Evidence retention | Assign classification, retention period, and deletion owner before storing runtime evidence. | Security/compliance decision required |
+
+Load, latency, availability, retention, RTO, and RPO values for Network Change Validation and Rollback become
+requirements only after the named service or business owner approves them. Until
+then, the implementation gate records them as unresolved instead of quietly
+choosing defaults.
+
+## Security and privacy architecture
+
+The Network Change Validation and Rollback design separates source validation, privileged execution, target
+access, and evidence review. Those boundaries remain in force even when one
+engineer can access more than one system.
+
+| Trust boundary | Allowed flow | Required control |
+| --- | --- | --- |
+| Contributor → GitLab | Reviewed source, contract, and synthetic/sanitized fixtures | Protected branch rules, peer review, secret scanning, and immutable commit identity |
+| GitLab runner → result artifact | Read-only evaluation inputs and machine-readable output | No target-changing credential; pinned tool versions; artifact checksum and expiry |
+| Approval plane → executor | Approved revision, target allowlist, mode, canary, and change reference | Separate authorization through the existing Jenkins/AWX or platform control path |
+| Executor → existing target | Minimum commands or API operations required for Network Change Validation and Rollback | Least-privilege identity, explicit target limit, timeout, and stop condition |
+| Target → evidence store | Sanitized metadata, measurements, decision, and recovery result | Exclude credentials, tokens, private keys, kubeconfigs, packet payloads, PHI, PII, and unrelated records |
+
+For Network Change Validation and Rollback, the primary threat is **a network test or change crossing its approved source, destination, protocol, or capture boundary**. The mandatory response is
+path allowlists, configuration backup, least-privilege execution, denied-path tests, and capture redaction. Authentication and authorization mappings must name
+the existing identity source, principal or service account, permitted actions,
+credential owner, rotation path, and emergency revocation procedure before a
+runtime story can move beyond `Planned`.
+
+## Architecture decisions and trade-offs
+
+| Decision | Selected architecture | Alternative deferred or rejected | Rationale and status |
+| --- | --- | --- | --- |
+| First implementation slice | Contract, schema, fixtures, and read-only evidence on the existing GitLab runner | Product installation or broad runtime rollout | Proves behavior without expanding infrastructure; **approved design direction** |
+| Runtime execution | Use only Approved Jenkins/AWX network action when current inventory and change approval confirm it is available | Direct operator changes or credentials in CI | Preserves separation of duties; **conditional on implementation review** |
+| Evidence | Machine-readable result is authoritative; screenshots are optional supporting material | Screenshot-only acceptance | Enables repeatable audit and automated gates; **approved design direction** |
+| Failure handling | Fail closed, preserve bounded diagnostics, and recover only the named scope | Continue with partial or stale evidence | Prevents false success and hidden blast radius; **approved design direction** |
+| New capacity or product | Stop and raise a separate architecture decision | Silently add a VM, service, cloud dependency, or cluster add-on | Maintains the existing-lab constraint; **mandatory** |
+
+### Open decisions before implementation
+
+| Open decision | Decision owner | Resolution gate |
+| --- | --- | --- |
+| Exact inventory object and first canary | Platform owner plus consuming service/data owner | Must resolve before the implementation story leaves `Planned` |
+| Performance, scale, and reliability thresholds | Service owner and SRE | Must be recorded before a runtime acceptance run |
+| Identity-to-action authorization matrix | Platform owner and security reviewer | Must be approved before target credentials are attached |
+| Evidence classification and retention | Data/security owner | Must be approved before runtime artifacts are retained |
+
+If any selected approach changes, record the rationale beside UC-NET-001 in
+the implementation repository before code review. A documentation edit alone
+does not approve the new architecture.
+
+## Implementation design
+
+The first Network Change Validation and Rollback implementation is deliberately source-only. Its planned files live in the existing repository; none provisions infrastructure.
+
+| Planned source responsibility | Exact planned location |
+| --- | --- |
+| Use-case contract and target allowlist | `midhhealth/platform-engineering/network-engineering-platform/contracts/uc-net-001.yaml` |
+| Primary implementation | `midhhealth/platform-engineering/network-engineering-platform/playbooks/network-change-validation.yml`; entry point: the `network-change-validation` validation role and bounded change entry point |
+| Machine-readable result schema | `midhhealth/platform-engineering/network-engineering-platform/schemas/uc-net-001-result.schema.json` |
+| Positive, negative, malformed, and recovery fixtures | `midhhealth/platform-engineering/network-engineering-platform/tests/fixtures/uc-net-001/` |
+| GitLab source gate | `midhhealth/platform-engineering/network-engineering-platform/.gitlab/ci/uc-net-001.yml` |
+| Operator diagnosis and recovery | `midhhealth/platform-engineering/network-engineering-platform/docs/runbooks/uc-net-001.md` |
+
+### Delivery stages
+
+1. **Contract:** add the contract, schema, owners, dependency revisions, target
+   allowlist, modes, reason codes, and open-decision values.
+2. **Source validation:** lint exact paths, validate schema compatibility, scan
+   for sensitive content, and run every fixture on the existing runner.
+3. **Read-only proof:** execute the `network-change-validation` validation role and bounded change entry point, publish a checksummed result, and
+   prove that blocked cases cannot reach a mutating path.
+4. **Bounded execution:** only after separate approval, pass the immutable
+   revision, target, mode, canary, and change ID to Approved Jenkins/AWX network action.
+5. **Independent verification:** measure the expected result, confirm unrelated
+   state is unchanged, run recovery or zero-change proof, and obtain owner
+   review.
+
+The implementation merge request must link this page, the dependency artifacts,
+the decision values above, and the eventual pipeline/job/run identifiers. Code
+completion alone cannot promote the page to runtime verified.
 
 ## Code and configuration map
 

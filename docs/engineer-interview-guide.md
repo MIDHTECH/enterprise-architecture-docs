@@ -19,6 +19,13 @@ governance, and operational evidence.
 For role ownership, team model, and repository responsibilities, see
 [Role and Contribution Guide](marketing-role-engineer-guide.md).
 
+For scenario questions and evidence-backed exercises on Jenkins capacity,
+pipeline decisions, native builds, Terraform state, Boto3 auditing, cloud cost
+response and incident command, use the
+[Platform Engineering Interview Learning Labs](platform-engineering-interview-learning-labs.md).
+The linked use-case pages carry the detailed architecture and their own
+follow-up questions; this narrative guide remains the portfolio-level view.
+
 ## Enterprise DevSecOps Delivery Platform
 
 **Client problem:** Application teams were deploying manually with inconsistent build, test, security, and release controls.

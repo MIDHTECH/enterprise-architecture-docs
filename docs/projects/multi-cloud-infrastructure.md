@@ -32,3 +32,25 @@ impact analysis, drift checks, and Ansible-ready inventory.
 - Terraform state integrity monitoring.
 - Infrastructure change impact analysis.
 - Self-service infrastructure request templates after governance approval.
+
+## Interview-led project leadership
+
+The [cloud and Kubernetes leadership track](../platform-engineering-interview-learning-labs.md#cloud-kubernetes-leadership-track)
+adds an end-to-end project narrative without changing the execution boundary.
+The infrastructure lead moves from business workflow, data classification,
+availability, recovery, compliance and cost requirements into measurable
+quality attributes, option analysis, architecture decisions, thin delivery
+slices, threat/operability review, source and fixture validation, bounded
+runtime evidence, readiness and operating handoff.
+
+Architecture disagreement is resolved through shared criteria and evidence.
+For example, module ownership, environment-root boundaries or managed-service
+selection should be compared for isolation, operability, reversibility, skill,
+cost and current-environment fit. The decision record captures the selected
+option, rejected alternatives, experiment or measurement, consequences and
+revisit trigger. Seniority does not replace that record.
+
+The current defensible implementation story remains the repository first
+slices for plan analysis, drift and impact mapping. Azure, AWS and GCP runtime
+deployment must be described as future reference architecture until execution
+and acceptance evidence exists.

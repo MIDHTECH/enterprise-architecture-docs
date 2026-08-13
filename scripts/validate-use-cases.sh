@@ -31,6 +31,13 @@ required_headings=(
   "## Trigger and actors"
   "## Preconditions"
   "## Scope and exclusions"
+  "## Architecture context"
+  "## Architecture diagram"
+  "## Dependencies and handoffs"
+  "## Quality attributes"
+  "## Security and privacy architecture"
+  "## Architecture decisions and trade-offs"
+  "## Implementation design"
   "## Code and configuration map"
   "## Jira breakdown"
   "## Evidence and screenshot register"
@@ -45,6 +52,35 @@ for document in "${USE_CASE_FILES[@]}"; do
       exit 1
     fi
   done
+
+  if ! grep -Fq '| Supporting use cases |' "$document"; then
+    echo "$document: missing supporting use-case links in the record." >&2
+    exit 1
+  fi
+
+  planned_path_markers=(
+    "/contracts/"
+    "/schemas/"
+    "/tests/fixtures/"
+    "/.gitlab/ci/"
+    "/docs/runbooks/"
+  )
+  for marker in "${planned_path_markers[@]}"; do
+    if ! grep -Fq "$marker" "$document"; then
+      echo "$document: missing planned implementation location containing $marker" >&2
+      exit 1
+    fi
+  done
+
+  if ! grep -Fq 'Thresholds `TBD` before implementation' "$document"; then
+    echo "$document: missing owned quality-attribute threshold decision." >&2
+    exit 1
+  fi
+
+  if grep -Eqi 'addresses a specific operating need inside the|For an approved scope, the future workflow evaluates|turns a versioned platform intent into a repeatable decision|Exact paths and tool choices must be confirmed|same enterprise control language used across|\b(this|the) use case\b|as a .*,? i need' "$document"; then
+    echo "$document: contains prohibited stock or robotic wording." >&2
+    exit 1
+  fi
 
   story_count="$(grep -c '^### STORY-' "$document" || true)"
   if [[ "$story_count" -lt 3 ]]; then
@@ -93,6 +129,145 @@ for document in "${USE_CASE_FILES[@]}"; do
     }
   ' "$document"
 done
+
+python3 - "$ROOT_DIR" <<'PY'
+from pathlib import Path
+import re
+import sys
+
+root = Path(sys.argv[1])
+documents = sorted((root / "docs/use-cases").glob("*/UC-*.md"))
+portfolio_text = (root / "docs/enterprise-project-portfolio-and-usecases.md").read_text()
+id_to_path = {}
+architecture_archetypes = set()
+allowed_archetypes = {
+    "delivery-pipeline",
+    "data-flow",
+    "feedback-loop",
+    "lifecycle",
+    "service-path",
+    "decision-map",
+    "response",
+}
+for document in documents:
+    match = re.match(r"(UC-[A-Z0-9]+-\d{3})", document.name)
+    if not match:
+        raise SystemExit(f"{document}: filename does not begin with a canonical use-case ID")
+    id_to_path[match.group(1)] = document
+
+for document in documents:
+    text = document.read_text()
+    own_id = re.match(r"(UC-[A-Z0-9]+-\d{3})", document.name).group(1)
+    portfolio_target = document.relative_to(root / "docs").as_posix()
+    portfolio_link_count = portfolio_text.count(f"({portfolio_target})")
+    if portfolio_link_count != 1:
+        raise SystemExit(
+            f"{document}: canonical portfolio must link the detailed page exactly once; found {portfolio_link_count}"
+        )
+    platform_index = document.parent / "README.md"
+    if not platform_index.is_file():
+        raise SystemExit(f"{document}: missing platform index {platform_index}")
+    index_link_count = platform_index.read_text().count(f"({document.name})")
+    if index_link_count != 1:
+        raise SystemExit(
+            f"{document}: platform index must link the detailed page exactly once; found {index_link_count}"
+        )
+    required_architecture_headings = (
+        "Architecture context",
+        "Architecture diagram",
+        "Dependencies and handoffs",
+        "Quality attributes",
+        "Security and privacy architecture",
+        "Architecture decisions and trade-offs",
+        "Implementation design",
+    )
+    for heading in required_architecture_headings:
+        count = len(re.findall(rf"^## {re.escape(heading)}\s*$", text, re.M))
+        if count != 1:
+            raise SystemExit(f"{document}: architecture heading {heading!r} occurs {count} times")
+
+    if text.count("```") % 2:
+        raise SystemExit(f"{document}: unbalanced fenced code blocks")
+
+    handoff_section = text.split("## Dependencies and handoffs", 1)[1].split("## Quality attributes", 1)[0]
+    handoff_ids = re.findall(
+        r"\[(UC-[A-Z0-9]+-\d{3})(?::[^]]+)?\]\([^)]*\.md\)",
+        handoff_section,
+    )
+    supporting_row = re.search(r"^\| Supporting use cases \| (.+) \|$", text, re.M)
+    supporting_ids = (
+        re.findall(r"\[(UC-[A-Z0-9]+-\d{3})\]", supporting_row.group(1))
+        if supporting_row
+        else []
+    )
+    if own_id in handoff_ids:
+        raise SystemExit(f"{document}: dependency table contains self-dependency {own_id}")
+    if len(set(handoff_ids)) < 3:
+        raise SystemExit(f"{document}: architecture must link at least three dependency use cases")
+    if supporting_ids != handoff_ids:
+        raise SystemExit(
+            f"{document}: supporting-use-case record {supporting_ids} does not match handoff table {handoff_ids}"
+        )
+
+    architecture_path = (
+        root
+        / "docs/assets/use-cases"
+        / own_id
+        / f"{own_id}-architecture.svg"
+    )
+    architecture_link = f"../../assets/use-cases/{own_id}/{own_id}-architecture.svg"
+    architecture_section = text.split("## Architecture diagram", 1)[1].split(
+        "## Dependencies and handoffs", 1
+    )[0]
+    if not architecture_path.is_file():
+        raise SystemExit(f"{document}: missing architecture SVG {architecture_path}")
+    if architecture_section.count(f"({architecture_link})") != 1:
+        raise SystemExit(
+            f"{document}: architecture section must link {architecture_link} exactly once"
+        )
+    if "```mermaid" in architecture_section:
+        raise SystemExit(f"{document}: architecture section must use the detailed SVG, not Mermaid")
+    try:
+        import xml.etree.ElementTree as ET
+
+        svg_root = ET.parse(architecture_path).getroot()
+    except ET.ParseError as error:
+        raise SystemExit(f"{architecture_path}: invalid SVG XML: {error}")
+    namespace = {"svg": "http://www.w3.org/2000/svg"}
+    svg_title = svg_root.find("svg:title", namespace)
+    svg_description = svg_root.find("svg:desc", namespace)
+    if svg_root.attrib.get("role") != "img" or svg_root.attrib.get("aria-labelledby") != "title desc":
+        raise SystemExit(f"{architecture_path}: SVG must expose role=img and aria-labelledby='title desc'")
+    if svg_title is None or not (svg_title.text or "").strip():
+        raise SystemExit(f"{architecture_path}: SVG must contain an accessible title")
+    if svg_description is None or not (svg_description.text or "").strip():
+        raise SystemExit(f"{architecture_path}: SVG must contain an accessible description")
+    serialized_svg = architecture_path.read_text()
+    if svg_root.attrib.get("data-use-case") != own_id:
+        raise SystemExit(f"{architecture_path}: data-use-case must equal {own_id}")
+    diagram_archetype = svg_root.attrib.get("data-archetype")
+    if diagram_archetype not in allowed_archetypes:
+        raise SystemExit(f"{architecture_path}: unsupported architecture archetype {diagram_archetype!r}")
+    architecture_archetypes.add(diagram_archetype)
+    required_human_concepts = (
+        "WHAT WE’RE TRYING TO MAKE TRUE",
+        "The line we do not cross in this design",
+    )
+    for concept in required_human_concepts:
+        if concept not in serialized_svg:
+            raise SystemExit(f"{architecture_path}: missing human-readable visual concept {concept!r}")
+    if own_id not in serialized_svg:
+        raise SystemExit(f"{architecture_path}: diagram does not contain its own use-case ID")
+
+    for target in re.findall(r"\[[^\]]+\]\(([^)#]+\.md)(?:#[^)]+)?\)", text):
+        resolved = (document.parent / target).resolve()
+        if not resolved.is_file():
+            raise SystemExit(f"{document}: broken internal Markdown link: {target}")
+
+if architecture_archetypes != allowed_archetypes:
+    missing = sorted(allowed_archetypes - architecture_archetypes)
+    raise SystemExit(f"Architecture portfolio does not exercise every approved visual grammar; missing {missing}")
+PY
 
 LINUX_USE_CASE_FILES=()
 while IFS= read -r line; do

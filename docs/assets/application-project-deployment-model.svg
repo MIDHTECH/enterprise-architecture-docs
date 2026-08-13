@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1040" viewBox="0 0 1800 1040" role="img" aria-labelledby="title desc">
+<title id="title">Separate application projects connected through shared enterprise platform contracts</title>
+<desc id="desc">Care, payer, data, AI and shared-service projects retain separate repositories, pipelines, versions and rollback. They connect through reusable delivery, identity, network, data, observability and resilience contracts on existing runtime platforms.</desc>
+<defs>
+<style>
+.bg{fill:#fff}.frame{fill:#f8fafc;stroke:#cbd5e1;stroke-width:2}.apps{fill:#eff6ff;stroke:#2563eb;stroke-width:2.5}.platform{fill:#ecfdf5;stroke:#059669;stroke-width:2.5}.runtime{fill:#fff7ed;stroke:#d97706;stroke-width:2.5}.evidence{fill:#f5f3ff;stroke:#7c3aed;stroke-width:2.5}.card{fill:#fff;stroke:#64748b;stroke-width:1.8}.title{font:700 30px Arial,sans-serif;fill:#0f172a}.subtitle{font:15px Arial,sans-serif;fill:#475569}.section{font:700 20px Arial,sans-serif;fill:#0f172a}.cardTitle{font:700 15px Arial,sans-serif;fill:#0f172a}.body{font:12px Arial,sans-serif;fill:#475569}.arrow{stroke:#2563eb;stroke-width:3;fill:none;marker-end:url(#arrow)}.return{stroke:#7c3aed;stroke-width:2.7;stroke-dasharray:8 6;fill:none;marker-end:url(#purpleArrow)}.label{fill:#fff}.edge{font:11px Arial,sans-serif;fill:#334155}.note{font:italic 15px Georgia,serif;fill:#475569}
+</style>
+<marker id="arrow" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0L0 8L10 4z" fill="#2563eb"/></marker>
+<marker id="purpleArrow" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0L0 8L10 4z" fill="#7c3aed"/></marker>
+</defs>
+<rect class="bg" width="1800" height="1040"/>
+<text class="title" x="50" y="52">Separate projects, one connected enterprise outcome</text>
+<text class="subtitle" x="50" y="82">Projects deploy independently. Shared contracts and evidence—not a monolithic repository—make them work together.</text>
+
+<rect class="apps" x="40" y="115" width="1720" height="210" rx="18"/>
+<text class="section" x="68" y="150">Application and product projects</text>
+<rect class="card" x="70" y="180" width="300" height="115" rx="13"/><text class="cardTitle" x="92" y="215">Care application project</text><text class="body" x="92" y="244">own repo • pipeline • release • rollback</text><text class="body" x="92" y="265">clinical or patient workflow</text>
+<rect class="card" x="405" y="180" width="300" height="115" rx="13"/><text class="cardTitle" x="427" y="215">Payer application project</text><text class="body" x="427" y="244">own repo • pipeline • release • rollback</text><text class="body" x="427" y="265">claims or member workflow</text>
+<rect class="card" x="740" y="180" width="300" height="115" rx="13"/><text class="cardTitle" x="762" y="215">Data product project</text><text class="body" x="762" y="244">own schema • lineage • quality • replay</text><text class="body" x="762" y="265">producer and consumer contracts</text>
+<rect class="card" x="1075" y="180" width="300" height="115" rx="13"/><text class="cardTitle" x="1097" y="215">AI/model project</text><text class="body" x="1097" y="244">own model • evaluation • access • rollback</text><text class="body" x="1097" y="265">bound to a real consuming application</text>
+<rect class="card" x="1410" y="180" width="300" height="115" rx="13"/><text class="cardTitle" x="1432" y="215">Platform service project</text><text class="body" x="1432" y="244">own automation • version • evidence</text><text class="body" x="1432" y="265">reusable capability, not app-owned code</text>
+
+<rect class="platform" x="40" y="370" width="1720" height="245" rx="18"/>
+<text class="section" x="68" y="405">Shared platform contract spine</text>
+<rect class="card" x="70" y="445" width="245" height="125" rx="13"/><text class="cardTitle" x="92" y="480">Delivery</text><text class="body" x="92" y="509">build • test • scan • artifact</text><text class="body" x="92" y="530">promotion • rollback</text>
+<rect class="card" x="350" y="445" width="245" height="125" rx="13"/><text class="cardTitle" x="372" y="480">Identity and policy</text><text class="body" x="372" y="509">principal • secret • role</text><text class="body" x="372" y="530">exception • revocation</text>
+<rect class="card" x="630" y="445" width="245" height="125" rx="13"/><text class="cardTitle" x="652" y="480">Runtime and network</text><text class="body" x="652" y="509">namespace/VM • DNS • TLS</text><text class="body" x="652" y="530">ingress • egress • reachability</text>
+<rect class="card" x="910" y="445" width="245" height="125" rx="13"/><text class="cardTitle" x="932" y="480">Data and state</text><text class="body" x="932" y="509">schema • database • lineage</text><text class="body" x="932" y="530">backup • restore • reconciliation</text>
+<rect class="card" x="1190" y="445" width="245" height="125" rx="13"/><text class="cardTitle" x="1212" y="480">Telemetry</text><text class="body" x="1212" y="509">metrics • logs • traces • SLO</text><text class="body" x="1212" y="530">release health • alert route</text>
+<rect class="card" x="1470" y="445" width="245" height="125" rx="13"/><text class="cardTitle" x="1492" y="480">Ownership and recovery</text><text class="body" x="1492" y="509">catalog • dependencies • incident</text><text class="body" x="1492" y="530">runbook • evidence • acceptance</text>
+
+<path class="arrow" d="M220 325V370"/><path class="arrow" d="M555 325V370"/><path class="arrow" d="M890 325V370"/><path class="arrow" d="M1225 325V370"/><path class="arrow" d="M1560 325V370"/>
+
+<rect class="runtime" x="40" y="665" width="1120" height="235" rx="18"/>
+<text class="section" x="68" y="700">Existing deployment targets</text>
+<rect class="card" x="70" y="745" width="240" height="115" rx="13"/><text class="cardTitle" x="92" y="780">Application Kubernetes</text><text class="body" x="92" y="809">ClusterIP ingress • Longhorn</text><text class="body" x="92" y="830">independent project namespaces</text>
+<rect class="card" x="345" y="745" width="240" height="115" rx="13"/><text class="cardTitle" x="367" y="780">Product VMs</text><text class="body" x="367" y="809">Rocky Linux • systemd/Compose</text><text class="body" x="367" y="830">AWX-controlled desired state</text>
+<rect class="card" x="620" y="745" width="240" height="115" rx="13"/><text class="cardTitle" x="642" y="780">Shared data services</text><text class="body" x="642" y="809">PostgreSQL • MinIO • Elastic</text><text class="body" x="642" y="830">project-scoped identities and state</text>
+<rect class="card" x="895" y="745" width="240" height="115" rx="13"/><text class="cardTitle" x="917" y="780">Approved edge development</text><text class="body" x="917" y="809">offline AI/ML evaluation</text><text class="body" x="917" y="830">not a production data host</text>
+
+<rect class="evidence" x="1210" y="665" width="550" height="235" rx="18"/>
+<text class="section" x="1238" y="700">Evidence returns to each project</text>
+<rect class="card" x="1240" y="745" width="490" height="115" rx="13"/><text class="cardTitle" x="1262" y="780">One release record per project</text><text class="body" x="1262" y="809">source + artifact + target + dependency revisions + health</text><text class="body" x="1262" y="830">owner decision + rollback/recovery + incident links</text>
+
+<path class="arrow" d="M600 615V665"/><path class="arrow" d="M1485 615V665"/>
+<path class="return" d="M1485 900C1485 990 220 990 220 325"/>
+<rect class="label" x="750" y="965" width="300" height="22" rx="5"/><text class="edge" x="765" y="981">runtime evidence improves the next project release</text>
+<text class="note" x="50" y="1020">Shared platforms remove repeated plumbing; they do not remove project ownership.</text>
+</svg>

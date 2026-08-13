@@ -8,6 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Kubernetes Security Baseline Implementation |
 | Primary platform | Enterprise Kubernetes Platform with GitOps |
+| Supporting use cases | [UC-K8S-001](UC-K8S-001-kubernetes-configuration-drift.md), [UC-NET-018](../network/UC-NET-018-kubernetes-networking.md), [UC-INFRA-001](../infrastructure/UC-INFRA-001-terraform-drift-detection.md), [UC-GOV-003](../governance/UC-GOV-003-secure-secrets-management-for-applications.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, risk and compliance |
 | Enterprise outcome | provide a controlled runtime for provider, payer, data, and platform workloads |
 | Primary GitLab repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
@@ -20,38 +21,33 @@ Last reviewed: 2026-08-13
 
 ## Purpose
 
-**Kubernetes Security Baseline Implementation** addresses a specific operating need inside the
-Enterprise Kubernetes Platform with GitOps: **Policies enforce pod and namespace standards**. Without a shared design, teams can perform
-the activity differently, omit critical controls, or report success without
-enough context for another engineer or reviewer to reproduce the decision.
+Kubernetes Security Baseline Implementation establishes **Policies enforce pod and namespace standards** for the existing application cluster while preserving namespace, policy, and recovery boundaries.
 
-The design connects reviewed GitOps or Helm desired state and the named existing cluster scope to a controlled result. It gives
-platform engineer, application owner, SRE, security reviewer, and change approver a common description of the trigger, inputs, boundaries,
-failure behavior, evidence, and ownership. Documentation here defines the
-future implementation contract; it does not claim that the capability has been
-built or exercised.
+For Kubernetes Security Baseline Implementation, the design fixes the contract, dependency handoffs, target boundary, evidence, decision owners, and recovery path before implementation. Those choices keep the eventual build grounded in the lab that actually exists.
 
 ## Expected outcome
 
-For an approved scope, the future workflow evaluates **Kubernetes Security Baseline Implementation** through
-source validation followed by the existing Jenkins, Helm, and private GitOps reconciliation path when approved. It produces a deterministic allow, block, escalate, or
-not-applicable decision tied to immutable source and the named target. The
-decision supports cluster policy, workload health, release, rollback, and service-resilience decisions and advances reliable container workload delivery for provider, payer, and shared-platform services.
+The first delivery slice proves **Policies enforce pod and namespace standards** on the documented
+existing target boundary. It uses a versioned contract plus positive, negative,
+malformed-input, unauthorized-scope, and recovery fixtures, then publishes an
+attributable machine-readable result.
 
-A missing prerequisite, unauthorized target, malformed result, unavailable
-product, or failed safety check stops the workflow. No new infrastructure is
-created under this design.
+Acceptance for Kubernetes Security Baseline Implementation requires rejected cases to stop safely and unrelated
+state to remain unchanged. Live integration or mutation still requires the
+separate approval, identity, canary, and rollback controls named below; this
+design does not authorize a product installation, new capacity, or an unlisted
+endpoint.
 
 ## Platform and enterprise fit
 
-| Relationship | Detailed fit |
+| Relationship | Architecture fit |
 | --- | --- |
-| Owning platform | Kubernetes Security Baseline Implementation turns a versioned platform intent into a repeatable decision rather than an isolated operator action. |
-| Platform workflow | GitLab validates source, Jenkins controls approved delivery, Helm packages releases, and GitOps reconciles only its assigned scope. |
-| Enterprise outcome | The result contributes to provide a controlled runtime for provider, payer, data, and platform workloads and remains traceable to its owner and source. |
-| Provider and payer value | The control reduces inconsistent or unreviewed behavior in systems supporting healthcare and enterprise operations. |
-| Risk and compliance | Decisions, exceptions, evidence, and review ownership are explicit and auditable. |
-| Operational resilience | Fail-closed behavior, bounded execution, and recovery evidence prevent an ambiguous result from becoming a wider service change. |
+| Owning responsibility | **Enterprise Kubernetes Platform with GitOps** owns the contract, control behavior, evidence schema, and recovery boundary for Kubernetes Security Baseline Implementation. |
+| Enterprise use | provide a controlled runtime for provider, payer, data, and platform workloads. |
+| Required inputs | immutable workload intent, cluster identity, namespace boundary, and policy set. |
+| Produced handoff | validated desired-state decision with bounded reconciliation and recovery evidence. |
+| Supporting platforms | The dependency table below names the exact use cases and artifacts; passing this page never implies that those controls passed. |
+| Existing-lab boundary | Reuse the existing lab; do not create a new cluster, node, VM, IP address, load balancer, storage system, or unapproved add-on. |
 
 ## Trigger and actors
 
@@ -108,110 +104,161 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
-## Detailed operational flow
+## Architecture context
 
-1. The request identifies **Kubernetes Security Baseline Implementation**, the enterprise outcome, owner, immutable
-   source or policy revision, named target, and expected coverage.
-2. Preflight resolves the target against canonical inventory and verifies that
-   every required product and execution path is currently accepted, not merely
-   planned or provisioned.
-3. The future workflow loads the versioned contract, validates required inputs,
-   rejects secrets and protected data, and computes a digest for decision-
-   affecting configuration.
-4. Positive and negative source fixtures establish the intended behavior before
-   any live evaluation. An invalid contract or unexpected fixture result stops.
-5. A read-only plan, query, comparison, or offline evaluation measures the
-   bounded target and predicts the decision and possible impact.
-6. If mutation is necessary, the owner obtains the required change approval and
-   limits execution to the documented canary. Otherwise, the workflow remains
-   non-mutating.
-7. The result records commit SHA, chart or manifest digest, Jenkins build, Helm revision or reconciliation ID, namespace, health result, and rollback proof and explains why the coverage was or
-   was not satisfied.
-8. An independent post-check proves expected state and detects partial,
-   ambiguous, or out-of-scope effects. Failed post-checks invoke safe stop or
-   the documented recovery path.
-9. Platform and enterprise reviewers accept, reject, or assign follow-up work.
-   Only reviewed evidence changes the status of this page.
+Kubernetes Security Baseline Implementation is evaluated inside the existing enterprise lab and the owning
+platform's current source-control and execution boundaries. The architectural
+unit is the governed outcome—**Policies enforce pod and namespace standards**—rather than a new product or
+environment.
 
-```mermaid
-flowchart LR
-    Need["Enterprise need and owner"] --> Contract["Versioned Kubernetes Security Baseline Implementation contract"]
-    Contract --> Preflight["Inventory and prerequisite check"]
-    Preflight --> Evaluate["Fixture and read-only evaluation"]
-    Evaluate --> Decision{"Decision satisfies policy?"}
-    Decision -->|No| Stop["Block, explain, and preserve evidence"]
-    Decision -->|Yes| Review["Owner review or approved bounded action"]
-    Review --> Verify["Independent result and recovery check"]
-    Verify --> Publish["Publish evidence and follow-up"]
-```
-
-## Design considerations
-
-| Concern | Required design treatment |
+| Context element | Architecture statement |
 | --- | --- |
-| Security and exception handling | Classify severity and exposure, fail closed on missing evidence, keep credentials and protected data out of results, and require owned, expiring exceptions. |
-| Cluster ownership | Name the cluster and namespace, desired-state owner, health and readiness checks, policy boundary, reconciliation behavior, and revision-based recovery path. |
-| Reconciliation scope | Assign one desired-state owner per object, constrain namespace and cluster scope, and prove health and revision-based recovery. |
-| Auditability | Record immutable input and policy versions, executor identity, target, timestamps, result, evidence checksum, reviewer, and related change/incident identifiers. |
-| Safe failure | Missing data, unavailable dependencies, ambiguous scope, or incomplete evidence blocks the decision instead of producing a false success. |
+| Business and operational setting | Enterprise consumers: Shared digital platform, operational resilience, risk and compliance. The result must be explainable, repeatable, and owned. |
+| Current state | **Planned — detailed design only; implementation and runtime evidence are not claimed** |
+| Desired state | A reviewed contract drives a bounded result, machine-readable evidence, and a safe stop or recovery decision. |
+| Existing target boundary | existing four-node application cluster, jenkins-agent01, GitLab, Jenkins, and accepted storage and ingress |
+| Infrastructure constraint | Reuse the existing lab; do not create a new cluster, node, VM, IP address, load balancer, storage system, or unapproved add-on |
+| Accountable platform owner | Enterprise Kubernetes Platform with GitOps team; the consuming service, data, security, or workflow owner remains accountable for accepting business impact. |
 
-These considerations make the page specific to **Kubernetes Security Baseline Implementation** while preserving the
-same enterprise control language used across the owning platform. In particular,
-the later implementation must demonstrate security and exception handling, cluster ownership, reconciliation scope.
+The page owns the contract, control logic, evidence, and recovery behavior for
+Kubernetes Security Baseline Implementation. It does not absorb the responsibilities of the dependency use cases
+listed below.
 
-## Decision and control rules
+## Architecture diagram
 
-- The canonical coverage test is: **Policies enforce pod and namespace standards**
-- Immutable identifiers are used for source, policy, data, configuration, and
-  evaluated target wherever the underlying platform provides them.
-- The workflow fails closed when a required input, result, or provenance field
-  is missing, malformed, stale, or outside its allowed scope.
-- Read-only and fixture modes never receive credentials capable of changing the
-  target.
-- A mutating mode, if relevant, requires explicit approval, an allowlisted
-  target, a bounded canary, stop conditions, and a verified recovery source.
-- Exceptions require rationale, owner, reviewer, issue/change reference, scope,
-  and expiry; an expired exception fails the gate.
-- Success enables only the explicitly named downstream decision. It does not
-  imply that adjacent security, reliability, data, release, or runtime gates
-  passed.
-- A screenshot can support human review but cannot replace machine-readable
-  evidence.
+![UC-K8S-006 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-K8S-006/UC-K8S-006-architecture.svg)
 
-## Information and evidence contract
+Read this one left to right. The upper line follows a reviewed change toward a provable outcome; the lower branch shows who can stop it and how the team returns to a known release.
 
-| Evidence element | Requirement |
+## Dependencies and handoffs
+
+Kubernetes Security Baseline Implementation remains accountable to its primary platform. The dependencies below
+provide explicit contracts or assurance evidence; they do not become alternate owners.
+
+| Relationship | Use case | Required handoff | Failure propagation |
+| --- | --- | --- | --- |
+| Required upstream contract | [UC-K8S-001: Kubernetes Configuration Drift](UC-K8S-001-kubernetes-configuration-drift.md) | cluster identity and desired-versus-observed state report | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-NET-018: Kubernetes Networking](../network/UC-NET-018-kubernetes-networking.md) | cluster network identity and service-path contract | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-INFRA-001: Terraform Drift Detection](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) | desired/observed infrastructure identity and drift result | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-GOV-003: Secure Secrets Management for Applications](../governance/UC-GOV-003-secure-secrets-management-for-applications.md) | application secret-injection and workload identity boundary | Missing, stale, or failed evidence blocks promotion or runtime action. |
+
+Before Kubernetes Security Baseline Implementation is implemented, every handoff must resolve to an immutable
+revision and machine-readable artifact. A URL, screenshot, or verbal approval
+alone is not sufficient dependency evidence.
+
+## Quality attributes
+
+For Kubernetes Security Baseline Implementation, quality is measured against the bounded enterprise outcome—not
+document length or a green job. Unapproved business thresholds remain explicit
+decisions and must not be invented.
+
+| Attribute | Required measure or invariant | Decision state |
+| --- | --- | --- |
+| Functional correctness | Every required input is validated; **Policies enforce pod and namespace standards** is evaluated against positive, negative, missing-input, and unauthorized-scope cases. | Fixed design requirement |
+| Performance and scale | Establish a baseline for reconciliation time, policy accuracy, workload health, and namespace isolation on existing capacity; the owner must approve warning and blocking thresholds before runtime promotion. | Thresholds `TBD` before implementation |
+| Reliability | Missing prerequisites, stale dependencies, malformed evidence, and partial results fail closed without widening scope. | Fixed design requirement |
+| Recovery | Record the maximum acceptable interruption and recovery time before runtime use; source-only validation must remain zero-change. | Owner decision required before runtime exercise |
+| Observability | Emit use-case ID, revision, target, executor, start/end time, duration, decision, reason code, and recovery reference. | Required in the result schema |
+| Evidence retention | Assign classification, retention period, and deletion owner before storing runtime evidence. | Security/compliance decision required |
+
+Load, latency, availability, retention, RTO, and RPO values for Kubernetes Security Baseline Implementation become
+requirements only after the named service or business owner approves them. Until
+then, the implementation gate records them as unresolved instead of quietly
+choosing defaults.
+
+## Security and privacy architecture
+
+The Kubernetes Security Baseline Implementation design separates source validation, privileged execution, target
+access, and evidence review. Those boundaries remain in force even when one
+engineer can access more than one system.
+
+| Trust boundary | Allowed flow | Required control |
+| --- | --- | --- |
+| Contributor → GitLab | Reviewed source, contract, and synthetic/sanitized fixtures | Protected branch rules, peer review, secret scanning, and immutable commit identity |
+| GitLab runner → result artifact | Read-only evaluation inputs and machine-readable output | No target-changing credential; pinned tool versions; artifact checksum and expiry |
+| Approval plane → executor | Approved revision, target allowlist, mode, canary, and change reference | Separate authorization through the existing Jenkins/AWX or platform control path |
+| Executor → existing target | Minimum commands or API operations required for Kubernetes Security Baseline Implementation | Least-privilege identity, explicit target limit, timeout, and stop condition |
+| Target → evidence store | Sanitized metadata, measurements, decision, and recovery result | Exclude credentials, tokens, private keys, kubeconfigs, packet payloads, PHI, PII, and unrelated records |
+
+For Kubernetes Security Baseline Implementation, the primary threat is **a manifest escaping its namespace, identity, image, or network boundary**. The mandatory response is
+cluster-identity guards, namespace allowlists, policy checks, immutable images, and least-privilege service accounts. Authentication and authorization mappings must name
+the existing identity source, principal or service account, permitted actions,
+credential owner, rotation path, and emergency revocation procedure before a
+runtime story can move beyond `Planned`.
+
+## Architecture decisions and trade-offs
+
+| Decision | Selected architecture | Alternative deferred or rejected | Rationale and status |
+| --- | --- | --- | --- |
+| First implementation slice | Contract, schema, fixtures, and read-only evidence on the existing GitLab runner | Product installation or broad runtime rollout | Proves behavior without expanding infrastructure; **approved design direction** |
+| Runtime execution | Use only Approved cluster delivery path when current inventory and change approval confirm it is available | Direct operator changes or credentials in CI | Preserves separation of duties; **conditional on implementation review** |
+| Evidence | Machine-readable result is authoritative; screenshots are optional supporting material | Screenshot-only acceptance | Enables repeatable audit and automated gates; **approved design direction** |
+| Failure handling | Fail closed, preserve bounded diagnostics, and recover only the named scope | Continue with partial or stale evidence | Prevents false success and hidden blast radius; **approved design direction** |
+| New capacity or product | Stop and raise a separate architecture decision | Silently add a VM, service, cloud dependency, or cluster add-on | Maintains the existing-lab constraint; **mandatory** |
+
+### Open decisions before implementation
+
+| Open decision | Decision owner | Resolution gate |
+| --- | --- | --- |
+| Exact inventory object and first canary | Platform owner plus consuming service/data owner | Must resolve before the implementation story leaves `Planned` |
+| Performance, scale, and reliability thresholds | Service owner and SRE | Must be recorded before a runtime acceptance run |
+| Identity-to-action authorization matrix | Platform owner and security reviewer | Must be approved before target credentials are attached |
+| Evidence classification and retention | Data/security owner | Must be approved before runtime artifacts are retained |
+
+If any selected approach changes, record the rationale beside UC-K8S-006 in
+the implementation repository before code review. A documentation edit alone
+does not approve the new architecture.
+
+## Implementation design
+
+The first Kubernetes Security Baseline Implementation implementation is deliberately source-only. Its planned files live in the existing repository; none provisions infrastructure.
+
+| Planned source responsibility | Exact planned location |
 | --- | --- |
-| Identity | Use-case ID, repository/project, immutable revision, target, and environment or dataset scope |
-| Execution | Pipeline/build/job/run ID, executor or runner, mode, start/end time, and tool/API version |
-| Inputs | Sanitized parameter names, contract/policy digest, baseline or comparison point, and owner |
-| Result | Expected statement, observed value, threshold/policy evaluation, decision, and explicit blocking reason |
-| Safety | Approval/change ID when required, canary boundary, non-mutation or before/after proof, and unexpected effects |
-| Recovery | Rollback/restore source, recovery execution ID, post-recovery verification, or documented zero-change stop |
-| Governance | Reviewer, exceptions, incident/action links, evidence checksum, retention class, and final status |
+| Use-case contract and target allowlist | `midhhealth/platform-engineering/kubernetes-platform-gitops/contracts/uc-k8s-006.yaml` |
+| Primary implementation | `midhhealth/platform-engineering/kubernetes-platform-gitops/use-cases/kubernetes-security-baseline-implementation/policy.yaml`; entry point: the `kubernetes-security-baseline-implementation` validation and reconciliation entry point |
+| Machine-readable result schema | `midhhealth/platform-engineering/kubernetes-platform-gitops/schemas/uc-k8s-006-result.schema.json` |
+| Positive, negative, malformed, and recovery fixtures | `midhhealth/platform-engineering/kubernetes-platform-gitops/tests/fixtures/uc-k8s-006/` |
+| GitLab source gate | `midhhealth/platform-engineering/kubernetes-platform-gitops/.gitlab/ci/uc-k8s-006.yml` |
+| Operator diagnosis and recovery | `midhhealth/platform-engineering/kubernetes-platform-gitops/docs/runbooks/uc-k8s-006.md` |
 
-Evidence must be concise enough for a reviewer to evaluate but complete enough
-for another engineer to reproduce the reasoning. Secrets, credentials, private
-keys, tokens, kubeconfigs, and protected healthcare data are prohibited.
+### Delivery stages
+
+1. **Contract:** add the contract, schema, owners, dependency revisions, target
+   allowlist, modes, reason codes, and open-decision values.
+2. **Source validation:** lint exact paths, validate schema compatibility, scan
+   for sensitive content, and run every fixture on the existing runner.
+3. **Read-only proof:** execute the `kubernetes-security-baseline-implementation` validation and reconciliation entry point, publish a checksummed result, and
+   prove that blocked cases cannot reach a mutating path.
+4. **Bounded execution:** only after separate approval, pass the immutable
+   revision, target, mode, canary, and change ID to Approved cluster delivery path.
+5. **Independent verification:** measure the expected result, confirm unrelated
+   state is unchanged, run recovery or zero-change proof, and obtain owner
+   review.
+
+The implementation merge request must link this page, the dependency artifacts,
+the decision values above, and the eventual pipeline/job/run identifiers. Code
+completion alone cannot promote the page to runtime verified.
 
 ## Code and configuration map
 
-The following locations are planned implementation responsibilities. They are
-not represented as existing files until a future reviewed commit is linked.
+These are exact **planned** repository-relative locations in the existing
+GitLab project. Their inclusion is an implementation contract, not a claim that
+the files already exist.
 
-| Planned location | Responsibility |
-| --- | --- |
-| `midhhealth/platform-engineering/kubernetes-platform-gitops` | Own the future platform implementation and use-case-specific operating notes |
-| Planned `UC-K8S-006/contract` | Define inputs, owner, target allowlist, mode, coverage, policy, outputs, and safe stop |
-| Planned `UC-K8S-006/result-schema` | Normalize provenance, observed values, decision, safety, recovery, and review fields |
-| Planned `UC-K8S-006/fixtures` | Exercise passing, blocking, malformed, unauthorized, unavailable-dependency, and recovery cases |
-| Existing GitLab CI path or planned reviewed include | Validate source and fixtures on an accepted existing runner |
-| Existing Jenkins/AWX/platform path, if applicable | Perform only a separately approved bounded action against an inventoried target |
-| Planned operating documentation | Explain prerequisites, evaluation, evidence review, troubleshooting, exception handling, and recovery |
+| Repository and planned path | Responsibility | Current state |
+| --- | --- | --- |
+| `midhhealth/platform-engineering/kubernetes-platform-gitops/contracts/uc-k8s-006.yaml` | Inputs, owner, dependency revisions, target allowlist, modes, thresholds, and stop conditions | Planned |
+| `midhhealth/platform-engineering/kubernetes-platform-gitops/use-cases/kubernetes-security-baseline-implementation/policy.yaml` | Primary implementation through the `kubernetes-security-baseline-implementation` validation and reconciliation entry point | Planned |
+| `midhhealth/platform-engineering/kubernetes-platform-gitops/schemas/uc-k8s-006-result.schema.json` | Provenance, observations, decision, reason codes, safety, and recovery result | Planned |
+| `midhhealth/platform-engineering/kubernetes-platform-gitops/tests/fixtures/uc-k8s-006/` | Passing, blocking, malformed, unauthorized, stale-dependency, and recovery cases | Planned |
+| `midhhealth/platform-engineering/kubernetes-platform-gitops/.gitlab/ci/uc-k8s-006.yml` | Source validation on an accepted existing runner | Planned |
+| `midhhealth/platform-engineering/kubernetes-platform-gitops/docs/runbooks/uc-k8s-006.md` | Preconditions, execution, diagnosis, evidence review, safe stop, and recovery | Planned |
 
-Exact paths and tool choices must be confirmed against the named repository at
-implementation planning time. This design intentionally avoids inventing source
-files or implying that an unavailable product exists.
+Implementation must verify the repository and current execution path before
+creating these files. Discovery of a missing product or capacity stops the
+story and raises a separate decision; it does not change this page's
+infrastructure boundary.
 
 ## Failure and recovery model
 
@@ -230,9 +277,7 @@ files or implying that an unavailable product exists.
 
 ### STORY-K8S-006-001: Define the Kubernetes Security Baseline Implementation contract
 
-**Description:** The platform owner and enterprise consumer need Kubernetes Security Baseline Implementation defined
-as a versioned, reviewable contract so its scope, decision, evidence, and safety
-boundary are consistent before implementation begins.
+**Description:** Exercise one approved scope and publish evidence that the observed result matches the contract, unrelated state remains unchanged, and recovery or zero-change behavior works. The accountable owner records acceptance or rejection.
 
 **Status:** Planned.
 
@@ -242,10 +287,7 @@ coverage statement, policy or threshold, output, evidence, exception process,
 and safe stop; it rejects unavailable products, sensitive inputs, and new-
 infrastructure actions.
 
-**Implementation steps:** Confirm the named repository and current target;
-identify producers and consumers; define inputs, decision states, thresholds,
-evidence, and recovery semantics; add future positive and negative fixtures;
-obtain platform and enterprise-owner review.
+**Implementation steps:** Write `midhhealth/platform-engineering/kubernetes-platform-gitops/docs/runbooks/uc-k8s-006.md`; reconfirm inventory and dependency evidence; run source and read-only modes; obtain separate approval for one canary if mutation is required; collect the schema-valid result, independent post-check, recovery proof, and owner decision.
 
 **Completed work:** The purpose, platform fit, enterprise outcome, operational
 flow, controls, and future delivery contract are documented on this page. No
@@ -339,8 +381,7 @@ use case blocked.
 
 ## Acceptance decision
 
-**Planned.** The page is a detailed organizational and platform design, not an
-implementation-completion claim. Code complete will require reviewed source and
+**Planned.** The architecture baseline is documented; implementation and runtime acceptance remain separate governed work. Code complete will require reviewed source and
 passing positive and negative validation in `midhhealth/platform-engineering/kubernetes-platform-gitops`. Runtime verified requires
 the expected result on the named existing scope plus independent post-check and
 recovery/non-mutation evidence. Accepted additionally requires owner review,
@@ -349,8 +390,7 @@ architecture repository.
 
 ## Operational, security, and follow-up notes
 
-- Schedule implementation separately; documentation approval does not authorize
-  code execution or a lab change.
+- Move into implementation only through the planned source story; this page does not authorize code execution or a lab change.
 - Recheck current environment state before selecting any product, endpoint,
   runner, inventory, cluster, database, model, dataset, or network target.
 - Use synthetic or approved de-identified fixtures and sanitize diagnostics.
@@ -360,3 +400,25 @@ architecture repository.
   execution, evidence review, and acceptance.
 - Return future commit, pipeline/job/run, observed-result, recovery, exception,
   incident, and owner-review evidence to this page.
+
+## Enhancement: Give batch work a safe lane
+
+[Track 4](../../platform-engineering-interview-learning-labs.md#supported-reliability-operations-track)
+adds enforceable workload isolation for batch jobs: explicit requests/limits,
+namespace quota and limits, a restricted security context, and scheduling rules
+that cannot silently consume capacity reserved for online services. Dedicated
+nodes are optional and require inventory evidence; none are assumed here.
+
+### Questions an interviewer can press on
+
+- **“What stops a batch pod from bypassing the intended scheduling boundary?”**
+- **“How do security controls and resource isolation reinforce each other?”**
+- **“What should admission do when an owner or resource request is missing?”**
+
+### Enhancement build and deployment binding
+
+Add batch-profile policy and manifests to the named implementation with fixtures
+for accepted, unbounded, privileged, wrong-namespace and invalid-affinity
+workloads. CI renders and validates every object. A bounded namespace canary on
+the current cluster needs separate approval; rollback deletes only canary
+objects and confirms existing namespaces, workloads and policies are unchanged.

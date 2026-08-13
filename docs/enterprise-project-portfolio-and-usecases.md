@@ -163,6 +163,10 @@ The architecture should be read left to right:
 The detailed component explanation lives in
 [Component Architecture](component-architecture.md).
 
+The deployment relationship among separate application repositories, shared
+platform projects and linked use-case chains is maintained in the
+[Application Project Architecture and Linkage Register](application-project-deployment-register.md).
+
 ## Organization Model
 
 | Layer | Shared organizational capability |
@@ -334,6 +338,7 @@ This diagram shows the project architecture, control boundaries, runtime targets
 | [Dependency Vulnerability Management](use-cases/devsecops/UC-CICD-013-dependency-vulnerability-management.md) | Dependency scanning fits before image build/deploy |
 | [Terraform Plan Automation](use-cases/devsecops/UC-CICD-014-terraform-plan-automation.md) | Merge requests publish reviewed Terraform plan artifacts |
 | [Deployment Health Scoring](use-cases/devsecops/UC-CICD-015-deployment-health-scoring.md) | Release gates score health, SLO burn, alerts and rollback readiness |
+| [Cross-Project Release Contract Validation](use-cases/devsecops/UC-CICD-016-cross-project-release-contract-validation.md) | Producer and consumer contracts, migration order and dependency coverage gate cross-project promotion |
 
 ## Enterprise Multi-Cloud Infrastructure Platform
 
@@ -613,6 +618,7 @@ runtime targets, evidence flow, and operational feedback loop.
 | [Certificate and Secret Expiry Response](use-cases/resilience/UC-RSO-018-certificate-and-secret-expiry-response.md) | Proactive and automated renewal response |
 | [AWX Automated Remediation](use-cases/resilience/UC-RSO-019-awx-automated-remediation.md) | Guarded, auditable operational fixes |
 | [Maintenance-Window Management](use-cases/resilience/UC-RSO-020-maintenance-window-management.md) | Planned service-impact coordination |
+| [Dependency Failure Containment](use-cases/resilience/UC-RSO-021-dependency-failure-containment.md) | Bound timeouts, retries, concurrency, degradation and recovery for critical dependency edges |
 | [Operational Readiness Reviews](use-cases/resilience/UC-RSO-001-operational-readiness-review.md) | Production-readiness scorecards and gates |
 
 ## Enterprise Data Engineering and Integration Platform
@@ -841,19 +847,19 @@ rollback path.
 
 | Project | Use cases |
 | --- | ---: |
-| 1. DevSecOps Delivery | 15 |
+| 1. DevSecOps Delivery | 16 |
 | 2. Multi-Cloud Infrastructure | 12 |
 | 3. Kubernetes with GitOps | 13 |
 | 4. Observability and SRE | 16 |
 | 5. Governance and Operations | 19 |
 | 6. Linux Systems Engineering | 24 |
 | 7. Database Engineering and Reliability | 19 |
-| 8. Resilience and Service Operations | 20 |
+| 8. Resilience and Service Operations | 21 |
 | 9. Data Engineering and Integration | 25 |
 | 10. Network Engineering and Automation | 31 |
 | 11. Healthcare AI Platform | 15 |
 | 12. MLOps Model Platform | 15 |
-| **Total** | **224** |
+| **Total** | **226** |
 
 ## Portfolio Decision Record
 
@@ -869,6 +875,7 @@ rollback path.
 | 2026-08-02 | Calibrate the Linux systems backlog against 25 recent full-time roles requiring fewer than seven years of experience | Preserve strong traditional Linux coverage while reflecting current expectations for automation, observability, security, hybrid infrastructure, identity, incident response and tested recovery | Expands the defined Linux portfolio from 17 to 24 use cases and the enterprise total from 217 to 224. This changes backlog scope only; it does not claim implementation, runtime acceptance, new infrastructure or product installation. |
 | 2026-08-02 | Expand every Linux use case into an end-to-end IaC implementation page | Make each approved outcome implementable, reviewable, operable and useful for realistic interview preparation without duplicating the canonical portfolio list | Links every canonical Linux row to a detailed record covering current versus planned source, GitLab CI, Jenkins approval, Terraform/image and AWX/Ansible boundaries, canary rollout, idempotence, recovery, evidence, Jira stories, troubleshooting and interview answer signals. The pages are specifications, not implementation-completion claims. |
 | 2026-08-02 | Give every Linux detail page its own architecture and direct engineering narrative | Make the workflow easy to understand without relying on a shared generic diagram or template-like prose | Adds 24 purpose-built SVGs, rewrites the page introductions and Jira descriptions in a natural engineering voice, and makes both requirements part of documentation validation. No runtime implementation or acceptance is claimed. |
+| 2026-08-13 | Add cross-project release compatibility and dependency-failure containment | Close two interview-derived operating gaps that were not owned completely by the existing delivery, dependency-mapping, observability, or incident pages | Expands DevSecOps from 15 to 16, resilience operations from 20 to 21, and the enterprise portfolio from 224 to 226. Both additions are buildable with repository fixtures and existing execution paths; neither authorizes a new product, application, cloud account, VM, cluster, or runtime deployment. |
 
 ## Recommended Implementation Order
 

@@ -197,3 +197,39 @@ A project is training-ready only when it has:
 For a planned project, “training-ready” means its architecture and question
 bank are ready for design review. It does not mean the implementation is
 complete.
+
+## Mentoring progression for cloud and platform engineers
+
+Mentoring protects quality by widening responsibility as evidence grows:
+
+1. **Read and explain:** trace an existing application-to-platform contract and
+   describe its trust, failure and recovery boundaries in plain language.
+2. **Reproduce:** run an approved fixture or read-only check and account for the
+   inputs, target, output and expected failure.
+3. **Change safely:** make a small reviewed source change, add the blocking test
+   and update the runbook or decision record.
+4. **Own recovery:** diagnose an injected fixture failure, select the safe stop
+   or recovery and present the evidence.
+5. **Lead a bounded slice:** gather requirements, compare options, coordinate
+   supporting platforms and hand off an accepted contract with known gaps.
+
+Pairing and review should explain risk, not merely rewrite a junior engineer’s
+work. Automated formatting, contract, secret, policy and evidence checks supply
+consistent guardrails. Progress is measured through independent, recoverable
+changes and fewer repeated review findings; it is never measured by granting
+broader production access early.
+
+## AI-assisted engineering standard
+
+AI assistance may accelerate a design, function/interface skeleton, fixture
+matrix, test skeleton, documentation draft or refactoring option. It does not
+replace authorship or review. The engineer records the tool, model/version when
+available, purpose, sanitized input class, resulting diff and reviewer. Never
+send credentials, private keys, tokens, kubeconfigs, proprietary source, PHI,
+PII or unapproved repository content to an external model.
+
+AI-assisted work is accepted only after the same—or stronger—checks as human-
+written work: deterministic unit and golden tests, malformed/adversarial
+fixtures, schema validation, secret/license/security scanning, reproducible
+runs and code review. A generated answer that compiles is not proof that it
+handles dependency semantics, security boundaries, failure or recovery.

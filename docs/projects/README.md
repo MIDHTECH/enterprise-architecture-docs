@@ -5,6 +5,23 @@ inside one provider-payer organization. Each page includes the repository,
 team size, team-member responsibilities, key interfaces, and executable
 use-case scope.
 
+Business applications remain separate projects from these platform domains.
+Register them in the
+[Application Project Architecture and Linkage Register](../application-project-deployment-register.md)
+and create one
+[Application Deployment Record](application-deployment-record-template.md)
+per real repository before planning its implementation.
+
+## Registered application projects
+
+| Project | Purpose | Current state |
+| --- | --- | --- |
+| [`midhhealth/applications/podinfo`](applications/podinfo.md) | Non-PHI reference workload documenting the connected delivery and operating path | Detailed and linked; implementation not authorized; not deployed |
+
+The application-to-platform relationships and the still-empty
+application-to-application inventory are recorded in
+[`application-integration-contracts.json`](../application-integration-contracts.json).
+
 | Domain | Page |
 | --- | --- |
 | DevSecOps delivery | [DevSecOps Delivery](devsecops-delivery.md) |

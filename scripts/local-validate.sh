@@ -8,6 +8,13 @@ required_docs=(
   ".gitlab-ci.yml"
   "README.md"
   "docs/enterprise-project-portfolio-and-usecases.md"
+  "docs/application-project-deployment-register.md"
+  "docs/application-projects.json"
+  "docs/assets/application-project-deployment-model.svg"
+  "docs/assets/applications/podinfo-deployment.svg"
+  "docs/evidence/APP-PODINFO-001-source-review.md"
+  "docs/evidence/APP-PODINFO-002-internal-project-ci.md"
+  "docs/evidence/APP-PODINFO-003-release-contract-source.md"
   "docs/use-case-implementation-status.md"
   "docs/component-architecture.md"
   "docs/environment-details.md"
@@ -18,12 +25,17 @@ required_docs=(
   "docs/product-installation-splunk.md"
   "docs/sre-incident-register.md"
   "docs/jenkins-awx-ansible-operations.md"
+  "docs/platform-engineering-interview-learning-labs.md"
+  "docs/platform-usecase-learning-enhancement-plan.md"
+  "docs/assets/platform-usecase-learning-enhancement-plan.svg"
   "docs/kubernetes-helm-delivery-runbook.md"
   "docs/gitlab-organization-model.md"
   "docs/engineer-interview-guide.md"
   "docs/engineer-training-standard.md"
   "docs/marketing-role-engineer-guide.md"
   "docs/projects/README.md"
+  "docs/projects/application-deployment-record-template.md"
+  "docs/projects/applications/podinfo.md"
   "docs/projects/devsecops-delivery.md"
   "docs/projects/multi-cloud-infrastructure.md"
   "docs/projects/kubernetes-platform.md"
@@ -67,6 +79,9 @@ for path in "${required_docs[@]}"; do
 done
 
 ./scripts/validate-use-cases.sh
+./scripts/validate-application-projects.sh
+./scripts/validate-interview-learning-labs.sh
+./scripts/validate-platform-enhancement-plan.sh
 
 portfolio="docs/enterprise-project-portfolio-and-usecases.md"
 grep -q "cloud-infra-automation-platform" "$portfolio"
@@ -125,7 +140,7 @@ grep -q "AWX_SCM_CREDENTIAL_ID" docs/jenkins-awx-ansible-operations.md
 grep -q "midhhealth/platform-delivery/jenkins-jobs" docs/jenkins-awx-ansible-operations.md
 grep -q "midhhealth/platform-engineering/linux-systems-platform" docs/gitlab-organization-model.md
 grep -q "midhhealth/platform-delivery/ansible-jenkins" docs/gitlab-organization-model.md
-grep -q "midhhealth/platform-delivery/awx-inventory" docs/gitlab-organization-model.md
+grep -q "midhhealth/platform-engineering/awx-inventory" docs/gitlab-organization-model.md
 grep -q "midhhealth/platform-engineering/ansible-kubernetes" docs/gitlab-organization-model.md
 grep -q "projects/deploy-kubernetes-ingress" docs/kubernetes-helm-delivery-runbook.md
 grep -q "kubernetes-production-kubeconfig" docs/kubernetes-helm-delivery-runbook.md

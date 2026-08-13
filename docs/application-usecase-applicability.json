@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "last_verified": "2026-08-13",
+  "scope": "documentation-only",
+  "implementation_authorized": false,
+  "classification_precedence": [
+    "explicit-required-use-case",
+    "application-domain-default"
+  ],
+  "applications": [
+    {
+      "application_id": "podinfo",
+      "characteristics": {
+        "runtime": "kubernetes",
+        "stateful": false,
+        "business_data_producer": false,
+        "business_data_consumer": false,
+        "ai_or_model_enabled": false,
+        "vm_or_native_service": false,
+        "protected_health_or_payer_data": false
+      },
+      "required_use_cases_source": "docs/application-integration-contracts.json",
+      "domain_rules": {
+        "devsecops": {
+          "default_classification": "platform-managed-or-conditional",
+          "reason": "Delivery controls not explicitly selected remain shared platform behavior or future application decisions."
+        },
+        "infrastructure": {
+          "default_classification": "platform-managed",
+          "reason": "Podinfo consumes an existing target and does not own infrastructure provisioning or cloud execution."
+        },
+        "kubernetes": {
+          "default_classification": "platform-managed-or-conditional",
+          "reason": "The application requires selected workload controls; cluster lifecycle and optional workload features remain platform-owned."
+        },
+        "observability": {
+          "default_classification": "platform-managed-or-conditional",
+          "reason": "Selected release signals are required; broader telemetry and SRE capabilities remain shared or service-criticality dependent."
+        },
+        "governance": {
+          "default_classification": "platform-managed-or-conditional",
+          "reason": "Selected identity and secret controls are required; other governance controls depend on data, risk and regulatory scope."
+        },
+        "linux": {
+          "default_classification": "not-applicable-to-current-application",
+          "reason": "Podinfo is documented as a Kubernetes workload and does not own a VM or native operating-system service."
+        },
+        "database": {
+          "default_classification": "not-applicable-to-current-application",
+          "reason": "The documented Podinfo slice is stateless and has no application database or persistence contract."
+        },
+        "resilience": {
+          "default_classification": "platform-managed-or-conditional",
+          "reason": "Selected ownership, readiness and expiry controls are required; broader continuity practices depend on later service criticality."
+        },
+        "data": {
+          "default_classification": "not-applicable-to-current-application",
+          "reason": "Podinfo does not produce or consume provider, payer or analytical business data in the documented scope."
+        },
+        "network": {
+          "default_classification": "platform-managed-or-conditional",
+          "reason": "Selected DNS, TLS and access-path controls are required; network lifecycle capabilities remain platform-owned."
+        },
+        "healthcare-ai": {
+          "default_classification": "not-applicable-to-current-application",
+          "reason": "Podinfo contains no healthcare AI behavior, clinical knowledge workflow or model-assisted decision."
+        },
+        "mlops": {
+          "default_classification": "not-applicable-to-current-application",
+          "reason": "Podinfo has no model artifact, serving path, evaluation, monitoring or model rollback responsibility."
+        }
+      },
+      "documentation_state": "fully-classified",
+      "runtime_evidence_state": "not-collected"
+    }
+  ],
+  "unregistered_portfolios": [
+    {
+      "portfolio": "midhhealth/care-delivery-platform",
+      "classification_state": "deferred-until-real-application-projects-are-registered"
+    },
+    {
+      "portfolio": "midhhealth/payer-operations-platform",
+      "classification_state": "deferred-until-real-application-projects-are-registered"
+    }
+  ]
+}

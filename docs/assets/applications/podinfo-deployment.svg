@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1160" viewBox="0 0 1800 1160" role="img" aria-labelledby="title desc" data-application="podinfo">
+<title id="title">Podinfo documented application path through existing MidhHealth platform contracts</title>
+<desc id="desc">A documentation-only architecture view from pinned upstream source through a protected internal GitLab project to planned Harbor, Jenkins, Kubernetes, ingress and telemetry contracts. No runtime deployment is authorized or shown as complete.</desc>
+<defs>
+<style>
+.bg{fill:#fff}.lane{fill:#f8fafc;stroke:#cbd5e1;stroke-width:2}.source{fill:#eff6ff;stroke:#2563eb;stroke-width:2}.platform{fill:#ecfdf5;stroke:#059669;stroke-width:2}.runtime{fill:#fff7ed;stroke:#d97706;stroke-width:2}.evidence{fill:#f5f3ff;stroke:#7c3aed;stroke-width:2}.pending{fill:#fff7ed;stroke:#ea580c;stroke-width:2.5;stroke-dasharray:8 5}.passed{fill:#ecfdf5;stroke:#059669;stroke-width:2.5}.blocked{fill:#fff1f2;stroke:#e11d48;stroke-width:2.5}.card{fill:#fff;stroke:#64748b;stroke-width:1.7}.title{font:700 30px Arial,sans-serif;fill:#0f172a}.sub{font:15px Arial,sans-serif;fill:#475569}.section{font:700 20px Arial,sans-serif;fill:#0f172a}.head{font:700 15px Arial,sans-serif;fill:#0f172a}.body{font:12px Arial,sans-serif;fill:#475569}.small{font:11px Arial,sans-serif;fill:#64748b}.status{font:700 11px Arial,sans-serif;letter-spacing:1px}.flow{fill:none;stroke:#2563eb;stroke-width:3;marker-end:url(#blue)}.return{fill:none;stroke:#7c3aed;stroke-width:3;stroke-dasharray:8 6;marker-end:url(#purple)}.stop{fill:none;stroke:#e11d48;stroke-width:2.5;marker-end:url(#red)}.note{font:italic 15px Georgia,serif;fill:#475569}.tagPass{fill:#d1fae5}.tagPending{fill:#ffedd5}.tagStop{fill:#ffe4e6}
+</style>
+<marker id="blue" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0L0 8L10 4z" fill="#2563eb"/></marker>
+<marker id="purple" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0L0 8L10 4z" fill="#7c3aed"/></marker>
+<marker id="red" markerWidth="11" markerHeight="11" refX="9" refY="4" orient="auto"><path d="M0 0L0 8L10 4z" fill="#e11d48"/></marker>
+</defs>
+<rect class="bg" width="1800" height="1160"/>
+<text class="title" x="48" y="50">Podinfo: one project, documented across shared platform contracts</text>
+<text class="sub" x="48" y="80">DOCUMENTATION / PLANNING VIEW — green records historical facts; orange is future design; no application is deployed or authorized here.</text>
+
+<rect class="lane" x="38" y="112" width="1724" height="205" rx="18"/>
+<text class="section" x="66" y="148">1 · Source and project ownership</text>
+<rect class="passed" x="70" y="180" width="360" height="105" rx="13"/>
+<text class="head" x="92" y="212">Pinned upstream source</text><text class="body" x="92" y="238">tag 6.14.1 • eec06d1ea459…</text><text class="body" x="92" y="259">Apache-2.0 license hash recorded</text>
+<rect class="tagPass" x="310" y="193" width="93" height="22" rx="11"/><text class="status" x="325" y="208" fill="#047857">PASSED</text>
+<rect class="passed" x="535" y="180" width="390" height="105" rx="13"/>
+<text class="head" x="557" y="212">Protected internal GitLab project</text><text class="body" x="557" y="238">project 29 • main • b8dceac72494…</text><text class="body" x="557" y="259">1,197 commits • 109 tags • provenance retained</text>
+<rect class="tagPass" x="802" y="193" width="93" height="22" rx="11"/><text class="status" x="817" y="208" fill="#047857">PASSED</text>
+<rect class="card" x="1040" y="180" width="650" height="105" rx="13"/>
+<text class="head" x="1062" y="212">People making the release decision</text><text class="body" x="1062" y="238">Platform Delivery owns source and release • Security reviews findings</text><text class="body" x="1062" y="259">SRE accepts health and recovery • no clinical or payer data owner required</text>
+<path class="flow" d="M430 232H535"/>
+
+<rect class="platform" x="38" y="350" width="1724" height="255" rx="18"/>
+<text class="section" x="66" y="386">2 · Existing delivery contracts—each can veto the handoff</text>
+<rect class="passed" x="70" y="425" width="300" height="130" rx="13"/><text class="head" x="92" y="458">GitLab application runner</text><text class="body" x="92" y="484">pipeline 653 • runner 3</text><text class="body" x="92" y="505">source policy • Go test/vet • binary</text><text class="body" x="92" y="526">scan/SBOM move to the Harbor gate</text>
+<rect class="pending" x="420" y="425" width="300" height="130" rx="13"/><text class="head" x="442" y="458">Existing Harbor</text><text class="body" x="442" y="484">internal image, addressed by digest</text><text class="body" x="442" y="505">Trivy result returns to project</text><text class="body" x="442" y="526">no public-image fallback</text>
+<rect class="passed" x="770" y="425" width="300" height="130" rx="13"/><text class="head" x="792" y="458">Jenkins deployer</text><text class="body" x="792" y="484">jenkins-agent01 • one executor</text><text class="body" x="792" y="505">protected kubeconfig • Helm 4.1.0</text><text class="body" x="792" y="526">PLAN / DEPLOY / ROLLBACK</text>
+<rect class="passed" x="1120" y="425" width="300" height="130" rx="13"/><text class="head" x="1142" y="458">Cluster prerequisites</text><text class="body" x="1142" y="484">4/4 nodes Ready • nginx accepted</text><text class="body" x="1142" y="505">ClusterIP-only service path</text><text class="body" x="1142" y="526">Longhorn available, not consumed</text>
+<rect class="pending" x="1470" y="425" width="240" height="130" rx="13"/><text class="head" x="1492" y="458">Project route</text><text class="body" x="1492" y="484">DNS/TLS owner unresolved</text><text class="body" x="1492" y="505">no hostname assumed</text><text class="body" x="1492" y="526">fail closed at the edge</text>
+<path class="flow" d="M370 490H420"/><path class="flow" d="M720 490H770"/><path class="flow" d="M1070 490H1120"/><path class="flow" d="M1420 490H1470"/>
+
+<rect class="runtime" x="38" y="640" width="1135" height="320" rx="18"/>
+<text class="section" x="66" y="677">3 · Planned application boundary inside the accepted cluster</text>
+<rect class="pending" x="70" y="715" width="1068" height="205" rx="15"/>
+<text class="head" x="94" y="748">Namespace: podinfo</text><text class="small" x="960" y="748">NOT CREATED</text>
+<rect class="card" x="100" y="780" width="235" height="105" rx="12"/><text class="head" x="120" y="812">ServiceAccount</text><text class="body" x="120" y="838">namespace-only identity</text><text class="body" x="120" y="859">no kubeconfig in workload</text>
+<rect class="card" x="370" y="780" width="235" height="105" rx="12"/><text class="head" x="390" y="812">Podinfo workload</text><text class="body" x="390" y="838">Harbor digest • non-root</text><text class="body" x="390" y="859">probes • requests/limits</text>
+<rect class="card" x="640" y="780" width="205" height="105" rx="12"/><text class="head" x="660" y="812">ClusterIP Service</text><text class="body" x="660" y="838">HTTP + metrics only</text><text class="body" x="660" y="859">no NodePort/hostPort</text>
+<rect class="card" x="880" y="780" width="225" height="105" rx="12"/><text class="head" x="900" y="812">nginx Ingress</text><text class="body" x="900" y="838">approved host required</text><text class="body" x="900" y="859">edge deny checks retained</text>
+<path class="flow" d="M335 832H370"/><path class="flow" d="M605 832H640"/><path class="flow" d="M845 832H880"/>
+
+<rect class="evidence" x="1210" y="640" width="552" height="320" rx="18"/>
+<text class="section" x="1238" y="677">4 · Evidence returns to Podinfo</text>
+<rect class="card" x="1242" y="715" width="488" height="108" rx="13"/><text class="head" x="1264" y="748">Release identity in every signal</text><text class="body" x="1264" y="774">internal commit + Harbor digest + Helm revision</text><text class="body" x="1264" y="795">metrics • logs • traces • route result • SLO decision</text>
+<rect class="pending" x="1242" y="845" width="232" height="82" rx="13"/><text class="head" x="1264" y="877">Health acceptance</text><text class="body" x="1264" y="902">owner + thresholds pending</text>
+<rect class="pending" x="1498" y="845" width="232" height="82" rx="13"/><text class="head" x="1520" y="877">Recovery proof</text><text class="body" x="1520" y="902">rollback time pending</text>
+
+<path class="flow" d="M925 285V350"/><path class="flow" d="M1270 605V640"/>
+<path class="return" d="M1490 960C1490 1070 245 1070 245 920"/>
+<path class="stop" d="M570 555C610 612 705 620 760 690"/><text class="small" x="590" y="625" fill="#be123c">no Harbor digest: Helm PLAN and every runtime action stop here</text>
+<text class="note" x="52" y="1120">The deliverable is an explainable architecture record. Runtime implementation and deployment belong to a separately approved future phase.</text>
+</svg>

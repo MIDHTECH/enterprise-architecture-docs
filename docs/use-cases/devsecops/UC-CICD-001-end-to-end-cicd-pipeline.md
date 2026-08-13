@@ -1,18 +1,20 @@
 # UC-CICD-001: End-to-End CI/CD Pipeline Setup
 
-Last verified: 2026-08-02
+Last verified: 2026-08-13
 
 ## Use-case record
 
 | Field | Value |
 | --- | --- |
 | Portfolio | Enterprise DevSecOps Delivery Platform |
+| Supporting use cases | [UC-CICD-007](UC-CICD-007-environment-based-release-promotion.md), [UC-OBS-008](../observability/UC-OBS-008-deployment-health-scoring.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-INFRA-001](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) |
 | Jira epic | `EPIC-CICD-001` — Deliver a controlled application release to Kubernetes |
 | Primary roles | Application developer, DevOps engineer, platform engineer, SRE, security reviewer |
 | Change record | `CHG-2026-002` |
 | Target | Podinfo application mirrored into on-premises GitLab, Jenkins, AWX, dedicated Jenkins agent, and Kubernetes cluster |
-| Current state | **In progress — source gates and the dedicated Jenkins agent are accepted; managed ingress-job runtime execution and rollback evidence remain pending** |
-| Current blocker | The managed Jenkins ingress job and protected secret-file kubeconfig are not yet accepted; Helm PLAN must pass before deployment begins. |
+| Documentation state | **Detailed — the intended project and platform handoffs are described** |
+| Runtime state | **Not deployed — implementation is deferred and no further execution is authorized by this page** |
+| Current blocker | No approved Harbor image digest exists. Helm PLAN and every runtime action must continue to fail closed until build, scan, SBOM and publication evidence are bound to the internal commit. |
 | Owner | Platform Delivery team |
 
 ## Purpose
@@ -32,20 +34,25 @@ After an approved Git revision is selected, an operator can run a non-mutating
 Helm plan and then an explicitly confirmed deployment from Jenkins. The job
 runs only on `jenkins-agent01`, uses a protected kubeconfig, installs the pinned
 chart atomically, and proves that the release, rollout, IngressClass,
-NodePorts, and Headlamp route are healthy. An operator can then roll the release
-back to a known revision and prove service recovery.
+ClusterIP-only Service, approved application route, and negative backend-port
+checks are healthy. An operator can then roll the release back to a known
+revision and prove service recovery.
 
-The first application payload will be
+The first application payload is
 [`stefanprodan/podinfo`](https://github.com/stefanprodan/podinfo), copied into a
-new `midhhealth/applications/podinfo` GitLab project after its exact upstream
-commit and Apache-2.0 license are recorded. Podinfo is small, has health and
+private `midhhealth/applications/podinfo` GitLab project. Tag `6.14.1`, commit
+`eec06d1ea459af4cb4e10e806f8be7c7bd58b361`, and the Apache-2.0 license hash
+are recorded in [APP-PODINFO-001](../../evidence/APP-PODINFO-001-source-review.md).
+The protected internal commit and first passing GitLab pipeline are recorded in
+[APP-PODINFO-002](../../evidence/APP-PODINFO-002-internal-project-ci.md).
+Podinfo is small, has health and
 readiness endpoints, structured logs, Prometheus and OpenTelemetry
 instrumentation, fault injection, a Dockerfile, tests, and a Helm chart. Those
 features let later SRE and observability stories reuse the same application
 without making this first delivery story depend on a large demo platform.
 
-The use case is not accepted merely because the repositories and pipelines
-exist. Acceptance requires Jenkins plan, deployment, health, rollback, second
+Repositories and pipelines alone do not establish acceptance. Acceptance
+requires Jenkins plan, deployment, health, rollback, second
 convergence, and evidence attachments from the live environment.
 
 ## Platform and enterprise fit
@@ -87,8 +94,8 @@ running an isolated technology demonstration is insufficient.
   credentials with appropriate scope.
 - The selected Git revision has passed GitLab CI and is protected by the
   repository review policy.
-- The upstream Podinfo commit, license, and provenance record have been reviewed
-  before the source is imported into GitLab.
+- The upstream Podinfo commit, license, and provenance record were reviewed and
+  the resulting internal commit is protected in GitLab.
 - The edge proxy and the Kubernetes control plane allow only the documented
   ingress traffic path.
 
@@ -98,7 +105,7 @@ In scope are source validation, the managed Jenkins job, the dedicated
 executor, Helm plan/deploy/rollback, and release acceptance evidence for the
 single-replica on-premises ingress release.
 
-The following are excluded from this use case:
+The following are excluded from this documented capability:
 
 - EKS/ECR and other public-cloud deployment;
 - high availability for Jenkins or ingress;
@@ -126,38 +133,147 @@ branch. Staff must:
 8. handle upstream refreshes as reviewed merge requests with repeatable tests
    and an explicit comparison from the previous upstream commit.
 
-For this use case, the approved candidate is Podinfo. The selection is a design
-decision; the import is not yet claimed as completed. Other public projects may
-be selected for later use cases only after the current use case is accepted.
+For this documented capability, the approved candidate is Podinfo release
+`6.14.1` at commit `eec06d1ea459af4cb4e10e806f8be7c7bd58b361`.
+The source identity, license review, internal import, and initial source/test
+pipeline are complete. Other public projects may be selected for later use
+cases only after the current use case is accepted.
 
-## End-to-end execution flow
+## Architecture context
 
-```mermaid
-sequenceDiagram
-    actor Dev as Developer
-    actor Op as Release operator
-    participant GH as Public GitHub upstream
-    participant GL as GitLab CI
-    participant JC as Jenkins controller
-    participant JA as jenkins-agent01
-    participant K8s as Kubernetes API
-    participant Edge as nginx.example.com
+End-to-End CI/CD Pipeline Setup is evaluated inside the existing enterprise lab and the owning
+platform's current source-control and execution boundaries. The architectural
+unit is the governed outcome—**Its planned result advances: the documented enterprise outcome.**—rather than a new product or
+environment.
 
-    Dev->>GH: Select reviewed immutable upstream commit
-    Dev->>GL: Import source and provenance, then open merge request
-    GL->>GL: Validate source, policy, Job DSL, and Helm chart
-    GL-->>Dev: Publish pipeline result and artifacts
-    Op->>JC: Select reviewed Git ref and ACTION=PLAN
-    JC->>JA: Schedule only on kubernetes-deployer
-    JA->>K8s: Helm server-side dry run
-    K8s-->>JA: Rendered and validated plan
-    Op->>JC: Select ACTION=DEPLOY and CONFIRM_CHANGE
-    JA->>K8s: helm upgrade --install --atomic --wait
-    JA->>K8s: Verify rollout, class, services, and Headlamp ingress
-    JA->>Edge: Verify routed Headlamp response
-    Op->>JC: Select ACTION=ROLLBACK and prior revision
-    JA->>K8s: Roll back and verify recovery
-```
+| Context element | Architecture statement |
+| --- | --- |
+| Business and operational setting | Enterprise consumers: Enterprise DevSecOps Delivery Platform. The result must be explainable, repeatable, and owned. |
+| Current state | **In progress — internal source and initial CI are proven; Harbor provenance and all application-specific runtime evidence remain pending** |
+| Desired state | A reviewed contract drives a bounded result, machine-readable evidence, and a safe stop or recovery decision. |
+| Existing target boundary | Podinfo application mirrored into on-premises GitLab, Jenkins, AWX, dedicated Jenkins agent, and Kubernetes cluster |
+| Infrastructure constraint | Fit is achieved by reusing documented existing repositories, control planes, services, and targets—not by inventing capacity or treating planned products as available. |
+| Accountable platform owner | Platform Delivery team; the consuming service, data, security, or workflow owner remains accountable for accepting business impact. |
+
+The page owns the contract, control logic, evidence, and recovery behavior for
+End-to-End CI/CD Pipeline Setup. It does not absorb the responsibilities of the dependency use cases
+listed below.
+
+## Architecture diagram
+
+![UC-CICD-001 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-CICD-001/UC-CICD-001-architecture.svg)
+
+Read this one left to right. The upper line follows a reviewed change toward a provable outcome; the lower branch shows who can stop it and how the team returns to a known release.
+
+## Dependencies and handoffs
+
+End-to-End CI/CD Pipeline Setup remains accountable to its primary platform. The dependencies below
+provide explicit contracts or assurance evidence; they do not become alternate owners.
+
+| Relationship | Use case | Required handoff | Failure propagation |
+| --- | --- | --- | --- |
+| Required upstream contract | [UC-CICD-007: Environment-Based Release Promotion](UC-CICD-007-environment-based-release-promotion.md) | environment promotion contract and approval evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-OBS-008: Deployment Health Scoring](../observability/UC-OBS-008-deployment-health-scoring.md) | deployment-health score and promotion/rollback signal | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | approved secret reference, redaction rule, and rotation owner | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-INFRA-001: Terraform Drift Detection](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) | desired/observed infrastructure identity and drift result | Missing, stale, or failed evidence blocks promotion or runtime action. |
+
+Before End-to-End CI/CD Pipeline Setup is implemented, every handoff must resolve to an immutable
+revision and machine-readable artifact. A URL, screenshot, or verbal approval
+alone is not sufficient dependency evidence.
+
+## Quality attributes
+
+For End-to-End CI/CD Pipeline Setup, quality is measured against the bounded enterprise outcome—not
+document length or a green job. Unapproved business thresholds remain explicit
+decisions and must not be invented.
+
+| Attribute | Required measure or invariant | Decision state |
+| --- | --- | --- |
+| Functional correctness | Every required input is validated; **Its planned result advances: the documented enterprise outcome.** is evaluated against positive, negative, missing-input, and unauthorized-scope cases. | Fixed design requirement |
+| Performance and scale | Establish a baseline for pipeline duration, queue delay, reproducibility, and false-pass rate on existing capacity; the owner must approve warning and blocking thresholds before runtime promotion. | Thresholds `TBD` before implementation |
+| Reliability | Missing prerequisites, stale dependencies, malformed evidence, and partial results fail closed without widening scope. | Fixed design requirement |
+| Recovery | Record the maximum acceptable interruption and recovery time before runtime use; source-only validation must remain zero-change. | Owner decision required before runtime exercise |
+| Observability | Emit use-case ID, revision, target, executor, start/end time, duration, decision, reason code, and recovery reference. | Required in the result schema |
+| Evidence retention | Assign classification, retention period, and deletion owner before storing runtime evidence. | Security/compliance decision required |
+
+Load, latency, availability, retention, RTO, and RPO values for End-to-End CI/CD Pipeline Setup become
+requirements only after the named service or business owner approves them. Until
+then, the implementation gate records them as unresolved instead of quietly
+choosing defaults.
+
+## Security and privacy architecture
+
+The End-to-End CI/CD Pipeline Setup design separates source validation, privileged execution, target
+access, and evidence review. Those boundaries remain in force even when one
+engineer can access more than one system.
+
+| Trust boundary | Allowed flow | Required control |
+| --- | --- | --- |
+| Contributor → GitLab | Reviewed source, contract, and synthetic/sanitized fixtures | Protected branch rules, peer review, secret scanning, and immutable commit identity |
+| GitLab runner → result artifact | Read-only evaluation inputs and machine-readable output | No target-changing credential; pinned tool versions; artifact checksum and expiry |
+| Approval plane → executor | Approved revision, target allowlist, mode, canary, and change reference | Separate authorization through the existing Jenkins/AWX or platform control path |
+| Executor → existing target | Minimum commands or API operations required for End-to-End CI/CD Pipeline Setup | Least-privilege identity, explicit target limit, timeout, and stop condition |
+| Target → evidence store | Sanitized metadata, measurements, decision, and recovery result | Exclude credentials, tokens, private keys, kubeconfigs, packet payloads, PHI, PII, and unrelated records |
+
+For End-to-End CI/CD Pipeline Setup, the primary threat is **untrusted source or dependency content reaching a privileged runner**. The mandatory response is
+protected refs, isolated build context, pinned dependencies, least-privilege credentials, and artifact provenance. Authentication and authorization mappings must name
+the existing identity source, principal or service account, permitted actions,
+credential owner, rotation path, and emergency revocation procedure before a
+runtime story can move beyond `Planned`.
+
+## Architecture decisions and trade-offs
+
+| Decision | Selected architecture | Alternative deferred or rejected | Rationale and status |
+| --- | --- | --- | --- |
+| First implementation slice | Contract, schema, fixtures, and read-only evidence on the existing GitLab runner | Product installation or broad runtime rollout | Proves behavior without expanding infrastructure; **approved design direction** |
+| Runtime execution | Use only Jenkins shared-library workflow when current inventory and change approval confirm it is available | Direct operator changes or credentials in CI | Preserves separation of duties; **conditional on implementation review** |
+| Evidence | Machine-readable result is authoritative; screenshots are optional supporting material | Screenshot-only acceptance | Enables repeatable audit and automated gates; **approved design direction** |
+| Failure handling | Fail closed, preserve bounded diagnostics, and recover only the named scope | Continue with partial or stale evidence | Prevents false success and hidden blast radius; **approved design direction** |
+| New capacity or product | Stop and raise a separate architecture decision | Silently add a VM, service, cloud dependency, or cluster add-on | Maintains the existing-lab constraint; **mandatory** |
+
+### Open decisions before implementation
+
+| Open decision | Decision owner | Resolution gate |
+| --- | --- | --- |
+| Exact inventory object and first canary | Platform owner plus consuming service/data owner | Must resolve before the implementation story leaves `Planned` |
+| Performance, scale, and reliability thresholds | Service owner and SRE | Must be recorded before a runtime acceptance run |
+| Identity-to-action authorization matrix | Platform owner and security reviewer | Must be approved before target credentials are attached |
+| Evidence classification and retention | Data/security owner | Must be approved before runtime artifacts are retained |
+
+If any selected approach changes, record the rationale beside UC-CICD-001 in
+the implementation repository before code review. A documentation edit alone
+does not approve the new architecture.
+
+## Implementation design
+
+The first End-to-End CI/CD Pipeline Setup implementation is deliberately source-only. Its planned files live in the existing repository; none provisions infrastructure.
+
+| Planned source responsibility | Exact planned location |
+| --- | --- |
+| Use-case contract and target allowlist | `midhhealth/platform-delivery/jenkins-jobs/contracts/uc-cicd-001.yaml` |
+| Primary implementation | `midhhealth/platform-delivery/jenkins-jobs/jobs/end-to-end-cicd-pipeline.groovy`; entry point: the `end-to-end-cicd-pipeline` Jenkins job and its shared-library step |
+| Machine-readable result schema | `midhhealth/platform-delivery/jenkins-jobs/schemas/uc-cicd-001-result.schema.json` |
+| Positive, negative, malformed, and recovery fixtures | `midhhealth/platform-delivery/jenkins-jobs/tests/fixtures/uc-cicd-001/` |
+| GitLab source gate | `midhhealth/platform-delivery/jenkins-jobs/.gitlab/ci/uc-cicd-001.yml` |
+| Operator diagnosis and recovery | `midhhealth/platform-delivery/jenkins-jobs/docs/runbooks/uc-cicd-001.md` |
+
+### Delivery stages
+
+1. **Contract:** add the contract, schema, owners, dependency revisions, target
+   allowlist, modes, reason codes, and open-decision values.
+2. **Source validation:** lint exact paths, validate schema compatibility, scan
+   for sensitive content, and run every fixture on the existing runner.
+3. **Read-only proof:** execute the `end-to-end-cicd-pipeline` Jenkins job and its shared-library step, publish a checksummed result, and
+   prove that blocked cases cannot reach a mutating path.
+4. **Bounded execution:** only after separate approval, pass the immutable
+   revision, target, mode, canary, and change ID to Jenkins shared-library workflow.
+5. **Independent verification:** measure the expected result, confirm unrelated
+   state is unchanged, run recovery or zero-change proof, and obtain owner
+   review.
+
+The implementation merge request must link this page, the dependency artifacts,
+the decision values above, and the eventual pipeline/job/run identifiers. Code
+completion alone cannot promote the page to runtime verified.
 
 ## Code and configuration map
 
@@ -166,7 +282,7 @@ repository under `/Users/midhmaclab/Documents/MIDHTECHLAB`.
 
 | Repository | Code reference | Why an engineer looks here | Current evidence |
 | --- | --- | --- | --- |
-| `github.com/stefanprodan/podinfo` | `LICENSE`, `Dockerfile`, `go.mod`, `charts/podinfo`, `deploy`, `otel`, `test` | Upstream license, build, dependency, deployment, telemetry, and test source | Candidate reviewed from public repository; immutable import commit pending |
+| `github.com/stefanprodan/podinfo` | `LICENSE`, `Dockerfile`, `go.mod`, `charts/podinfo`, `deploy`, `otel`, `test` | Upstream license, build, dependency, deployment, telemetry, and test source | Tag `6.14.1`, commit `eec06d1ea459af4cb4e10e806f8be7c7bd58b361`, and Apache-2.0 license hash verified in `APP-PODINFO-001` |
 | `midhhealth/applications/podinfo` | `UPSTREAM.md`, `LICENSE`, `.gitlab-ci.yml`, `Dockerfile`, application source, tests, and chart/values overlay | Internal build source and provenance record | GitLab project/import not yet created |
 | `midhhealth/platform-engineering/ansible-kubernetes` | `.gitlab-ci.yml` | GitLab source-validation stages | Pipeline 354 passed |
 | `midhhealth/platform-engineering/cloud-infra-automation-platform` | `ansible/playbooks/awx-local-proxy.yml`, `ansible/roles/awx_local_proxy`, `ansible/roles/bind_dns`, and `gitlab-ci/terraform.gitlab-ci.yml` | Migrates AWX to service-local NGINX and the canonical `awx.example.com` DNS record without a shared-proxy or `.apps` dependency; avoids external package downloads when BIND is already installed and during Terraform CI bootstrap | Commit `e8873211`; branch pipeline 378 and canonical-main pipeline 380 passed; AWX sync 484, proxy jobs 485/492, and DNS jobs 502/514 accepted with clean second convergence |
@@ -178,7 +294,7 @@ repository under `/Users/midhmaclab/Documents/MIDHTECHLAB`.
 | `midhhealth/platform-delivery/jenkins-shared-library` | `vars/kubernetesHelmPipeline.groovy` | PLAN/DEPLOY/ROLLBACK validation, execution, and acceptance logic | Commit `b23d3a4`; pipeline 351 passed |
 | `midhhealth/platform-delivery/jenkins-jobs` | `jobs/deploy_kubernetes_ingress.groovy` | Managed job parameters, agent label, checkout, and shared-library call | Commit `950cc4f`; pipeline 352 passed |
 | same | `scripts/validate-job-dsl.sh` | Detects unsafe or invalid Job DSL before publication | Pipeline 352 passed |
-| `midhhealth/platform-engineering/ansible-jenkins` | `roles/jenkins_agent/tasks/main.yml` | Installs and validates the dedicated executor runtime | Commit `82adf11`; pipeline 360 passed |
+| `midhhealth/platform-delivery/ansible-jenkins` | `roles/jenkins_agent/tasks/main.yml` | Installs and validates the dedicated executor runtime | Commit `82adf11`; pipeline 360 passed |
 | same | `roles/jenkins_agent/defaults/main.yml` | Pinned agent tool versions and controller URL | Commit `82adf11` |
 | same | `roles/jenkins_agent/templates/jenkins-agent.service.j2` | Persistent inbound agent service definition | Commit `82adf11` |
 | `midhhealth/enterprise-architecture/enterprise-architecture-docs` | `docs/sequential-build-change-control.md` | Active change, permitted boundary, accepted evidence, and exit criteria | `CHG-2026-002` |
@@ -188,10 +304,9 @@ repository under `/Users/midhmaclab/Documents/MIDHTECHLAB`.
 
 ### STORY-CICD-000: Import and govern the public application source
 
-**Description:** As a security-conscious application developer, I need an
-approved public GitHub project copied into the lab GitLab with immutable
-provenance and its license preserved, so that the delivery pipeline builds
-reviewed internal source instead of trusting a moving external branch.
+**Description:** Import the approved public GitHub revision into the lab GitLab
+with immutable provenance and its license preserved. The delivery pipeline must
+build reviewed internal source instead of trusting a moving external branch.
 
 **Status:** Planned; must wait for the current AWX/Jenkins prerequisite to
 clear before a new GitLab application repository is created.
@@ -238,9 +353,9 @@ preserve history.
 
 ### STORY-CICD-001: Validate the deployable source in GitLab
 
-**Description:** As a developer, I need GitLab CI to reject invalid pipeline,
-Job DSL, Ansible-boundary, and Helm changes before they can be selected in
-Jenkins, so that deployment begins only from reviewed and reproducible source.
+**Description:** GitLab CI rejects invalid pipeline, Job DSL, Ansible-boundary,
+and Helm changes before Jenkins can select them. Deployment therefore begins
+only from reviewed and reproducible source.
 
 **Status:** Code complete.
 
@@ -274,9 +389,9 @@ register.
 
 ### STORY-CICD-002: Generate the controlled Jenkins Helm job
 
-**Description:** As a DevOps engineer, I need a version-controlled Job DSL and
-shared-library step for PLAN, DEPLOY, and ROLLBACK, so that operators do not
-maintain deployment logic manually in the Jenkins UI.
+**Description:** Keep PLAN, DEPLOY, and ROLLBACK behavior in version-controlled
+Job DSL and shared-library source. Operators must not maintain deployment logic
+manually in the Jenkins UI.
 
 **Status:** Code complete; Jenkins-generated-job screenshot pending.
 
@@ -313,10 +428,9 @@ revision and rerunning the seed job.
 
 ### STORY-CICD-003: Configure a dedicated Kubernetes deployment agent
 
-**Description:** As a platform engineer, I need the Kubernetes deployment job
-to run on a dedicated, reproducibly configured Rocky Linux VM, so that the
-Jenkins controller is not used as a permanent build executor and deployment
-tools are pinned and auditable.
+**Description:** Run Kubernetes deployment work on the dedicated,
+reproducibly configured Rocky Linux VM. The Jenkins controller remains free of
+permanent executor work, while deployment tools stay pinned and auditable.
 
 **Status:** Accepted 2026-08-01 — the dedicated executor is online and its
 source, AWX deployment, idempotence, Jenkins scheduling, and toolchain evidence
@@ -365,9 +479,9 @@ node and running the controlled agent-removal playbook; preserve job logs.
 
 ### STORY-CICD-004: Produce a non-mutating Helm deployment plan
 
-**Description:** As a release operator, I need a server-side Helm dry run for a
-reviewed revision, so that rendered resources and cluster compatibility can be
-reviewed before any release state changes.
+**Description:** Produce a server-side Helm dry run for the reviewed revision.
+Operators review rendered resources and cluster compatibility before any
+release state changes.
 
 **Status:** Ready after accepted STORY-CICD-003; live Jenkins PLAN remains pending.
 
@@ -386,7 +500,7 @@ reviewed before any release state changes.
 2. Confirm the build is scheduled on `jenkins-agent01`.
 3. Review validation and server-side dry-run output.
 4. Compare Helm release history and cluster objects before and after the build.
-5. Attach sanitized evidence to this use case.
+5. Attach sanitized evidence to this documented capability.
 
 **Completed work:** PLAN behavior exists in
 `vars/kubernetesHelmPipeline.groovy`; no live Jenkins PLAN is yet recorded.
@@ -398,9 +512,8 @@ build. No rollback should be necessary because PLAN is non-mutating.
 
 ### STORY-CICD-005: Deploy and verify the Helm release
 
-**Description:** As a release operator, I need Jenkins to install or upgrade the
-reviewed chart atomically and verify the live route, so that a failed release
-does not remain partially deployed.
+**Description:** Jenkins installs or upgrades the reviewed chart atomically and
+verifies the live route. A failed release must not remain partially deployed.
 
 **Status:** Pending STORY-CICD-004.
 
@@ -470,13 +583,13 @@ and open an SRE incident before attempting manual recovery.
 
 ## Evidence and screenshot register
 
-The directory for this use case is
+The directory for this documented capability is
 `docs/assets/use-cases/UC-CICD-001/`. An attachment is `Pending` until a real
 execution is captured, sanitized, committed, and reviewed.
 
 | ID | Story | Required evidence | Source | Status |
 | --- | --- | --- | --- | --- |
-| `ATT-CICD-000A` | 000 | Public GitHub repository at the recorded immutable commit with license visible | GitHub | Pending capture |
+| `ATT-CICD-000A` | 000 | Public GitHub repository at the recorded immutable commit with license visible | GitHub | Source identity and license hash verified in `APP-PODINFO-001`; optional screenshot pending |
 | `ATT-CICD-000B` | 000 | Internal GitLab project, protected default branch, and successful import pipeline | GitLab | Blocked |
 | `ART-CICD-000A` | 000 | `UPSTREAM.md`, license check, scan reports, and SHA comparison | GitLab artifact/log | Blocked |
 | `ATT-CICD-001` | 001 | Green pipeline overview showing pipeline 354 and commit `e34bd54` | GitLab | Pending capture |
@@ -484,10 +597,10 @@ execution is captured, sanitized, committed, and reviewed.
 | `ATT-CICD-002` | 002 | Green pipeline overview for shared-library pipeline 351 | GitLab | Pending capture |
 | `ATT-CICD-003` | 002 | Generated Jenkins job parameters and assigned label | Jenkins | Pending runtime capture |
 | `ART-CICD-002` | 002 | Job DSL validation log for pipeline 352 | GitLab artifact/log | Existing; link or export pending |
-| `ATT-CICD-004` | 003 | Jenkins node online with `kubernetes-deployer` label | Jenkins | Blocked |
-| `ATT-CICD-005` | 003 | AWX successful job summary and host result | AWX | Blocked |
-| `ART-CICD-003` | 003 | Sanitized tool-version and systemd evidence | AWX job artifact | Blocked |
-| `ART-CICD-004` | 003 | Second convergence with zero unexpected changes | AWX job artifact | Blocked |
+| `ATT-CICD-004` | 003 | Jenkins node online with `kubernetes-deployer` label | Jenkins | Accepted in `CHG-2026-002` |
+| `ATT-CICD-005` | 003 | AWX successful job summary and host result | AWX | Accepted in `CHG-2026-002`, jobs 536/541 |
+| `ART-CICD-003` | 003 | Sanitized tool-version and systemd evidence | AWX job artifact | Accepted in `CHG-2026-002` |
+| `ART-CICD-004` | 003 | Second convergence with zero unexpected changes | AWX job artifact | Accepted in `CHG-2026-002`, job 541 |
 | `ATT-CICD-006` | 004 | Successful Jenkins PLAN stages | Jenkins | Pending runtime |
 | `ART-CICD-005` | 004 | Sanitized server-side dry-run output and unchanged revision history | Jenkins artifact | Pending runtime |
 | `ATT-CICD-007` | 005 | Successful Jenkins DEPLOY stage view | Jenkins | Pending runtime |
@@ -527,13 +640,14 @@ Screenshot capture procedure:
 
 | Area | Expected | Current observation | Decision |
 | --- | --- | --- | --- |
-| Application provenance | Approved Podinfo commit copied to protected internal GitLab with license and scans | Candidate chosen; exact SHA and import pending | Pending |
-| Source validation | All relevant GitLab pipelines pass | Pipelines 354, 351, 352, 360, and 358 passed | Satisfied |
-| Managed Jenkins job | Job generated from reviewed DSL | Source exists; live generated-job evidence pending | Not yet accepted |
+| Application provenance | Approved Podinfo commit copied to protected internal GitLab with license and scans | Project 29, protected `main`, internal commit `b8dceac72494313eca3ab388a20ad06867675224`, and pipeline `653` prove import, source policy and tests; image scan/SBOM remain pending | Partially satisfied |
+| Platform source validation | All relevant shared-platform pipelines pass | Pipelines 354, 351, 352, 360, and 358 passed | Satisfied for shared prerequisites |
+| Managed Jenkins platform path | Job generated from reviewed DSL and proven on the dedicated executor | CHG-2026-009 PLAN/deploy/rollback/restore builds 3-7 accepted the shared ingress path | Satisfied for platform prerequisite; no Podinfo job run |
+| Podinfo release contract | Application-specific Job DSL calls a reusable digest-pinned application Helm contract | Shared-library pipeline `656` and Job DSL pipeline `657` passed; Jenkins seed synchronization remains pending | Source satisfied; controller generation pending |
 | Dedicated agent | Online, pinned tools, correct label, second convergence clean | Jenkins build 1 passed on the agent; AWX jobs 536/541 were clean | Satisfied |
-| Helm plan | Successful non-mutating server-side plan | Not yet run | Pending |
-| Deployment | Atomic release and all health checks pass | Not yet run | Pending |
-| Rollback | Prior revision restored and route healthy | Not yet run | Pending |
+| Podinfo Helm plan | Successful non-mutating server-side plan using the internal commit and Harbor digest | Not yet run | Pending |
+| Podinfo deployment | Atomic release and all project health checks pass | Not yet run | Pending |
+| Podinfo rollback | Prior application revision restored and project route healthy | Not yet run | Pending |
 | Evidence | Screenshots and artifacts reviewed and linked | Register defined; captures pending | Pending |
 
 ## Safety and security controls
@@ -558,9 +672,37 @@ wrong executor is selected, rollback fails, or evidence contains a secret.
 
 ## Acceptance decision
 
-`UC-CICD-001` is **not yet accepted**. Its source implementation and dedicated
-agent are verified, but the managed ingress job, secret-file kubeconfig, Helm
-PLAN/deployment, rollback, release convergence, and screenshot/artifact review
-remain open. No later use
-case should be started until this record is accepted or explicitly closed as a
-documented partial implementation under the sequential change process.
+`UC-CICD-001` is **complete as architecture documentation but not implemented
+or accepted as a runtime capability**. Podinfo's upstream source identity,
+protected internal project, and first CI pipeline are proven, and the shared
+Jenkins agent plus Kubernetes ingress path are accepted. The Harbor image
+digest, application-specific Helm PLAN/deployment, telemetry, rollback,
+convergence, and evidence review remain open. Those are future implementation
+activities, not the next action in this documentation work. No application
+should be promoted from this page without a separate implementation decision.
+
+## Interview conversation: why this pipeline is split across tools
+
+Use the [pipeline-tool selection lab](../../platform-engineering-interview-learning-labs.md#pipeline-tool-selection)
+to explain the handoffs as engineering decisions, not as a product list.
+
+- **“Why not put everything in Jenkins?”** GitLab CI gives source changes fast,
+  review-visible feedback; Jenkins owns the approved orchestration and evidence
+  join; AWX owns inventory-bounded host changes; Helm owns the release package.
+  The separation narrows credentials and makes each mutation attributable.
+- **“How do you keep releases fast without letting a developer break
+  production?”** Describe the cheap gates first, immutable artifact promotion,
+  protected environment approval, health verification and a rehearsed rollback.
+- **“Show me one release.”** Walk from commit and merge request through test
+  evidence, artifact digest, approval, deployment identity, health result and
+  rollback decision. If that evidence has not been executed, call it a designed
+  workflow rather than production experience.
+
+### Enhancement build and deployment binding
+
+Extend the six artifacts under `Implementation design` with a tool-ownership
+matrix, immutable handoff schema and fixtures for missing/stale gate evidence,
+wrong executor and rollback. CI builds the orchestration contract; the approved
+Jenkins/AWX/Helm path deploys one bounded release only after review. Acceptance
+requires the source-to-health evidence chain and a verified rollback, while an
+absent target or conflicting reconciler stops deployment.
