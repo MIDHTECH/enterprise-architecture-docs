@@ -14,20 +14,21 @@ fits its owning platform and that the platform fits the enterprise model.
 
 ## Detailed platform indexes
 
-| Platform | Detailed use-case designs |
-| --- | --- |
-| DevSecOps delivery | [15 detailed use cases](devsecops/README.md) |
-| Multi-cloud infrastructure | [12 detailed use cases](infrastructure/README.md) |
-| Kubernetes with GitOps | [13 detailed use cases](kubernetes/README.md) |
-| Observability and SRE | [16 detailed use cases](observability/README.md) |
-| Governance and operations | [19 detailed use cases](governance/README.md) |
-| Linux systems engineering | [24 detailed Linux use cases](linux/README.md) |
-| Database reliability | [19 detailed use cases](database/README.md) |
-| Resilience and service operations | [20 detailed use cases](resilience/README.md) |
-| Data engineering and integration | [25 detailed use cases](data/README.md) |
-| Network engineering and automation | [31 detailed use cases](network/README.md) |
-| Healthcare AI | [15 detailed use cases](healthcare-ai/README.md) |
-| MLOps model platform | [15 detailed use cases](mlops/README.md) |
+| Platform | Detailed use-case designs | Design status |
+| --- | ---: | --- |
+| DevSecOps delivery | [15](devsecops/README.md) | Complete |
+| Multi-cloud infrastructure | [12](infrastructure/README.md) | Complete |
+| Kubernetes with GitOps | [13](kubernetes/README.md) | Complete |
+| Observability and SRE | [16](observability/README.md) | Complete |
+| Governance and operations | [19](governance/README.md) | Complete |
+| Linux systems engineering | [24](linux/README.md) | Complete |
+| Database reliability | [19](database/README.md) | Complete |
+| Resilience and service operations | [20](resilience/README.md) | Complete |
+| Data engineering and integration | [25](data/README.md) | Complete |
+| Network engineering and automation | [31](network/README.md) | Complete |
+| Healthcare AI | [15](healthcare-ai/README.md) | Complete |
+| MLOps model platform | [15](mlops/README.md) | Complete |
+| **Total** | **224** | **Design complete; implementation separately scheduled** |
 
 All 224 canonical use cases have a dedicated page. The pages are architecture
 and delivery designs: they explain the organizational need, platform fit,
@@ -51,7 +52,8 @@ Every use-case document must contain:
 3. the trigger, actors, preconditions, scope, exclusions, and safety controls;
 4. the end-to-end architecture and execution flow;
 5. repository, file, function, role, chart, pipeline, and runbook references;
-6. a Jira epic and independently testable Jira stories;
+6. a Jira epic and at least three independently testable Jira stories covering
+   design/contract, source validation, and bounded outcome/recovery;
 7. a description, acceptance criteria, implementation steps, completed work,
    validation, rollback, and evidence for every story;
 8. actual versus expected results and an honest completion decision;

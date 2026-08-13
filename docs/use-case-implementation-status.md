@@ -1,12 +1,13 @@
 # Use-Case Implementation Status
 
-Last verified: 2026-08-02
+Last verified: 2026-08-13
 
-Detailed use cases are expanded and accepted sequentially under the
-[use-case documentation standard](use-cases/README.md). The canonical Linux
-portfolio rows now link to end-to-end IaC implementation specifications. Those
-pages define source, execution, validation, recovery, evidence, and interview
-expectations; they do not promote the use cases beyond their evidenced state.
+All 224 canonical use cases now have detailed organizational and platform
+designs under the [use-case documentation standard](use-cases/README.md). Each
+page explains purpose, enterprise and platform fit, actors, prerequisites,
+workflow, controls, evidence, failure behavior, recovery, Jira work, and future
+acceptance. Design completion does not promote a use case to implemented,
+runtime verified, or accepted.
 
 ## Purpose
 
@@ -28,12 +29,14 @@ not by itself make an enterprise use case complete.
 
 | Measure | Count | Interpretation |
 | --- | ---: | --- |
+| Detailed use-case designs | 224 | Documentation design is complete across all 12 platforms; code and execution remain separately governed |
 | Explicitly implemented first slices | 10 | Code exists for the bounded automation listed below |
 | Fully accepted portfolio use cases | Not yet centrally evidenced | Do not infer acceptance from infrastructure or repository presence |
 
-Defined scope and counts are maintained only in the
-[canonical portfolio](enterprise-project-portfolio-and-usecases.md). This
-status document intentionally does not duplicate them. Definition does not
+The canonical scope and authoritative platform counts remain in the
+[canonical portfolio](enterprise-project-portfolio-and-usecases.md). The design
+total is repeated here only to distinguish the completed documentation phase
+from the later implementation program. Definition and detailed design do not
 imply implementation.
 
 ## Explicitly implemented first slices
