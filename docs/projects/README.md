@@ -16,7 +16,11 @@ per real repository before planning its implementation.
 
 | Project | Purpose | Current state |
 | --- | --- | --- |
-| [`midhhealth/applications/podinfo`](applications/podinfo.md) | Non-PHI reference workload for proving the connected delivery and operating path | Source pinned; internal project and deployment pending |
+| [`midhhealth/applications/podinfo`](applications/podinfo.md) | Non-PHI reference workload documenting the connected delivery and operating path | Detailed and linked; implementation not authorized; not deployed |
+
+The application-to-platform relationships and the still-empty
+application-to-application inventory are recorded in
+[`application-integration-contracts.json`](../application-integration-contracts.json).
 
 | Domain | Page |
 | --- | --- |

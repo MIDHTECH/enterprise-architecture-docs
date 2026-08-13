@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "last_verified": "2026-08-13",
+  "scope": "documentation-only",
+  "implementation_authorized": false,
+  "registered_applications": [
+    "podinfo"
+  ],
+  "application_to_application_contracts": [],
+  "application_to_platform_contracts": [
+    {
+      "id": "podinfo-delivery-spine",
+      "application_id": "podinfo",
+      "chain": "delivery-spine",
+      "application_owner": "Platform Delivery team",
+      "contract_owner": "Platform Delivery team",
+      "business_promise": "Keep a future Podinfo release explainable from reviewed source to immutable artifact, promotion decision and recovery decision.",
+      "platform_projects": [
+        "midhhealth/platform-delivery/jenkins-jobs",
+        "midhhealth/platform-delivery/jenkins-shared-library",
+        "midhhealth/platform-delivery/ansible-jenkins"
+      ],
+      "use_cases": [
+        "docs/use-cases/devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md",
+        "docs/use-cases/devsecops/UC-CICD-007-environment-based-release-promotion.md",
+        "docs/use-cases/devsecops/UC-CICD-008-automated-rollback-controller.md"
+      ],
+      "failure_behavior": "Missing provenance, immutable artifact identity or explicit promotion evidence keeps every runtime action pending.",
+      "future_evidence": "A later approved phase would provide build, scan, SBOM, digest, plan, promotion and rollback identifiers tied to one source revision.",
+      "documentation_state": "linked",
+      "runtime_evidence_state": "not-collected"
+    },
+    {
+      "id": "podinfo-identity-and-secrets",
+      "application_id": "podinfo",
+      "chain": "identity-and-secrets",
+      "application_owner": "Platform Delivery team",
+      "contract_owner": "Security and Governance team",
+      "business_promise": "Give each future delivery and runtime action a bounded identity without placing infrastructure credentials in the application.",
+      "platform_projects": [
+        "midhhealth/security-governance/cloud-governance-ops-automation",
+        "midhhealth/platform-delivery/ansible-jenkins"
+      ],
+      "use_cases": [
+        "docs/use-cases/governance/UC-GOV-002-secrets-management-automation.md",
+        "docs/use-cases/governance/UC-GOV-003-secure-secrets-management-for-applications.md",
+        "docs/use-cases/governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md",
+        "docs/use-cases/resilience/UC-RSO-018-certificate-and-secret-expiry-response.md"
+      ],
+      "failure_behavior": "An unnamed principal, broad permission, embedded credential or missing revocation owner blocks the documented release path.",
+      "future_evidence": "A later approved phase would record principal IDs, authorization tests, secret references, rotation results and revocation evidence without secret values.",
+      "documentation_state": "linked",
+      "runtime_evidence_state": "not-collected"
+    },
+    {
+      "id": "podinfo-network-and-service-access",
+      "application_id": "podinfo",
+      "chain": "network-and-service-access",
+      "application_owner": "Platform Delivery team",
+      "contract_owner": "Network Engineering team",
+      "business_promise": "Describe one approved, least-exposed path to a future application route while retaining explicit denied paths.",
+      "platform_projects": [
+        "midhhealth/platform-engineering/network-engineering-platform",
+        "midhhealth/platform-engineering/ansible-kubernetes"
+      ],
+      "use_cases": [
+        "docs/use-cases/network/UC-NET-005-authoritative-and-recursive-dns.md",
+        "docs/use-cases/network/UC-NET-020-ingress-and-egress-controls.md",
+        "docs/use-cases/network/UC-NET-024-certificate-and-tls-routing.md",
+        "docs/use-cases/network/UC-NET-028-network-availability-testing.md"
+      ],
+      "failure_behavior": "No hostname, certificate owner or reviewed source-to-destination path means the application remains unreachable by design.",
+      "future_evidence": "A later approved phase would provide DNS, TLS, ingress, positive-path and denied-path results tied to the application release.",
+      "documentation_state": "linked",
+      "runtime_evidence_state": "not-collected"
+    },
+    {
+      "id": "podinfo-operational-readiness",
+      "application_id": "podinfo",
+      "chain": "operational-readiness",
+      "application_owner": "Platform Delivery team",
+      "contract_owner": "Resilience and Service Operations team",
+      "business_promise": "Make ownership, dependencies, expected service, escalation and recovery understandable before a future release decision.",
+      "platform_projects": [
+        "midhhealth/reliability-operations/resilience-service-operations"
+      ],
+      "use_cases": [
+        "docs/use-cases/resilience/UC-RSO-001-operational-readiness-review.md",
+        "docs/use-cases/resilience/UC-RSO-002-sli-and-slo-governance.md",
+        "docs/use-cases/resilience/UC-RSO-005-on-call-and-escalation-workflows.md",
+        "docs/use-cases/resilience/UC-RSO-009-service-ownership.md",
+        "docs/use-cases/resilience/UC-RSO-010-dependency-mapping.md"
+      ],
+      "failure_behavior": "Missing owner, dependency, SLO intent, escalation path or recovery decision keeps documentation review open and future acceptance unavailable.",
+      "future_evidence": "A later approved phase would provide a service record, measured SLI/SLO, alert route, exercised runbook and acceptance decision.",
+      "documentation_state": "linked",
+      "runtime_evidence_state": "not-collected"
+    },
+    {
+      "id": "podinfo-telemetry-and-release-feedback",
+      "application_id": "podinfo",
+      "chain": "telemetry-and-release-feedback",
+      "application_owner": "Platform Delivery team",
+      "contract_owner": "Observability and SRE team",
+      "business_promise": "Let a future operator connect user health, service signals and incidents back to the exact application change.",
+      "platform_projects": [
+        "midhhealth/reliability-operations/observability-sre-platform",
+        "midhhealth/reliability-operations/resilience-service-operations"
+      ],
+      "use_cases": [
+        "docs/use-cases/observability/UC-OBS-003-opentelemetry-auto-instrumentation.md",
+        "docs/use-cases/observability/UC-OBS-004-centralized-log-management.md",
+        "docs/use-cases/observability/UC-OBS-006-alerting-and-on-call-notification.md",
+        "docs/use-cases/observability/UC-OBS-008-deployment-health-scoring.md",
+        "docs/use-cases/observability/UC-OBS-014-change-to-incident-correlation.md"
+      ],
+      "failure_behavior": "Signals without project and release identity cannot support acceptance; missing or ambiguous telemetry keeps the release unaccepted.",
+      "future_evidence": "A later approved phase would link metrics, logs, traces, alerts and health decisions to source, artifact and release identifiers.",
+      "documentation_state": "linked",
+      "runtime_evidence_state": "not-collected"
+    },
+    {
+      "id": "podinfo-kubernetes-workload",
+      "application_id": "podinfo",
+      "chain": "kubernetes-workload",
+      "application_owner": "Platform Delivery team",
+      "contract_owner": "Kubernetes Platform team",
+      "business_promise": "Describe a bounded future workload that uses the existing application cluster without adding infrastructure or broadening trust.",
+      "platform_projects": [
+        "midhhealth/platform-engineering/kubernetes-platform-gitops",
+        "midhhealth/platform-engineering/ansible-kubernetes"
+      ],
+      "use_cases": [
+        "docs/use-cases/kubernetes/UC-K8S-003-kubernetes-application-deployment.md",
+        "docs/use-cases/kubernetes/UC-K8S-006-kubernetes-security-baseline-implementation.md",
+        "docs/use-cases/kubernetes/UC-K8S-009-ingress-and-traffic-management-standardization.md",
+        "docs/use-cases/kubernetes/UC-K8S-010-workload-right-sizing.md",
+        "docs/use-cases/kubernetes/UC-K8S-011-container-registry-and-image-supply-chain-security.md"
+      ],
+      "failure_behavior": "No approved digest, namespace boundary, pod security, resource decision or recovery plan means no cluster action is permitted.",
+      "future_evidence": "A later approved phase would provide render, policy, rollout, health, exposure and rollback evidence from the existing cluster.",
+      "documentation_state": "linked",
+      "runtime_evidence_state": "not-collected"
+    }
+  ],
+  "inventory_gaps": [
+    {
+      "portfolio": "midhhealth/care-delivery-platform",
+      "status": "real-application-projects-not-registered",
+      "missing": [
+        "application name",
+        "repository",
+        "business outcome",
+        "accountable owner",
+        "users",
+        "data classification",
+        "inbound and outbound contracts",
+        "documented runtime target"
+      ]
+    },
+    {
+      "portfolio": "midhhealth/payer-operations-platform",
+      "status": "real-application-projects-not-registered",
+      "missing": [
+        "application name",
+        "repository",
+        "business outcome",
+        "accountable owner",
+        "users",
+        "data classification",
+        "inbound and outbound contracts",
+        "documented runtime target"
+      ]
+    }
+  ]
+}

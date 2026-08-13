@@ -13,6 +13,12 @@ That is the purpose of this blueprint. It connects application records on
 paper. It does **not** deploy an application, create infrastructure, generate a
 Jenkins job, publish an image, or change a runtime.
 
+The machine-readable companion is
+[`application-integration-contracts.json`](application-integration-contracts.json).
+It currently contains the six documented Podinfo-to-platform chains and an
+empty application-to-application list because no second real application
+project has been registered.
+
 ![A business journey crossing independent application projects through owned contracts](assets/application-project-linkage-blueprint.svg)
 
 ## One journey, several owners
@@ -96,6 +102,21 @@ names, repositories, owners and integration contracts. Those are honest
 inventory gaps. This blueprint must be applied when those real projects are
 provided; it must not manufacture placeholder systems to make the diagram look
 complete.
+
+### Podinfo's six documented platform relationships
+
+| Contract | Owning platform responsibility | Current truth |
+| --- | --- | --- |
+| `podinfo-delivery-spine` | Platform Delivery owns the source-to-release and recovery design. | Linked in documentation; runtime evidence not collected |
+| `podinfo-identity-and-secrets` | Security and Governance owns bounded identity, rotation and revocation expectations. | Linked in documentation; runtime evidence not collected |
+| `podinfo-network-and-service-access` | Network Engineering owns the intended DNS, TLS, ingress and denied-path contract. | Linked in documentation; no hostname or route exists |
+| `podinfo-operational-readiness` | Resilience and Service Operations owns readiness, escalation and recovery expectations. | Linked in documentation; no runtime acceptance exists |
+| `podinfo-telemetry-and-release-feedback` | Observability and SRE owns release-correlated signal and health expectations. | Linked in documentation; no application telemetry exists |
+| `podinfo-kubernetes-workload` | Kubernetes Platform owns the documented workload boundary on the existing cluster. | Linked in documentation; no namespace or workload exists |
+
+These relationships connect one application to shared platform capabilities.
+They are not application-to-application integrations. That second kind of link
+can be documented only after another real application project is identified.
 
 ## Documentation review conversation
 

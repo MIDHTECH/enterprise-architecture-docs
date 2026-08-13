@@ -19,8 +19,18 @@ diagram = root / "docs/assets/application-project-deployment-model.svg"
 linkage = root / "docs/application-project-linkage-blueprint.md"
 linkage_diagram = root / "docs/assets/application-project-linkage-blueprint.svg"
 manifest = root / "docs/application-projects.json"
+integration_manifest = root / "docs/application-integration-contracts.json"
 
-for required in (register, template, traceability, diagram, linkage, linkage_diagram, manifest):
+for required in (
+    register,
+    template,
+    traceability,
+    diagram,
+    linkage,
+    linkage_diagram,
+    manifest,
+    integration_manifest,
+):
     if not required.is_file():
         raise SystemExit(f"Missing application-project artifact: {required}")
 
@@ -249,6 +259,107 @@ for application in applications:
         if node is None or not (node.text or "").strip():
             raise SystemExit(f"{application_diagram}: accessible {element} is required")
 
+integration_data = json.loads(integration_manifest.read_text())
+if integration_data.get("schema_version") != 1:
+    raise SystemExit(f"{integration_manifest}: unsupported schema_version")
+if integration_data.get("scope") != "documentation-only":
+    raise SystemExit(f"{integration_manifest}: scope must remain documentation-only")
+if integration_data.get("implementation_authorized") is not False:
+    raise SystemExit(f"{integration_manifest}: must not imply implementation authorization")
+if set(integration_data.get("registered_applications", [])) != application_ids:
+    raise SystemExit(
+        f"{integration_manifest}: registered applications must exactly match application-projects.json"
+    )
+
+platform_contracts = integration_data.get("application_to_platform_contracts")
+application_contracts = integration_data.get("application_to_application_contracts")
+if not isinstance(platform_contracts, list) or not isinstance(application_contracts, list):
+    raise SystemExit(f"{integration_manifest}: contract collections must be lists")
+
+manifest_by_id = {application["id"]: application for application in applications}
+contract_ids = set()
+linked_chains = {application_id: set() for application_id in application_ids}
+for contract in platform_contracts:
+    contract_id = contract.get("id")
+    application_id = contract.get("application_id")
+    chain = contract.get("chain")
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", contract_id or ""):
+        raise SystemExit(f"{integration_manifest}: invalid contract id {contract_id!r}")
+    if contract_id in contract_ids:
+        raise SystemExit(f"{integration_manifest}: duplicate contract id {contract_id}")
+    contract_ids.add(contract_id)
+    if application_id not in application_ids:
+        raise SystemExit(f"{integration_manifest}: unknown application {application_id!r}")
+    application = manifest_by_id[application_id]
+    if chain not in application["required_chains"] or chain in linked_chains[application_id]:
+        raise SystemExit(
+            f"{integration_manifest}: {application_id} has missing, duplicate or unexpected chain {chain!r}"
+        )
+    linked_chains[application_id].add(chain)
+    declared_projects = set(application["platform_projects"])
+    contract_projects = set(contract.get("platform_projects", []))
+    if not contract_projects or not contract_projects <= declared_projects:
+        raise SystemExit(
+            f"{integration_manifest}: {contract_id} must use declared application platform projects"
+        )
+    use_cases = contract.get("use_cases", [])
+    if not use_cases:
+        raise SystemExit(f"{integration_manifest}: {contract_id} must link detailed use cases")
+    for use_case in use_cases:
+        use_case_path = root / use_case
+        if not use_case.startswith("docs/use-cases/") or not use_case_path.is_file():
+            raise SystemExit(f"{integration_manifest}: unresolved use case {use_case!r}")
+    for field in (
+        "application_owner",
+        "contract_owner",
+        "business_promise",
+        "failure_behavior",
+        "future_evidence",
+    ):
+        if not isinstance(contract.get(field), str) or len(contract[field].strip()) < 12:
+            raise SystemExit(f"{integration_manifest}: {contract_id} missing useful {field}")
+    if contract.get("documentation_state") != "linked":
+        raise SystemExit(f"{integration_manifest}: {contract_id} is not linked in documentation")
+    if contract.get("runtime_evidence_state") != "not-collected":
+        raise SystemExit(f"{integration_manifest}: {contract_id} incorrectly implies runtime evidence")
+
+for application_id, chains in linked_chains.items():
+    required = set(manifest_by_id[application_id]["required_chains"])
+    if chains != required:
+        raise SystemExit(
+            f"{integration_manifest}: {application_id} contract chains differ from its required chains"
+        )
+
+for contract in application_contracts:
+    producer = contract.get("producer_application_id")
+    consumer = contract.get("consumer_application_id")
+    if producer not in application_ids or consumer not in application_ids or producer == consumer:
+        raise SystemExit(
+            f"{integration_manifest}: application contracts require two distinct registered applications"
+        )
+    for field in (
+        "business_moment",
+        "contract_owner",
+        "versioning_rule",
+        "failure_behavior",
+        "future_evidence",
+    ):
+        if not isinstance(contract.get(field), str) or len(contract[field].strip()) < 12:
+            raise SystemExit(f"{integration_manifest}: application contract missing useful {field}")
+
+required_gap_portfolios = {
+    "midhhealth/care-delivery-platform",
+    "midhhealth/payer-operations-platform",
+}
+inventory_gaps = integration_data.get("inventory_gaps", [])
+if {gap.get("portfolio") for gap in inventory_gaps} != required_gap_portfolios:
+    raise SystemExit(f"{integration_manifest}: care and payer inventory gaps must remain explicit")
+for gap in inventory_gaps:
+    if gap.get("status") != "real-application-projects-not-registered":
+        raise SystemExit(f"{integration_manifest}: invalid inventory-gap status")
+    if len(gap.get("missing", [])) < 8:
+        raise SystemExit(f"{integration_manifest}: inventory gap must name missing project facts")
+
 all_docs = "\n".join(
     path.read_text(errors="replace")
     for path in (root / "docs").rglob("*.md")
@@ -263,6 +374,8 @@ for stale_path in (
 print(
     "Application project validation passed: "
     f"{len(known_projects)} platform projects, {len(applications)} applications, "
-    f"{len(required_chains)} reusable chains."
+    f"{len(required_chains)} reusable chains, {len(platform_contracts)} documented "
+    f"application-to-platform contracts, {len(application_contracts)} "
+    "application-to-application contracts."
 )
 PY

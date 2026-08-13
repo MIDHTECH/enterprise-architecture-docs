@@ -40,7 +40,7 @@ persistent-storage changes completed through 2026-08-08:
 | AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
 | AWX execution plane | AWX 24.6.1 instance 3 on `awx-execution.example.com` is Ready at capacity 76 only in `lab-infrastructure`; NGINX exposes hostname TCP 443 and Receptor remains loopback-only on 27199 |
 | AWX inventories | 50 records across nine populated inventories plus the empty Demo inventory; 39 distinct names. Purpose-specific delivery inventories remain isolated, and `awx-execution-plane` contains only the execution node and canary localhost. |
-| Git repositories | AWX inventory, Kubernetes ingress, Longhorn storage automation/design, and cloud-infrastructure corrections are published; private application project `midhhealth/applications/podinfo` now retains upstream history and has protected `main` at internal commit `b8dceac72494313eca3ab388a20ad06867675224` |
+| Git repositories | AWX inventory, Kubernetes ingress, Longhorn storage automation/design, and cloud-infrastructure corrections are published; private application project `midhhealth/applications/podinfo` retains upstream history and has protected `main` at `81e02a9825bb4adbb353ebe23c62e26740f7550c`; its latest pipeline was canceled when work returned to documentation-only scope |
 
 The directly verified provisioned-only product VMs include `governance`,
 `backup`, `artifactory`, `sonarqube`, and `splunk`.

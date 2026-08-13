@@ -35,6 +35,12 @@ was created from this record.
 
 ## What this project connects to
 
+The six application-to-platform relationships are also recorded in the
+machine-readable
+[`application-integration-contracts.json`](../../application-integration-contracts.json).
+The application-to-application contract list is empty because no second real
+application project is currently registered.
+
 The project starts with reviewed upstream source, but no running component may
 pull from the public repository. GitLab becomes the internal source of truth;
 the project pipeline produces a versioned image in Harbor; Jenkins deploys the
