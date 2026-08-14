@@ -1,5 +1,12 @@
 # Environment Details
 
+Last verified: 2026-08-13
+
+Capability state in this page is governed by the canonical
+[`environment-capability-status.json`](environment-capability-status.json).
+This page explains topology and design intent; it must not promote a target
+product into current state.
+
 ## Environment Model
 
 The environment represents **MidhHealth Integrated Care**, an integrated care
@@ -27,7 +34,7 @@ The lab supports two deployment targets:
 
 | Target | Purpose | Provisioning path | Delivery path |
 | --- | --- | --- | --- |
-| Local KVM | Active on-premises integration, operations, and product environment | Ansible + libvirt + cloud-init | GitLab → Jenkins/AWX → Harbor/Artifactory → Argo CD |
+| Local KVM | Active on-premises integration, operations, and product environment | Ansible + libvirt + cloud-init | GitLab → Jenkins/AWX → accepted Harbor native endpoint → Helm; Argo CD only after separate acceptance |
 | AWS/Azure/GCP | Governed cloud validation and expansion environments | AWX → Terraform/OpenTofu → cloud services | GitLab → Jenkins/GitLab CI → cloud registry/services → GitOps |
 
 ## Physical and Edge Capacity Plan
@@ -63,7 +70,9 @@ Application endpoints are migrating one product at a time to local NGINX on
 the product VM and the canonical `<product>.example.com` name. AWX, Jenkins,
 and Headlamp are accepted on this model. The standalone `nginx.example.com` VM at
 `192.168.1.114` temporarily serves products not yet migrated. Internal TLS is
-not installed, so the verified current endpoints use HTTP:
+partially adopted rather than globally installed: Harbor has accepted native
+HTTPS and Vault has its documented HTTPS path, while most verified user-facing
+routes below still use HTTP.
 
 | Endpoint | Function | Current state |
 | --- | --- | --- |
@@ -79,11 +88,12 @@ not installed, so the verified current endpoints use HTTP:
 | `http://tempo.apps.example.com` | Tempo HTTP API | Active |
 | `http://otel.apps.example.com` | OpenTelemetry HTTP receiver | Active |
 | `http://kibana.apps.example.com` | Elastic dashboards and search | Active |
-| `http://harbor.apps.example.com` | OCI images and Helm OCI | Intentional 503; product not installed |
+| `https://harbor.example.com` | OCI images and Helm OCI | Harbor 2.15.0 installed and healthy; native HTTPS accepted |
+| `http://harbor.apps.example.com` | Legacy shared-proxy Harbor route | Unavailable and not accepted; do not confuse route state with product state |
 | `http://artifactory.apps.example.com` | Build artifacts | Intentional 503; product not installed |
 | `http://sonarqube.apps.example.com` | Code quality | Intentional 503; product not installed |
 | `http://vault.apps.example.com` | Secrets | Active; UI root redirects and `/v1/sys/health` returns HTTP 200 while unsealed |
-| `http://keycloak.apps.example.com` | SSO/OIDC | Intentional 503; product not installed |
+| `http://keycloak.apps.example.com` | SSO/OIDC | Route unavailable; older product-presence claim requires revalidation before it becomes canonical |
 | `http://splunk.apps.example.com` | Splunk search and administration | Intentional 503; product not installed |
 
 PostgreSQL, DNS, SSH, Kubernetes control-plane ports,
@@ -97,13 +107,16 @@ endpoints are not NGINX virtual hosts.
 
 ## Credentials and Trust
 
-- Human users authenticate through Keycloak where the product supports OIDC.
+- Human authentication through Keycloak is a target OIDC pattern. Keycloak
+  requires revalidation before any product may claim that integration.
 - Jenkins and AWX use service identities with narrowly scoped permissions.
-- Kubernetes retrieves secrets through External Secrets Operator.
+- Kubernetes secret retrieval through External Secrets Operator is a planned
+  contract. The operator is not installed in the current application cluster.
 - AWS automation uses IAM Roles Anywhere and temporary credentials.
 - Long-lived AWS administrator keys must not be stored in AWX or Jenkins.
-- Internal TLS certificates are issued by the lab CA and distributed through
-  configuration management.
+- The target design issues internal TLS certificates from the lab CA and
+  distributes them through configuration management. Current acceptance is
+  endpoint-specific, not enterprise-wide.
 - Secrets, private keys, tokens, and generated kubeconfigs are never committed.
 
 ## Deferred AWS Guardrails
@@ -123,8 +136,9 @@ endpoints are not NGINX virtual hosts.
   recovery tests.
 - `minio.example.com` stores local S3-compatible backup objects.
 - Velero backs up Kubernetes resources and supported persistent volumes.
-- GitLab, Jenkins, AWX, Harbor, Artifactory, PostgreSQL, Prometheus, Loki, and
-  Tempo have documented product-specific backup jobs.
+- The design requires product-specific backup jobs for GitLab, Jenkins, AWX,
+  Harbor, Artifactory, PostgreSQL, Prometheus, Loki, and Tempo. A job is not
+  current-state proof until its restore evidence is recorded.
 - A backup is not accepted until a restore test produces evidence.
 
 ## Build Order
@@ -136,8 +150,9 @@ endpoints are not NGINX virtual hosts.
 5. Build DNS and the standalone NGINX reverse proxy.
 6. Build GitLab and AWX first; manage the active PostgreSQL 18 service through
    AWX for all subsequent lifecycle changes.
-7. Build PostgreSQL, Vault/OpenBao, Jenkins, AWX execution, Harbor, Artifactory, and
-   SonarQube.
+7. Reconcile and accept PostgreSQL, Vault/OpenBao, Jenkins, the AWX execution
+   plane and Harbor; install Artifactory and SonarQube only through later
+   separately approved changes.
 8. Build the Kubernetes control plane and three workers.
 9. Bootstrap Argo CD and platform add-ons.
 10. Build Prometheus/Grafana/Loki/Tempo/OpenTelemetry, then the Elastic Stack
@@ -151,7 +166,7 @@ endpoints are not NGINX virtual hosts.
 | Layer | State through 2026-08-08 |
 | --- | --- |
 | Hypervisors, bridges, and libvirt | Operational |
-| 31 Rocky Linux VM domains | Running with autostart |
+| 35 VM domains | Running in the latest accepted inventory: 17 on `infra01`, 14 on `infra02`, and 4 on `infra03` |
 | BIND DNS | Installed; lab LAN and Kubernetes pod CIDR authorized |
 | GitLab CE | Installed |
 | Standalone NGINX | Installed; active routes verified; uninstalled products return intentional 503 |

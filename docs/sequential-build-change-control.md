@@ -422,7 +422,7 @@ INC-2026-052 near miss are resolved.
 
 ## Activity audit
 
-The latest accepted state, reconciled on 2026-08-02, is:
+The latest accepted state, reconciled through 2026-08-09, is:
 
 | Area | Evidence | Classification |
 | --- | --- | --- |
@@ -439,7 +439,7 @@ The latest accepted state, reconciled on 2026-08-02, is:
 | `gitlab-runner-shared01` | `.139`, runner ID 5, pinned Runner 19.2.0 Docker executor, exact `security,shared,validation` tags, untagged execution disabled | Accepted; canary 1424 and jobs 696/700/704 passed |
 | GitLab-VM runner | Runner ID 2 is paused; its container is absent while protected configuration is preserved for controlled rollback | Retired; jobs 713/717/721/725 passed |
 | `jenkins-agent01` | `.138`, Rocky 9.8; WebSocket agent service enabled/active; Helm 4.1.0, kubectl 1.34.10, Java 21, and Git 2.52.0; Jenkins online with one exclusive executor | Accepted; jobs 536/541 clean |
-| Harbor | `.122`; Docker and all Harbor, registry, database, Redis, portal, job-service, and Trivy containers healthy; HTTPS 200 | Installed but canonical documentation is stale |
+| Harbor | `.122`; Docker and all Harbor, registry, database, Redis, portal, job-service, and Trivy containers healthy; HTTPS 200 | Installed and accepted on the native endpoint; shared-proxy route remains unaccepted |
 | Artifactory | `.123`; no product service detected | Provisioned only |
 | SonarQube | `.124`; no product service detected | Provisioned only |
 | PostgreSQL | `.125`; PostgreSQL 18 service active | Installed |

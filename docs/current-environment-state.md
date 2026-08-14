@@ -2,6 +2,11 @@
 
 Last verified: 2026-08-13
 
+The canonical machine-readable classification for architecture-sensitive
+capabilities is
+[`environment-capability-status.json`](environment-capability-status.json).
+This page provides the human evidence narrative behind those classifications.
+
 ## Enterprise project portfolio
 
 The architecture represents **MidhHealth Integrated Care**, an enterprise care

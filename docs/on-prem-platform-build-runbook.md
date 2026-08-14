@@ -406,8 +406,9 @@ After both hypervisors pass validation:
 16. Review capacity and prerequisites for database reliability, resilience,
     data engineering, and network engineering; do not create their VMs or
     products from this build step.
-17. Optionally deploy a reference workload and begin the on-premises MAAS
-    monolith-to-microservices rehearsal.
+17. After the design phase closes and a separate change is approved, select a
+    real registered application record for an on-premises release rehearsal;
+    do not invent a product or deploy directly from this runbook.
 
 Exact VM placement and product sequencing are maintained in the linked VM
 inventory and platform installation documents.

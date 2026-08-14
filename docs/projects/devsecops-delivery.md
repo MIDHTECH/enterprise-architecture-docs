@@ -74,9 +74,11 @@ boundaries, not interchangeable tool choices.
   Jenkins controller has zero executors; builds must not run on it.
 - The shared-library AWX launcher and Kubernetes Helm workflow have accepted
   runtime evidence. Their job IDs and revisions remain in the change records.
-- Harbor, Artifactory and SonarQube endpoints exist as routing placeholders,
-  but the products are not installed. A page or pipeline must not describe a
-  successful push or scan against them.
+- Harbor 2.15.0 is installed and healthy on its native HTTPS endpoint. Its
+  legacy shared-proxy route is not accepted, so every design must name the
+  native endpoint rather than treating an unavailable route as an unavailable
+  product. Artifactory and SonarQube remain provisioned-only; a pipeline must
+  not claim publication or scanning through either product.
 - Argo CD is still a bounded Kubernetes change, so Jenkins remains the
   bootstrap owner until that change is accepted and ownership is handed off.
 - Elastic cloud agents and managed cloud runners are design options only. The

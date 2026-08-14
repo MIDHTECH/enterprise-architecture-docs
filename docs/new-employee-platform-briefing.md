@@ -14,7 +14,9 @@ This is similar to the way Microsoft reference architectures use Contoso: the
 company narrative makes the architecture concrete. It does not turn an example
 business capability into a deployed application, and it does not make a target
 cloud service part of the current environment. The authoritative deployment
-facts remain in [Current Environment State](current-environment-state.md).
+facts remain in [Current Environment State](current-environment-state.md),
+using the state vocabulary in
+[`environment-capability-status.json`](environment-capability-status.json).
 
 ### Organization profile
 
@@ -141,10 +143,11 @@ in a cloud reference architecture, but its active implementation is on premises.
 | Governance | GitLab/Jenkins/AWX policy and evidence workflows | Identity, policy, exceptions, audit evidence, cost and safe remediation decisions |
 | Cloud extension | Terraform/Ansible patterns for AWS, Azure and GCP | Target architecture only until provider foundations are separately accepted |
 
-Keycloak, Harbor, Artifactory, SonarQube and Splunk endpoints must not be read
-as installed products. Their current state is recorded separately. Likewise,
-Argo CD, managed Kubernetes and cloud accounts are not silently promoted by
-their appearance in a target architecture.
+Harbor is installed and healthy on its accepted native HTTPS endpoint; its
+legacy shared-proxy route is not accepted. Keycloak requires revalidation, and
+Artifactory, SonarQube and Splunk remain provisioned-only. Argo CD, managed
+Kubernetes and cloud accounts are target architecture and must not be promoted
+by their appearance in a diagram.
 
 ## Environment model
 
@@ -376,9 +379,10 @@ trigger a new architecture record.
   Elastic Stack, with bounded metrics, fleet logging and trace/log evidence.
 - PostgreSQL 18 and Vault on their documented accepted paths.
 
-### Planned or conditional capabilities
+### Planned, conditional or separately unaccepted capabilities
 
-- Harbor, Artifactory, SonarQube, Keycloak and Splunk product operation.
+- Harbor through the legacy shared-proxy application route; Artifactory,
+  SonarQube and Splunk product operation; and Keycloak revalidation.
 - Argo CD beyond its separately controlled bootstrap and ownership handoff.
 - Elastic Jenkins cloud agents, managed Kubernetes and live AWS/Azure/GCP
   execution.

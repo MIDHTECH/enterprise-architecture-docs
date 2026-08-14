@@ -6,7 +6,8 @@ versions are retained as historical context and for long-lived product
 migrations.
 
 See [Architecture Evolution: 2023–2026](architecture-evolution-2023-2026.md)
-and [MAAS Monolith-to-Microservices Modernization](maas-monolith-to-microservices.md).
+and the [Application Project Architecture and Linkage
+Register](application-project-deployment-register.md).
 
 The listed versions are representative supported checkpoints for each year,
 not permission to skip vendor-required intermediate releases. Before every

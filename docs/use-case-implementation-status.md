@@ -1,5 +1,10 @@
 # Use-Case Implementation Status
 
+The current program goal is design completion before additional lab
+implementation. See [Enterprise Design Readiness
+Status](design-readiness-status.md). This page intentionally tracks the later
+code and runtime phase separately so architecture-ready never means deployed.
+
 Last verified: 2026-08-13
 
 All 226 canonical use cases now have detailed organizational and platform

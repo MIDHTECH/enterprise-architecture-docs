@@ -16,6 +16,8 @@ required_docs=(
   "docs/evidence/APP-PODINFO-002-internal-project-ci.md"
   "docs/evidence/APP-PODINFO-003-release-contract-source.md"
   "docs/use-case-implementation-status.md"
+  "docs/design-readiness-status.md"
+  "docs/environment-capability-status.json"
   "docs/component-architecture.md"
   "docs/environment-details.md"
   "docs/vm-inventory.md"
@@ -53,6 +55,7 @@ required_docs=(
   "scripts/validate-platform-detail-pages.sh"
   "scripts/generate-use-case-interview-bank.py"
   "scripts/validate-onboarding-interview-docs.sh"
+  "scripts/validate-design-consistency.sh"
   "docs/use-cases/README.md"
   "docs/use-cases/enterprise-traceability.md"
   "docs/use-cases/devsecops/README.md"
@@ -89,6 +92,7 @@ done
 ./scripts/validate-application-projects.sh
 ./scripts/validate-interview-learning-labs.sh
 ./scripts/validate-platform-enhancement-plan.sh
+./scripts/validate-design-consistency.sh
 
 portfolio="docs/enterprise-project-portfolio-and-usecases.md"
 grep -q "cloud-infra-automation-platform" "$portfolio"

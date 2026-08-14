@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "last_verified": "2026-08-13",
+  "purpose": "Canonical machine-readable status for capabilities whose presence affects architecture claims. This file records documentation truth; it does not authorize implementation or lab changes.",
+  "status_vocabulary": {
+    "accepted": "Installed or configured on the named boundary and supported by current acceptance evidence.",
+    "installed-not-accepted": "Present, but the named access or operating boundary has not completed acceptance.",
+    "requires-revalidation": "An older presence claim exists, but it is not canonical until revalidated.",
+    "provisioned-only": "Compute or routing may exist, but the product is not installed.",
+    "not-installed": "The capability is part of target design only.",
+    "target-only": "A future architecture option with no accepted runtime target.",
+    "partial": "Only the explicitly named sub-boundaries are accepted."
+  },
+  "capabilities": {
+    "harbor": {
+      "product_status": "accepted",
+      "accepted_boundary": "Harbor 2.15.0 on harbor.example.com; ten product containers healthy; native HTTPS and health API return successful results.",
+      "unaccepted_boundary": "The legacy harbor.apps.example.com shared-NGINX application route remains unavailable and requires separate acceptance.",
+      "design_rule": "Documentation may describe Harbor as installed and healthy only when it names the native endpoint. It must not claim the shared application route is accepted."
+    },
+    "vault": {
+      "product_status": "accepted",
+      "accepted_boundary": "Vault 2.0.3 is active, initialized, unsealed and reachable through vault.apps.example.com.",
+      "design_rule": "Application secret delivery remains a separate design and acceptance concern; Vault presence does not imply External Secrets Operator."
+    },
+    "keycloak": {
+      "product_status": "requires-revalidation",
+      "accepted_boundary": "None recorded as canonical.",
+      "design_rule": "Describe Keycloak and OIDC integration as planned or conditional until revalidation is accepted."
+    },
+    "artifactory": {
+      "product_status": "provisioned-only",
+      "accepted_boundary": "None.",
+      "design_rule": "Do not claim artifact publication or product operation."
+    },
+    "sonarqube": {
+      "product_status": "provisioned-only",
+      "accepted_boundary": "None.",
+      "design_rule": "Do not claim a live quality-gate service."
+    },
+    "splunk": {
+      "product_status": "provisioned-only",
+      "accepted_boundary": "None.",
+      "design_rule": "Keep Splunk as a target comparison product; do not describe it as operating."
+    },
+    "argocd": {
+      "product_status": "not-installed",
+      "accepted_boundary": "None.",
+      "design_rule": "GitOps is a target operating model. Jenkins remains the accepted Kubernetes release owner until a separately approved bootstrap and ownership handoff completes."
+    },
+    "external-secrets-operator": {
+      "product_status": "not-installed",
+      "accepted_boundary": "None.",
+      "design_rule": "Describe the Kubernetes secret-store integration as a planned contract, not current behavior."
+    },
+    "kubernetes-ingress": {
+      "product_status": "accepted",
+      "accepted_boundary": "Single-replica ClusterIP-only ingress-nginx with worker-local NGINX access.",
+      "design_rule": "Do not imply a cloud load balancer, MetalLB or public ingress."
+    },
+    "longhorn": {
+      "product_status": "accepted",
+      "accepted_boundary": "Longhorn 1.12.0 V1 on the three worker /data/longhorn paths with a healthy three-replica acceptance volume.",
+      "design_rule": "Off-cluster backup and disaster recovery remain separate design decisions."
+    },
+    "internal-tls": {
+      "product_status": "partial",
+      "accepted_boundary": "Harbor native HTTPS and the documented Vault HTTPS path.",
+      "unaccepted_boundary": "Most user-facing lab endpoints remain HTTP; enterprise-wide certificate distribution and TLS migration are not accepted.",
+      "design_rule": "Never summarize TLS as either fully installed or entirely absent; name the endpoint-specific boundary."
+    },
+    "public-cloud": {
+      "product_status": "target-only",
+      "accepted_boundary": "None.",
+      "design_rule": "AWS, Azure, GCP, EKS, AKS and GKE are governed extension designs, not current runtime claims."
+    },
+    "business-applications": {
+      "product_status": "target-only",
+      "accepted_boundary": "Podinfo is registered and documented but is not deployed. No care-delivery or payer application repository is registered.",
+      "design_rule": "Do not invent application projects or application-to-application contracts. Record them only after real names, repositories and owners are supplied."
+    }
+  }
+}
