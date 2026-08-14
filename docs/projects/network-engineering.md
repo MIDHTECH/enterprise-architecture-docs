@@ -23,6 +23,24 @@ readiness.
 - Consumes infrastructure and Linux runtime details for host, VM, and cloud networking.
 - Sends availability, flow, DNS, and change evidence to SRE and governance.
 
+## Outcome and control role
+
+This team owns whether an approved producer can reach an approved consumer
+through the intended trust path. It validates the journey from the consumer
+boundary; device configuration success alone does not prove connectivity or
+safe isolation.
+
+| Responsibility | Network-domain commitment |
+| --- | --- |
+| Decision owned | Allocate, route, resolve, allow, deny, expose, isolate, change or restore a named connectivity contract. |
+| Evidence consumed | Producer/consumer identity, source and destination, protocol, data class, environment, route, policy, capacity and maintenance window. |
+| Evidence published | Source-of-truth revision, config diff, DNS/IP allocation, policy decision, path/flow observation, latency/loss and rollback verification. |
+| Safe-stop boundary | Unknown endpoint, overlapping address, missing route owner, broad policy expansion, failed precheck or lost management path blocks or reverses change. |
+| Outcomes measured | Provisioning time, drift age, DNS correctness, policy exposure, availability, latency/loss, capacity headroom and rollback success. |
+
+Network change follows the bounded decision loop in the
+[Cross-Platform Outcome and Control Framework](../cross-platform-outcome-control-framework.md).
+
 ## Executable Use-Case Scope
 
 - IPAM, VLAN/subnet design, DHCP, DNS, network configuration backup, and drift detection.

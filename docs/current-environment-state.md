@@ -211,6 +211,15 @@ storage envelope.
   `midhhealth/ai-and-ml-platform/healthcare-ai-platform`,
   `midhhealth/ai-and-ml-platform/mlops-model-platform`
 
+The UC-AI-001 deterministic source-only implementation is preserved locally at
+commit `03e9d1f` in `/Users/krishna/workspace.codex/healthcare-ai-platform`.
+Tests and offline fixtures pass locally, but the authoritative GitLab endpoint
+was unreachable from the administration workstation on 2026-08-14. The commit
+is therefore not yet published, no GitLab pipeline is claimed, and no model,
+vector database, service, workload, or production runtime has been installed.
+See [ART-AI-001](evidence/ART-AI-001-source-implementation.md) and
+[INC-2026-086](sre-incident-register.md#inc-2026-086-gitlab-endpoint-unreachable-during-healthcare-ai-source-publication).
+
 ## Observability hosts
 
 All observability VMs run Rocky Linux 9.8. Stateful services use a separately

@@ -23,6 +23,24 @@ operational, financial, payer, and platform use cases.
 - Uses delivery, Kubernetes, infrastructure, observability, and governance controls for model promotion.
 - Supports healthcare AI when assistants call model endpoints or use model-derived features.
 
+## Outcome and control role
+
+This team owns the reproducible technical lifecycle of a model. The consuming
+product owner decides whether its predictions are suitable for the workflow;
+MLOps makes the exact training inputs, evaluation, release, runtime behavior
+and withdrawal path reviewable.
+
+| Responsibility | MLOps-domain commitment |
+| --- | --- |
+| Decision owned | Register, validate, promote, serve, retrain, suspend or roll back a versioned model and feature contract. |
+| Evidence consumed | Code, dataset and feature lineage, experiment configuration, intended use, validation policy, serving envelope and application acceptance criteria. |
+| Evidence published | Reproducible run, model digest/version, metrics by approved cohort, lineage, approval, serving health, drift state and rollback target. |
+| Safe-stop boundary | Missing lineage, failed quality/fairness/safety gate, incompatible feature, unexplained drift or unhealthy serving blocks promotion or returns to an approved version. |
+| Outcomes measured | Reproducibility, validation pass quality, promotion time, serving latency/cost, drift response, rollback success and product outcome after acceptance. |
+
+The lifecycle uses the common contract and evidence rules in the
+[Cross-Platform Outcome and Control Framework](../cross-platform-outcome-control-framework.md).
+
 ## Executable Use-Case Scope
 
 - Training pipeline standardization, feature stores, model registry/versioning, validation gates, and CI/CT/CD.

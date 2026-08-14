@@ -117,6 +117,7 @@ facts; they do not erase the original observation.
 | INC-2026-083 | 2026-08-08 | SEV-4 | Resolved | Jenkins Kubernetes storage prerequisites | The generated pipeline used an unavailable `timestamps()` option and failed safely before AWX launch |
 | INC-2026-084 | 2026-08-08 | SEV-4 | Resolved | Jenkins Longhorn acceptance evidence | Groovy string interpolation corrupted two kubectl newline templates after the initial runtime became healthy |
 | INC-2026-085 | 2026-08-08 | SEV-3 | Open | infra01-to-infra03 build-execution path | Pre-DEPLOY loss recurred; infra01 uplink has repeated carrier drops and is the bounded first physical canary |
+| INC-2026-086 | 2026-08-14 | SEV-3 | Open | GitLab source-control endpoint | Healthcare AI source publication is blocked because SSH and HTTP connections time out |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2900,6 +2901,51 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   [infra01 Phase A result](evidence/CHG-2026-011-infra01-uplink-phase-a-result.md),
   [Velop shared-node diagnostic](change-records/CHG-2026-011-velop-shared-node-diagnostic.md),
   [Sequential Build and Change Control](sequential-build-change-control.md)
+
+## INC-2026-086: GitLab Endpoint Unreachable During Healthcare AI Source Publication
+
+- Date: 2026-08-14
+- Severity: SEV-3
+- Status: Open
+- Component: `gitlab.example.com` source-control endpoint and the existing
+  `midhhealth/ai-and-ml-platform/healthcare-ai-platform` project
+- Detection/symptom: The new local `main` commit had no upstream after push
+  attempts. A read-only SSH diagnostic resolved `gitlab.example.com` to
+  `192.168.1.101` but timed out on TCP port 2222. A bounded HTTP request to the
+  same host also timed out.
+- Impact: Commit `03e9d1f`, containing the deterministic UC-AI-001 source-only
+  implementation, cannot yet be published to the authoritative GitLab
+  project. Protected GitLab CI evidence is unavailable. No runtime service or
+  deployed application is affected.
+- Timeline: The implementation and local validation completed first. The
+  target GitLab repository was confirmed to exist and be empty before the
+  endpoint stopped responding. Publication attempts did not establish an
+  upstream branch or remote ref. The committed checkout was copied to the
+  persistent local path `/Users/krishna/workspace.codex/healthcare-ai-platform`
+  to protect the work while connectivity is unavailable.
+- Cause: Unconfirmed. Both configured SSH and HTTP paths were unreachable from
+  the administration workstation; available evidence does not distinguish a
+  GitLab host outage from a network-path failure.
+- Contributing factors: The target repository has no prior branch, so there is
+  no remote copy of the first commit. GitHub does not contain a confirmed
+  healthcare-AI mirror.
+- Resolution: Pending. Repeated blind publication attempts were stopped. The
+  clean local commit and passing source tests are preserved without changing
+  GitLab, lab infrastructure, or runtime state.
+- Validation: Local contract validation passes, all 12 unit/integration tests
+  pass, and all five deterministic benchmark cases pass. `git branch -vv` has
+  no upstream and a read-only remote query returned no branch before the
+  endpoint timed out; publication is therefore not claimed.
+- Prevention/follow-up: Restore or confirm GitLab reachability, query the
+  remote before mutation, push the exact local commit, observe the protected
+  source pipeline, and append the immutable remote commit and pipeline ID to
+  ART-AI-001. Do not promote UC-AI-001 to runtime verified from local evidence.
+- Corrective automation: None. Endpoint recovery is outside this source-only
+  change; automated retries must remain bounded and must not create alternate
+  infrastructure.
+- Evidence/related runbook:
+  [ART-AI-001 source implementation evidence](evidence/ART-AI-001-source-implementation.md),
+  [UC-AI-001 detailed design](use-cases/healthcare-ai/UC-AI-001-retrieval-augmented-generation.md)
 
 ## New Incident Template
 

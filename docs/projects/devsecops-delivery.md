@@ -27,6 +27,24 @@ teams.
 - Invokes AWX for Ansible-driven operations and deployment jobs.
 - Receives health signals from observability before promotion or rollback.
 
+## Outcome and control role
+
+This team owns the release decision, not the health, security, or business
+facts supplied by other teams. It turns those facts into a clear answer:
+whether a particular revision may move to a named environment and whether it
+must be stopped or rolled back.
+
+| Responsibility | Delivery-domain commitment |
+| --- | --- |
+| Decision owned | Build, package, gate, promote, reject or roll back an attributable revision. |
+| Evidence consumed | Source review, dependency and image results, infrastructure plan, policy decision, SLO health and application acceptance criteria. |
+| Evidence published | Pipeline revision, artifact digest and provenance, gate reasons, approval identity, target, timestamps and rollback eligibility. |
+| Safe-stop boundary | Missing evidence, unknown target, failed policy or unhealthy release prevents promotion; pipeline success never overrides a failed domain control. |
+| Outcomes measured | Developer waiting time, lead time, queue delay, supported-path adoption, change-failure rate and rollback success. |
+
+The common contract and guarded execution rules are defined in the
+[Cross-Platform Outcome and Control Framework](../cross-platform-outcome-control-framework.md).
+
 ## Executable Use-Case Scope
 
 - End-to-end CI/CD pipeline setup.

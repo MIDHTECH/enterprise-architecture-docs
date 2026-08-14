@@ -22,6 +22,23 @@ requirements into controlled operating workflows.
 - Works with database, Linux, network, data, AI, and MLOps teams during incident and recovery workflows.
 - Provides readiness and recovery evidence to business operations and audit.
 
+## Outcome and control role
+
+This team owns the coordinated service decision when normal platform paths are
+degraded. It joins symptoms, dependencies, release risk and recovery authority
+so responders do not optimize one component while worsening the user outcome.
+
+| Responsibility | Resilience-domain commitment |
+| --- | --- |
+| Decision owned | Set readiness, severity, escalation, release-risk, containment, recovery and exercise outcomes for an owned service. |
+| Evidence consumed | Service owner, dependency graph, SLO/error budget, recent changes, platform diagnostics, recovery objectives and communication route. |
+| Evidence published | Timeline, classification, impact, decision log, exercised failure, recovery observation, measured RPO/RTO and corrective-action owner. |
+| Safe-stop boundary | Automation outside a rehearsed scope, uncertain diagnosis or worsening health returns control to the incident authority and invokes containment or rollback. |
+| Outcomes measured | Detection and recovery time, error-budget use, exercise coverage, repeat incidents, action closure and proven recovery age. |
+
+This team coordinates the recovery and learning stages of the
+[Cross-Platform Outcome and Control Framework](../cross-platform-outcome-control-framework.md).
+
 ## Executable Use-Case Scope
 
 - SLO governance, incident detection, escalation, evidence collection, post-incident review, and problem management.

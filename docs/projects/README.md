@@ -27,6 +27,12 @@ New engineers should begin with the
 the [Use-Case Interview Question Bank](../use-case-interview-question-bank.md)
 to practise explaining the decisions behind these domain pages.
 
+The twelve domains use one
+[Cross-Platform Outcome and Control Framework](../cross-platform-outcome-control-framework.md).
+It defines the shared decision-and-evidence contract, safe automation loop and
+outcome scorecard. It does not create another platform: each capability keeps
+one accountable domain while other domains provide explicit handoffs.
+
 | Domain | Page |
 | --- | --- |
 | DevSecOps delivery | [DevSecOps Delivery](devsecops-delivery.md) |

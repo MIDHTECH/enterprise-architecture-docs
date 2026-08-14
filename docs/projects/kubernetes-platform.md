@@ -23,6 +23,23 @@ care, payer, platform, data, AI, and observability workloads.
 - Publishes workload runtime patterns to delivery, observability, governance, data, AI, and MLOps.
 - Sends runtime telemetry to SRE and operational evidence to governance.
 
+## Outcome and control role
+
+This team owns whether a reviewed workload contract is safe for the shared
+runtime. It does not own the application release, its business acceptance, or
+the meaning of its data.
+
+| Responsibility | Kubernetes-domain commitment |
+| --- | --- |
+| Decision owned | Admit, place, reconcile, scale, promote or reverse an immutable workload revision. |
+| Evidence consumed | Image digest and provenance, namespace owner, identity, policy, route, storage, resource envelope, SLO and recovery contract. |
+| Evidence published | Admission and sync results, live digest, rollout state, resource use, policy status, service endpoints and rollback observation. |
+| Safe-stop boundary | Untrusted image, missing owner, unsafe policy, exhausted capacity, unhealthy rollout or dependency failure stops promotion or returns to the last safe revision. |
+| Outcomes measured | Workload onboarding time, reconciliation lag, rollout failure rate, recovery time, capacity headroom and allocated workload cost. |
+
+The shared evidence fields and automation loop come from the
+[Cross-Platform Outcome and Control Framework](../cross-platform-outcome-control-framework.md).
+
 ## The workload contract
 
 Kubernetes is a shared runtime, not a deployment shortcut. An application

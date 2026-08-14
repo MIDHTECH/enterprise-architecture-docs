@@ -24,6 +24,25 @@ impact analysis, drift checks, and Ansible-ready inventory.
 - Depends on governance for policy, identity, secrets, cost, and compliance controls.
 - Sends infrastructure change context to observability and resilience for incident correlation.
 
+## Outcome and control role
+
+This team owns the infrastructure plan and desired-state decision. It does not
+decide that application downtime, compliance risk, or unexpected cost is
+acceptable; those decisions stay with the appropriate service and governance
+owners.
+
+| Responsibility | Infrastructure-domain commitment |
+| --- | --- |
+| Decision owned | Produce, reject or reconcile a versioned infrastructure plan for an approved target. |
+| Evidence consumed | Runtime requirement, current inventory, state lock, identity, policy, network contract, service dependencies and cost ownership. |
+| Evidence published | Plan summary, replacement/destruction risk, changed dependencies, state lineage, drift classification and Terraform outputs. |
+| Safe-stop boundary | Unknown state, lock conflict, unowned resource, unexpected destroy/replace, policy failure or unavailable recovery blocks apply. |
+| Outcomes measured | Plan turnaround, drift age, state-integrity failures, policy rejection quality, forecast accuracy and cost per owned service. |
+
+These commitments implement the
+[Cross-Platform Outcome and Control Framework](../cross-platform-outcome-control-framework.md)
+without adding a cloud account, landing zone or provisioning product.
+
 ## Executable Use-Case Scope
 
 - Terraform drift detection, health assessment, reconciliation, and plan analysis.

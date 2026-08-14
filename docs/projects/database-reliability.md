@@ -23,6 +23,23 @@ engineering, AI, and MLOps.
 - Feeds trusted data sources to data engineering, healthcare AI, and MLOps.
 - Sends availability, performance, backup, and audit evidence to SRE and governance.
 
+## Outcome and control role
+
+This team owns the database service boundary and proof that data can be
+recovered. The application owns schema meaning and acceptable business loss;
+the database team turns those expectations into a tested operating contract.
+
+| Responsibility | Database-domain commitment |
+| --- | --- |
+| Decision owned | Provision, change, patch, tune, fail over, restore or retire a named database service. |
+| Evidence consumed | Application owner, data class, schema revision, identity, workload envelope, RPO/RTO, retention, dependencies and maintenance window. |
+| Evidence published | Database/role state, migration result, performance baseline, audit status, backup identity, restore result, loss window and recovery time. |
+| Safe-stop boundary | Unowned schema, missing backup, unrehearsed irreversible migration, excessive replication lag or failed restore validation blocks promotion. |
+| Outcomes measured | Provisioning time, migration failures, query latency, capacity forecast, backup success, measured RPO/RTO and recovery-test age. |
+
+These decisions and evidence use the
+[Cross-Platform Outcome and Control Framework](../cross-platform-outcome-control-framework.md).
+
 ## Executable Use-Case Scope
 
 - PostgreSQL installation through AWX after approval, database/role provisioning, and schema migration automation.

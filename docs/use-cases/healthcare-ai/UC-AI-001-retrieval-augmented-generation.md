@@ -1,6 +1,6 @@
 # UC-AI-001: Retrieval-Augmented Generation
 
-Last verified: 2026-08-13
+Last verified: 2026-08-14
 
 ## Use-case record
 
@@ -16,7 +16,7 @@ Last verified: 2026-08-13
 | Jira epic | `EPIC-AI-001` — Prove governed retrieval over approved documentation |
 | Change record | Not required for offline CI evaluation; required before any runtime service or model endpoint |
 | Target | Existing healthcare-AI GitLab project, accepted shared runner, and approved documentation snapshots |
-| Current state | **Planned — repository scaffold exists; no AI runtime is claimed** |
+| Current state | **Implemented in source locally — GitLab publication, pipeline evidence, and runtime acceptance remain pending** |
 | Infrastructure boundary | No model server, vector database, VM, cluster workload, cloud API, or new storage is created |
 | Owner | Healthcare AI Platform team |
 
@@ -115,7 +115,7 @@ environment.
 | Context element | Architecture statement |
 | --- | --- |
 | Business and operational setting | Enterprise consumers: Provider operations, payer operations, shared digital platform, risk and compliance. The result must be explainable, repeatable, and owned. |
-| Current state | **Planned — repository scaffold exists; no AI runtime is claimed** |
+| Current state | **Implemented in source locally — GitLab publication, pipeline evidence, and runtime acceptance remain pending** |
 | Desired state | A reviewed contract drives a bounded result, machine-readable evidence, and a safe stop or recovery decision. |
 | Existing target boundary | Existing healthcare-AI GitLab project, accepted shared runner, and approved documentation snapshots |
 | Infrastructure constraint | No model server, vector database, VM, cluster workload, cloud API, or new storage is created |
@@ -212,9 +212,15 @@ does not approve the new architecture.
 
 ## Implementation design
 
-The first Retrieval-Augmented Generation implementation is deliberately source-only. Its planned files live in the existing repository; none provisions infrastructure.
+The first Retrieval-Augmented Generation implementation is deliberately
+source-only. The files below are implemented at local commit `03e9d1f`; none
+provisions infrastructure. The commit is preserved in a persistent local
+checkout while publication to the existing GitLab project is blocked by the
+currently unreachable GitLab endpoint. This local commit is implementation
+evidence, not a substitute for a protected GitLab pipeline or runtime
+acceptance.
 
-| Planned source responsibility | Exact planned location |
+| Source responsibility | Implemented location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/contracts/uc-ai-001.yaml` |
 | Primary implementation | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/src/evaluations/retrieval_augmented_generation.py`; entry point: the `evaluate_retrieval_augmented_generation` offline evaluator |
@@ -260,7 +266,8 @@ completion alone cannot promote the page to runtime verified.
 documents that can be indexed, with immutable revision, ownership, data class,
 review date, and checksum.
 
-**Status:** Planned.
+**Status:** Planned; the source implementation exists, but the corpus approval
+decision remains open.
 
 **Acceptance criteria:** Every file is allowlisted and checksummed; denied paths
 and secret patterns fail the job; stale approval fails closed; no PHI or
@@ -269,8 +276,10 @@ credential-bearing content is included.
 **Implementation steps:** Define corpus schema, select approved documentation,
 record commits, scan content, and generate a signed/checksummed manifest.
 
-**Completed work:** The documentation repository exists; no AI corpus approval
-or index is claimed.
+**Completed work:** The source contract, deterministic fixture corpus, validation
+script, and ephemeral in-memory index path exist at local commit `03e9d1f`.
+The fixture corpus is test data only; no enterprise corpus approval or durable
+index is claimed.
 
 **Validation and rollback:** Test allowed, unlisted, changed, expired, and
 secret-bearing fixtures. Remove an artifact and revert the manifest on policy
@@ -283,7 +292,8 @@ failure.
 **Description:** Retrieval engineers need a deterministic baseline that ranks
 approved passages and exposes exact citations before generation adds risk.
 
-**Status:** Planned.
+**Status:** Implemented in source locally; GitLab CI proof and reviewed corpus
+acceptance remain pending.
 
 **Acceptance criteria:** Results include repository, commit, path, heading,
 chunk ID, and score; citations resolve to the indexed text; out-of-scope queries
@@ -292,7 +302,11 @@ return insufficient context; no network model call occurs.
 **Implementation steps:** Implement chunking and lexical retrieval, build the
 index in CI, add citation verification, and expire the index artifact.
 
-**Completed work:** Retrieval requirements are specified; code is pending.
+**Completed work:** Stable structure-aware chunks, duplicate-document rejection,
+lexical and deterministic-vector retrieval, parallel scoring, reciprocal-rank
+fusion, bounded reranking, access filtering before scoring, context budgeting,
+and citation validation are implemented and covered by local tests at commit
+`03e9d1f`.
 
 **Validation and rollback:** Run deterministic unit tests and compare repeated
 results. Revert ranking changes that reduce the accepted baseline.
@@ -305,7 +319,8 @@ results. Revert ranking changes that reduce the accepted baseline.
 real staff tasks while refusing unsupported, sensitive, or instruction-
 injection requests.
 
-**Status:** Planned.
+**Status:** Implemented against deterministic fixtures locally; protected CI
+evidence and workflow-owner acceptance remain pending.
 
 **Acceptance criteria:** Evaluation spans provider, payer, and platform
 questions; relevance and citation thresholds are explicit; prompt-injection,
@@ -314,8 +329,11 @@ secret request, clinical advice, and unsupported-answer cases fail closed.
 **Implementation steps:** Create reviewed cases, run CI evaluation, publish
 aggregate metrics and failures, and document the gate for any later generator.
 
-**Completed work:** Evaluation categories are defined; no passing result is
-claimed.
+**Completed work:** Five deterministic cases pass locally, including authorized
+retrieval, insufficient context, metadata-partition denial, provider outage,
+and invented-citation rejection. The result proves source behavior only; it
+does not establish production quality, semantic model quality, or runtime
+capacity.
 
 **Validation and rollback:** Re-run the fixed suite for every corpus or ranking
 change. Block promotion and restore the prior accepted revision on regression.
@@ -326,6 +344,7 @@ change. Block promotion and restore the prior accepted revision on regression.
 
 | ID | Evidence | Source | Status |
 | --- | --- | --- | --- |
+| `ART-AI-001` | Local source implementation, test, boundary, and publication status | [Source implementation evidence](../../evidence/ART-AI-001-source-implementation.md) | Recorded; remote publication pending |
 | `ART-AI-001A` | Corpus manifest and content scan | GitLab CI | Pending |
 | `ART-AI-002A` | Retrieval/citation tests | GitLab CI | Pending |
 | `ART-AI-003A` | Enterprise and safety evaluation | Protected CI artifact | Pending |
@@ -334,15 +353,18 @@ change. Block promotion and restore the prior accepted revision on regression.
 
 | Measure | Expected | Current |
 | --- | --- | --- |
-| Corpus | Approved, immutable, non-sensitive snapshot | Not approved |
-| Retrieval | Stable cited passages and refusal | Not implemented |
+| Corpus | Approved, immutable, non-sensitive snapshot | Deterministic fixtures exist; enterprise corpus not approved |
+| Retrieval | Stable cited passages and refusal | Implemented and locally tested against fixtures at `03e9d1f`; protected CI pending |
 | Runtime/model | None required for first acceptance | No runtime claimed |
 
 ## Acceptance decision
 
-**Planned.** Accept the offline retrieval slice only after corpus approval,
-citation verification, deterministic evaluation, injection/refusal tests, and
-artifact redaction. LLM generation and runtime serving remain separate work.
+**Source implemented; not accepted.** Accept the offline retrieval slice only
+after the local commit is published to the authoritative GitLab project, the
+protected source pipeline passes, the corpus is approved, and the evidence is
+reviewed. Citation, refusal, provider-outage, access-partition, cache-isolation,
+and deterministic evaluation tests pass locally. LLM generation, model
+selection, runtime serving, and deployment remain separate work.
 
 ## Operational, security, and follow-up notes
 

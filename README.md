@@ -10,6 +10,7 @@ operators and engineers a common operating record for the platform.
 ## Documents
 
 - [Enterprise Project Portfolio and Use Case Coverage](docs/enterprise-project-portfolio-and-usecases.md)
+- [Cross-Platform Outcome and Control Framework](docs/cross-platform-outcome-control-framework.md)
 - [Application Project Deployment Register](docs/application-project-deployment-register.md)
 - [Podinfo Application Deployment Record](docs/projects/applications/podinfo.md)
 - [Advanced Use Case Comparison](docs/advanced-usecase-comparison.md)

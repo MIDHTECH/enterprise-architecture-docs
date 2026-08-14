@@ -73,7 +73,11 @@ also remains below `implemented in code`: live GitLab main pipeline 250 failed
 because all three validation jobs had no matching runner, and no successful
 repository pipeline is recorded. The other executable specialist slices remain
 `implemented in code` until Jenkins/AWX execution records and acceptance
-evidence are added. Healthcare AI and MLOps remain repository scaffolds.
+evidence are added. Healthcare AI UC-AI-001 has a locally committed,
+deterministic source-only implementation at `03e9d1f`, but it remains below
+`implemented in code` until that commit is published to the authoritative
+GitLab project and its protected source pipeline passes. The remaining
+Healthcare AI scope and MLOps remain repository scaffolds.
 
 ## Acceptance recording
 

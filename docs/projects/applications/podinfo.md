@@ -69,6 +69,38 @@ to the same project record. A failed handoff keeps the prior release in place.
 | Telemetry and release feedback | Metrics, logs and traces carry the Podinfo commit, image digest and Helm revision | Platform services exist; application signal delivery has not been tested. |
 | Kubernetes workload | Bounded namespace, non-root image, probes, requests/limits, rollout and rollback | Namespace and application resources do not yet exist. |
 
+## Cross-platform outcome contract
+
+Podinfo is useful only if the twelve domains can produce one understandable
+release decision. The application record joins their evidence; it does not
+transfer delivery, policy, runtime or SLO ownership to the application repo.
+
+| Contract field | Podinfo decision |
+| --- | --- |
+| Intent | Prove that a reviewed non-PHI application revision can follow the documented delivery, runtime, observation and recovery path. |
+| Scope | Internal commit, future Harbor digest, project-owned chart values, planned `podinfo` namespace and only the explicitly approved route and telemetry path. |
+| Application acceptance owner | Platform Delivery owns the reference workload; SRE accepts the observable and recoverable operating result. |
+| Governing policy | Protected source, immutable artifact, non-root/least-privilege workload, ClusterIP-only exposure, no PHI/PII, explicit promotion and SLO-based rollback. |
+| Promotion decision | Source, tests, scan, SBOM/provenance, Helm PLAN, target identity, policy and release-health evidence must all refer to the same revision. |
+| Mutation boundary | No mutation is authorized now. A later decision would be limited to the named cluster and namespace through the protected Jenkins identity, with one release in flight and atomic Helm timeout. |
+| Independent verification | Synthetic request through the approved route plus release-labelled metrics, logs and trace; Jenkins or Kubernetes success alone is insufficient. |
+| Recovery | Failed preconditions stop with zero change; failed rollout returns to the prior immutable Helm release and verifies the same route and telemetry. |
+| Learning | Record waiting time at each platform handoff, unclear diagnostics, failed contracts and reusable-path improvements before onboarding a real application. |
+
+### Outcome baseline and target
+
+Because Podinfo is not deployed, runtime baselines and thresholds have not been
+measured. Owners must set them from the bounded first observation; this record
+does not invent production targets.
+
+| Outcome | Current baseline | Target decision before implementation | Future evidence |
+| --- | --- | --- | --- |
+| End-to-end application path | No runtime journey exists | One attributable request connects source, digest, release, route and telemetry | Synthetic result and trace joined to release identity |
+| Delivery flow | Source CI passes; later platform handoff time is unmeasured | Measure queue and waiting time at build, image, PLAN, promotion and health gates before setting an improvement target | GitLab and Jenkins timestamps plus decision records |
+| Release safety | No application rollout has occurred | Unsafe, malformed and unauthorized fixtures fail without changing the cluster; a failed release returns to the prior healthy revision | Negative tests, Helm history and before/after health evidence |
+| Recovery | No application recovery exercise exists | Measure recovery through the same approved user path and let SRE set the first target | Rollback ID, route results, telemetry and elapsed time |
+| Cost and capacity | No Podinfo runtime consumption exists | Capture namespace CPU, memory, replicas and telemetry volume; do not claim savings without a measured comparison | Kubernetes allocation and observability-volume report |
+
 ## Documented deployment shape
 
 - Planned namespace: `podinfo` on `kubernetes-admin@kubernetes`, after the

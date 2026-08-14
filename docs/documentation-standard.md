@@ -39,6 +39,21 @@ Each operational runbook should contain:
 8. Rollback or restoration instructions where applicable.
 9. Change record with date, target, action and result.
 
+## Required Use-Case Decision Contract
+
+Every platform use case must follow the
+[Cross-Platform Outcome and Control Framework](cross-platform-outcome-control-framework.md).
+Its page must identify the intent, accountable platform, accepting service
+owner, exact scope, current environment boundary, governing policy, evidence,
+decision, bounded action, independent verification, recovery and measurable
+learning outcome. Supporting platforms contribute versioned handoffs; they do
+not become alternate owners.
+
+Mutating automation must document detect, diagnose, recommend, decide,
+execute, verify, recover and record behavior. A successful command, job, sync,
+dashboard or endpoint is not sufficient acceptance without an attributable
+target, policy decision, independent observation and owner acceptance.
+
 ## Writing Requirements
 
 - Use commands that staff can copy safely.
@@ -62,6 +77,9 @@ Each operational runbook should contain:
   version-controlled source of truth, even if service is not interrupted.
 - Mark portfolio projects as `active implementation` or `planned`. A planned
   project must not imply that its repository, VM, product or service exists.
+- Measure platform value through an owner-approved outcome baseline; do not
+  substitute job counts, dashboard counts, document length or tool activity
+  for demonstrated improvement.
 
 ## Source of Truth
 

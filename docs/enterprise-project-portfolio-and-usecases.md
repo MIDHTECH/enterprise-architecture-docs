@@ -167,6 +167,27 @@ The deployment relationship among separate application repositories, shared
 platform projects and linked use-case chains is maintained in the
 [Application Project Architecture and Linkage Register](application-project-deployment-register.md).
 
+## Cross-Platform Outcome Model
+
+The twelve platforms use one
+[Cross-Platform Outcome and Control Framework](cross-platform-outcome-control-framework.md)
+instead of creating a separate platform for every new operational concern. It
+adds three enterprise standards to the portfolio:
+
+1. a decision-and-evidence contract that connects intent, scope, policy,
+   action, verification, recovery and learning;
+2. a guarded automation loop used consistently by delivery, infrastructure,
+   Kubernetes, systems, database, network, governance, reliability, AI and
+   model operations; and
+3. an outcome scorecard that measures flow, safety, reliability, security,
+   cost, quality and human impact rather than tool activity alone.
+
+The framework maps evidence-driven delivery, cloud and AI unit economics,
+software-supply-chain assurance, healthcare security evidence, FHIR/API
+contracts, operational intelligence and AI assurance into the current use-case
+families. It is a design standard only. It does not authorize a new product,
+runtime target, infrastructure build or application deployment.
+
 ## Organization Model
 
 | Layer | Shared organizational capability |
@@ -197,7 +218,7 @@ platform projects and linked use-case chains is maintained in the
 | Resilience and service operations | `resilience-service-operations` | [Team model](projects/resilience-service-operations.md) | Active first implementation slice against existing VM fleet |
 | Data engineering and integration | `data-engineering-platform` | [Team model](projects/data-engineering.md) | Active first implementation slice against existing VM fleet |
 | Network engineering and automation | `network-engineering-platform` | [Team model](projects/network-engineering.md) | Active first implementation slice against existing VM fleet |
-| Healthcare AI platform | `healthcare-ai-platform` | [Team model](projects/healthcare-ai.md) | Approved AI platform domain; implementation planned |
+| Healthcare AI platform | `healthcare-ai-platform` | [Team model](projects/healthcare-ai.md) | UC-AI-001 source implemented locally; authoritative GitLab publication and pipeline evidence pending; runtime planned |
 | MLOps model platform | `mlops-model-platform` | [Team model](projects/mlops-model-platform.md) | Approved ML platform domain; implementation planned |
 
 The Linux systems, database reliability, resilience/service operations, data

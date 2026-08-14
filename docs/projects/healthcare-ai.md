@@ -25,6 +25,25 @@ only after data, security, evaluation, and audit controls are in place.
 - Uses Kubernetes, delivery pipelines, observability, and governance controls before wider rollout.
 - Works with MLOps when AI workflows include trained models or model-serving backends.
 
+## Outcome and control role
+
+This team owns whether an AI-assisted workflow is useful, grounded and safe
+for its approved purpose. It never transfers clinical, payer, privacy or
+operational accountability to a model. Human review is placed where an error
+could materially affect a person, payment, authorization or privileged action.
+
+| Responsibility | Healthcare-AI commitment |
+| --- | --- |
+| Decision owned | Evaluate, release, restrict, suspend or roll back a versioned prompt, retrieval, tool and model combination for an approved workflow. |
+| Evidence consumed | Workflow owner, intended use, prohibited use, data/knowledge classification, FHIR/API contract, model record, access policy and evaluation thresholds. |
+| Evidence published | Prompt/retrieval/model/tool versions, citations, safety and quality results, human decision, latency/cost, audit trace and rollback eligibility. |
+| Safe-stop boundary | Missing citation, unauthorized context/tool, unsafe response, evaluation regression, excessive uncertainty or unavailable human review blocks consequential action. |
+| Outcomes measured | Task success, groundedness, unsafe-output rate, human override, workflow time saved, latency, cost per accepted result and incident recurrence. |
+
+AI evidence and decisions follow the
+[Cross-Platform Outcome and Control Framework](../cross-platform-outcome-control-framework.md)
+without implying a new AI gateway or production model service.
+
 ## Executable Use-Case Scope
 
 - Clinical and payer AI assistants, RAG, healthcare knowledge indexing, FHIR-aware AI APIs, and agentic workflows.
@@ -40,8 +59,10 @@ Clinical or payer decisions remain with authorized people and systems.
 
 ![Healthcare AI platform architecture](../assets/project-11-healthcare-ai-architecture.svg)
 
-The repository scaffold exists, but no production AI runtime is accepted. The
-planned Mac Studio can support local development and evaluation after its
+The first UC-AI-001 source slice is implemented and locally tested at commit
+`03e9d1f`; publication to the authoritative GitLab project and protected CI
+evidence remain pending. No production AI runtime is accepted. The planned Mac
+Studio can support local development and evaluation after its
 capacity and handling rules are confirmed; it is not a repository, a clinical
 system, or part of the Kubernetes worker pool. Initial builds use synthetic or
 explicitly approved non-production documents and do not introduce protected

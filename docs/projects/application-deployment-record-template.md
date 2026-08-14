@@ -53,6 +53,39 @@ and explain why each one is needed. Do not copy the entire platform backlog.
 | Delivery spine | `<pipeline entry point and release flow>` | `<revision>` | `<pipeline, artifact and rollback links>` |
 | `<additional chain>` | `<how this application consumes it>` | `<revision>` | `<evidence link>` |
 
+## Cross-platform outcome contract
+
+Use the
+[Cross-Platform Outcome and Control Framework](../cross-platform-outcome-control-framework.md)
+to join the selected platform chains into one application decision. Do not
+repeat every platform control. Record what this application supplies, what it
+expects back and who accepts the combined result.
+
+| Contract field | Application-specific decision |
+| --- | --- |
+| Intent | `<user or operational outcome this release must improve>` |
+| Scope | `<source revision, artifact, environment, dependencies and data included>` |
+| Application acceptance owner | `<person or team that accepts the effect on users or operations>` |
+| Governing policy | `<release, security, data, cost and reliability policy revisions>` |
+| Promotion decision | `<required evidence, threshold and decision authority>` |
+| Mutation boundary | `<allowlisted target, identity, concurrency, timeout and stop condition>` |
+| Independent verification | `<user-path observation that does not rely only on the deployment job>` |
+| Recovery | `<zero-change stop, rollback, restore or degraded-mode path>` |
+| Learning | `<metric, incident review or supported-path improvement created from the result>` |
+
+### Outcome baseline and target
+
+Define a baseline before claiming improvement. Use only measures that the
+application or operational owner can interpret.
+
+| Outcome | Baseline and observation window | Target and decision owner | Future evidence |
+| --- | --- | --- | --- |
+| User or operational success | `<measured baseline or not yet measured>` | `<target and owner>` | `<SLI, business event or synthetic journey>` |
+| Delivery flow | `<lead time, waiting time or current manual steps>` | `<target and owner>` | `<pipeline/change records>` |
+| Reliability and recovery | `<failure and recovery baseline>` | `<SLO/RTO/RPO target and owner>` | `<telemetry and exercise record>` |
+| Security and governance | `<current control/evidence baseline>` | `<coverage or exposure target and owner>` | `<policy and evidence records>` |
+| Cost and capacity | `<current unit cost/utilization or not yet measurable>` | `<budget/capacity target and owner>` | `<allocation and usage record>` |
+
 ## Documented deployment shape
 
 Draw the application-specific request, data and control paths. Show the real

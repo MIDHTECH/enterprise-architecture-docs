@@ -23,6 +23,23 @@ lineage, and serving of provider and payer data products.
 - Provides curated data and features to analytics, healthcare AI, and MLOps.
 - Sends quality, lineage, freshness, and access evidence to governance and SRE.
 
+## Outcome and control role
+
+This team owns whether a versioned data product arrived completely, remained
+meaningful, and can be traced to its source. A green pipeline does not make a
+late, incomplete, duplicated, or unauthorized dataset trustworthy.
+
+| Responsibility | Data-domain commitment |
+| --- | --- |
+| Decision owned | Ingest, transform, publish, quarantine, replay, backfill, retain or retire an owned dataset or event contract. |
+| Evidence consumed | Producer/consumer ownership, schema, classification, access purpose, freshness target, lineage, reconciliation rule and replay boundary. |
+| Evidence published | Source revision, schema result, record/control totals, quality and freshness result, lineage, access decision and replay/backfill history. |
+| Safe-stop boundary | Incompatible schema, unauthorized data, failed reconciliation, unknown lineage or unsafe replay quarantines output and protects the last trusted version. |
+| Outcomes measured | Data freshness, quality failures, reconciliation variance, recovery time, replay correctness, lineage coverage and cost per data product. |
+
+Data decisions conform to the
+[Cross-Platform Outcome and Control Framework](../cross-platform-outcome-control-framework.md).
+
 ## Executable Use-Case Scope
 
 - Batch ingestion, streaming ingestion, CDC, ETL/ELT, workflow orchestration, and schema evolution.

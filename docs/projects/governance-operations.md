@@ -22,6 +22,25 @@ identity, and operational policy into executable controls.
 - Consumes evidence from observability, infrastructure, Linux, database, network, data, AI, and MLOps.
 - Provides operating controls for provider and payer workloads.
 
+## Outcome and control role
+
+This team owns the policy decision and exception lifecycle. It does not own
+the technical truth reported by a domain or the business consequence accepted
+by an application owner. Its job is to make the rule, evidence and reason for
+a decision visible before a privileged action occurs.
+
+| Responsibility | Governance-domain commitment |
+| --- | --- |
+| Decision owned | Approve, reject, defer or require human review for policy, identity, security, compliance, cost and guarded-remediation conditions. |
+| Evidence consumed | Attributable control results from every platform plus target, identity, owner, data classification, service impact and exception context. |
+| Evidence published | Policy version, control mapping, decision and reason, evidence freshness, exception owner/expiry and allowed action boundary. |
+| Safe-stop boundary | Missing evidence, expired exception, unknown identity/target or risk beyond the allowlist fails closed and escalates. |
+| Outcomes measured | Current control coverage, exception age, exposure duration, decision latency, unauthorized attempts, cost-anomaly response and verified remediation. |
+
+Governance maintains the decision portion of the
+[Cross-Platform Outcome and Control Framework](../cross-platform-outcome-control-framework.md);
+it does not require a new policy, secrets, FinOps or AI-gateway product.
+
 ## Executable Use-Case Scope
 
 - Cloud misconfiguration detection, compliance scanning, IAM/RBAC standardization, and secrets controls.

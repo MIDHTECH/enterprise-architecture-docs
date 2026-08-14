@@ -22,6 +22,7 @@ documentation change before changing platform or use-case designs.
 | Scope | Design state | What is complete | What still prevents closure |
 | --- | --- | --- | --- |
 | Enterprise operating model | Ready | MidhHealth provider, payer, platform and governance responsibilities share one delivery and evidence model | No design blocker |
+| Cross-platform outcome and control model | Ready | The twelve domains share a decision-and-evidence contract, guarded automation loop, outcome scorecard and explicit capability ownership | Apply the standard during implementation design; it creates no runtime acceptance |
 | Twelve platform domains | Ready | Each platform has context, ownership, detailed architecture, failure behavior, implementation guidance and acceptance intent | Runtime acceptance remains a later phase |
 | 226 platform use cases | Ready for implementation planning | Every canonical use case has a detailed page, linked dependencies, an SVG, trust boundaries, planned source locations, failure handling and future evidence | Page readiness is not implementation or acceptance |
 | Cross-platform implementation order | Ready | Required build prerequisites form a validated cycle-free sequence; coordinated assurance may proceed in parallel but still gates runtime acceptance | Follow the generated implementation wave for each use case |
@@ -60,6 +61,8 @@ reviewer can answer all of the following from the page:
 9. Which decisions remain open, who owns them and what gate resolves them?
 10. Does the narrative describe this capability specifically rather than only
     repeating the portfolio template?
+11. Which outcome-scorecard measure establishes a baseline and demonstrates
+    value to the consuming application or operational owner?
 
 ## Gate before additional lab implementation
 

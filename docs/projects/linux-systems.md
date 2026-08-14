@@ -24,6 +24,23 @@ stacks.
 - Consumes network/DNS standards and governance access policies.
 - Sends patch, drift, capacity, and compliance evidence to SRE and governance.
 
+## Outcome and control role
+
+This team owns the operating-system state and the host-level recovery decision.
+A completed Ansible job is useful evidence, but only post-change service,
+security and capacity checks show that the host remains fit for its consumers.
+
+| Responsibility | Linux-domain commitment |
+| --- | --- |
+| Decision owned | Build, configure, patch, harden, reconcile, recover or retire an inventoried host within an approved window. |
+| Evidence consumed | Host inventory, role, owner, package policy, identity, dependency, maintenance window, backup and service health. |
+| Evidence published | Image/package versions, configuration revision, changed services, scan results, reboot state, capacity and recovery verification. |
+| Safe-stop boundary | Unknown host, unmanaged repository, failed backup, unavailable dependency, excessive host scope or failed canary stops the batch. |
+| Outcomes measured | Configuration drift age, patch exposure, automation success, failed-host isolation, service recovery, capacity risk and manual effort removed. |
+
+Host automation follows the common guarded loop in the
+[Cross-Platform Outcome and Control Framework](../cross-platform-outcome-control-framework.md).
+
 ## Canonical Use-Case Scope
 
 The complete Linux use-case list, market-calibration decision, coverage

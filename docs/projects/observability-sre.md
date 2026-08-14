@@ -25,6 +25,23 @@ evidence layer used by every MidhHealth platform and application team.
 - Provides health gates to delivery and rollback signals to resilience operations.
 - Provides compliance and incident evidence to governance.
 
+## Outcome and control role
+
+This team owns the reliability observation and its quality. It should tell an
+operator what changed, which user path is affected, how quickly the error
+budget is burning, and where to investigate—not merely that a graph moved.
+
+| Responsibility | Observability-domain commitment |
+| --- | --- |
+| Decision owned | Declare whether telemetry is sufficient and whether an SLO, release-health or incident condition is met. |
+| Evidence consumed | Service ownership, dependency map, release and infrastructure changes, telemetry schema, user journeys and approved SLOs. |
+| Evidence published | Time-bounded health result, symptom and impact, correlated changes, query/dashboard reference, evidence quality and likely diagnostic path. |
+| Safe-stop boundary | Missing or stale telemetry produces `unknown`, never healthy; an automated diagnosis remains a recommendation until the owning runbook authorizes action. |
+| Outcomes measured | Detection time, diagnostic time, alert precision, SLO coverage, change-correlation rate, telemetry cost and recurring incidents. |
+
+This is the observation and verification layer of the
+[Cross-Platform Outcome and Control Framework](../cross-platform-outcome-control-framework.md).
+
 ## Executable Use-Case Scope
 
 - OpenTelemetry instrumentation, eBPF observability, logs, metrics, traces, and profiling.
