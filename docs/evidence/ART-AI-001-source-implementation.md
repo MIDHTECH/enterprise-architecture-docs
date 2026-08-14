@@ -6,8 +6,9 @@ Status: Source implemented and validated locally; GitLab publication and runtime
 
 ## What was built
 
-Commit `03e9d1f` implements the first deterministic, source-only RAG
-performance and reliability slice in the existing
+Commit `7518855` (a reviewed descendant of the initial `03e9d1f` commit)
+implements the deterministic, source-only RAG performance and reliability
+slice in the existing
 `midhhealth/ai-and-ml-platform/healthcare-ai-platform` project layout. The
 persistent local checkout is
 `/Users/krishna/workspace.codex/healthcare-ai-platform`.
@@ -17,7 +18,9 @@ fixture corpus and cases, stable structure-aware chunking, access and metadata
 filtering before ranking, parallel lexical and vector retrieval,
 reciprocal-rank fusion, bounded reranking and context selection, citation
 validation, cache isolation and expiry, stage-level latency measurement,
-structured refusals, an offline benchmark, and an operator runbook.
+structured refusals, enforceable case-quality, p95 latency, TTFT, refusal-leak,
+and stage-evidence gates, an offline benchmark, and an operator runbook. The
+result maps retrieved chunks to their immutable source revisions.
 
 The default evaluator uses a deterministic extractive provider so CI does not
 download a model or depend on outbound network access. An optional
@@ -42,11 +45,14 @@ PYTHONPATH=src python3 -m healthcare_ai.rag.benchmark \
 Observed source evidence:
 
 - contract validation passed for three fixture documents and five cases;
-- all 12 tests passed;
+- all 14 tests passed from both the working repository and a fresh local clone;
 - all five benchmark cases passed;
 - negative coverage includes duplicate document IDs, unauthorized metadata
   partitions, cache-scope isolation, provider outage, invented citations, and
-  denial of remote model endpoints;
+  denial of remote model endpoints, prohibited corpus classifications, and a
+  deliberately impossible latency gate that fails the decision closed;
+- the passing report contains all required stage names, zero refusal leaks,
+  the fixture corpus/retrieval/provider revisions, and three source revisions;
 - no source-validation step requires package installation or outbound network
   access.
 

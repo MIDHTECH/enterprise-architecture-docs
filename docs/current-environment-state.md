@@ -212,7 +212,7 @@ storage envelope.
   `midhhealth/ai-and-ml-platform/mlops-model-platform`
 
 The UC-AI-001 deterministic source-only implementation is preserved locally at
-commit `03e9d1f` in `/Users/krishna/workspace.codex/healthcare-ai-platform`.
+commit `7518855` in `/Users/krishna/workspace.codex/healthcare-ai-platform`.
 Tests and offline fixtures pass locally, but the authoritative GitLab endpoint
 was unreachable from the administration workstation on 2026-08-14. The commit
 is therefore not yet published, no GitLab pipeline is claimed, and no model,
