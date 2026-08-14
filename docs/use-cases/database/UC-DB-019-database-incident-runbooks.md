@@ -104,6 +104,30 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+Rather than beginning with a product, explain Database Incident Runbooks by asking an engineer
+to protect client compatibility and data correctness while the database state changes underneath
+them. The result MidhHealth needs is to keep enterprise transactional and operational data
+secure, performant, and recoverable. Enterprise Database Engineering and Reliability Platform
+team owns the platform decision, while the consuming service or business owner still accepts the
+effect on its workflow.
+
+Read the design as an operating timeline: detect, establish scope, choose a reversible action,
+verify recovery and preserve what the team learned. In this page, **UC-RSO-004: Incident
+Detection and Classification** contributes incident classification, severity, and escalation
+trigger; **UC-RSO-005: On-Call and Escalation Workflows** contributes on-call owner and
+escalation acknowledgement path. The first buildable boundary is existing PostgreSQL service,
+backup host, MinIO, GitLab, Jenkins, AWX, and observability. The design stops at this rule:
+Reuse the existing lab; do not create a new database server, VM, storage system, database
+product, or live-data migration.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is administrative credentials or row content escaping the database
+control boundary; therefore a green source job, screenshot or reachable endpoint is supporting
+evidence, not acceptance by itself.
+
 ## Architecture context
 
 Database Incident Runbooks is evaluated inside the existing enterprise lab and the owning

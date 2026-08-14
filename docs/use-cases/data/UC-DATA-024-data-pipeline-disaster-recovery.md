@@ -104,6 +104,30 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+Rather than beginning with a product, explain Data-Pipeline Disaster Recovery by asking an
+engineer to follow a named producer record through validation, transformation and an accountable
+consumer. The result MidhHealth needs is to move and validate healthcare data safely before
+downstream enterprise decisions use it. Enterprise Data Engineering and Integration Platform
+team owns the platform decision, while the consuming service or business owner still accepts the
+effect on its workflow.
+
+Follow the object from creation through change, operation and retirement; every transition needs
+an owner and a recoverable prior state. In this page, **UC-RSO-015: Backup and Recovery
+Orchestration** contributes backup identity, recovery orchestration, and restoration evidence;
+**UC-RSO-017: RTO and RPO Measurement** contributes owned RTO/RPO targets and measurement
+method. The first buildable boundary is existing GitLab shared runner, synthetic fixtures,
+PostgreSQL where approved, and current evidence paths. The design stops at this rule: Reuse the
+existing lab; do not create a new data platform, Kafka, Airflow, lakehouse, VM, bucket, live
+feed, or protected healthcare dataset.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is protected or misclassified data entering fixtures, logs, or
+evidence; therefore a green source job, screenshot or reachable endpoint is supporting evidence,
+not acceptance by itself.
+
 ## Architecture context
 
 Data-Pipeline Disaster Recovery is evaluated inside the existing enterprise lab and the owning

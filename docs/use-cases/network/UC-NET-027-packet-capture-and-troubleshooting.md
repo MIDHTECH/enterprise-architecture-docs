@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+For design review, walk through Packet Capture and Troubleshooting by trying to trace the actual
+packet or request path and make every ownership boundary observable. The result MidhHealth needs
+is to maintain trusted connectivity and service paths across the existing lab. Enterprise
+Network Engineering and Automation Platform team owns the platform decision, while the consuming
+service or business owner still accepts the effect on its workflow.
+
+Read the design as an operating timeline: detect, establish scope, choose a reversible action,
+verify recovery and preserve what the team learned. In this page, **UC-OBS-012: Synthetic
+Monitoring** contributes synthetic path definition and observed response; **UC-RSO-010:
+Dependency Mapping** contributes upstream/downstream service dependency and failure effect. The
+first buildable boundary is existing DNS, NGINX, KVM bridges, Kubernetes networking, GitLab,
+Jenkins, AWX, and blackbox checks. The design stops at this rule: Reuse the existing lab; do not
+create a new router, switch, firewall appliance, VM, IP, VLAN, CNI, load balancer, VPN, or cloud
+network.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is a network test or change crossing its approved source, destination,
+protocol, or capture boundary; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Packet Capture and Troubleshooting is evaluated inside the existing enterprise lab and the owning

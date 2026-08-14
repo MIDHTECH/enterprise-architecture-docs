@@ -7,7 +7,7 @@ Last verified: 2026-08-02
 | Field | Value |
 | --- | --- |
 | Portfolio | Enterprise Linux Systems Engineering Platform |
-| Supporting use cases | [UC-CICD-001](../devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md), [UC-CICD-007](../devsecops/UC-CICD-007-environment-based-release-promotion.md), [UC-OBS-008](../observability/UC-OBS-008-deployment-health-scoring.md), [UC-INFRA-005](../infrastructure/UC-INFRA-005-server-configuration-automation-using-ansible.md) |
+| Supporting use cases | [UC-LNX-003](UC-LNX-003-vm-provisioning-cloud-init.md), [UC-INFRA-005](../infrastructure/UC-INFRA-005-server-configuration-automation-using-ansible.md), [UC-GOV-001](../governance/UC-GOV-001-compliance-evidence-collection.md), [UC-OBS-004](../observability/UC-OBS-004-centralized-log-management.md) |
 | Canonical coverage target | Approved creation, handoff, backup and decommission workflow |
 | Delivery model | End-to-end infrastructure as code |
 | Primary roles | Linux platform lead, service owner, backup engineer, security engineer, change approver |
@@ -63,6 +63,30 @@ running an isolated technology demonstration is insufficient.
 **In scope:** Request validation, build, baseline, ownership handoff, CMDB/inventory evidence, backup proof, quarantine, data disposition, and IaC deletion.
 
 **Excluded:** Emergency break-glass recovery, undocumented deletion, and application data disposal without owner approval.
+
+## Design walkthrough
+
+The architecture conversation for Server Build and Retirement should treat the host or fleet
+change as a canary-led operating procedure rather than a collection of commands. The result
+MidhHealth needs is to Its planned result advances: the documented enterprise outcome. Linux
+Platform team owns the platform decision, while the consuming service or business owner still
+accepts the effect on its workflow.
+
+Follow the object from creation through change, operation and retirement; every transition needs
+an owner and a recoverable prior state. In this page, **UC-LNX-003: VM Provisioning with
+cloud-init** contributes VM identity, cloud-init completion, and idempotence result;
+**UC-INFRA-005: Server Configuration Automation Using Ansible** contributes reviewable plan or
+bounded reconciliation result tied to the accepted state. The first buildable boundary is the
+accepted existing lab boundary named by the page. The design stops at this rule: Fit is achieved
+by reusing documented existing repositories, control planes, services, and targets—not by
+inventing capacity or treating planned products as available.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is
+host-level automation crossing its inventory, privilege, or credential boundary; therefore a
+green source job, screenshot or reachable endpoint is supporting evidence, not acceptance by
+itself.
 
 ## Architecture context
 
@@ -137,10 +161,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-CICD-001: End-to-End CI/CD Pipeline Setup](../devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md) | source-to-artifact pipeline provenance and stage outcome | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-CICD-007: Environment-Based Release Promotion](../devsecops/UC-CICD-007-environment-based-release-promotion.md) | environment promotion contract and approval evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-OBS-008: Deployment Health Scoring](../observability/UC-OBS-008-deployment-health-scoring.md) | deployment-health score and promotion/rollback signal | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-005: Server Configuration Automation Using Ansible](../infrastructure/UC-INFRA-005-server-configuration-automation-using-ansible.md) | server configuration source and bounded Ansible execution | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-LNX-003: VM Provisioning with cloud-init](UC-LNX-003-vm-provisioning-cloud-init.md) | VM identity, cloud-init completion, and idempotence result | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-INFRA-005: Server Configuration Automation Using Ansible](../infrastructure/UC-INFRA-005-server-configuration-automation-using-ansible.md) | reviewable plan or bounded reconciliation result tied to the accepted state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-001: Automated Compliance Evidence Collection](../governance/UC-GOV-001-compliance-evidence-collection.md) | control-to-evidence mapping with ownership, exception, and retention metadata | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-OBS-004: Centralized Log Management](../observability/UC-OBS-004-centralized-log-management.md) | traceable measurement or alert decision with owner and diagnostic context | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Server Build and Retirement is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

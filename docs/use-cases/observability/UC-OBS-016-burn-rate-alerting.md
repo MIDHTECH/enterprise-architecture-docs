@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Burn-Rate Alerting |
 | Primary platform | Enterprise Observability and SRE Reliability Platform |
-| Supporting use cases | [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md), [UC-GOV-001](../governance/UC-GOV-001-compliance-evidence-collection.md), [UC-CICD-015](../devsecops/UC-CICD-015-deployment-health-scoring.md) |
+| Supporting use cases | [UC-OBS-001](UC-OBS-001-slo-as-code.md), [UC-RSO-002](../resilience/UC-RSO-002-sli-and-slo-governance.md), [UC-RSO-003](../resilience/UC-RSO-003-error-budget-management.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md) |
 | Enterprise alignment | Operational resilience, shared digital platform |
 | Enterprise outcome | turn existing telemetry into actionable health and incident evidence for enterprise services |
 | Primary GitLab repository | `midhhealth/reliability-operations/observability-sre-platform` |
@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+For design review, walk through Burn-Rate Alerting by trying to start with the operator decision
+the signal must support, then work backward to trustworthy telemetry. The result MidhHealth
+needs is to turn existing telemetry into actionable health and incident evidence for enterprise
+services. Enterprise Observability and SRE Reliability Platform team owns the platform decision,
+while the consuming service or business owner still accepts the effect on its workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-OBS-001: SLO as Code**
+contributes service-level indicator, objective, and measurement window; **UC-RSO-002: SLI and
+SLO Governance** contributes readiness or exercise result tied to observed service recovery. The
+first buildable boundary is existing Prometheus, Alertmanager, Grafana, Loki, Tempo,
+OpenTelemetry, Elastic, and GitLab/AWX paths. The design stops at this rule: Reuse the existing
+lab; do not create a new monitoring VM, telemetry backend, paging product, or unapproved data
+source.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is sensitive fields or credentials leaking into telemetry and
+diagnostic artifacts; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Burn-Rate Alerting is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-RSO-010: Dependency Mapping](../resilience/UC-RSO-010-dependency-mapping.md) | upstream/downstream service dependency and failure effect | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-GOV-001: Automated Compliance Evidence Collection](../governance/UC-GOV-001-compliance-evidence-collection.md) | control-to-evidence mapping and retention classification | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-CICD-015: Deployment Health Scoring](../devsecops/UC-CICD-015-deployment-health-scoring.md) | release health and rollback-readiness signal | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-OBS-001: SLO as Code](UC-OBS-001-slo-as-code.md) | service-level indicator, objective, and measurement window | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-RSO-002: SLI and SLO Governance](../resilience/UC-RSO-002-sli-and-slo-governance.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-003: Error-Budget Management](../resilience/UC-RSO-003-error-budget-management.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Burn-Rate Alerting is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

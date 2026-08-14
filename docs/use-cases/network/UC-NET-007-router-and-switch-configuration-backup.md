@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Router and Switch Configuration Backup |
 | Primary platform | Enterprise Network Engineering and Automation Platform |
-| Supporting use cases | [UC-RSO-015](../resilience/UC-RSO-015-backup-and-recovery-orchestration.md), [UC-RSO-017](../resilience/UC-RSO-017-rto-and-rpo-measurement.md), [UC-DB-001](../database/UC-DB-001-backup-restore-validation.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) |
+| Supporting use cases | [UC-NET-008](UC-NET-008-network-configuration-automation.md), [UC-NET-009](UC-NET-009-network-configuration-drift-detection.md), [UC-RSO-015](../resilience/UC-RSO-015-backup-and-recovery-orchestration.md), [UC-GOV-001](../governance/UC-GOV-001-compliance-evidence-collection.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, provider and payer operations |
 | Enterprise outcome | maintain trusted connectivity and service paths across the existing lab |
 | Primary GitLab repository | `midhhealth/platform-engineering/network-engineering-platform` |
@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+For design review, walk through Router and Switch Configuration Backup by trying to trace the
+actual packet or request path and make every ownership boundary observable. The result
+MidhHealth needs is to maintain trusted connectivity and service paths across the existing lab.
+Enterprise Network Engineering and Automation Platform team owns the platform decision, while
+the consuming service or business owner still accepts the effect on its workflow.
+
+Trace one user or system request from source to destination and back; DNS, identity, policy and
+dependency failures are part of that same path. In this page, **UC-NET-008: Network
+Configuration Automation** contributes layered path decision with before/after reachability and
+restore proof; **UC-NET-009: Network Configuration-Drift Detection** contributes layered path
+decision with before/after reachability and restore proof. The first buildable boundary is
+existing DNS, NGINX, KVM bridges, Kubernetes networking, GitLab, Jenkins, AWX, and blackbox
+checks. The design stops at this rule: Reuse the existing lab; do not create a new router,
+switch, firewall appliance, VM, IP, VLAN, CNI, load balancer, VPN, or cloud network.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is a network test or change crossing its approved source, destination,
+protocol, or capture boundary; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Router and Switch Configuration Backup is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-RSO-015: Backup and Recovery Orchestration](../resilience/UC-RSO-015-backup-and-recovery-orchestration.md) | backup identity, recovery orchestration, and restoration evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-RSO-017: RTO and RPO Measurement](../resilience/UC-RSO-017-rto-and-rpo-measurement.md) | owned RTO/RPO targets and measurement method | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-DB-001: Automated PostgreSQL Restore Validation](../database/UC-DB-001-backup-restore-validation.md) | backup provenance, isolated restore, and recovery verification | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-007: Infrastructure Change Impact Analysis](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) | resource-to-service impact and affected-owner list | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-NET-008: Network Configuration Automation](UC-NET-008-network-configuration-automation.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-NET-009: Network Configuration-Drift Detection](UC-NET-009-network-configuration-drift-detection.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-015: Backup and Recovery Orchestration](../resilience/UC-RSO-015-backup-and-recovery-orchestration.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-001: Automated Compliance Evidence Collection](../governance/UC-GOV-001-compliance-evidence-collection.md) | control-to-evidence mapping with ownership, exception, and retention metadata | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Router and Switch Configuration Backup is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+The architecture conversation for Certificate and Secret Expiry Response should begin with user
+impact and decision authority, then connect diagnosis, mitigation and verified recovery. The
+result MidhHealth needs is to connect service ownership, evidence, incident response, and
+recovery for enterprise workflows. Enterprise Resilience and Service Operations Platform team
+owns the platform decision, while the consuming service or business owner still accepts the
+effect on its workflow.
+
+Start at the decision rather than the tool, then ask which facts justify allow, block, defer or
+escalate and who can override it. In this page, **UC-GOV-002: Secrets Management Automation**
+contributes approved secret reference, redaction rule, and rotation owner; **UC-GOV-004: Cloud
+IAM and RBAC Standardization** contributes principal, role, resource, and approval policy. The
+first buildable boundary is existing GitLab, Jenkins, AWX, observability APIs, service records,
+and runbooks. The design stops at this rule: Reuse the existing lab; do not create a new
+service-management product, VM, monitoring stack, or unapproved disruptive exercise.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is an exercise expanding beyond its approved service, dependency, or
+operator boundary; therefore a green source job, screenshot or reachable endpoint is supporting
+evidence, not acceptance by itself.
+
 ## Architecture context
 
 Certificate and Secret Expiry Response is evaluated inside the existing enterprise lab and the owning

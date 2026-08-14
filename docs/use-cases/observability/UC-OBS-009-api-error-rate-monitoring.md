@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | API Error Rate Monitoring |
 | Primary platform | Enterprise Observability and SRE Reliability Platform |
-| Supporting use cases | [UC-DATA-007](../data/UC-DATA-007-schema-registry-and-evolution.md), [UC-DATA-008](../data/UC-DATA-008-event-contract-management.md), [UC-DATA-023](../data/UC-DATA-023-data-access-governance.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md) |
+| Supporting use cases | [UC-OBS-001](UC-OBS-001-slo-as-code.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md), [UC-OBS-014](UC-OBS-014-change-to-incident-correlation.md) |
 | Enterprise alignment | Operational resilience, shared digital platform |
 | Enterprise outcome | turn existing telemetry into actionable health and incident evidence for enterprise services |
 | Primary GitLab repository | `midhhealth/reliability-operations/observability-sre-platform` |
@@ -104,6 +104,30 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+The architecture conversation for API Error Rate Monitoring should start with the operator
+decision the signal must support, then work backward to trustworthy telemetry. The result
+MidhHealth needs is to turn existing telemetry into actionable health and incident evidence for
+enterprise services. Enterprise Observability and SRE Reliability Platform team owns the
+platform decision, while the consuming service or business owner still accepts the effect on its
+workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-OBS-001: SLO as Code**
+contributes service-level indicator, objective, and measurement window; **UC-RSO-009: Service
+Ownership** contributes readiness or exercise result tied to observed service recovery. The
+first buildable boundary is existing Prometheus, Alertmanager, Grafana, Loki, Tempo,
+OpenTelemetry, Elastic, and GitLab/AWX paths. The design stops at this rule: Reuse the existing
+lab; do not create a new monitoring VM, telemetry backend, paging product, or unapproved data
+source.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is sensitive fields or credentials leaking into telemetry and
+diagnostic artifacts; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 API Error Rate Monitoring is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +161,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-DATA-007: Schema Registry and Evolution](../data/UC-DATA-007-schema-registry-and-evolution.md) | schema identity, compatibility mode, and consumer adoption window | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-DATA-008: Event-Contract Management](../data/UC-DATA-008-event-contract-management.md) | event producer/consumer contract and failure semantics | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-DATA-023: Data Access Governance](../data/UC-DATA-023-data-access-governance.md) | dataset role, purpose-of-use, and access-review evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-OBS-001: SLO as Code](UC-OBS-001-slo-as-code.md) | service-level indicator, objective, and measurement window | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-010: Dependency Mapping](../resilience/UC-RSO-010-dependency-mapping.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-OBS-014: Change-to-Incident Correlation](UC-OBS-014-change-to-incident-correlation.md) | traceable measurement or alert decision with owner and diagnostic context | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before API Error Rate Monitoring is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

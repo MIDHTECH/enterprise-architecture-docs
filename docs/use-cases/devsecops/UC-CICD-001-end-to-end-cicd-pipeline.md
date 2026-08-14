@@ -139,6 +139,29 @@ The source identity, license review, internal import, and initial source/test
 pipeline are complete. Other public projects may be selected for later use
 cases only after the current use case is accepted.
 
+## Design walkthrough
+
+For design review, walk through End-to-End CI/CD Pipeline Setup by trying to follow one reviewed
+change from commit to an identifiable release decision. The result MidhHealth needs is to Its
+planned result advances: the documented enterprise outcome. Platform Delivery team owns the
+platform decision, while the consuming service or business owner still accepts the effect on its
+workflow.
+
+Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
+identity or evidence from an earlier one. In this page, **UC-CICD-007: Environment-Based Release
+Promotion** contributes environment promotion contract and approval evidence; **UC-OBS-008:
+Deployment Health Scoring** contributes deployment-health score and promotion/rollback signal.
+The first buildable boundary is Podinfo application mirrored into on-premises GitLab, Jenkins,
+AWX, dedicated Jenkins agent, and Kubernetes cluster. The design stops at this rule: Fit is
+achieved by reusing documented existing repositories, control planes, services, and targets—not
+by inventing capacity or treating planned products as available.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is
+untrusted source or dependency content reaching a privileged runner; therefore a green source
+job, screenshot or reachable endpoint is supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 End-to-End CI/CD Pipeline Setup is evaluated inside the existing enterprise lab and the owning

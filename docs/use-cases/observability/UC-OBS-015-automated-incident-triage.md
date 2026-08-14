@@ -104,6 +104,30 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+Rather than beginning with a product, explain Automated Incident Triage by asking an engineer to
+start with the operator decision the signal must support, then work backward to trustworthy
+telemetry. The result MidhHealth needs is to turn existing telemetry into actionable health and
+incident evidence for enterprise services. Enterprise Observability and SRE Reliability Platform
+team owns the platform decision, while the consuming service or business owner still accepts the
+effect on its workflow.
+
+Read the design as an operating timeline: detect, establish scope, choose a reversible action,
+verify recovery and preserve what the team learned. In this page, **UC-RSO-004: Incident
+Detection and Classification** contributes incident classification, severity, and escalation
+trigger; **UC-RSO-005: On-Call and Escalation Workflows** contributes on-call owner and
+escalation acknowledgement path. The first buildable boundary is existing Prometheus,
+Alertmanager, Grafana, Loki, Tempo, OpenTelemetry, Elastic, and GitLab/AWX paths. The design
+stops at this rule: Reuse the existing lab; do not create a new monitoring VM, telemetry
+backend, paging product, or unapproved data source.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is sensitive fields or credentials leaking into telemetry and
+diagnostic artifacts; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Automated Incident Triage is evaluated inside the existing enterprise lab and the owning

@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Telemetry Cost Optimization |
 | Primary platform | Enterprise Observability and SRE Reliability Platform |
-| Supporting use cases | [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md), [UC-GOV-001](../governance/UC-GOV-001-compliance-evidence-collection.md), [UC-CICD-015](../devsecops/UC-CICD-015-deployment-health-scoring.md) |
+| Supporting use cases | [UC-GOV-016](../governance/UC-GOV-016-cloud-cost-anomaly-detection.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-DATA-017](../data/UC-DATA-017-data-retention-and-archival.md), [UC-OBS-004](UC-OBS-004-centralized-log-management.md) |
 | Enterprise alignment | Operational resilience, shared digital platform |
 | Enterprise outcome | turn existing telemetry into actionable health and incident evidence for enterprise services |
 | Primary GitLab repository | `midhhealth/reliability-operations/observability-sre-platform` |
@@ -104,6 +104,30 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+For design review, walk through Telemetry Cost Optimization by trying to start with the operator
+decision the signal must support, then work backward to trustworthy telemetry. The result
+MidhHealth needs is to turn existing telemetry into actionable health and incident evidence for
+enterprise services. Enterprise Observability and SRE Reliability Platform team owns the
+platform decision, while the consuming service or business owner still accepts the effect on its
+workflow.
+
+Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
+identity or evidence from an earlier one. In this page, **UC-GOV-016: Cloud Cost Anomaly
+Detection** contributes explainable compliance or remediation decision with expiry and recovery
+state; **UC-RSO-009: Service Ownership** contributes readiness or exercise result tied to
+observed service recovery. The first buildable boundary is existing Prometheus, Alertmanager,
+Grafana, Loki, Tempo, OpenTelemetry, Elastic, and GitLab/AWX paths. The design stops at this
+rule: Reuse the existing lab; do not create a new monitoring VM, telemetry backend, paging
+product, or unapproved data source.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is sensitive fields or credentials leaking into telemetry and
+diagnostic artifacts; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Telemetry Cost Optimization is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +161,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-RSO-010: Dependency Mapping](../resilience/UC-RSO-010-dependency-mapping.md) | upstream/downstream service dependency and failure effect | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-GOV-001: Automated Compliance Evidence Collection](../governance/UC-GOV-001-compliance-evidence-collection.md) | control-to-evidence mapping and retention classification | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-CICD-015: Deployment Health Scoring](../devsecops/UC-CICD-015-deployment-health-scoring.md) | release health and rollback-readiness signal | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-GOV-016: Cloud Cost Anomaly Detection](../governance/UC-GOV-016-cloud-cost-anomaly-detection.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-DATA-017: Data Retention and Archival](../data/UC-DATA-017-data-retention-and-archival.md) | validated data result with counts, lineage, quality, and reconciliation state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-OBS-004: Centralized Log Management](UC-OBS-004-centralized-log-management.md) | traceable measurement or alert decision with owner and diagnostic context | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Telemetry Cost Optimization is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

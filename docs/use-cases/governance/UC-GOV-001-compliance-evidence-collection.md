@@ -75,6 +75,30 @@ non-secret Linux posture facts, exception metadata, artifact signing/checksum,
 and evidence indexing. New products, new VMs, cloud API scanning, active
 remediation, credential rotation, and automatic policy exceptions are excluded.
 
+## Design walkthrough
+
+A useful way for a new engineer to understand Automated Compliance Evidence Collection is to
+separate what is observed, what policy decides, who authorizes action and what evidence
+survives. The result MidhHealth needs is to Prove that changes supporting provider and payer
+workflows pass common source and host controls. Governance Automation team owns the platform
+decision, while the consuming service or business owner still accepts the effect on its
+workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-CICD-010: Secure CI/CD
+Pipeline Implementation** contributes secure pipeline baseline and protected execution boundary;
+**UC-RSO-009: Service Ownership** contributes accountable service owner and operational tier.
+The first buildable boundary is Existing GitLab repositories, shared/infra runners, AWX
+inventories, and managed VM fleet. The design stops at this rule: No governance VM, scanner
+service, cloud account, or new credential system is created.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is a
+governance workflow receiving broader privileges than the control scope requires; therefore a
+green source job, screenshot or reachable endpoint is supporting evidence, not acceptance by
+itself.
+
 ## Architecture context
 
 Automated Compliance Evidence Collection is evaluated inside the existing enterprise lab and the owning

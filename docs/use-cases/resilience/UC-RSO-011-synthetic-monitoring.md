@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+A useful way for a new engineer to understand Synthetic Monitoring is to begin with user impact
+and decision authority, then connect diagnosis, mitigation and verified recovery. The result
+MidhHealth needs is to connect service ownership, evidence, incident response, and recovery for
+enterprise workflows. Enterprise Resilience and Service Operations Platform team owns the
+platform decision, while the consuming service or business owner still accepts the effect on its
+workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-OBS-001: SLO as Code**
+contributes service-level indicator, objective, and measurement window; **UC-RSO-009: Service
+Ownership** contributes accountable service owner and operational tier. The first buildable
+boundary is existing GitLab, Jenkins, AWX, observability APIs, service records, and runbooks.
+The design stops at this rule: Reuse the existing lab; do not create a new service-management
+product, VM, monitoring stack, or unapproved disruptive exercise.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is an exercise expanding beyond its approved service, dependency, or
+operator boundary; therefore a green source job, screenshot or reachable endpoint is supporting
+evidence, not acceptance by itself.
+
 ## Architecture context
 
 Synthetic Monitoring is evaluated inside the existing enterprise lab and the owning

@@ -104,6 +104,30 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+Rather than beginning with a product, explain AI Incident Response by asking an engineer to
+follow an approved question and evidence source through retrieval, review and a bounded answer.
+The result MidhHealth needs is to provide bounded and reviewable AI assistance without
+delegating regulated decisions. Enterprise Healthcare AI Platform team owns the platform
+decision, while the consuming service or business owner still accepts the effect on its
+workflow.
+
+Read the design as an operating timeline: detect, establish scope, choose a reversible action,
+verify recovery and preserve what the team learned. In this page, **UC-RSO-004: Incident
+Detection and Classification** contributes incident classification, severity, and escalation
+trigger; **UC-RSO-005: On-Call and Escalation Workflows** contributes on-call owner and
+escalation acknowledgement path. The first buildable boundary is existing GitLab shared runner,
+approved repository content, synthetic fixtures, and protected CI artifacts. The design stops at
+this rule: Reuse the existing lab; do not create a new model server, vector database, VM, GPU
+host, cluster workload, cloud API, live clinical integration, or protected data.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is prompt, retrieved content, model output, or tool request crossing a
+data or authorization boundary; therefore a green source job, screenshot or reachable endpoint
+is supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 AI Incident Response is evaluated inside the existing enterprise lab and the owning

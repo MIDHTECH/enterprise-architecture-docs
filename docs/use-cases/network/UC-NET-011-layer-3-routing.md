@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+Rather than beginning with a product, explain Layer 3 Routing by asking an engineer to trace the
+actual packet or request path and make every ownership boundary observable. The result
+MidhHealth needs is to maintain trusted connectivity and service paths across the existing lab.
+Enterprise Network Engineering and Automation Platform team owns the platform decision, while
+the consuming service or business owner still accepts the effect on its workflow.
+
+Trace one user or system request from source to destination and back; DNS, identity, policy and
+dependency failures are part of that same path. In this page, **UC-NET-003: VLAN and Subnet
+Design** contributes approved address, subnet, and trust-zone intent; **UC-NET-005:
+Authoritative and Recursive DNS** contributes authoritative name, resolver path, and expected
+DNS answer. The first buildable boundary is existing DNS, NGINX, KVM bridges, Kubernetes
+networking, GitLab, Jenkins, AWX, and blackbox checks. The design stops at this rule: Reuse the
+existing lab; do not create a new router, switch, firewall appliance, VM, IP, VLAN, CNI, load
+balancer, VPN, or cloud network.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is a network test or change crossing its approved source, destination,
+protocol, or capture boundary; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Layer 3 Routing is evaluated inside the existing enterprise lab and the owning

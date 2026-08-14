@@ -78,6 +78,29 @@ summarization, ownership lookup, and evidence publication. Apply, import,
 resource creation, state repair, backend migration, cloud-account creation,
 and automatic remediation are excluded.
 
+## Design walkthrough
+
+For design review, walk through Terraform Drift Detection by trying to follow declared intent
+through plan, state ownership and post-change verification. The result MidhHealth needs is to
+Detect unreviewed change before it affects provider, payer, or shared platform services.
+Infrastructure Platform team owns the platform decision, while the consuming service or business
+owner still accepts the effect on its workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-CICD-014: Terraform Plan
+Automation** contributes reviewed contract and evidence required by the bounded workflow;
+**UC-INFRA-009: Terraform State Integrity Monitoring** contributes reviewed contract and
+evidence required by the bounded workflow. The first buildable boundary is Existing
+cloud-infra-automation-platform GitLab project and accepted gitlab-runner-infra01 runner. The
+design stops at this rule: No VM, IP, cloud resource, state backend, runner, or product is
+created.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is
+over-privileged automation or an incorrect state/target selection; therefore a green source job,
+screenshot or reachable endpoint is supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Terraform Drift Detection is evaluated inside the existing enterprise lab and the owning

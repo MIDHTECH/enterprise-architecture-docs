@@ -106,6 +106,30 @@ Out of scope:
 - treating a Kubernetes restart as root-cause resolution; and
 - inventing multi-region or cloud-provider behavior absent from the lab.
 
+## Design walkthrough
+
+A useful way for a new engineer to understand Dependency Failure Containment is to begin with
+user impact and decision authority, then connect diagnosis, mitigation and verified recovery.
+The result MidhHealth needs is to Keep one slow or unavailable dependency from becoming an
+enterprise-wide outage. Enterprise Resilience and Service Operations Platform team owns the
+platform decision, while the consuming service or business owner still accepts the effect on its
+workflow.
+
+Trace one user or system request from source to destination and back; DNS, identity, policy and
+dependency failures are part of that same path. In this page, **UC-RSO-010: Dependency Mapping**
+contributes owned caller-to-dependency edge, criticality and failure effect; **UC-OBS-009: API
+Error Rate Monitoring** contributes request rate, error class, latency and dependency labels.
+The first buildable boundary is existing GitLab runner for deterministic fixtures and the
+existing Kubernetes application cluster for separately approved bounded exercises. The design
+stops at this rule: Reuse existing application, Kubernetes and observability paths; do not add a
+service mesh, queue, cache, gateway, VM, cluster or cloud service.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is an
+unsafe false-positive result; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 The existing portfolio maps dependencies, monitors errors, scores releases and

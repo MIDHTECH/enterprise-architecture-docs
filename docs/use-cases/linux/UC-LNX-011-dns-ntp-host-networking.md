@@ -63,6 +63,30 @@ running an isolated technology demonstration is insufficient.
 
 **Excluded:** Network appliance firmware, Kubernetes CNI policy, unreviewed DNS UI edits, and changing management routes without console recovery.
 
+## Design walkthrough
+
+For design review, walk through DNS, NTP and Host Networking by trying to treat the host or
+fleet change as a canary-led operating procedure rather than a collection of commands. The
+result MidhHealth needs is to Its planned result advances: the documented enterprise outcome.
+Linux Platform team owns the platform decision, while the consuming service or business owner
+still accepts the effect on its workflow.
+
+Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
+identity or evidence from an earlier one. In this page, **UC-NET-005: Authoritative and
+Recursive DNS** contributes authoritative name, resolver path, and expected DNS answer;
+**UC-NET-024: Certificate and TLS Routing** contributes certificate identity, TLS route, and
+expiry state. The first buildable boundary is the accepted existing lab boundary named by the
+page. The design stops at this rule: Fit is achieved by reusing documented existing
+repositories, control planes, services, and targets—not by inventing capacity or treating
+planned products as available.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is
+host-level automation crossing its inventory, privilege, or credential boundary; therefore a
+green source job, screenshot or reachable endpoint is supporting evidence, not acceptance by
+itself.
+
 ## Architecture context
 
 DNS, NTP and Host Networking is evaluated inside the existing enterprise lab and the owning

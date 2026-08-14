@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | VPN and Remote Access |
 | Primary platform | Enterprise Network Engineering and Automation Platform |
-| Supporting use cases | [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-DATA-023](../data/UC-DATA-023-data-access-governance.md), [UC-AI-011](../healthcare-ai/UC-AI-011-ai-security-and-access-control.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) |
+| Supporting use cases | [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-NET-012](UC-NET-012-firewall-policy-management.md), [UC-NET-022](UC-NET-022-network-segmentation.md), [UC-LNX-012](../linux/UC-LNX-012-ssh-sudo-service-accounts.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, provider and payer operations |
 | Enterprise outcome | maintain trusted connectivity and service paths across the existing lab |
 | Primary GitLab repository | `midhhealth/platform-engineering/network-engineering-platform` |
@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+The architecture conversation for VPN and Remote Access should trace the actual packet or
+request path and make every ownership boundary observable. The result MidhHealth needs is to
+maintain trusted connectivity and service paths across the existing lab. Enterprise Network
+Engineering and Automation Platform team owns the platform decision, while the consuming service
+or business owner still accepts the effect on its workflow.
+
+Trace one user or system request from source to destination and back; DNS, identity, policy and
+dependency failures are part of that same path. In this page, **UC-GOV-004: Cloud IAM and RBAC
+Standardization** contributes explainable compliance or remediation decision with expiry and
+recovery state; **UC-NET-012: Firewall Policy Management** contributes layered path decision
+with before/after reachability and restore proof. The first buildable boundary is existing DNS,
+NGINX, KVM bridges, Kubernetes networking, GitLab, Jenkins, AWX, and blackbox checks. The design
+stops at this rule: Reuse the existing lab; do not create a new router, switch, firewall
+appliance, VM, IP, VLAN, CNI, load balancer, VPN, or cloud network.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is a network test or change crossing its approved source, destination,
+protocol, or capture boundary; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 VPN and Remote Access is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | principal, role, resource, and approval policy | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-DATA-023: Data Access Governance](../data/UC-DATA-023-data-access-governance.md) | dataset role, purpose-of-use, and access-review evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-AI-011: AI Security and Access Control](../healthcare-ai/UC-AI-011-ai-security-and-access-control.md) | AI principal, tool/data scope, and authorization decision | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-007: Infrastructure Change Impact Analysis](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) | resource-to-service impact and affected-owner list | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-NET-012: Firewall Policy Management](UC-NET-012-firewall-policy-management.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-NET-022: Network Segmentation](UC-NET-022-network-segmentation.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-LNX-012: SSH, sudo and Service Accounts](../linux/UC-LNX-012-ssh-sudo-service-accounts.md) | identity-to-action mapping with successful and denied access evidence | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before VPN and Remote Access is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

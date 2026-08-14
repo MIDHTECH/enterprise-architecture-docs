@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+The architecture conversation for Terraform State Integrity Monitoring should follow declared
+intent through plan, state ownership and post-change verification. The result MidhHealth needs
+is to keep the existing lab foundation repeatable, attributable, and recoverable. Enterprise
+Multi-Cloud Infrastructure Platform team owns the platform decision, while the consuming service
+or business owner still accepts the effect on its workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-CICD-014: Terraform Plan
+Automation** contributes reviewed contract and evidence required by the bounded workflow;
+**UC-INFRA-007: Infrastructure Change Impact Analysis** contributes resource-to-service impact
+and affected-owner list. The first buildable boundary is existing GitLab infrastructure runner,
+Terraform source, AWX, and canonical inventory. The design stops at this rule: Reuse the
+existing lab; do not create a new VM, physical host, IP address, cloud account, state backend,
+or infrastructure product.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is over-privileged automation or an incorrect state/target selection;
+therefore a green source job, screenshot or reachable endpoint is supporting evidence, not
+acceptance by itself.
+
 ## Architecture context
 
 Terraform State Integrity Monitoring is evaluated inside the existing enterprise lab and the owning

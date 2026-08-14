@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Automated Retraining |
 | Primary platform | Enterprise MLOps Model Platform |
-| Supporting use cases | [UC-DATA-014](../data/UC-DATA-014-data-lineage.md), [UC-CICD-001](../devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md), [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-OBS-001](../observability/UC-OBS-001-slo-as-code.md) |
+| Supporting use cases | [UC-MLOPS-009](UC-MLOPS-009-drift-detection.md), [UC-MLOPS-002](UC-MLOPS-002-ml-training-pipeline-standardization.md), [UC-MLOPS-004](UC-MLOPS-004-model-validation-gates.md), [UC-MLOPS-001](UC-MLOPS-001-model-registry-versioning.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | make model lifecycle evidence reproducible before any model can affect an enterprise workflow |
 | Primary GitLab repository | `midhhealth/ai-and-ml-platform/mlops-model-platform` |
@@ -104,6 +104,30 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+The architecture conversation for Automated Retraining should keep dataset, code, parameters,
+model artifact, evaluation and serving decision tied together. The result MidhHealth needs is to
+make model lifecycle evidence reproducible before any model can affect an enterprise workflow.
+Enterprise MLOps Model Platform team owns the platform decision, while the consuming service or
+business owner still accepts the effect on its workflow.
+
+Follow the information rather than the products: ownership and classification travel with it,
+including on rejected and replayed paths. In this page, **UC-MLOPS-009: Drift Detection**
+contributes reproducible lifecycle decision with promotion, rollback, or retirement eligibility;
+**UC-MLOPS-002: ML Training Pipeline Standardization** contributes reproducible lifecycle
+decision with promotion, rollback, or retirement eligibility. The first buildable boundary is
+existing GitLab shared runner, synthetic datasets, locked dependencies, and protected CI
+artifacts. The design stops at this rule: Reuse the existing lab; do not create a new registry
+service, feature store, model server, VM, cluster workload, cloud ML service, or live-data
+scoring.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is untrusted code, model, data, or dependency content entering a
+promoted artifact; therefore a green source job, screenshot or reachable endpoint is supporting
+evidence, not acceptance by itself.
+
 ## Architecture context
 
 Automated Retraining is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +161,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-DATA-014: Data Lineage](../data/UC-DATA-014-data-lineage.md) | source-to-consumer lineage and transformation revisions | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-CICD-001: End-to-End CI/CD Pipeline Setup](../devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md) | source-to-artifact pipeline provenance and stage outcome | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | principal, role, resource, and approval policy | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-OBS-001: SLO as Code](../observability/UC-OBS-001-slo-as-code.md) | service-level indicator, objective, and measurement window | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-MLOPS-009: Drift Detection](UC-MLOPS-009-drift-detection.md) | reproducible lifecycle decision with promotion, rollback, or retirement eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-MLOPS-002: ML Training Pipeline Standardization](UC-MLOPS-002-ml-training-pipeline-standardization.md) | reproducible lifecycle decision with promotion, rollback, or retirement eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-MLOPS-004: Model Validation Gates](UC-MLOPS-004-model-validation-gates.md) | reproducible lifecycle decision with promotion, rollback, or retirement eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-MLOPS-001: Model Registry and Versioning](UC-MLOPS-001-model-registry-versioning.md) | model artifact identity, lineage, and lifecycle state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Automated Retraining is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

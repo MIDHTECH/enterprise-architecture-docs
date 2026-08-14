@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+The architecture conversation for ML Incident Response should keep dataset, code, parameters,
+model artifact, evaluation and serving decision tied together. The result MidhHealth needs is to
+make model lifecycle evidence reproducible before any model can affect an enterprise workflow.
+Enterprise MLOps Model Platform team owns the platform decision, while the consuming service or
+business owner still accepts the effect on its workflow.
+
+Read the design as an operating timeline: detect, establish scope, choose a reversible action,
+verify recovery and preserve what the team learned. In this page, **UC-RSO-004: Incident
+Detection and Classification** contributes incident classification, severity, and escalation
+trigger; **UC-RSO-005: On-Call and Escalation Workflows** contributes on-call owner and
+escalation acknowledgement path. The first buildable boundary is existing GitLab shared runner,
+synthetic datasets, locked dependencies, and protected CI artifacts. The design stops at this
+rule: Reuse the existing lab; do not create a new registry service, feature store, model server,
+VM, cluster workload, cloud ML service, or live-data scoring.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is untrusted code, model, data, or dependency content entering a
+promoted artifact; therefore a green source job, screenshot or reachable endpoint is supporting
+evidence, not acceptance by itself.
+
 ## Architecture context
 
 ML Incident Response is evaluated inside the existing enterprise lab and the owning

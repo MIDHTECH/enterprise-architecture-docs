@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | AWS VPC Landing Zone Setup |
 | Primary platform | Enterprise Multi-Cloud Infrastructure Platform |
-| Supporting use cases | [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-NET-003](../network/UC-NET-003-vlan-and-subnet-design.md), [UC-LNX-001](../linux/UC-LNX-001-os-installation-standards.md), [UC-OBS-013](../observability/UC-OBS-013-cloud-native-monitoring.md) |
+| Supporting use cases | [UC-NET-016](../network/UC-NET-016-cloud-vpc-and-vnet-networking.md), [UC-NET-003](../network/UC-NET-003-vlan-and-subnet-design.md), [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-NET-022](../network/UC-NET-022-network-segmentation.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | keep the existing lab foundation repeatable, attributable, and recoverable |
 | Primary GitLab repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+In practice, AWS VPC Landing Zone Setup makes sense when you follow declared intent through
+plan, state ownership and post-change verification. The result MidhHealth needs is to keep the
+existing lab foundation repeatable, attributable, and recoverable. Enterprise Multi-Cloud
+Infrastructure Platform team owns the platform decision, while the consuming service or business
+owner still accepts the effect on its workflow.
+
+Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
+identity or evidence from an earlier one. In this page, **UC-NET-016: Cloud VPC and VNet
+Networking** contributes layered path decision with before/after reachability and restore proof;
+**UC-NET-003: VLAN and Subnet Design** contributes layered path decision with before/after
+reachability and restore proof. The first buildable boundary is existing GitLab infrastructure
+runner, Terraform source, AWX, and canonical inventory. The design stops at this rule: Reuse the
+existing lab; do not create a new VM, physical host, IP address, cloud account, state backend,
+or infrastructure product.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is over-privileged automation or an incorrect state/target selection;
+therefore a green source job, screenshot or reachable endpoint is supporting evidence, not
+acceptance by itself.
+
 ## Architecture context
 
 AWS VPC Landing Zone Setup is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | principal, role, resource, and approval policy | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-NET-003: VLAN and Subnet Design](../network/UC-NET-003-vlan-and-subnet-design.md) | approved address, subnet, and trust-zone intent | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-LNX-001: Ubuntu and Rocky Linux Installation Standards](../linux/UC-LNX-001-os-installation-standards.md) | approved operating-system baseline and host identity | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-OBS-013: Cloud-Native Monitoring](../observability/UC-OBS-013-cloud-native-monitoring.md) | cloud/native telemetry source and ownership metadata | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-NET-016: Cloud VPC and VNet Networking](../network/UC-NET-016-cloud-vpc-and-vnet-networking.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-NET-003: VLAN and Subnet Design](../network/UC-NET-003-vlan-and-subnet-design.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-NET-022: Network Segmentation](../network/UC-NET-022-network-segmentation.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before AWS VPC Landing Zone Setup is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

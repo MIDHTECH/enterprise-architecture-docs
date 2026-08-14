@@ -124,6 +124,29 @@ unprotected pipeline variables. A stricter application policy may extend the
 enterprise minimum. Lowering a blocking threshold or disabling a rule is itself
 a reviewed policy change.
 
+## Design walkthrough
+
+The architecture conversation for Code Quality Gate Integration should follow one reviewed
+change from commit to an identifiable release decision. The result MidhHealth needs is to
+Prevent maintainability, reliability, and reviewability defects from entering deployable
+artifacts. Enterprise DevSecOps Delivery Platform team with participating application owners
+owns the platform decision, while the consuming service or business owner still accepts the
+effect on its workflow.
+
+Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
+identity or evidence from an earlier one. In this page, **UC-CICD-002: Automated Build
+Pipeline** contributes reviewed contract and evidence required by the bounded workflow;
+**UC-CICD-005: Artifact Management Automation** contributes reviewed contract and evidence
+required by the bounded workflow. The first buildable boundary is the accepted existing lab
+boundary named by the page. The design stops at this rule: Reuse existing GitLab and accepted
+runners; do not install SonarQube or create a runner, VM, database, cluster, or scanning
+service.
+
+The walkthrough becomes useful when the happy path breaks. If symptom, the expected response is
+to Required behavior. The leading design threat is untrusted source or dependency content
+reaching a privileged runner; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Code Quality Gate Integration is evaluated inside the existing enterprise lab and the owning

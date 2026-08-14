@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+In practice, SLI and SLO Governance makes sense when you begin with user impact and decision
+authority, then connect diagnosis, mitigation and verified recovery. The result MidhHealth needs
+is to connect service ownership, evidence, incident response, and recovery for enterprise
+workflows. Enterprise Resilience and Service Operations Platform team owns the platform
+decision, while the consuming service or business owner still accepts the effect on its
+workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-OBS-001: SLO as Code**
+contributes service-level indicator, objective, and measurement window; **UC-RSO-003:
+Error-Budget Management** contributes error-budget state and release decision boundary. The
+first buildable boundary is existing GitLab, Jenkins, AWX, observability APIs, service records,
+and runbooks. The design stops at this rule: Reuse the existing lab; do not create a new
+service-management product, VM, monitoring stack, or unapproved disruptive exercise.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is an exercise expanding beyond its approved service, dependency, or
+operator boundary; therefore a green source job, screenshot or reachable endpoint is supporting
+evidence, not acceptance by itself.
+
 ## Architecture context
 
 SLI and SLO Governance is evaluated inside the existing enterprise lab and the owning

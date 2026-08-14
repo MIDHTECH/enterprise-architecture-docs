@@ -104,6 +104,30 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+Rather than beginning with a product, explain Capacity Forecasting by asking an engineer to
+protect client compatibility and data correctness while the database state changes underneath
+them. The result MidhHealth needs is to keep enterprise transactional and operational data
+secure, performant, and recoverable. Enterprise Database Engineering and Reliability Platform
+team owns the platform decision, while the consuming service or business owner still accepts the
+effect on its workflow.
+
+Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
+identity or evidence from an earlier one. In this page, **UC-LNX-010: Filesystem, LVM and
+Storage Management** contributes filesystem capacity, mount identity, and recovery boundary;
+**UC-GOV-002: Secrets Management Automation** contributes approved secret reference, redaction
+rule, and rotation owner. The first buildable boundary is existing PostgreSQL service, backup
+host, MinIO, GitLab, Jenkins, AWX, and observability. The design stops at this rule: Reuse the
+existing lab; do not create a new database server, VM, storage system, database product, or
+live-data migration.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is administrative credentials or row content escaping the database
+control boundary; therefore a green source job, screenshot or reachable endpoint is supporting
+evidence, not acceptance by itself.
+
 ## Architecture context
 
 Capacity Forecasting is evaluated inside the existing enterprise lab and the owning

@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Cloud-Native Monitoring |
 | Primary platform | Enterprise Observability and SRE Reliability Platform |
-| Supporting use cases | [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md), [UC-GOV-001](../governance/UC-GOV-001-compliance-evidence-collection.md), [UC-CICD-015](../devsecops/UC-CICD-015-deployment-health-scoring.md) |
+| Supporting use cases | [UC-INFRA-003](../infrastructure/UC-INFRA-003-aws-vpc-landing-zone-setup.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-OBS-001](UC-OBS-001-slo-as-code.md), [UC-GOV-001](../governance/UC-GOV-001-compliance-evidence-collection.md) |
 | Enterprise alignment | Operational resilience, shared digital platform |
 | Enterprise outcome | turn existing telemetry into actionable health and incident evidence for enterprise services |
 | Primary GitLab repository | `midhhealth/reliability-operations/observability-sre-platform` |
@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+In practice, Cloud-Native Monitoring makes sense when you start with the operator decision the
+signal must support, then work backward to trustworthy telemetry. The result MidhHealth needs is
+to turn existing telemetry into actionable health and incident evidence for enterprise services.
+Enterprise Observability and SRE Reliability Platform team owns the platform decision, while the
+consuming service or business owner still accepts the effect on its workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-INFRA-003: AWS VPC
+Landing Zone Setup** contributes reviewable plan or bounded reconciliation result tied to the
+accepted state; **UC-RSO-009: Service Ownership** contributes readiness or exercise result tied
+to observed service recovery. The first buildable boundary is existing Prometheus, Alertmanager,
+Grafana, Loki, Tempo, OpenTelemetry, Elastic, and GitLab/AWX paths. The design stops at this
+rule: Reuse the existing lab; do not create a new monitoring VM, telemetry backend, paging
+product, or unapproved data source.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is sensitive fields or credentials leaking into telemetry and
+diagnostic artifacts; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Cloud-Native Monitoring is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-RSO-010: Dependency Mapping](../resilience/UC-RSO-010-dependency-mapping.md) | upstream/downstream service dependency and failure effect | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-GOV-001: Automated Compliance Evidence Collection](../governance/UC-GOV-001-compliance-evidence-collection.md) | control-to-evidence mapping and retention classification | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-CICD-015: Deployment Health Scoring](../devsecops/UC-CICD-015-deployment-health-scoring.md) | release health and rollback-readiness signal | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-INFRA-003: AWS VPC Landing Zone Setup](../infrastructure/UC-INFRA-003-aws-vpc-landing-zone-setup.md) | reviewable plan or bounded reconciliation result tied to the accepted state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-OBS-001: SLO as Code](UC-OBS-001-slo-as-code.md) | service-level indicator, objective, and measurement window | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-001: Automated Compliance Evidence Collection](../governance/UC-GOV-001-compliance-evidence-collection.md) | control-to-evidence mapping with ownership, exception, and retention metadata | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Cloud-Native Monitoring is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

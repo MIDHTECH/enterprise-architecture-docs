@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+In practice, Data Warehouse Integration makes sense when you follow a named producer record
+through validation, transformation and an accountable consumer. The result MidhHealth needs is
+to move and validate healthcare data safely before downstream enterprise decisions use it.
+Enterprise Data Engineering and Integration Platform team owns the platform decision, while the
+consuming service or business owner still accepts the effect on its workflow.
+
+Follow the information rather than the products: ownership and classification travel with it,
+including on rejected and replayed paths. In this page, **UC-DATA-014: Data Lineage**
+contributes source-to-consumer lineage and transformation revisions; **UC-DATA-015: Data
+Classification** contributes data classification and permitted handling rules. The first
+buildable boundary is existing GitLab shared runner, synthetic fixtures, PostgreSQL where
+approved, and current evidence paths. The design stops at this rule: Reuse the existing lab; do
+not create a new data platform, Kafka, Airflow, lakehouse, VM, bucket, live feed, or protected
+healthcare dataset.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is protected or misclassified data entering fixtures, logs, or
+evidence; therefore a green source job, screenshot or reachable endpoint is supporting evidence,
+not acceptance by itself.
+
 ## Architecture context
 
 Data Warehouse Integration is evaluated inside the existing enterprise lab and the owning

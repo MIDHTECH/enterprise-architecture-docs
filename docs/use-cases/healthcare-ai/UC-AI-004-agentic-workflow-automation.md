@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Agentic Workflow Automation |
 | Primary platform | Enterprise Healthcare AI Platform |
-| Supporting use cases | [UC-DATA-015](../data/UC-DATA-015-data-classification.md), [UC-DATA-023](../data/UC-DATA-023-data-access-governance.md), [UC-AI-011](UC-AI-011-ai-security-and-access-control.md), [UC-MLOPS-004](../mlops/UC-MLOPS-004-model-validation-gates.md) |
+| Supporting use cases | [UC-AI-011](UC-AI-011-ai-security-and-access-control.md), [UC-GOV-013](../governance/UC-GOV-013-human-in-the-loop-remediation.md), [UC-DATA-023](../data/UC-DATA-023-data-access-governance.md), [UC-AI-009](UC-AI-009-ai-workflow-audit-logging.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | provide bounded and reviewable AI assistance without delegating regulated decisions |
 | Primary GitLab repository | `midhhealth/ai-and-ml-platform/healthcare-ai-platform` |
@@ -104,6 +104,30 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+The architecture conversation for Agentic Workflow Automation should follow an approved question
+and evidence source through retrieval, review and a bounded answer. The result MidhHealth needs
+is to provide bounded and reviewable AI assistance without delegating regulated decisions.
+Enterprise Healthcare AI Platform team owns the platform decision, while the consuming service
+or business owner still accepts the effect on its workflow.
+
+Follow the information rather than the products: ownership and classification travel with it,
+including on rejected and replayed paths. In this page, **UC-AI-011: AI Security and Access
+Control** contributes offline safety and quality decision with human-review and shutdown
+requirements; **UC-GOV-013: Human-in-the-Loop Remediation** contributes explainable compliance
+or remediation decision with expiry and recovery state. The first buildable boundary is existing
+GitLab shared runner, approved repository content, synthetic fixtures, and protected CI
+artifacts. The design stops at this rule: Reuse the existing lab; do not create a new model
+server, vector database, VM, GPU host, cluster workload, cloud API, live clinical integration,
+or protected data.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is prompt, retrieved content, model output, or tool request crossing a
+data or authorization boundary; therefore a green source job, screenshot or reachable endpoint
+is supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Agentic Workflow Automation is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +161,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-DATA-015: Data Classification](../data/UC-DATA-015-data-classification.md) | data classification and permitted handling rules | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-DATA-023: Data Access Governance](../data/UC-DATA-023-data-access-governance.md) | dataset role, purpose-of-use, and access-review evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-AI-011: AI Security and Access Control](UC-AI-011-ai-security-and-access-control.md) | AI principal, tool/data scope, and authorization decision | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-MLOPS-004: Model Validation Gates](../mlops/UC-MLOPS-004-model-validation-gates.md) | model quality/safety gate and reviewer decision | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-AI-011: AI Security and Access Control](UC-AI-011-ai-security-and-access-control.md) | offline safety and quality decision with human-review and shutdown requirements | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-GOV-013: Human-in-the-Loop Remediation](../governance/UC-GOV-013-human-in-the-loop-remediation.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-DATA-023: Data Access Governance](../data/UC-DATA-023-data-access-governance.md) | validated data result with counts, lineage, quality, and reconciliation state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-AI-009: AI Workflow Audit Logging](UC-AI-009-ai-workflow-audit-logging.md) | offline safety and quality decision with human-review and shutdown requirements | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Agentic Workflow Automation is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

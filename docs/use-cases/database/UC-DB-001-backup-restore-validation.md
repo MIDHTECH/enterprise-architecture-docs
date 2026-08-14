@@ -74,6 +74,29 @@ assertions, timing, cleanup, and evidence. Restoring over a live database,
 creating a new server or VM, changing retention, production failover, and use
 of protected healthcare data in artifacts are excluded.
 
+## Design walkthrough
+
+A useful way for a new engineer to understand Automated PostgreSQL Restore Validation is to
+protect client compatibility and data correctness while the database state changes underneath
+them. The result MidhHealth needs is to Prove that a database backup supporting enterprise
+workflows is usable before an incident. Database Reliability team owns the platform decision,
+while the consuming service or business owner still accepts the effect on its workflow.
+
+Follow the object from creation through change, operation and retirement; every transition needs
+an owner and a recoverable prior state. In this page, **UC-RSO-015: Backup and Recovery
+Orchestration** contributes backup identity, recovery orchestration, and restoration evidence;
+**UC-RSO-017: RTO and RPO Measurement** contributes owned RTO/RPO targets and measurement
+method. The first buildable boundary is Existing PostgreSQL 18 service, backup.example.com,
+MinIO, GitLab, Jenkins, and AWX paths. The design stops at this rule: No VM, database server,
+storage system, or product is created.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is
+administrative credentials or row content escaping the database control boundary; therefore a
+green source job, screenshot or reachable endpoint is supporting evidence, not acceptance by
+itself.
+
 ## Architecture context
 
 Automated PostgreSQL Restore Validation is evaluated inside the existing enterprise lab and the owning

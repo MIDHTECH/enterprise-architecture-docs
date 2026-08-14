@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+For design review, walk through Firewall Policy Management by trying to trace the actual packet
+or request path and make every ownership boundary observable. The result MidhHealth needs is to
+maintain trusted connectivity and service paths across the existing lab. Enterprise Network
+Engineering and Automation Platform team owns the platform decision, while the consuming service
+or business owner still accepts the effect on its workflow.
+
+Trace one user or system request from source to destination and back; DNS, identity, policy and
+dependency failures are part of that same path. In this page, **UC-NET-020: Ingress and Egress
+Controls** contributes ingress/egress allowlist and denied-path expectations; **UC-RSO-010:
+Dependency Mapping** contributes upstream/downstream service dependency and failure effect. The
+first buildable boundary is existing DNS, NGINX, KVM bridges, Kubernetes networking, GitLab,
+Jenkins, AWX, and blackbox checks. The design stops at this rule: Reuse the existing lab; do not
+create a new router, switch, firewall appliance, VM, IP, VLAN, CNI, load balancer, VPN, or cloud
+network.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is a network test or change crossing its approved source, destination,
+protocol, or capture boundary; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Firewall Policy Management is evaluated inside the existing enterprise lab and the owning

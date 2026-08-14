@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Cloud Misconfiguration Detector |
 | Primary platform | Enterprise Cloud Governance and Operations Automation |
-| Supporting use cases | [UC-CICD-010](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-OBS-004](../observability/UC-OBS-004-centralized-log-management.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) |
+| Supporting use cases | [UC-INFRA-012](../infrastructure/UC-INFRA-012-policy-driven-provisioning.md), [UC-GOV-007](UC-GOV-007-infrastructure-security-hardening.md), [UC-GOV-001](UC-GOV-001-compliance-evidence-collection.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) |
 | Enterprise alignment | Risk and compliance, shared digital platform, operational resilience |
 | Enterprise outcome | apply traceable controls to platform work that supports provider and payer operations |
 | Primary GitLab repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
@@ -104,6 +104,30 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+A useful way for a new engineer to understand Cloud Misconfiguration Detector is to separate
+what is observed, what policy decides, who authorizes action and what evidence survives. The
+result MidhHealth needs is to apply traceable controls to platform work that supports provider
+and payer operations. Enterprise Cloud Governance and Operations Automation team owns the
+platform decision, while the consuming service or business owner still accepts the effect on its
+workflow.
+
+Start at the decision rather than the tool, then ask which facts justify allow, block, defer or
+escalate and who can override it. In this page, **UC-INFRA-012: Policy-Driven Provisioning**
+contributes reviewable plan or bounded reconciliation result tied to the accepted state;
+**UC-GOV-007: Infrastructure Security Hardening** contributes explainable compliance or
+remediation decision with expiry and recovery state. The first buildable boundary is existing
+GitLab runners, AWX inventories, Vault boundary, repository scanners, and evidence artifacts.
+The design stops at this rule: Reuse the existing lab; do not create a new governance VM,
+scanner service, cloud account, identity platform, or automatic high-risk remediation.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is a governance workflow receiving broader privileges than the control
+scope requires; therefore a green source job, screenshot or reachable endpoint is supporting
+evidence, not acceptance by itself.
+
 ## Architecture context
 
 Cloud Misconfiguration Detector is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +161,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-CICD-010: Secure CI/CD Pipeline Implementation](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md) | secure pipeline baseline and protected execution boundary | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-OBS-004: Centralized Log Management](../observability/UC-OBS-004-centralized-log-management.md) | sanitized log fields, source identity, and retention route | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-007: Infrastructure Change Impact Analysis](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) | resource-to-service impact and affected-owner list | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-INFRA-012: Policy-Driven Provisioning](../infrastructure/UC-INFRA-012-policy-driven-provisioning.md) | reviewable plan or bounded reconciliation result tied to the accepted state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-GOV-007: Infrastructure Security Hardening](UC-GOV-007-infrastructure-security-hardening.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-001: Automated Compliance Evidence Collection](UC-GOV-001-compliance-evidence-collection.md) | control-to-evidence mapping with ownership, exception, and retention metadata | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-INFRA-007: Infrastructure Change Impact Analysis](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) | reviewable plan or bounded reconciliation result tied to the accepted state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Cloud Misconfiguration Detector is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

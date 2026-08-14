@@ -74,6 +74,29 @@ In scope are one existing service, SLO schema, generated Prometheus rules,
 fixtures. New monitoring products, new VMs, production paging, TLS/SSO rollout,
 and synthetic traffic that changes business data are excluded.
 
+## Design walkthrough
+
+For design review, walk through SLO as Code by trying to start with the operator decision the
+signal must support, then work backward to trustworthy telemetry. The result MidhHealth needs is
+to Detect sustained risk to provider, payer, and platform services before raw symptom alerts
+become outages. Observability and SRE team owns the platform decision, while the consuming
+service or business owner still accepts the effect on its workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-RSO-002: SLI and SLO
+Governance** contributes approved SLI/SLO definition and review cadence; **UC-RSO-003:
+Error-Budget Management** contributes error-budget state and release decision boundary. The
+first buildable boundary is Existing Prometheus, Alertmanager, Grafana, Blackbox Exporter, and
+GitLab source. The design stops at this rule: No VM, collector, database, cluster, or monitoring
+product is created.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is
+sensitive fields or credentials leaking into telemetry and diagnostic artifacts; therefore a
+green source job, screenshot or reachable endpoint is supporting evidence, not acceptance by
+itself.
+
 ## Architecture context
 
 SLO as Code is evaluated inside the existing enterprise lab and the owning

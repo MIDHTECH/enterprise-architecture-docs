@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Infrastructure Reconciliation Loop |
 | Primary platform | Enterprise Multi-Cloud Infrastructure Platform |
-| Supporting use cases | [UC-DATA-014](../data/UC-DATA-014-data-lineage.md), [UC-DATA-015](../data/UC-DATA-015-data-classification.md), [UC-DATA-021](../data/UC-DATA-021-data-reconciliation.md), [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) |
+| Supporting use cases | [UC-INFRA-001](UC-INFRA-001-terraform-drift-detection.md), [UC-INFRA-009](UC-INFRA-009-terraform-state-integrity-monitoring.md), [UC-INFRA-007](UC-INFRA-007-infrastructure-change-impact-analysis.md), [UC-GOV-013](../governance/UC-GOV-013-human-in-the-loop-remediation.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | keep the existing lab foundation repeatable, attributable, and recoverable |
 | Primary GitLab repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+For design review, walk through Infrastructure Reconciliation Loop by trying to follow declared
+intent through plan, state ownership and post-change verification. The result MidhHealth needs
+is to keep the existing lab foundation repeatable, attributable, and recoverable. Enterprise
+Multi-Cloud Infrastructure Platform team owns the platform decision, while the consuming service
+or business owner still accepts the effect on its workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-INFRA-001: Terraform
+Drift Detection** contributes desired/observed infrastructure identity and drift result;
+**UC-INFRA-009: Terraform State Integrity Monitoring** contributes reviewable plan or bounded
+reconciliation result tied to the accepted state. The first buildable boundary is existing
+GitLab infrastructure runner, Terraform source, AWX, and canonical inventory. The design stops
+at this rule: Reuse the existing lab; do not create a new VM, physical host, IP address, cloud
+account, state backend, or infrastructure product.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is over-privileged automation or an incorrect state/target selection;
+therefore a green source job, screenshot or reachable endpoint is supporting evidence, not
+acceptance by itself.
+
 ## Architecture context
 
 Infrastructure Reconciliation Loop is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-DATA-014: Data Lineage](../data/UC-DATA-014-data-lineage.md) | source-to-consumer lineage and transformation revisions | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-DATA-015: Data Classification](../data/UC-DATA-015-data-classification.md) | data classification and permitted handling rules | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-DATA-021: Data Reconciliation](../data/UC-DATA-021-data-reconciliation.md) | record-count, checksum, and discrepancy resolution contract | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | principal, role, resource, and approval policy | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-INFRA-001: Terraform Drift Detection](UC-INFRA-001-terraform-drift-detection.md) | desired/observed infrastructure identity and drift result | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-INFRA-009: Terraform State Integrity Monitoring](UC-INFRA-009-terraform-state-integrity-monitoring.md) | reviewable plan or bounded reconciliation result tied to the accepted state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-INFRA-007: Infrastructure Change Impact Analysis](UC-INFRA-007-infrastructure-change-impact-analysis.md) | reviewable plan or bounded reconciliation result tied to the accepted state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-013: Human-in-the-Loop Remediation](../governance/UC-GOV-013-human-in-the-loop-remediation.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Infrastructure Reconciliation Loop is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

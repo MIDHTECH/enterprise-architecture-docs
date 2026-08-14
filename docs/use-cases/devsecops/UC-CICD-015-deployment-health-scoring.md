@@ -104,6 +104,28 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+Rather than beginning with a product, explain Deployment Health Scoring by asking an engineer to
+follow one reviewed change from commit to an identifiable release decision. The result
+MidhHealth needs is to deliver reviewed changes safely to provider, payer, and shared platform
+services. Enterprise DevSecOps Delivery Platform team owns the platform decision, while the
+consuming service or business owner still accepts the effect on its workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-OBS-001: SLO as Code**
+contributes service-level indicator, objective, and measurement window; **UC-RSO-002: SLI and
+SLO Governance** contributes approved SLI/SLO definition and review cadence. The first buildable
+boundary is existing GitLab, accepted runners, Jenkins, AWX, and Kubernetes delivery paths. The
+design stops at this rule: Reuse the existing lab; do not create a new runner, VM, registry,
+cluster, or delivery product.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is untrusted source or dependency content reaching a privileged
+runner; therefore a green source job, screenshot or reachable endpoint is supporting evidence,
+not acceptance by itself.
+
 ## Architecture context
 
 Deployment Health Scoring is evaluated inside the existing enterprise lab and the owning

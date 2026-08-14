@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+Rather than beginning with a product, explain Model Rollback by asking an engineer to keep
+dataset, code, parameters, model artifact, evaluation and serving decision tied together. The
+result MidhHealth needs is to make model lifecycle evidence reproducible before any model can
+affect an enterprise workflow. Enterprise MLOps Model Platform team owns the platform decision,
+while the consuming service or business owner still accepts the effect on its workflow.
+
+Follow the object from creation through change, operation and retirement; every transition needs
+an owner and a recoverable prior state. In this page, **UC-MLOPS-001: Model Registry and
+Versioning** contributes model artifact identity, lineage, and lifecycle state; **UC-MLOPS-004:
+Model Validation Gates** contributes model quality/safety gate and reviewer decision. The first
+buildable boundary is existing GitLab shared runner, synthetic datasets, locked dependencies,
+and protected CI artifacts. The design stops at this rule: Reuse the existing lab; do not create
+a new registry service, feature store, model server, VM, cluster workload, cloud ML service, or
+live-data scoring.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is untrusted code, model, data, or dependency content entering a
+promoted artifact; therefore a green source job, screenshot or reachable endpoint is supporting
+evidence, not acceptance by itself.
+
 ## Architecture context
 
 Model Rollback is evaluated inside the existing enterprise lab and the owning

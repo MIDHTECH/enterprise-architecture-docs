@@ -74,6 +74,30 @@ and endpoint checks; bounded canary changes; rollback; and evidence. New
 addresses, VLANs, appliances, VPNs, load balancers, CNI replacement, or cloud
 networking are excluded.
 
+## Design walkthrough
+
+Rather than beginning with a product, explain Network Change Validation and Rollback by asking
+an engineer to trace the actual packet or request path and make every ownership boundary
+observable. The result MidhHealth needs is to Protect service connectivity and name resolution
+during changes to the existing lab. Network Engineering and Automation team owns the platform
+decision, while the consuming service or business owner still accepts the effect on its
+workflow.
+
+Trace one user or system request from source to destination and back; DNS, identity, policy and
+dependency failures are part of that same path. In this page, **UC-INFRA-007: Infrastructure
+Change Impact Analysis** contributes resource-to-service impact and affected-owner list;
+**UC-LNX-011: DNS, NTP and Host Networking** contributes host DNS, time, and network readiness
+evidence. The first buildable boundary is Existing DNS, NGINX, KVM bridges, Kubernetes paths,
+GitLab, Jenkins, and AWX inventories. The design stops at this rule: No router, switch, VM, IP,
+VLAN, load balancer, CNI, or network product is created.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is a
+network test or change crossing its approved source, destination, protocol, or capture boundary;
+therefore a green source job, screenshot or reachable endpoint is supporting evidence, not
+acceptance by itself.
+
 ## Architecture context
 
 Network Change Validation and Rollback is evaluated inside the existing enterprise lab and the owning

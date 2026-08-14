@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Human-in-the-Loop Remediation |
 | Primary platform | Enterprise Cloud Governance and Operations Automation |
-| Supporting use cases | [UC-CICD-010](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-OBS-004](../observability/UC-OBS-004-centralized-log-management.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) |
+| Supporting use cases | [UC-GOV-012](UC-GOV-012-event-driven-remediation.md), [UC-RSO-005](../resilience/UC-RSO-005-on-call-and-escalation-workflows.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-GOV-001](UC-GOV-001-compliance-evidence-collection.md) |
 | Enterprise alignment | Risk and compliance, shared digital platform, operational resilience |
 | Enterprise outcome | apply traceable controls to platform work that supports provider and payer operations |
 | Primary GitLab repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
@@ -104,6 +104,30 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+The architecture conversation for Human-in-the-Loop Remediation should separate what is
+observed, what policy decides, who authorizes action and what evidence survives. The result
+MidhHealth needs is to apply traceable controls to platform work that supports provider and
+payer operations. Enterprise Cloud Governance and Operations Automation team owns the platform
+decision, while the consuming service or business owner still accepts the effect on its
+workflow.
+
+Follow the object from creation through change, operation and retirement; every transition needs
+an owner and a recoverable prior state. In this page, **UC-GOV-012: Event-Driven Remediation**
+contributes explainable compliance or remediation decision with expiry and recovery state;
+**UC-RSO-005: On-Call and Escalation Workflows** contributes readiness or exercise result tied
+to observed service recovery. The first buildable boundary is existing GitLab runners, AWX
+inventories, Vault boundary, repository scanners, and evidence artifacts. The design stops at
+this rule: Reuse the existing lab; do not create a new governance VM, scanner service, cloud
+account, identity platform, or automatic high-risk remediation.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is a governance workflow receiving broader privileges than the control
+scope requires; therefore a green source job, screenshot or reachable endpoint is supporting
+evidence, not acceptance by itself.
+
 ## Architecture context
 
 Human-in-the-Loop Remediation is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +161,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-CICD-010: Secure CI/CD Pipeline Implementation](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md) | secure pipeline baseline and protected execution boundary | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-OBS-004: Centralized Log Management](../observability/UC-OBS-004-centralized-log-management.md) | sanitized log fields, source identity, and retention route | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-007: Infrastructure Change Impact Analysis](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) | resource-to-service impact and affected-owner list | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-GOV-012: Event-Driven Remediation](UC-GOV-012-event-driven-remediation.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-RSO-005: On-Call and Escalation Workflows](../resilience/UC-RSO-005-on-call-and-escalation-workflows.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-001: Automated Compliance Evidence Collection](UC-GOV-001-compliance-evidence-collection.md) | control-to-evidence mapping with ownership, exception, and retention metadata | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Human-in-the-Loop Remediation is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

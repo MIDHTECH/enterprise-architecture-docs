@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Automated Unit Testing in CI |
 | Primary platform | Enterprise DevSecOps Delivery Platform |
-| Supporting use cases | [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-INFRA-001](../infrastructure/UC-INFRA-001-terraform-drift-detection.md), [UC-OBS-008](../observability/UC-OBS-008-deployment-health-scoring.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md) |
+| Supporting use cases | [UC-CICD-002](UC-CICD-002-automated-build-pipeline.md), [UC-CICD-004](UC-CICD-004-code-quality-gate-integration.md), [UC-CICD-009](UC-CICD-009-pipeline-template-standardization.md), [UC-CICD-010](UC-CICD-010-secure-ci-cd-pipeline-implementation.md) |
 | Enterprise outcome | Detect code-level regressions before an artifact can enter the enterprise delivery path |
 | Primary actors | Application developer, code reviewer, delivery engineer, platform owner |
 | Primary GitLab repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
@@ -172,6 +172,27 @@ Required evidence includes:
 Test logs and reports must not contain secrets or protected healthcare data.
 Screenshots may support a review but never replace the machine-readable result.
 
+## Design walkthrough
+
+In practice, Automated Unit Testing in CI makes sense when you follow one reviewed change from
+commit to an identifiable release decision. The result MidhHealth needs is to Detect code-level
+regressions before an artifact can enter the enterprise delivery path. Enterprise DevSecOps
+Delivery Platform team with participating application owners owns the platform decision, while
+the consuming service or business owner still accepts the effect on its workflow.
+
+Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
+identity or evidence from an earlier one. In this page, **UC-CICD-002: Automated Build
+Pipeline** contributes build result, source revision, output checksum, and provenance record;
+**UC-CICD-004: Code Quality Gate Integration** contributes machine-readable quality decision
+tied to the evaluated commit. The first buildable boundary is the accepted existing lab boundary
+named by the page. The design stops at this rule: reuse accepted capacity and stop when a
+required product or target is unavailable.
+
+The walkthrough becomes useful when the happy path breaks. If symptom, the expected response is
+to Required outcome. The leading design threat is untrusted source or dependency content
+reaching a privileged runner; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Automated Unit Testing in CI is evaluated inside the existing enterprise lab and the owning
@@ -205,10 +226,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | approved secret reference, redaction rule, and rotation owner | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-INFRA-001: Terraform Drift Detection](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) | desired/observed infrastructure identity and drift result | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-OBS-008: Deployment Health Scoring](../observability/UC-OBS-008-deployment-health-scoring.md) | deployment-health score and promotion/rollback signal | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-CICD-002: Automated Build Pipeline](UC-CICD-002-automated-build-pipeline.md) | build result, source revision, output checksum, and provenance record | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-CICD-004: Code Quality Gate Integration](UC-CICD-004-code-quality-gate-integration.md) | machine-readable quality decision tied to the evaluated commit | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-CICD-009: Pipeline Template Standardization](UC-CICD-009-pipeline-template-standardization.md) | immutable build or gate result with promotion and rollback eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-CICD-010: Secure CI/CD Pipeline Implementation](UC-CICD-010-secure-ci-cd-pipeline-implementation.md) | immutable build or gate result with promotion and rollback eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Automated Unit Testing in CI is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

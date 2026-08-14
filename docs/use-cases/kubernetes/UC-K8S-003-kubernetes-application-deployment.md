@@ -104,6 +104,30 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+Rather than beginning with a product, explain Kubernetes Application Deployment by asking an
+engineer to trace one workload contract across namespace, image, policy, service path and
+recovery. The result MidhHealth needs is to provide a controlled runtime for provider, payer,
+data, and platform workloads. Enterprise Kubernetes Platform with GitOps team owns the platform
+decision, while the consuming service or business owner still accepts the effect on its
+workflow.
+
+Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
+identity or evidence from an earlier one. In this page, **UC-K8S-001: Kubernetes Configuration
+Drift** contributes cluster identity and desired-versus-observed state report; **UC-NET-018:
+Kubernetes Networking** contributes cluster network identity and service-path contract. The
+first buildable boundary is existing four-node application cluster, jenkins-agent01, GitLab,
+Jenkins, and accepted storage and ingress. The design stops at this rule: Reuse the existing
+lab; do not create a new cluster, node, VM, IP address, load balancer, storage system, or
+unapproved add-on.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is a manifest escaping its namespace, identity, image, or network
+boundary; therefore a green source job, screenshot or reachable endpoint is supporting evidence,
+not acceptance by itself.
+
 ## Architecture context
 
 Kubernetes Application Deployment is evaluated inside the existing enterprise lab and the owning

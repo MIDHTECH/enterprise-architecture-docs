@@ -64,6 +64,30 @@ running an isolated technology demonstration is insufficient.
 
 **Excluded:** Unapproved major-version upgrades, application releases, and blind update-all execution across the fleet.
 
+## Design walkthrough
+
+For design review, walk through Operating-System Patching by trying to treat the host or fleet
+change as a canary-led operating procedure rather than a collection of commands. The result
+MidhHealth needs is to Its planned result advances: the documented enterprise outcome. Linux
+Platform team owns the platform decision, while the consuming service or business owner still
+accepts the effect on its workflow.
+
+Follow the object from creation through change, operation and retirement; every transition needs
+an owner and a recoverable prior state. In this page, **UC-INFRA-005: Server Configuration
+Automation Using Ansible** contributes server configuration source and bounded Ansible
+execution; **UC-NET-005: Authoritative and Recursive DNS** contributes authoritative name,
+resolver path, and expected DNS answer. The first buildable boundary is the accepted existing
+lab boundary named by the page. The design stops at this rule: Fit is achieved by reusing
+documented existing repositories, control planes, services, and targets—not by inventing
+capacity or treating planned products as available.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is
+host-level automation crossing its inventory, privilege, or credential boundary; therefore a
+green source job, screenshot or reachable endpoint is supporting evidence, not acceptance by
+itself.
+
 ## Architecture context
 
 Operating-System Patching is evaluated inside the existing enterprise lab and the owning

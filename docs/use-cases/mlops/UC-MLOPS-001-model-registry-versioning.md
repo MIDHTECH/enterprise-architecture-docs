@@ -77,6 +77,29 @@ rollback reference. Online serving, batch scoring of live data, feature stores,
 registry products, retraining, Kubernetes deployment, cloud ML services, and
 clinical or payer decisions are excluded.
 
+## Design walkthrough
+
+Rather than beginning with a product, explain Model Registry and Versioning by asking an
+engineer to keep dataset, code, parameters, model artifact, evaluation and serving decision tied
+together. The result MidhHealth needs is to Prevent an untraceable or unvalidated model artifact
+from entering an enterprise workflow. MLOps Model Platform team owns the platform decision,
+while the consuming service or business owner still accepts the effect on its workflow.
+
+Follow the information rather than the products: ownership and classification travel with it,
+including on rejected and replayed paths. In this page, **UC-MLOPS-004: Model Validation Gates**
+contributes model quality/safety gate and reviewer decision; **UC-MLOPS-011: Model Rollback**
+contributes accepted model revision and rollback eligibility. The first buildable boundary is
+Existing MLOps GitLab project, accepted shared runner, and protected GitLab artifacts. The
+design stops at this rule: No MLflow, Kubeflow, model server, feature store, VM, cluster
+workload, or cloud service is created.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is
+untrusted code, model, data, or dependency content entering a promoted artifact; therefore a
+green source job, screenshot or reachable endpoint is supporting evidence, not acceptance by
+itself.
+
 ## Architecture context
 
 Model Registry and Versioning is evaluated inside the existing enterprise lab and the owning

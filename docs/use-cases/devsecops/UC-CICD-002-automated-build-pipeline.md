@@ -141,6 +141,27 @@ kubeconfigs, and protected healthcare data. Evidence is retained according to
 the existing GitLab and enterprise retention policy; this page does not create
 a new retention service.
 
+## Design walkthrough
+
+A useful way for a new engineer to understand Automated Build Pipeline is to follow one reviewed
+change from commit to an identifiable release decision. The result MidhHealth needs is to
+Produce repeatable, traceable application build outputs for provider, payer, and shared-platform
+services. Enterprise DevSecOps Delivery Platform team owns the platform decision, while the
+consuming service or business owner still accepts the effect on its workflow.
+
+Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
+identity or evidence from an earlier one. In this page, **UC-CICD-001: End-to-End CI/CD Pipeline
+Setup** contributes source-to-artifact pipeline provenance and stage outcome; **UC-CICD-007:
+Environment-Based Release Promotion** contributes environment promotion contract and approval
+evidence. The first buildable boundary is the accepted existing lab boundary named by the page.
+The design stops at this rule: reuse accepted capacity and stop when a required product or
+target is unavailable.
+
+The walkthrough becomes useful when the happy path breaks. If failure, the expected response is
+to Recovery or safe stop. The leading design threat is untrusted source or dependency content
+reaching a privileged runner; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Automated Build Pipeline is evaluated inside the existing enterprise lab and the owning

@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Workload Right-Sizing |
 | Primary platform | Enterprise Kubernetes Platform with GitOps |
-| Supporting use cases | [UC-INFRA-001](../infrastructure/UC-INFRA-001-terraform-drift-detection.md), [UC-NET-018](../network/UC-NET-018-kubernetes-networking.md), [UC-GOV-003](../governance/UC-GOV-003-secure-secrets-management-for-applications.md), [UC-OBS-002](../observability/UC-OBS-002-kubernetes-cluster-health-monitoring.md) |
+| Supporting use cases | [UC-OBS-002](../observability/UC-OBS-002-kubernetes-cluster-health-monitoring.md), [UC-RSO-012](../resilience/UC-RSO-012-capacity-and-saturation-testing.md), [UC-GOV-017](../governance/UC-GOV-017-resource-right-sizing-automation.md), [UC-INFRA-008](../infrastructure/UC-INFRA-008-cloud-resource-tagging-automation.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, risk and compliance |
 | Enterprise outcome | provide a controlled runtime for provider, payer, data, and platform workloads |
 | Primary GitLab repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+A useful way for a new engineer to understand Workload Right-Sizing is to trace one workload
+contract across namespace, image, policy, service path and recovery. The result MidhHealth needs
+is to provide a controlled runtime for provider, payer, data, and platform workloads. Enterprise
+Kubernetes Platform with GitOps team owns the platform decision, while the consuming service or
+business owner still accepts the effect on its workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-OBS-002: Kubernetes
+Cluster Health Monitoring** contributes traceable measurement or alert decision with owner and
+diagnostic context; **UC-RSO-012: Capacity and Saturation Testing** contributes readiness or
+exercise result tied to observed service recovery. The first buildable boundary is existing
+four-node application cluster, jenkins-agent01, GitLab, Jenkins, and accepted storage and
+ingress. The design stops at this rule: Reuse the existing lab; do not create a new cluster,
+node, VM, IP address, load balancer, storage system, or unapproved add-on.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is a manifest escaping its namespace, identity, image, or network
+boundary; therefore a green source job, screenshot or reachable endpoint is supporting evidence,
+not acceptance by itself.
+
 ## Architecture context
 
 Workload Right-Sizing is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-INFRA-001: Terraform Drift Detection](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) | desired/observed infrastructure identity and drift result | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-NET-018: Kubernetes Networking](../network/UC-NET-018-kubernetes-networking.md) | cluster network identity and service-path contract | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-GOV-003: Secure Secrets Management for Applications](../governance/UC-GOV-003-secure-secrets-management-for-applications.md) | application secret-injection and workload identity boundary | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-OBS-002: Kubernetes Cluster Health Monitoring](../observability/UC-OBS-002-kubernetes-cluster-health-monitoring.md) | cluster health and workload diagnostic evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-OBS-002: Kubernetes Cluster Health Monitoring](../observability/UC-OBS-002-kubernetes-cluster-health-monitoring.md) | traceable measurement or alert decision with owner and diagnostic context | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-RSO-012: Capacity and Saturation Testing](../resilience/UC-RSO-012-capacity-and-saturation-testing.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-017: Resource Right-Sizing Automation](../governance/UC-GOV-017-resource-right-sizing-automation.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-INFRA-008: Cloud Resource Tagging Automation](../infrastructure/UC-INFRA-008-cloud-resource-tagging-automation.md) | reviewable plan or bounded reconciliation result tied to the accepted state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Workload Right-Sizing is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

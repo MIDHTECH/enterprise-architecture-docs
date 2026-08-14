@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Drift Detection |
 | Primary platform | Enterprise MLOps Model Platform |
-| Supporting use cases | [UC-DATA-014](../data/UC-DATA-014-data-lineage.md), [UC-CICD-001](../devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md), [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-OBS-001](../observability/UC-OBS-001-slo-as-code.md) |
+| Supporting use cases | [UC-MLOPS-008](UC-MLOPS-008-model-observability.md), [UC-DATA-014](../data/UC-DATA-014-data-lineage.md), [UC-MLOPS-004](UC-MLOPS-004-model-validation-gates.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | make model lifecycle evidence reproducible before any model can affect an enterprise workflow |
 | Primary GitLab repository | `midhhealth/ai-and-ml-platform/mlops-model-platform` |
@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+In practice, Drift Detection makes sense when you keep dataset, code, parameters, model
+artifact, evaluation and serving decision tied together. The result MidhHealth needs is to make
+model lifecycle evidence reproducible before any model can affect an enterprise workflow.
+Enterprise MLOps Model Platform team owns the platform decision, while the consuming service or
+business owner still accepts the effect on its workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-MLOPS-008: Model
+Observability** contributes reproducible lifecycle decision with promotion, rollback, or
+retirement eligibility; **UC-DATA-014: Data Lineage** contributes validated data result with
+counts, lineage, quality, and reconciliation state. The first buildable boundary is existing
+GitLab shared runner, synthetic datasets, locked dependencies, and protected CI artifacts. The
+design stops at this rule: Reuse the existing lab; do not create a new registry service, feature
+store, model server, VM, cluster workload, cloud ML service, or live-data scoring.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is untrusted code, model, data, or dependency content entering a
+promoted artifact; therefore a green source job, screenshot or reachable endpoint is supporting
+evidence, not acceptance by itself.
+
 ## Architecture context
 
 Drift Detection is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-DATA-014: Data Lineage](../data/UC-DATA-014-data-lineage.md) | source-to-consumer lineage and transformation revisions | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-CICD-001: End-to-End CI/CD Pipeline Setup](../devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md) | source-to-artifact pipeline provenance and stage outcome | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | principal, role, resource, and approval policy | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-OBS-001: SLO as Code](../observability/UC-OBS-001-slo-as-code.md) | service-level indicator, objective, and measurement window | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-MLOPS-008: Model Observability](UC-MLOPS-008-model-observability.md) | reproducible lifecycle decision with promotion, rollback, or retirement eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-DATA-014: Data Lineage](../data/UC-DATA-014-data-lineage.md) | validated data result with counts, lineage, quality, and reconciliation state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-MLOPS-004: Model Validation Gates](UC-MLOPS-004-model-validation-gates.md) | reproducible lifecycle decision with promotion, rollback, or retirement eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Drift Detection is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

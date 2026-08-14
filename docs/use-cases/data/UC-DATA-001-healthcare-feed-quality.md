@@ -73,6 +73,28 @@ schema, required-field, uniqueness, count, and reconciliation checks. Live EHR,
 FHIR, HL7, X12, claims, eligibility, Kafka, CDC, Airflow, object storage, and
 production data are excluded.
 
+## Design walkthrough
+
+A useful way for a new engineer to understand Healthcare Feed Quality Validation is to follow a
+named producer record through validation, transformation and an accountable consumer. The result
+MidhHealth needs is to Detect late, malformed, incomplete, or duplicated healthcare feeds before
+downstream decisions use them. Data Engineering and Integration team owns the platform decision,
+while the consuming service or business owner still accepts the effect on its workflow.
+
+Follow the information rather than the products: ownership and classification travel with it,
+including on rejected and replayed paths. In this page, **UC-DATA-007: Schema Registry and
+Evolution** contributes schema identity, compatibility mode, and consumer adoption window;
+**UC-DATA-015: Data Classification** contributes data classification and permitted handling
+rules. The first buildable boundary is Existing data-engineering GitLab project and accepted
+shared runner; sanitized repository fixtures only. The design stops at this rule: No Kafka,
+Airflow, lakehouse, VM, database, bucket, or live healthcare integration is created.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is
+protected or misclassified data entering fixtures, logs, or evidence; therefore a green source
+job, screenshot or reachable endpoint is supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Healthcare Feed Quality Validation is evaluated inside the existing enterprise lab and the owning

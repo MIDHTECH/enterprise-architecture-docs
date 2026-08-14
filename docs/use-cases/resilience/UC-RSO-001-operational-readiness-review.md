@@ -74,6 +74,30 @@ exceptions, and follow-up ownership. Provisioning, product installation,
 automatic remediation, new monitoring, and bypass of platform-specific
 acceptance are excluded.
 
+## Design walkthrough
+
+A useful way for a new engineer to understand Operational Readiness Review is to begin with user
+impact and decision authority, then connect diagnosis, mitigation and verified recovery. The
+result MidhHealth needs is to Prevent a service from being declared ready without ownership,
+dependencies, telemetry, recovery, and evidence. Resilience and Service Operations team owns the
+platform decision, while the consuming service or business owner still accepts the effect on its
+workflow.
+
+Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
+identity or evidence from an earlier one. In this page, **UC-OBS-001: SLO as Code** contributes
+service-level indicator, objective, and measurement window; **UC-RSO-009: Service Ownership**
+contributes accountable service owner and operational tier. The first buildable boundary is
+Existing service catalog evidence, GitLab, observability APIs, Jenkins/AWX results, and
+runbooks. The design stops at this rule: No VM, service, monitoring stack, or ticketing product
+is created.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is an
+exercise expanding beyond its approved service, dependency, or operator boundary; therefore a
+green source job, screenshot or reachable endpoint is supporting evidence, not acceptance by
+itself.
+
 ## Architecture context
 
 Operational Readiness Review is evaluated inside the existing enterprise lab and the owning

@@ -106,6 +106,29 @@ Out of scope:
 - deploying several projects merely to demonstrate the document; and
 - allowing one project to approve another project's operational risk.
 
+## Design walkthrough
+
+For design review, walk through Cross-Project Release Contract Validation by trying to follow
+one reviewed change from commit to an identifiable release decision. The result MidhHealth needs
+is to Let separately owned applications change independently without surprising their consumers.
+Enterprise DevSecOps Delivery Platform team owns the platform decision, while the consuming
+service or business owner still accepts the effect on its workflow.
+
+Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
+identity or evidence from an earlier one. In this page, **UC-DATA-007: Schema Registry and
+Evolution** contributes schema revision, compatibility policy and migration note; **UC-DATA-008:
+Event Contract Management** contributes producer, consumers, event semantics and ownership. The
+first buildable boundary is existing GitLab runners and approved Jenkins promotion path;
+application repositories remain separately owned. The design stops at this rule: Reuse GitLab,
+accepted runners, Jenkins and repository artifacts; do not install a contract-testing product or
+create another runtime.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is an
+unsafe false-positive result; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Independent ownership is valuable only when the interfaces between projects

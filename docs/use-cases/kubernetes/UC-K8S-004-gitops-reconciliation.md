@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | GitOps Reconciliation |
 | Primary platform | Enterprise Kubernetes Platform with GitOps |
-| Supporting use cases | [UC-DATA-014](../data/UC-DATA-014-data-lineage.md), [UC-DATA-015](../data/UC-DATA-015-data-classification.md), [UC-DATA-021](../data/UC-DATA-021-data-reconciliation.md), [UC-INFRA-001](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) |
+| Supporting use cases | [UC-CICD-007](../devsecops/UC-CICD-007-environment-based-release-promotion.md), [UC-K8S-001](UC-K8S-001-kubernetes-configuration-drift.md), [UC-K8S-006](UC-K8S-006-kubernetes-security-baseline-implementation.md), [UC-OBS-008](../observability/UC-OBS-008-deployment-health-scoring.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, risk and compliance |
 | Enterprise outcome | provide a controlled runtime for provider, payer, data, and platform workloads |
 | Primary GitLab repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+For design review, walk through GitOps Reconciliation by trying to trace one workload contract
+across namespace, image, policy, service path and recovery. The result MidhHealth needs is to
+provide a controlled runtime for provider, payer, data, and platform workloads. Enterprise
+Kubernetes Platform with GitOps team owns the platform decision, while the consuming service or
+business owner still accepts the effect on its workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-CICD-007:
+Environment-Based Release Promotion** contributes immutable build or gate result with promotion
+and rollback eligibility; **UC-K8S-001: Kubernetes Configuration Drift** contributes cluster
+identity and desired-versus-observed state report. The first buildable boundary is existing
+four-node application cluster, jenkins-agent01, GitLab, Jenkins, and accepted storage and
+ingress. The design stops at this rule: Reuse the existing lab; do not create a new cluster,
+node, VM, IP address, load balancer, storage system, or unapproved add-on.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is a manifest escaping its namespace, identity, image, or network
+boundary; therefore a green source job, screenshot or reachable endpoint is supporting evidence,
+not acceptance by itself.
+
 ## Architecture context
 
 GitOps Reconciliation is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-DATA-014: Data Lineage](../data/UC-DATA-014-data-lineage.md) | source-to-consumer lineage and transformation revisions | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-DATA-015: Data Classification](../data/UC-DATA-015-data-classification.md) | data classification and permitted handling rules | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-DATA-021: Data Reconciliation](../data/UC-DATA-021-data-reconciliation.md) | record-count, checksum, and discrepancy resolution contract | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-001: Terraform Drift Detection](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) | desired/observed infrastructure identity and drift result | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-CICD-007: Environment-Based Release Promotion](../devsecops/UC-CICD-007-environment-based-release-promotion.md) | immutable build or gate result with promotion and rollback eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-K8S-001: Kubernetes Configuration Drift](UC-K8S-001-kubernetes-configuration-drift.md) | cluster identity and desired-versus-observed state report | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-K8S-006: Kubernetes Security Baseline Implementation](UC-K8S-006-kubernetes-security-baseline-implementation.md) | validated desired-state decision with bounded reconciliation and recovery evidence | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-OBS-008: Deployment Health Scoring](../observability/UC-OBS-008-deployment-health-scoring.md) | traceable measurement or alert decision with owner and diagnostic context | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before GitOps Reconciliation is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

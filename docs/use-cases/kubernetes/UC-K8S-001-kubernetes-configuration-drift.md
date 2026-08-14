@@ -75,6 +75,28 @@ comparison, health context, and drift artifacts. Argo CD installation,
 automatic sync, prune, apply, node changes, namespace creation, and addon
 installation are excluded from this first slice.
 
+## Design walkthrough
+
+In practice, Kubernetes Configuration Drift makes sense when you trace one workload contract
+across namespace, image, policy, service path and recovery. The result MidhHealth needs is to
+Keep the existing application cluster aligned with reviewed source before it hosts additional
+provider or payer services. Kubernetes Platform team owns the platform decision, while the
+consuming service or business owner still accepts the effect on its workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-NET-018: Kubernetes
+Networking** contributes cluster network identity and service-path contract; **UC-K8S-006:
+Kubernetes Security Baseline Implementation** contributes workload security baseline and policy
+exceptions. The first buildable boundary is Existing four-node kubeadm cluster and
+jenkins-agent01 deployment path. The design stops at this rule: No cluster, node, VM, IP, load
+balancer, or storage system is created.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is a
+manifest escaping its namespace, identity, image, or network boundary; therefore a green source
+job, screenshot or reachable endpoint is supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Kubernetes Configuration Drift is evaluated inside the existing enterprise lab and the owning

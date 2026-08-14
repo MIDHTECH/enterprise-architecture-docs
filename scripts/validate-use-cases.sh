@@ -31,6 +31,7 @@ required_headings=(
   "## Trigger and actors"
   "## Preconditions"
   "## Scope and exclusions"
+  "## Design walkthrough"
   "## Architecture context"
   "## Architecture diagram"
   "## Dependencies and handoffs"
@@ -132,6 +133,7 @@ done
 
 python3 - "$ROOT_DIR" <<'PY'
 from pathlib import Path
+import json
 import re
 import sys
 
@@ -139,6 +141,9 @@ root = Path(sys.argv[1])
 documents = sorted((root / "docs/use-cases").glob("*/UC-*.md"))
 portfolio_text = (root / "docs/enterprise-project-portfolio-and-usecases.md").read_text()
 id_to_path = {}
+dependency_contracts = json.loads(
+    (root / "docs/use-case-dependency-contracts.json").read_text()
+)["contracts"]
 architecture_archetypes = set()
 allowed_archetypes = {
     "delivery-pipeline",
@@ -154,6 +159,23 @@ for document in documents:
     if not match:
         raise SystemExit(f"{document}: filename does not begin with a canonical use-case ID")
     id_to_path[match.group(1)] = document
+
+unknown_contract_pages = sorted(set(dependency_contracts) - set(id_to_path))
+unknown_contract_dependencies = sorted(
+    {
+        dependency_id
+        for dependency_ids in dependency_contracts.values()
+        for dependency_id in dependency_ids
+        if dependency_id not in id_to_path
+    }
+)
+if unknown_contract_pages or unknown_contract_dependencies:
+    raise SystemExit(
+        "Dependency contract contains unknown IDs. Pages: "
+        + ", ".join(unknown_contract_pages)
+        + "; dependencies: "
+        + ", ".join(unknown_contract_dependencies)
+    )
 
 for document in documents:
     text = document.read_text()
@@ -208,6 +230,35 @@ for document in documents:
         raise SystemExit(
             f"{document}: supporting-use-case record {supporting_ids} does not match handoff table {handoff_ids}"
         )
+    if own_id in dependency_contracts and handoff_ids != dependency_contracts[own_id]:
+        raise SystemExit(
+            f"{document}: dependency order {handoff_ids} does not match the architect-reviewed contract "
+            f"{dependency_contracts[own_id]}"
+        )
+
+    walkthrough_count = len(re.findall(r"^## Design walkthrough\s*$", text, re.M))
+    if walkthrough_count != 1:
+        raise SystemExit(f"{document}: design walkthrough occurs {walkthrough_count} times")
+    walkthrough = text.split("## Design walkthrough", 1)[1].split("## Architecture context", 1)[0].strip()
+    paragraphs = [paragraph for paragraph in walkthrough.split("\n\n") if paragraph.strip()]
+    normalized_walkthrough = re.sub(r"\s+", " ", walkthrough).lower()
+    if len(paragraphs) != 3 or len(walkthrough) < 600:
+        raise SystemExit(
+            f"{document}: design walkthrough must contain three substantial capability-specific paragraphs"
+        )
+    for concept in (
+        "first buildable boundary",
+        "design stops at this rule",
+        "happy path breaks",
+        "expected response",
+    ):
+        if concept not in normalized_walkthrough:
+            raise SystemExit(f"{document}: design walkthrough does not explain {concept!r}")
+    for dependency_id in handoff_ids[:2]:
+        if dependency_id not in walkthrough:
+            raise SystemExit(
+                f"{document}: walkthrough does not explain primary dependency {dependency_id}"
+            )
 
     architecture_path = (
         root

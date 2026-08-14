@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+For design review, walk through Backup and Point-in-Time Recovery by trying to protect client
+compatibility and data correctness while the database state changes underneath them. The result
+MidhHealth needs is to keep enterprise transactional and operational data secure, performant,
+and recoverable. Enterprise Database Engineering and Reliability Platform team owns the platform
+decision, while the consuming service or business owner still accepts the effect on its
+workflow.
+
+Follow the object from creation through change, operation and retirement; every transition needs
+an owner and a recoverable prior state. In this page, **UC-RSO-015: Backup and Recovery
+Orchestration** contributes backup identity, recovery orchestration, and restoration evidence;
+**UC-RSO-017: RTO and RPO Measurement** contributes owned RTO/RPO targets and measurement
+method. The first buildable boundary is existing PostgreSQL service, backup host, MinIO, GitLab,
+Jenkins, AWX, and observability. The design stops at this rule: Reuse the existing lab; do not
+create a new database server, VM, storage system, database product, or live-data migration.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is administrative credentials or row content escaping the database
+control boundary; therefore a green source job, screenshot or reachable endpoint is supporting
+evidence, not acceptance by itself.
+
 ## Architecture context
 
 Backup and Point-in-Time Recovery is evaluated inside the existing enterprise lab and the owning

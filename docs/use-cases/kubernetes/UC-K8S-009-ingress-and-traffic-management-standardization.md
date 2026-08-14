@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Ingress and Traffic Management Standardization |
 | Primary platform | Enterprise Kubernetes Platform with GitOps |
-| Supporting use cases | [UC-K8S-001](UC-K8S-001-kubernetes-configuration-drift.md), [UC-NET-018](../network/UC-NET-018-kubernetes-networking.md), [UC-K8S-006](UC-K8S-006-kubernetes-security-baseline-implementation.md), [UC-INFRA-001](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) |
+| Supporting use cases | [UC-NET-018](../network/UC-NET-018-kubernetes-networking.md), [UC-NET-019](../network/UC-NET-019-cni-policy-and-troubleshooting.md), [UC-NET-020](../network/UC-NET-020-ingress-and-egress-controls.md), [UC-NET-024](../network/UC-NET-024-certificate-and-tls-routing.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, risk and compliance |
 | Enterprise outcome | provide a controlled runtime for provider, payer, data, and platform workloads |
 | Primary GitLab repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+For design review, walk through Ingress and Traffic Management Standardization by trying to
+trace one workload contract across namespace, image, policy, service path and recovery. The
+result MidhHealth needs is to provide a controlled runtime for provider, payer, data, and
+platform workloads. Enterprise Kubernetes Platform with GitOps team owns the platform decision,
+while the consuming service or business owner still accepts the effect on its workflow.
+
+Start at the decision rather than the tool, then ask which facts justify allow, block, defer or
+escalate and who can override it. In this page, **UC-NET-018: Kubernetes Networking**
+contributes layered path decision with before/after reachability and restore proof;
+**UC-NET-019: CNI Policy and Troubleshooting** contributes layered path decision with
+before/after reachability and restore proof. The first buildable boundary is existing four-node
+application cluster, jenkins-agent01, GitLab, Jenkins, and accepted storage and ingress. The
+design stops at this rule: Reuse the existing lab; do not create a new cluster, node, VM, IP
+address, load balancer, storage system, or unapproved add-on.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is a manifest escaping its namespace, identity, image, or network
+boundary; therefore a green source job, screenshot or reachable endpoint is supporting evidence,
+not acceptance by itself.
+
 ## Architecture context
 
 Ingress and Traffic Management Standardization is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-K8S-001: Kubernetes Configuration Drift](UC-K8S-001-kubernetes-configuration-drift.md) | cluster identity and desired-versus-observed state report | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-NET-018: Kubernetes Networking](../network/UC-NET-018-kubernetes-networking.md) | cluster network identity and service-path contract | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-K8S-006: Kubernetes Security Baseline Implementation](UC-K8S-006-kubernetes-security-baseline-implementation.md) | workload security baseline and policy exceptions | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-001: Terraform Drift Detection](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) | desired/observed infrastructure identity and drift result | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-NET-018: Kubernetes Networking](../network/UC-NET-018-kubernetes-networking.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-NET-019: CNI Policy and Troubleshooting](../network/UC-NET-019-cni-policy-and-troubleshooting.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-NET-020: Ingress and Egress Controls](../network/UC-NET-020-ingress-and-egress-controls.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-NET-024: Certificate and TLS Routing](../network/UC-NET-024-certificate-and-tls-routing.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Ingress and Traffic Management Standardization is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

@@ -83,6 +83,9 @@ plan without authorizing infrastructure or runtime work. Required content is:
    capability into the same layout;
 3. explicit upstream and assurance dependencies linked by canonical use-case
    ID, including the artifact exchanged and the effect of missing evidence;
+   architect-reviewed corrections to generic cross-platform patterns are
+   recorded in `../use-case-dependency-contracts.json` and must match both the
+   page record and its dependency table;
 4. functional, performance, scale, reliability, recovery, observability, and
    retention requirements. Unapproved numeric targets remain owned `TBD`
    decisions rather than invented values;
@@ -96,7 +99,10 @@ plan without authorizing infrastructure or runtime work. Required content is:
    and
 8. staged delivery from contract and source validation through read-only proof,
    separately approved canary execution, independent verification, and
-   recovery.
+   recovery; and
+9. a plain-language design walkthrough that explains how this particular
+   capability works through its real outcome, visual grammar, named dependency
+   handoffs, accepted target boundary, leading failure and recovery behavior.
 
 Shared control language is permitted where it expresses a genuine enterprise
 standard. Stock prose that merely substitutes a use-case name into the same

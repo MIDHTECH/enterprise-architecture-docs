@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+The architecture conversation for Terraform Plan Automation should follow one reviewed change
+from commit to an identifiable release decision. The result MidhHealth needs is to deliver
+reviewed changes safely to provider, payer, and shared platform services. Enterprise DevSecOps
+Delivery Platform team owns the platform decision, while the consuming service or business owner
+still accepts the effect on its workflow.
+
+Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
+identity or evidence from an earlier one. In this page, **UC-INFRA-009: Terraform State
+Integrity Monitoring** contributes reviewed contract and evidence required by the bounded
+workflow; **UC-INFRA-007: Infrastructure Change Impact Analysis** contributes
+resource-to-service impact and affected-owner list. The first buildable boundary is existing
+GitLab, accepted runners, Jenkins, AWX, and Kubernetes delivery paths. The design stops at this
+rule: Reuse the existing lab; do not create a new runner, VM, registry, cluster, or delivery
+product.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is untrusted source or dependency content reaching a privileged
+runner; therefore a green source job, screenshot or reachable endpoint is supporting evidence,
+not acceptance by itself.
+
 ## Architecture context
 
 Terraform Plan Automation is evaluated inside the existing enterprise lab and the owning

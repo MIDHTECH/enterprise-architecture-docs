@@ -104,6 +104,28 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+In practice, Deployment Health Scoring makes sense when you start with the operator decision the
+signal must support, then work backward to trustworthy telemetry. The result MidhHealth needs is
+to turn existing telemetry into actionable health and incident evidence for enterprise services.
+Enterprise Observability and SRE Reliability Platform team owns the platform decision, while the
+consuming service or business owner still accepts the effect on its workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-OBS-001: SLO as Code**
+contributes service-level indicator, objective, and measurement window; **UC-RSO-002: SLI and
+SLO Governance** contributes approved SLI/SLO definition and review cadence. The first buildable
+boundary is existing Prometheus, Alertmanager, Grafana, Loki, Tempo, OpenTelemetry, Elastic, and
+GitLab/AWX paths. The design stops at this rule: Reuse the existing lab; do not create a new
+monitoring VM, telemetry backend, paging product, or unapproved data source.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is sensitive fields or credentials leaking into telemetry and
+diagnostic artifacts; therefore a green source job, screenshot or reachable endpoint is
+supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Deployment Health Scoring is evaluated inside the existing enterprise lab and the owning

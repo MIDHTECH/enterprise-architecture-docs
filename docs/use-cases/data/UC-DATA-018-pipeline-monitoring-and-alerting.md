@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Pipeline Monitoring and Alerting |
 | Primary platform | Enterprise Data Engineering and Integration Platform |
-| Supporting use cases | [UC-CICD-001](../devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md), [UC-CICD-007](../devsecops/UC-CICD-007-environment-based-release-promotion.md), [UC-OBS-008](../observability/UC-OBS-008-deployment-health-scoring.md), [UC-DATA-007](UC-DATA-007-schema-registry-and-evolution.md) |
+| Supporting use cases | [UC-OBS-006](../observability/UC-OBS-006-alerting-and-on-call-notification.md), [UC-OBS-007](../observability/UC-OBS-007-production-incident-troubleshooting-dashboard.md), [UC-DATA-006](UC-DATA-006-workflow-orchestration.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md) |
 | Enterprise alignment | Provider operations, payer operations, risk and compliance, operational resilience |
 | Enterprise outcome | move and validate healthcare data safely before downstream enterprise decisions use it |
 | Primary GitLab repository | `midhhealth/data-and-integration/data-engineering-platform` |
@@ -104,6 +104,31 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+The architecture conversation for Pipeline Monitoring and Alerting should follow a named
+producer record through validation, transformation and an accountable consumer. The result
+MidhHealth needs is to move and validate healthcare data safely before downstream enterprise
+decisions use it. Enterprise Data Engineering and Integration Platform team owns the platform
+decision, while the consuming service or business owner still accepts the effect on its
+workflow.
+
+Begin with the observation, then follow the decision and action back to a new observation; the
+loop is incomplete until the owner sees the effect. In this page, **UC-OBS-006: Alerting and
+On-Call Notification** contributes traceable measurement or alert decision with owner and
+diagnostic context; **UC-OBS-007: Production Incident Troubleshooting Dashboard** contributes
+traceable measurement or alert decision with owner and diagnostic context. The first buildable
+boundary is existing GitLab shared runner, synthetic fixtures, PostgreSQL where approved, and
+current evidence paths. The design stops at this rule: Reuse the existing lab; do not create a
+new data platform, Kafka, Airflow, lakehouse, VM, bucket, live feed, or protected healthcare
+dataset.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is protected or misclassified data entering fixtures, logs, or
+evidence; therefore a green source job, screenshot or reachable endpoint is supporting evidence,
+not acceptance by itself.
+
 ## Architecture context
 
 Pipeline Monitoring and Alerting is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +162,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-CICD-001: End-to-End CI/CD Pipeline Setup](../devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md) | source-to-artifact pipeline provenance and stage outcome | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-CICD-007: Environment-Based Release Promotion](../devsecops/UC-CICD-007-environment-based-release-promotion.md) | environment promotion contract and approval evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-OBS-008: Deployment Health Scoring](../observability/UC-OBS-008-deployment-health-scoring.md) | deployment-health score and promotion/rollback signal | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-DATA-007: Schema Registry and Evolution](UC-DATA-007-schema-registry-and-evolution.md) | schema identity, compatibility mode, and consumer adoption window | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-OBS-006: Alerting and On-Call Notification](../observability/UC-OBS-006-alerting-and-on-call-notification.md) | traceable measurement or alert decision with owner and diagnostic context | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-OBS-007: Production Incident Troubleshooting Dashboard](../observability/UC-OBS-007-production-incident-troubleshooting-dashboard.md) | traceable measurement or alert decision with owner and diagnostic context | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-DATA-006: Workflow Orchestration](UC-DATA-006-workflow-orchestration.md) | validated data result with counts, lineage, quality, and reconciliation state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Pipeline Monitoring and Alerting is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

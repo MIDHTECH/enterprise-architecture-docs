@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+A useful way for a new engineer to understand Clinical AI Assistant Platform is to follow an
+approved question and evidence source through retrieval, review and a bounded answer. The result
+MidhHealth needs is to provide bounded and reviewable AI assistance without delegating regulated
+decisions. Enterprise Healthcare AI Platform team owns the platform decision, while the
+consuming service or business owner still accepts the effect on its workflow.
+
+Follow the information rather than the products: ownership and classification travel with it,
+including on rejected and replayed paths. In this page, **UC-DATA-015: Data Classification**
+contributes data classification and permitted handling rules; **UC-DATA-023: Data Access
+Governance** contributes dataset role, purpose-of-use, and access-review evidence. The first
+buildable boundary is existing GitLab shared runner, approved repository content, synthetic
+fixtures, and protected CI artifacts. The design stops at this rule: Reuse the existing lab; do
+not create a new model server, vector database, VM, GPU host, cluster workload, cloud API, live
+clinical integration, or protected data.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is prompt, retrieved content, model output, or tool request crossing a
+data or authorization boundary; therefore a green source job, screenshot or reachable endpoint
+is supporting evidence, not acceptance by itself.
+
 ## Architecture context
 
 Clinical AI Assistant Platform is evaluated inside the existing enterprise lab and the owning

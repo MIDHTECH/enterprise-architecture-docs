@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Policy-Driven Provisioning |
 | Primary platform | Enterprise Multi-Cloud Infrastructure Platform |
-| Supporting use cases | [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-NET-003](../network/UC-NET-003-vlan-and-subnet-design.md), [UC-LNX-001](../linux/UC-LNX-001-os-installation-standards.md), [UC-OBS-013](../observability/UC-OBS-013-cloud-native-monitoring.md) |
+| Supporting use cases | [UC-INFRA-004](UC-INFRA-004-terraform-plan-analyzer.md), [UC-GOV-007](../governance/UC-GOV-007-infrastructure-security-hardening.md), [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-CICD-014](../devsecops/UC-CICD-014-terraform-plan-automation.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | keep the existing lab foundation repeatable, attributable, and recoverable |
 | Primary GitLab repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+A useful way for a new engineer to understand Policy-Driven Provisioning is to follow declared
+intent through plan, state ownership and post-change verification. The result MidhHealth needs
+is to keep the existing lab foundation repeatable, attributable, and recoverable. Enterprise
+Multi-Cloud Infrastructure Platform team owns the platform decision, while the consuming service
+or business owner still accepts the effect on its workflow.
+
+Start at the decision rather than the tool, then ask which facts justify allow, block, defer or
+escalate and who can override it. In this page, **UC-INFRA-004: Terraform Plan Analyzer**
+contributes reviewable plan or bounded reconciliation result tied to the accepted state;
+**UC-GOV-007: Infrastructure Security Hardening** contributes explainable compliance or
+remediation decision with expiry and recovery state. The first buildable boundary is existing
+GitLab infrastructure runner, Terraform source, AWX, and canonical inventory. The design stops
+at this rule: Reuse the existing lab; do not create a new VM, physical host, IP address, cloud
+account, state backend, or infrastructure product.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is over-privileged automation or an incorrect state/target selection;
+therefore a green source job, screenshot or reachable endpoint is supporting evidence, not
+acceptance by itself.
+
 ## Architecture context
 
 Policy-Driven Provisioning is evaluated inside the existing enterprise lab and the owning
@@ -137,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | principal, role, resource, and approval policy | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-NET-003: VLAN and Subnet Design](../network/UC-NET-003-vlan-and-subnet-design.md) | approved address, subnet, and trust-zone intent | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-LNX-001: Ubuntu and Rocky Linux Installation Standards](../linux/UC-LNX-001-os-installation-standards.md) | approved operating-system baseline and host identity | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-OBS-013: Cloud-Native Monitoring](../observability/UC-OBS-013-cloud-native-monitoring.md) | cloud/native telemetry source and ownership metadata | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-INFRA-004: Terraform Plan Analyzer](UC-INFRA-004-terraform-plan-analyzer.md) | reviewable plan or bounded reconciliation result tied to the accepted state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-GOV-007: Infrastructure Security Hardening](../governance/UC-GOV-007-infrastructure-security-hardening.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-CICD-014: Terraform Plan Automation](../devsecops/UC-CICD-014-terraform-plan-automation.md) | immutable build or gate result with promotion and rollback eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Policy-Driven Provisioning is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

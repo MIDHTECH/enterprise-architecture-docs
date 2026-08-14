@@ -104,6 +104,29 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+In practice, Container Registry and Image Supply Chain Security makes sense when you trace one
+workload contract across namespace, image, policy, service path and recovery. The result
+MidhHealth needs is to provide a controlled runtime for provider, payer, data, and platform
+workloads. Enterprise Kubernetes Platform with GitOps team owns the platform decision, while the
+consuming service or business owner still accepts the effect on its workflow.
+
+Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
+identity or evidence from an earlier one. In this page, **UC-CICD-005: Artifact Management
+Automation** contributes reviewed contract and evidence required by the bounded workflow;
+**UC-CICD-012: Container Image Vulnerability Scanning** contributes reviewed contract and
+evidence required by the bounded workflow. The first buildable boundary is existing four-node
+application cluster, jenkins-agent01, GitLab, Jenkins, and accepted storage and ingress. The
+design stops at this rule: Reuse the existing lab; do not create a new cluster, node, VM, IP
+address, load balancer, storage system, or unapproved add-on.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is a manifest escaping its namespace, identity, image, or network
+boundary; therefore a green source job, screenshot or reachable endpoint is supporting evidence,
+not acceptance by itself.
+
 ## Architecture context
 
 Container Registry and Image Supply Chain Security is evaluated inside the existing enterprise lab and the owning

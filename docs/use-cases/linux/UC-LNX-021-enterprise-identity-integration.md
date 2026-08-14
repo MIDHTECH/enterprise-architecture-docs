@@ -7,7 +7,7 @@ Last verified: 2026-08-02
 | Field | Value |
 | --- | --- |
 | Portfolio | Enterprise Linux Systems Engineering Platform |
-| Supporting use cases | [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-DATA-023](../data/UC-DATA-023-data-access-governance.md), [UC-AI-011](../healthcare-ai/UC-AI-011-ai-security-and-access-control.md), [UC-INFRA-005](../infrastructure/UC-INFRA-005-server-configuration-automation-using-ansible.md) |
+| Supporting use cases | [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-LNX-012](UC-LNX-012-ssh-sudo-service-accounts.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-RSO-018](../resilience/UC-RSO-018-certificate-and-secret-expiry-response.md) |
 | Canonical coverage target | LDAP, Kerberos, Active Directory, SSO, PAM and certificate-based host access |
 | Delivery model | End-to-end infrastructure as code |
 | Primary roles | Identity engineer, Linux security engineer, directory administrator, SRE |
@@ -62,6 +62,30 @@ running an isolated technology demonstration is insufficient.
 **In scope:** DNS/time prerequisites, realm discovery/join, SSSD, Kerberos, PAM/NSS, group-to-sudo mapping, SSH certificates, host certificates, offline cache, revocation, and evidence.
 
 **Excluded:** Directory schema redesign, hard-coded join passwords, broad domain-admin access, and removing local break glass before recovery proof.
+
+## Design walkthrough
+
+For design review, walk through Enterprise Identity Integration by trying to treat the host or
+fleet change as a canary-led operating procedure rather than a collection of commands. The
+result MidhHealth needs is to Its planned result advances: the documented enterprise outcome.
+Linux Platform team owns the platform decision, while the consuming service or business owner
+still accepts the effect on its workflow.
+
+Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
+identity or evidence from an earlier one. In this page, **UC-GOV-004: Cloud IAM and RBAC
+Standardization** contributes explainable compliance or remediation decision with expiry and
+recovery state; **UC-LNX-012: SSH, sudo and Service Accounts** contributes identity-to-action
+mapping with successful and denied access evidence. The first buildable boundary is the accepted
+existing lab boundary named by the page. The design stops at this rule: Fit is achieved by
+reusing documented existing repositories, control planes, services, and targets—not by inventing
+capacity or treating planned products as available.
+
+The walkthrough becomes useful when the happy path breaks. If a required dependency or
+verification result is unavailable, the expected response is to stop before mutation, preserve
+the evidence and return the decision to the accountable owner. The leading design threat is
+host-level automation crossing its inventory, privilege, or credential boundary; therefore a
+green source job, screenshot or reachable endpoint is supporting evidence, not acceptance by
+itself.
 
 ## Architecture context
 
@@ -136,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | principal, role, resource, and approval policy | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-DATA-023: Data Access Governance](../data/UC-DATA-023-data-access-governance.md) | dataset role, purpose-of-use, and access-review evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-AI-011: AI Security and Access Control](../healthcare-ai/UC-AI-011-ai-security-and-access-control.md) | AI principal, tool/data scope, and authorization decision | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-005: Server Configuration Automation Using Ansible](../infrastructure/UC-INFRA-005-server-configuration-automation-using-ansible.md) | server configuration source and bounded Ansible execution | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-LNX-012: SSH, sudo and Service Accounts](UC-LNX-012-ssh-sudo-service-accounts.md) | identity-to-action mapping with successful and denied access evidence | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-018: Certificate and Secret Expiry Response](../resilience/UC-RSO-018-certificate-and-secret-expiry-response.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Enterprise Identity Integration is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

@@ -104,6 +104,30 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+A useful way for a new engineer to understand Automated Incident Evidence Collection is to begin
+with user impact and decision authority, then connect diagnosis, mitigation and verified
+recovery. The result MidhHealth needs is to connect service ownership, evidence, incident
+response, and recovery for enterprise workflows. Enterprise Resilience and Service Operations
+Platform team owns the platform decision, while the consuming service or business owner still
+accepts the effect on its workflow.
+
+Read the design as an operating timeline: detect, establish scope, choose a reversible action,
+verify recovery and preserve what the team learned. In this page, **UC-RSO-004: Incident
+Detection and Classification** contributes incident classification, severity, and escalation
+trigger; **UC-RSO-005: On-Call and Escalation Workflows** contributes on-call owner and
+escalation acknowledgement path. The first buildable boundary is existing GitLab, Jenkins, AWX,
+observability APIs, service records, and runbooks. The design stops at this rule: Reuse the
+existing lab; do not create a new service-management product, VM, monitoring stack, or
+unapproved disruptive exercise.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is an exercise expanding beyond its approved service, dependency, or
+operator boundary; therefore a green source job, screenshot or reachable endpoint is supporting
+evidence, not acceptance by itself.
+
 ## Architecture context
 
 Automated Incident Evidence Collection is evaluated inside the existing enterprise lab and the owning

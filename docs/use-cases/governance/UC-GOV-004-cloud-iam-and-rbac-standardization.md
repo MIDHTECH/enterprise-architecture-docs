@@ -104,6 +104,30 @@ Out of scope:
   documentation; and
 - replacing adjacent platform gates owned by other use cases.
 
+## Design walkthrough
+
+Rather than beginning with a product, explain Cloud IAM and RBAC Standardization by asking an
+engineer to separate what is observed, what policy decides, who authorizes action and what
+evidence survives. The result MidhHealth needs is to apply traceable controls to platform work
+that supports provider and payer operations. Enterprise Cloud Governance and Operations
+Automation team owns the platform decision, while the consuming service or business owner still
+accepts the effect on its workflow.
+
+Start at the decision rather than the tool, then ask which facts justify allow, block, defer or
+escalate and who can override it. In this page, **UC-DATA-023: Data Access Governance**
+contributes dataset role, purpose-of-use, and access-review evidence; **UC-AI-011: AI Security
+and Access Control** contributes AI principal, tool/data scope, and authorization decision. The
+first buildable boundary is existing GitLab runners, AWX inventories, Vault boundary, repository
+scanners, and evidence artifacts. The design stops at this rule: Reuse the existing lab; do not
+create a new governance VM, scanner service, cloud account, identity platform, or automatic
+high-risk remediation.
+
+The walkthrough becomes useful when the happy path breaks. If contract or policy is
+missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
+The leading design threat is a governance workflow receiving broader privileges than the control
+scope requires; therefore a green source job, screenshot or reachable endpoint is supporting
+evidence, not acceptance by itself.
+
 ## Architecture context
 
 Cloud IAM and RBAC Standardization is evaluated inside the existing enterprise lab and the owning
