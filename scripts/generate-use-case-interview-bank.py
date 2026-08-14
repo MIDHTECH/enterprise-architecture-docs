@@ -3,6 +3,7 @@
 
 from pathlib import Path
 import re
+import sys
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -268,6 +269,40 @@ def clean(value: str) -> str:
     return value.replace("|", "\\|").replace("\n", " ").strip()
 
 
+def plain(value: str, limit: int = 180) -> str:
+    """Turn a Markdown record value into concise interview language."""
+    value = re.sub(r"\[([^]]+)\]\([^)]+\)", r"\1", value)
+    value = value.replace("**", "").replace("`", "")
+    value = re.sub(r"\s+", " ", value).strip().rstrip(".")
+    if len(value) <= limit:
+        return value
+    return value[: limit - 1].rsplit(" ", 1)[0] + "…"
+
+
+def record_value(text: str, field: str, fallback: str) -> str:
+    match = re.search(rf"^\| {re.escape(field)} \| (.+) \|$", text, re.M)
+    if not match:
+        return fallback
+    return plain(match.group(1))
+
+
+def first_failure(text: str) -> str:
+    heading = re.search(r"^## [^\n]*(?:failure|recovery)[^\n]*$", text, re.I | re.M)
+    if not heading:
+        return "a required dependency or verification result is unavailable"
+    section_text = text[heading.end():].split("\n## ", 1)[0]
+    for line in section_text.splitlines():
+        if not line.startswith("| ") or line.startswith("| ---"):
+            continue
+        cells = [cell.strip() for cell in line.strip("|").split("|")]
+        if cells and cells[0] != "Failure condition":
+            return plain(cells[0], 140)
+    bullet = re.search(r"^- (.+)$", section_text, re.M)
+    if bullet:
+        return plain(bullet.group(1), 140)
+    return "the first documented failure condition occurs"
+
+
 def collect(domain: str):
     documents = sorted((ROOT / "docs/use-cases" / domain).glob("UC-*.md"))
     records = []
@@ -344,10 +379,26 @@ for domain, config in DOMAINS.items():
         "| Use case | Primary question | Interviewer probe |",
         "| --- | --- | --- |",
     ])
-    for index, (use_case_id, title, document) in enumerate(records):
-        variant = index % len(config["questions"])
-        question = config["questions"][variant].format(title=title)
-        probe = config["probes"][variant]
+    for use_case_id, title, document in records:
+        text = document.read_text()
+        outcome = record_value(
+            text, "Enterprise outcome", f"the documented {title} enterprise outcome"
+        )
+        target = record_value(
+            text, "Target", "the existing lab boundary named in the page"
+        )
+        current_state = record_value(
+            text, "Current state", "design documented; runtime evidence not yet claimed"
+        )
+        failure = first_failure(text)
+        question = (
+            f"Walk through {title}: how would the design deliver {outcome} "
+            f"while staying inside {target}?"
+        )
+        probe = (
+            f"Start from the recorded state—{current_state}. Challenge the design with "
+            f"‘{failure}’; identify dependency, identity, stop, recovery and evidence decisions."
+        )
         link = document.relative_to(ROOT / "docs").as_posix()
         parts.append(
             f"| [{use_case_id}: {clean(title)}]({link}) | {clean(question)} | {clean(probe)} |"
@@ -367,5 +418,13 @@ parts.extend([
     "",
 ])
 
-OUTPUT.write_text("\n".join(parts))
-print(f"Generated {OUTPUT.relative_to(ROOT)} with {total} use-case questions.")
+rendered = "\n".join(parts)
+if "--check" in sys.argv:
+    if not OUTPUT.is_file() or OUTPUT.read_text() != rendered:
+        raise SystemExit(
+            f"{OUTPUT.relative_to(ROOT)} is stale; run ./scripts/generate-use-case-interview-bank.py"
+        )
+    print(f"Verified {OUTPUT.relative_to(ROOT)} with {total} use-case questions.")
+else:
+    OUTPUT.write_text(rendered)
+    print(f"Generated {OUTPUT.relative_to(ROOT)} with {total} use-case questions.")

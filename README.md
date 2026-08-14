@@ -14,6 +14,8 @@ operators and engineers a common operating record for the platform.
 - [Podinfo Application Deployment Record](docs/projects/applications/podinfo.md)
 - [Advanced Use Case Comparison](docs/advanced-usecase-comparison.md)
 - [Use-Case Implementation Status](docs/use-case-implementation-status.md)
+- [Enterprise Design Readiness Status](docs/design-readiness-status.md)
+- [Canonical Environment Capability Status](docs/environment-capability-status.json)
 - [On-Premises Platform Build Runbook](docs/on-prem-platform-build-runbook.md)
 - [Staff Documentation Standard](docs/documentation-standard.md)
 - [SRE Incident Register](docs/sre-incident-register.md)
@@ -37,7 +39,6 @@ operators and engineers a common operating record for the platform.
 - [Product Version Catalog](docs/product-versions.md)
 - [Product Migration History](docs/product-migration-history.md)
 - [Architecture Evolution, 2023–2026](docs/architecture-evolution-2023-2026.md)
-- [MAAS Monolith-to-Microservices Roadmap](docs/maas-monolith-to-microservices.md)
 - [Engineer Operating Narrative Guide](docs/engineer-interview-guide.md)
 - [Role and Contribution Guide](docs/marketing-role-engineer-guide.md)
 - [Engineer Training Standard](docs/engineer-training-standard.md)
@@ -57,7 +58,9 @@ organization, one Jenkins/AWX delivery control plane, one governance model,
 common environment standards, and a hybrid target footprint across on-prem
 KVM/Kubernetes and future AWS/Azure/GCP validation.
 
-The documentation is expected to drive executable work. A good use case should
+The current phase completes architecture and implementation design before
+additional lab work begins. The documentation is expected to drive executable
+work later. A good use case should
 be convertible into a Jenkins job, AWX playbook, GitLab CI stage, GitOps sync,
 dashboard, alert, data-quality check, model-validation step, or runbook drill.
 The portfolio avoids saving job-posting details; it uses current industry
@@ -85,11 +88,11 @@ workloads.
 - Enterprise Healthcare AI Platform
 - Enterprise MLOps Model Platform
 
-It is also the authoritative operations record for rebuilding `infra01` and
-`infra02`, planning the additional memory-optimized Linux host, registering the
+It is also the authoritative operations record for the accepted `infra01`,
+`infra02`, and `infra03` footprint, registering the
 Mac Studio AI/ML edge environment, provisioning Rocky Linux virtual machines,
-installing platform products, and rehearsing healthcare platform modernization
-paths on premises.
+installing platform products, and rehearsing MidhHealth integrated-care
+platform modernization paths on premises.
 
 Infrastructure work is serialized through
 [Sequential Build and Change Control](docs/sequential-build-change-control.md).

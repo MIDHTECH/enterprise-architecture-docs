@@ -2,10 +2,11 @@
 
 ## Purpose
 
-MidhHealth Integrated Care should not use a MAAS-branded GitLab namespace.
-MAAS is only a reference workload. The source-control model should look like a
-real integrated care delivery and health insurance organization with platform,
-security, reliability, data, provider, and payer domains.
+MidhHealth Integrated Care uses its own organization boundary. The
+source-control model represents a real integrated care delivery and health
+insurance organization with platform, security, reliability, data, provider,
+and payer domains. External products or interview-source systems do not belong
+in its application namespace.
 
 ## Target Organization
 

@@ -1,6 +1,14 @@
 # Product Version Catalog
 
-This catalog pins the on-premises platform baseline as of 2 August 2026.
+This catalog records version targets and version policies; it is **not** an
+installed-product inventory. Current capability state comes from
+[`environment-capability-status.json`](environment-capability-status.json) and
+[Current Environment State](current-environment-state.md). A deployment cell
+describes the intended or accepted placement, while the status manifest says
+whether that placement is accepted, unaccepted, provisioned-only or planned.
+
+The catalog pins the on-premises platform baseline as reviewed on 13 August
+2026.
 Container images must use the full version shown here or a later approved patch
 within the same release line. Never deploy `latest`.
 
@@ -37,10 +45,10 @@ and tested before deployment.
 | AWX Operator | 2.19.1 | k3s on `awx.example.com` | AWX Operator releases |
 | AWX execution environment | Project-owned `2026.07.0` | OCI image on `awx-execution.example.com` | Rebuild monthly from locked dependencies |
 | Vault Community | 2.0.3 | Native service on `vault.example.com` | [Vault release notes](https://developer.hashicorp.com/vault/docs/updates/release-notes) |
-| Keycloak | 26.4, latest patch | Container on `keycloak.example.com` | Keycloak upgrading guide |
-| Harbor | 2.15.0 | Official Compose installer on `harbor.example.com` | [Harbor migration guide](https://goharbor.io/docs/main/administration/upgrade/) |
-| Artifactory OSS | 7.146.29 | Official container on `artifactory.example.com` | [Artifactory release notes](https://docs.jfrog.com/releases/docs/artifactory-release-notes) |
-| SonarQube Community Build | 26.7, latest patch | Container on `sonarqube.example.com` | [SonarQube update path](https://docs.sonarsource.com/sonarqube-community-build/server-update-and-maintenance/update/determine-path) |
+| Keycloak | 26.4, latest patch | Target container placement on `keycloak.example.com`; requires revalidation | Keycloak upgrading guide |
+| Harbor | 2.15.0 | Accepted official Compose installation on `harbor.example.com`; native HTTPS accepted | [Harbor migration guide](https://goharbor.io/docs/main/administration/upgrade/) |
+| Artifactory OSS | 7.146.29 | Target container placement on provisioned `artifactory.example.com` VM | [Artifactory release notes](https://docs.jfrog.com/releases/docs/artifactory-release-notes) |
+| SonarQube Community Build | 26.7, latest patch | Target container placement on provisioned `sonarqube.example.com` VM | [SonarQube update path](https://docs.sonarsource.com/sonarqube-community-build/server-update-and-maintenance/update/determine-path) |
 | PostgreSQL | 18.4 | Native service on `postgres.example.com` | [PostgreSQL version policy](https://www.postgresql.org/support/versioning/) |
 
 ## Kubernetes Platform
@@ -50,13 +58,13 @@ and tested before deployment.
 | Kubernetes | 1.34, latest patch | kubeadm on Rocky Linux 9 | Upgrade one minor at a time |
 | containerd | 2.1, latest approved patch | Native on Kubernetes nodes | Validate CRI compatibility before Kubernetes upgrade |
 | Helm | 4.1.0 | Pinned binary on `jenkins-agent01`; Jenkins release execution | Upgrade only after chart and rollback compatibility tests |
-| Cilium | 1.18, latest patch | Argo CD | Upgrade one supported minor at a time |
-| Argo CD | 3.4.6; chart 10.2.2 | Jenkins-managed private Helm bootstrap; GitOps reconciliation after acceptance | Pin official chart digest; use a dedicated read-only repository identity; review one-minor-at-a-time upgrades |
+| Cilium | 1.18, latest patch | Target GitOps deployment after Argo CD acceptance | Upgrade one supported minor at a time |
+| Argo CD | 3.4.6; chart 10.2.2 | Planned Jenkins-managed private Helm bootstrap; GitOps reconciliation only after acceptance | Pin official chart digest; use a dedicated read-only repository identity; review one-minor-at-a-time upgrades |
 | MetalLB | 0.15, latest patch | Kubernetes | Pin CRDs and controller/speaker images |
 | ingress-nginx | Chart 4.15.0; controller 1.15.1 | Jenkins-managed Helm release; controller image digest pinned | Validate chart lock, render, atomic deployment, second convergence, and rollback |
 | cert-manager | 1.18, latest patch | Kubernetes | Back up and upgrade CRDs first |
 | Kyverno | 1.15, latest patch | Kubernetes | Validate policies against new engine |
-| External Secrets Operator | 0.19, latest patch | Kubernetes | Validate CRDs and provider behavior |
+| External Secrets Operator | 0.19, latest patch | Planned Kubernetes add-on; not installed | Validate CRDs and provider behavior |
 | metrics-server | 0.8, latest patch | Kubernetes | Match supported Kubernetes versions |
 | Velero | 1.17, latest patch | Kubernetes | Verify backup-storage and volume plugins |
 | Longhorn | 1.12.0, V1 Data Engine | Jenkins-managed Helm bootstrap on Kubernetes; later explicit Argo CD handoff | Pin official chart digest; keep worker-only `/data/longhorn`; follow one-minor-at-a-time upgrade path |
@@ -78,7 +86,7 @@ and tested before deployment.
 | MinIO Community | `RELEASE.2025-04-22T22-12-26Z` | Native systemd on `minio.example.com` | `ansible-observability` |
 | Elastic Stack | 9.4.2 | Native packages on three Elasticsearch nodes plus Kibana and Logstash | [Elastic release notes](https://www.elastic.co/docs/release-notes) |
 | Filebeat | 9.4.2 | Native systemd sender on all 31 Rocky Linux VMs | [Filebeat filestream reference](https://www.elastic.co/docs/reference/beats/filebeat/filebeat-input-filestream) |
-| Splunk Enterprise | 10.4.1 | Native standalone installation on `splunk.example.com` | [Splunk Enterprise download](https://www.splunk.com/en_us/download/splunk-enterprise.html) |
+| Splunk Enterprise | 10.4.1 | Target native standalone installation on provisioned `splunk.example.com` VM | [Splunk Enterprise download](https://www.splunk.com/en_us/download/splunk-enterprise.html) |
 | Restic | 0.18, latest patch | Native on `backup.example.com` | Verify repository format and run `restic check` |
 
 ## Supporting Platform Packages

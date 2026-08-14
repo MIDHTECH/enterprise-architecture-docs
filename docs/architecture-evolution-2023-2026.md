@@ -1,9 +1,10 @@
 # Architecture Evolution: 2023–2026
 
-The main purpose of this lab is to demonstrate how an enterprise hybrid-cloud
-operating model evolved over the last three to four years. MAAS is retained as
-one optional application-modernization reference workload; it is not the
-program boundary. The 2018 product history provides context, while the primary
+The main purpose of this design is to demonstrate how the MidhHealth
+integrated-care hybrid operating model can evolve across a multi-year platform
+modernization. The application shape below is a provider/payer modernization
+pattern, not a claim that a particular business application is registered or
+deployed. The 2018 product history provides product context, while the primary
 engineering narrative is the 2023–2026 platform modernization.
 
 ## Executive View
@@ -68,15 +69,17 @@ Architecture changes:
 The objective is not to maximize service count. It is to create enforceable
 boundaries and independent delivery paths.
 
-## 2026: On-Premises Microservices Rehearsal
+## 2026: Integrated Platform Rehearsal
 
 Architecture changes:
 
-- run the complete platform on two Ubuntu/KVM hypervisors
+- operate the accepted platform across the documented Ubuntu/KVM hosts without
+  treating host count as product acceptance
 - use Rocky Linux product VMs and a kubeadm Kubernetes cluster
-- place user-facing HTTP services behind one non-HA
-  `nginx.example.com` reverse proxy and `*.apps.example.com` URLs
-- deploy independently versioned MAAS services through Argo CD
+- migrate user-facing routes one product at a time from the legacy shared
+  proxy to canonical service-local NGINX endpoints
+- design independently versioned MidhHealth application releases; use Jenkins
+  and Helm until Argo CD is separately accepted and receives ownership
 - give each service explicit API, event, data, SLO, and ownership contracts
 - apply zero-trust service identity, external secrets, policy enforcement, and
   software-supply-chain controls
@@ -86,7 +89,7 @@ Architecture changes:
 - exercise migration, failure, rollback, backup, and disaster recovery
 - defer EKS/ECR validation until the on-prem platform is accepted
 
-The on-prem platform is a migration rehearsal environment, not a permanent
+The on-prem platform is a design and migration rehearsal environment, not a permanent
 rejection of AWS. It makes architecture changes repeatable without incurring
 cloud costs during every learning and failure exercise.
 

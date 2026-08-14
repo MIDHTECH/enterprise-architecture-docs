@@ -10,6 +10,8 @@ bank="docs/use-case-interview-question-bank.md"
 test -f "$briefing"
 test -f "$bank"
 
+./scripts/generate-use-case-interview-bank.py --check
+
 required_briefing_sections=(
   "## About this reference organization"
   "## Business users and journeys"
@@ -57,6 +59,11 @@ linked = re.findall(
     r"\[(UC-[A-Z0-9]+-\d{3}): [^]]+\]\((use-cases/[^)]+\.md)\)", bank
 )
 counts = Counter(use_case_id for use_case_id, _ in linked)
+primary_questions = re.findall(
+    r"^\| \[UC-[A-Z0-9]+-\d{3}: [^]]+\]\([^)]+\) \| (.+?) \| .+ \|$",
+    bank,
+    re.M,
+)
 
 missing = sorted(set(expected) - set(counts))
 extra = sorted(set(counts) - set(expected))
@@ -76,6 +83,10 @@ if missing or extra or duplicates or wrong_paths:
 if len(linked) != len(documents):
     raise SystemExit(
         f"Interview-bank count {len(linked)} does not match detailed-page count {len(documents)}"
+    )
+if len(primary_questions) != len(documents) or len(set(primary_questions)) != len(documents):
+    raise SystemExit(
+        "Interview bank must contain one distinct context-derived primary question per use case"
     )
 
 platform_links = re.findall(

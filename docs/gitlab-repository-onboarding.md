@@ -144,8 +144,8 @@ for this evidence and the associated SRE near-miss record.
   platform delivery, platform engineering, reliability operations,
   security/governance, and data/integration.
 - Preserved existing repository names and histories.
-- Kept MAAS only as a reference workload and interview-source label, not as the
-  enterprise organization namespace.
+- Removed unrelated product namespaces from the enterprise boundary; external
+  interview research remains provenance only and is not a MidhHealth project.
 
 ### 2026-07-27 Enterprise Repository Scaffold Update
 

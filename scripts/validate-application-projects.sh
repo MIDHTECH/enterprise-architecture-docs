@@ -22,6 +22,7 @@ manifest = root / "docs/application-projects.json"
 integration_manifest = root / "docs/application-integration-contracts.json"
 applicability_manifest = root / "docs/application-usecase-applicability.json"
 coverage = root / "docs/application-usecase-coverage.md"
+portfolio = root / "docs/enterprise-project-portfolio-and-usecases.md"
 
 for required in (
     register,
@@ -34,6 +35,7 @@ for required in (
     integration_manifest,
     applicability_manifest,
     coverage,
+    portfolio,
 ):
     if not required.is_file():
         raise SystemExit(f"Missing application-project artifact: {required}")
@@ -377,9 +379,16 @@ use_case_paths = {
     path.relative_to(root).as_posix(): path
     for path in use_case_root.glob("*/UC-*.md")
 }
-if len(use_case_paths) != 226:
+total_match = re.search(
+    r"^\| \*\*Total\*\* \| \*\*(\d+)\*\* \|$", portfolio.read_text(), re.M
+)
+if not total_match:
+    raise SystemExit(f"{portfolio}: canonical total row is missing")
+expected_use_case_total = int(total_match.group(1))
+if len(use_case_paths) != expected_use_case_total:
     raise SystemExit(
-        f"{applicability_manifest}: expected 226 detailed use cases; found {len(use_case_paths)}"
+        f"{applicability_manifest}: expected {expected_use_case_total} detailed use cases; "
+        f"found {len(use_case_paths)}"
     )
 use_case_domains = {
     path.relative_to(use_case_root).parts[0]
@@ -463,7 +472,7 @@ for item in applicability_applications:
         )
         for use_case in use_case_paths
     }
-    if len(classifications) != 226 or set(classifications) != set(use_case_paths):
+    if len(classifications) != expected_use_case_total or set(classifications) != set(use_case_paths):
         raise SystemExit(f"{applicability_manifest}: {application_id} coverage is incomplete")
     coverage_totals[application_id] = {
         classification: list(classifications.values()).count(classification)
@@ -480,7 +489,7 @@ for item in unregistered_portfolios:
 
 coverage_text = coverage.read_text()
 for expected_phrase in (
-    "**226**",
+    f"**{expected_use_case_total}**",
     "**31**",
     "**195 classified by application-domain rules**",
     "Podinfo remains not deployed",

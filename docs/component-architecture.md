@@ -71,8 +71,8 @@ flowchart TB
     subgraph runtime[Runtime Platforms]
         proxy[Service-local NGINX / canonical URLs; legacy shared proxy during migration]
         kvm[infra01 and infra02 / Rocky VMs]
-        cloud[AWS / Azure / GCP]
-        clusters[AKS / EKS / GKE]
+        cloud[AWS / Azure / GCP - target only]
+        clusters[AKS / EKS / GKE - target only]
         apps[Containerized Applications]
         telemetry[Metrics / Logs / Traces]
         enterpriseobs[Elastic cluster / Kibana / Logstash; Splunk planned]
@@ -176,7 +176,9 @@ flowchart TB
    cluster configuration and Helm directly for Kubernetes releases.
 4. Terraform and Ansible provision and configure on-premises and cloud
    resources through the same review model.
-5. GitOps syncs approved Kubernetes desired state to clusters.
+5. After Argo CD is separately installed, accepted and given explicit
+   ownership, GitOps will sync approved Kubernetes desired state. Until that
+   handoff, Jenkins and Helm remain the accepted release path.
 6. Observability and governance continuously validate reliability, security, and compliance.
 7. `linux-systems-platform` uses the Jenkins/AWX Ansible launcher for approved
    Linux operations against the existing VM fleet.
@@ -205,5 +207,6 @@ cluster members. Elastic Stack 9.4.2 is installed; Splunk remains
 provisioned-only. Linux systems, database reliability, resilience/service
 operations, data engineering, and network engineering use existing VMs for
 first-slice automation and have no dedicated product allocation. The live
-Kubernetes cluster currently contains core components, Flannel, and Headlamp;
-the documented GitOps and policy add-ons remain planned.
+Kubernetes cluster currently contains core components, Flannel, Headlamp,
+accepted ClusterIP-only ingress-nginx and worker-only Longhorn 1.12.0 V1. The
+documented GitOps and policy add-ons remain planned.

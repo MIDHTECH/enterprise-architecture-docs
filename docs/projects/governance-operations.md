@@ -59,8 +59,8 @@ control. A green dashboard without negative tests is not proof of enforcement.
 Vault is installed, initialized, unsealed and reachable through the accepted
 NGINX path. GitLab, Jenkins and AWX use scoped service identities in the
 documented delivery path. Several governance products and controls remain
-designs: Keycloak is not installed, cloud accounts are not part of the active
-lab boundary, and Kubernetes admission-policy enforcement has not been
+designs: Keycloak requires revalidation before use, cloud accounts are not part
+of the active lab boundary, and Kubernetes admission-policy enforcement has not been
 accepted. Pages must distinguish a repository check, a live observation and an
 enforced runtime control.
 
