@@ -240,7 +240,7 @@ The first Clinical and Payer Workflow Integration implementation is deliberately
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/contracts/uc-ai-014.yaml` |
-| Primary implementation | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/src/evaluations/clinical-and-payer-workflow-integration.py`; entry point: the `evaluate_clinical_and_payer_workflow_integration` offline evaluator |
+| Primary implementation | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/src/evaluations/clinical_and_payer_workflow_integration.py`; entry point: the `evaluate_clinical_and_payer_workflow_integration` offline evaluator |
 | Machine-readable result schema | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/schemas/uc-ai-014-result.schema.json` |
 | Positive, negative, malformed, and recovery fixtures | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/tests/fixtures/uc-ai-014/` |
 | GitLab source gate | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/.gitlab/ci/uc-ai-014.yml` |

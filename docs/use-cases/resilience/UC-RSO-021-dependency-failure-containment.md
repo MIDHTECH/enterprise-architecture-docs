@@ -218,7 +218,7 @@ calling an external service.
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Profile and target allowlist | `midhhealth/reliability-operations/resilience-service-operations/contracts/uc-rso-021.yaml` |
-| Primary implementation | `midhhealth/reliability-operations/resilience-service-operations/src/dependency_resilience/evaluate.py` |
+| Primary implementation | `midhhealth/reliability-operations/resilience-service-operations/src/dependency_resilience/evaluate.py`; entry point: the `evaluate_dependency_resilience` scenario evaluator |
 | Machine-readable result schema | `midhhealth/reliability-operations/resilience-service-operations/schemas/uc-rso-021-result.schema.json` |
 | Positive, blocking, malformed and recovery fixtures | `midhhealth/reliability-operations/resilience-service-operations/tests/fixtures/uc-rso-021/` |
 | GitLab CI include | `midhhealth/reliability-operations/resilience-service-operations/.gitlab/ci/uc-rso-021.yml` |

@@ -239,7 +239,7 @@ The first Feature Engineering and Feature Stores implementation is deliberately 
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/ai-and-ml-platform/mlops-model-platform/contracts/uc-mlops-003.yaml` |
-| Primary implementation | `midhhealth/ai-and-ml-platform/mlops-model-platform/src/lifecycle/feature-engineering-and-feature-stores.py`; entry point: the `run_feature_engineering_and_feature_stores` lifecycle evaluator |
+| Primary implementation | `midhhealth/ai-and-ml-platform/mlops-model-platform/src/lifecycle/feature_engineering_and_feature_stores.py`; entry point: the `run_feature_engineering_and_feature_stores` lifecycle evaluator |
 | Machine-readable result schema | `midhhealth/ai-and-ml-platform/mlops-model-platform/schemas/uc-mlops-003-result.schema.json` |
 | Positive, negative, malformed, and recovery fixtures | `midhhealth/ai-and-ml-platform/mlops-model-platform/tests/fixtures/uc-mlops-003/` |
 | GitLab source gate | `midhhealth/ai-and-ml-platform/mlops-model-platform/.gitlab/ci/uc-mlops-003.yml` |

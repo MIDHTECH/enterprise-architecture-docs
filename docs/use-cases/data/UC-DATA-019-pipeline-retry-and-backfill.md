@@ -240,7 +240,7 @@ The first Pipeline Retry and Backfill implementation is deliberately source-only
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/data-and-integration/data-engineering-platform/contracts/uc-data-019.yaml` |
-| Primary implementation | `midhhealth/data-and-integration/data-engineering-platform/src/use_cases/pipeline-retry-and-backfill.py`; entry point: the `run_pipeline_retry_and_backfill` evaluation entry point |
+| Primary implementation | `midhhealth/data-and-integration/data-engineering-platform/src/use_cases/pipeline_retry_and_backfill.py`; entry point: the `run_pipeline_retry_and_backfill` evaluation entry point |
 | Machine-readable result schema | `midhhealth/data-and-integration/data-engineering-platform/schemas/uc-data-019-result.schema.json` |
 | Positive, negative, malformed, and recovery fixtures | `midhhealth/data-and-integration/data-engineering-platform/tests/fixtures/uc-data-019/` |
 | GitLab source gate | `midhhealth/data-and-integration/data-engineering-platform/.gitlab/ci/uc-data-019.yml` |

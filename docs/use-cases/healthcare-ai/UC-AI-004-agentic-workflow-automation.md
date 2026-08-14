@@ -240,7 +240,7 @@ The first Agentic Workflow Automation implementation is deliberately source-only
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/contracts/uc-ai-004.yaml` |
-| Primary implementation | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/src/evaluations/agentic-workflow-automation.py`; entry point: the `evaluate_agentic_workflow_automation` offline evaluator |
+| Primary implementation | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/src/evaluations/agentic_workflow_automation.py`; entry point: the `evaluate_agentic_workflow_automation` offline evaluator |
 | Machine-readable result schema | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/schemas/uc-ai-004-result.schema.json` |
 | Positive, negative, malformed, and recovery fixtures | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/tests/fixtures/uc-ai-004/` |
 | GitLab source gate | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/.gitlab/ci/uc-ai-004.yml` |

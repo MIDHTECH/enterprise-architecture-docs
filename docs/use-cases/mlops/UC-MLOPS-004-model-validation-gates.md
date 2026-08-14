@@ -239,7 +239,7 @@ The first Model Validation Gates implementation is deliberately source-only. Its
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/ai-and-ml-platform/mlops-model-platform/contracts/uc-mlops-004.yaml` |
-| Primary implementation | `midhhealth/ai-and-ml-platform/mlops-model-platform/src/lifecycle/model-validation-gates.py`; entry point: the `run_model_validation_gates` lifecycle evaluator |
+| Primary implementation | `midhhealth/ai-and-ml-platform/mlops-model-platform/src/lifecycle/model_validation_gates.py`; entry point: the `run_model_validation_gates` lifecycle evaluator |
 | Machine-readable result schema | `midhhealth/ai-and-ml-platform/mlops-model-platform/schemas/uc-mlops-004-result.schema.json` |
 | Positive, negative, malformed, and recovery fixtures | `midhhealth/ai-and-ml-platform/mlops-model-platform/tests/fixtures/uc-mlops-004/` |
 | GitLab source gate | `midhhealth/ai-and-ml-platform/mlops-model-platform/.gitlab/ci/uc-mlops-004.yml` |

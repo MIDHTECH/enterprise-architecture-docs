@@ -240,7 +240,7 @@ The first Responsible AI Controls implementation is deliberately source-only. It
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/contracts/uc-ai-008.yaml` |
-| Primary implementation | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/src/evaluations/responsible-ai-controls.py`; entry point: the `evaluate_responsible_ai_controls` offline evaluator |
+| Primary implementation | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/src/evaluations/responsible_ai_controls.py`; entry point: the `evaluate_responsible_ai_controls` offline evaluator |
 | Machine-readable result schema | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/schemas/uc-ai-008-result.schema.json` |
 | Positive, negative, malformed, and recovery fixtures | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/tests/fixtures/uc-ai-008/` |
 | GitLab source gate | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/.gitlab/ci/uc-ai-008.yml` |

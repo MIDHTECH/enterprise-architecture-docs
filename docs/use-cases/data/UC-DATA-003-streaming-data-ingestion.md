@@ -239,7 +239,7 @@ The first Streaming Data Ingestion implementation is deliberately source-only. I
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/data-and-integration/data-engineering-platform/contracts/uc-data-003.yaml` |
-| Primary implementation | `midhhealth/data-and-integration/data-engineering-platform/src/use_cases/streaming-data-ingestion.py`; entry point: the `run_streaming_data_ingestion` evaluation entry point |
+| Primary implementation | `midhhealth/data-and-integration/data-engineering-platform/src/use_cases/streaming_data_ingestion.py`; entry point: the `run_streaming_data_ingestion` evaluation entry point |
 | Machine-readable result schema | `midhhealth/data-and-integration/data-engineering-platform/schemas/uc-data-003-result.schema.json` |
 | Positive, negative, malformed, and recovery fixtures | `midhhealth/data-and-integration/data-engineering-platform/tests/fixtures/uc-data-003/` |
 | GitLab source gate | `midhhealth/data-and-integration/data-engineering-platform/.gitlab/ci/uc-data-003.yml` |

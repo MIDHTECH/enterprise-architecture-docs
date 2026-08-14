@@ -239,7 +239,7 @@ The first AI Observability implementation is deliberately source-only. Its plann
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/contracts/uc-ai-013.yaml` |
-| Primary implementation | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/src/evaluations/ai-observability.py`; entry point: the `evaluate_ai_observability` offline evaluator |
+| Primary implementation | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/src/evaluations/ai_observability.py`; entry point: the `evaluate_ai_observability` offline evaluator |
 | Machine-readable result schema | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/schemas/uc-ai-013-result.schema.json` |
 | Positive, negative, malformed, and recovery fixtures | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/tests/fixtures/uc-ai-013/` |
 | GitLab source gate | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/.gitlab/ci/uc-ai-013.yml` |

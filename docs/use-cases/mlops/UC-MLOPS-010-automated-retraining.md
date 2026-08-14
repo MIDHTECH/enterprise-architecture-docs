@@ -240,7 +240,7 @@ The first Automated Retraining implementation is deliberately source-only. Its p
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/ai-and-ml-platform/mlops-model-platform/contracts/uc-mlops-010.yaml` |
-| Primary implementation | `midhhealth/ai-and-ml-platform/mlops-model-platform/src/lifecycle/automated-retraining.py`; entry point: the `run_automated_retraining` lifecycle evaluator |
+| Primary implementation | `midhhealth/ai-and-ml-platform/mlops-model-platform/src/lifecycle/automated_retraining.py`; entry point: the `run_automated_retraining` lifecycle evaluator |
 | Machine-readable result schema | `midhhealth/ai-and-ml-platform/mlops-model-platform/schemas/uc-mlops-010-result.schema.json` |
 | Positive, negative, malformed, and recovery fixtures | `midhhealth/ai-and-ml-platform/mlops-model-platform/tests/fixtures/uc-mlops-010/` |
 | GitLab source gate | `midhhealth/ai-and-ml-platform/mlops-model-platform/.gitlab/ci/uc-mlops-010.yml` |

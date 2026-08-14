@@ -217,7 +217,7 @@ cannot be proven.
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Contract and target allowlist | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/contracts/uc-cicd-016.yaml` |
-| Primary implementation | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/src/release_contracts/evaluate.py` |
+| Primary implementation | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/src/release_contracts/evaluate.py`; entry point: the `evaluate_release_contracts` contract evaluator |
 | Machine-readable result schema | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/schemas/uc-cicd-016-result.schema.json` |
 | Positive, blocking, malformed and recovery fixtures | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/tests/fixtures/uc-cicd-016/` |
 | GitLab CI include | `midhhealth/platform-delivery/devsecops-cicd-orchestrator/.gitlab/ci/uc-cicd-016.yml` |

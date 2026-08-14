@@ -240,7 +240,7 @@ The first Data Lineage implementation is deliberately source-only. Its planned f
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/data-and-integration/data-engineering-platform/contracts/uc-data-014.yaml` |
-| Primary implementation | `midhhealth/data-and-integration/data-engineering-platform/src/use_cases/data-lineage.py`; entry point: the `run_data_lineage` evaluation entry point |
+| Primary implementation | `midhhealth/data-and-integration/data-engineering-platform/src/use_cases/data_lineage.py`; entry point: the `run_data_lineage` evaluation entry point |
 | Machine-readable result schema | `midhhealth/data-and-integration/data-engineering-platform/schemas/uc-data-014-result.schema.json` |
 | Positive, negative, malformed, and recovery fixtures | `midhhealth/data-and-integration/data-engineering-platform/tests/fixtures/uc-data-014/` |
 | GitLab source gate | `midhhealth/data-and-integration/data-engineering-platform/.gitlab/ci/uc-data-014.yml` |

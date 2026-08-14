@@ -239,7 +239,7 @@ The first ML Incident Response implementation is deliberately source-only. Its p
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/ai-and-ml-platform/mlops-model-platform/contracts/uc-mlops-015.yaml` |
-| Primary implementation | `midhhealth/ai-and-ml-platform/mlops-model-platform/src/lifecycle/ml-incident-response.py`; entry point: the `run_ml_incident_response` lifecycle evaluator |
+| Primary implementation | `midhhealth/ai-and-ml-platform/mlops-model-platform/src/lifecycle/ml_incident_response.py`; entry point: the `run_ml_incident_response` lifecycle evaluator |
 | Machine-readable result schema | `midhhealth/ai-and-ml-platform/mlops-model-platform/schemas/uc-mlops-015-result.schema.json` |
 | Positive, negative, malformed, and recovery fixtures | `midhhealth/ai-and-ml-platform/mlops-model-platform/tests/fixtures/uc-mlops-015/` |
 | GitLab source gate | `midhhealth/ai-and-ml-platform/mlops-model-platform/.gitlab/ci/uc-mlops-015.yml` |

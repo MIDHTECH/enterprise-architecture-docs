@@ -240,7 +240,7 @@ The first Change-Data Capture implementation is deliberately source-only. Its pl
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/data-and-integration/data-engineering-platform/contracts/uc-data-004.yaml` |
-| Primary implementation | `midhhealth/data-and-integration/data-engineering-platform/src/use_cases/change-data-capture.py`; entry point: the `run_change_data_capture` evaluation entry point |
+| Primary implementation | `midhhealth/data-and-integration/data-engineering-platform/src/use_cases/change_data_capture.py`; entry point: the `run_change_data_capture` evaluation entry point |
 | Machine-readable result schema | `midhhealth/data-and-integration/data-engineering-platform/schemas/uc-data-004-result.schema.json` |
 | Positive, negative, malformed, and recovery fixtures | `midhhealth/data-and-integration/data-engineering-platform/tests/fixtures/uc-data-004/` |
 | GitLab source gate | `midhhealth/data-and-integration/data-engineering-platform/.gitlab/ci/uc-data-004.yml` |

@@ -239,7 +239,7 @@ The first Data Reconciliation implementation is deliberately source-only. Its pl
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/data-and-integration/data-engineering-platform/contracts/uc-data-021.yaml` |
-| Primary implementation | `midhhealth/data-and-integration/data-engineering-platform/src/use_cases/data-reconciliation.py`; entry point: the `run_data_reconciliation` evaluation entry point |
+| Primary implementation | `midhhealth/data-and-integration/data-engineering-platform/src/use_cases/data_reconciliation.py`; entry point: the `run_data_reconciliation` evaluation entry point |
 | Machine-readable result schema | `midhhealth/data-and-integration/data-engineering-platform/schemas/uc-data-021-result.schema.json` |
 | Positive, negative, malformed, and recovery fixtures | `midhhealth/data-and-integration/data-engineering-platform/tests/fixtures/uc-data-021/` |
 | GitLab source gate | `midhhealth/data-and-integration/data-engineering-platform/.gitlab/ci/uc-data-021.yml` |

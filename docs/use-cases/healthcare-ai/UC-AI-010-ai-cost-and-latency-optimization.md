@@ -240,7 +240,7 @@ The first AI Cost and Latency Optimization implementation is deliberately source
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/contracts/uc-ai-010.yaml` |
-| Primary implementation | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/src/evaluations/ai-cost-and-latency-optimization.py`; entry point: the `evaluate_ai_cost_and_latency_optimization` offline evaluator |
+| Primary implementation | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/src/evaluations/ai_cost_and_latency_optimization.py`; entry point: the `evaluate_ai_cost_and_latency_optimization` offline evaluator |
 | Machine-readable result schema | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/schemas/uc-ai-010-result.schema.json` |
 | Positive, negative, malformed, and recovery fixtures | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/tests/fixtures/uc-ai-010/` |
 | GitLab source gate | `midhhealth/ai-and-ml-platform/healthcare-ai-platform/.gitlab/ci/uc-ai-010.yml` |

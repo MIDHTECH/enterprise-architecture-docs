@@ -214,7 +214,7 @@ The first Model Registry and Versioning implementation is deliberately source-on
 | Planned source responsibility | Exact planned location |
 | --- | --- |
 | Use-case contract and target allowlist | `midhhealth/ai-and-ml-platform/mlops-model-platform/contracts/uc-mlops-001.yaml` |
-| Primary implementation | `midhhealth/ai-and-ml-platform/mlops-model-platform/src/lifecycle/model-registry-versioning.py`; entry point: the `run_model_registry_versioning` lifecycle evaluator |
+| Primary implementation | `midhhealth/ai-and-ml-platform/mlops-model-platform/src/lifecycle/model_registry_versioning.py`; entry point: the `run_model_registry_versioning` lifecycle evaluator |
 | Machine-readable result schema | `midhhealth/ai-and-ml-platform/mlops-model-platform/schemas/uc-mlops-001-result.schema.json` |
 | Positive, negative, malformed, and recovery fixtures | `midhhealth/ai-and-ml-platform/mlops-model-platform/tests/fixtures/uc-mlops-001/` |
 | GitLab source gate | `midhhealth/ai-and-ml-platform/mlops-model-platform/.gitlab/ci/uc-mlops-001.yml` |

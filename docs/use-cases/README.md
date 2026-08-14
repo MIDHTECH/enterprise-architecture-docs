@@ -98,6 +98,8 @@ plan without authorizing infrastructure or runtime work. Required content is:
    implementation, result schema, fixtures, CI include, and operator runbook;
    the primary implementation project and all six paths must remain unique in
    the [project and delivery register](../use-case-delivery-register.md);
+   planned Python modules must use import-safe identifiers and name one unique
+   callable entry point inside their implementation project;
    and
 8. staged delivery from contract and source validation through read-only proof,
    separately approved canary execution, independent verification, and

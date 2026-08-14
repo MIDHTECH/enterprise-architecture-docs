@@ -62,6 +62,7 @@ required_docs=(
   "scripts/generate-use-case-implementation-sequence.py"
   "scripts/generate-use-case-delivery-register.py"
   "scripts/normalize-use-case-delivery-records.py"
+  "scripts/normalize-python-source-contracts.py"
   "docs/use-cases/README.md"
   "docs/use-cases/enterprise-traceability.md"
   "docs/use-cases/devsecops/README.md"
@@ -95,6 +96,7 @@ done
 ./scripts/validate-use-cases.sh
 ./scripts/generate-use-case-implementation-sequence.py --check
 ./scripts/normalize-use-case-delivery-records.py --check
+./scripts/normalize-python-source-contracts.py --check
 ./scripts/generate-use-case-delivery-register.py --check
 ./scripts/validate-platform-detail-pages.sh
 ./scripts/validate-onboarding-interview-docs.sh
