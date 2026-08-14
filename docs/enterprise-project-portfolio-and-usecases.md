@@ -746,22 +746,26 @@ boundary, connectivity domains, evidence flow, and operational feedback loop.
 
 ## Enterprise Healthcare AI Platform
 
-**Status:** Approved planned project.
+**Status:** Platform design approved. UC-AI-001 is implemented in source
+locally; no model service, employee-facing assistant, protected-data
+connection, or production runtime is accepted.
 
-**Purpose:** Build production-ready AI application capabilities for care
-delivery, payer operations, value-based care, member services, clinician
-workflows, and enterprise knowledge automation.
+**Enterprise role:** Provide the operating and assurance model that lets a
+MidhHealth workflow owner decide whether an AI-assisted capability is useful,
+grounded, authorized, supportable, and reversible. The platform owns the
+versioned AI behavior and its release evidence; provider, payer, application,
+knowledge, security, and data owners retain their existing decisions.
 
-**Candidate tools:** Python, FastAPI, LangChain or LangGraph, Semantic Kernel,
-AutoGen, vector databases, Azure AI Search, Weaviate, Pinecone, FAISS,
-OpenAI-compatible APIs, FHIR APIs, Kubernetes, Helm, Terraform, GitLab CI,
-Prometheus, Grafana, OpenTelemetry, policy-as-code and responsible AI checks.
+**Initial service:** Governed retrieval evaluation for approved operational
+knowledge. The deterministic source proof measures authorization boundaries,
+citations, refusals, latency, TTFT, failure behavior, and source revisions
+without requiring an AI runtime.
 
-**Lab placement:** `midh-ai-edge-01` supports local inference, embeddings,
-prompt evaluation, notebooks, and AI assistant prototypes without becoming a
-production data host. Backend vector search, API services, telemetry, and
-larger batch workloads should target Kubernetes or the planned 256 GB Linux
-server when capacity is available.
+**Placement boundary:** Source validation uses the accepted CI path. The Mac
+Studio is a possible future development or edge-evaluation target only after a
+model, license, checksum, data classification, capacity, endpoint, support, and
+shutdown decision. Kubernetes and the planned memory-optimized server are not
+default AI targets and are not authorized by this portfolio entry.
 
 **Architecture:**
 

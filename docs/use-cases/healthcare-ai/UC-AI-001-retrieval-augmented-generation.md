@@ -22,45 +22,58 @@ Last verified: 2026-08-14
 
 ## Purpose
 
-Platform, provider, and payer staff need a controlled way to retrieve relevant
-runbook, architecture, policy, and service-ownership passages with stable
-citations. The first slice proves ingestion, retrieval, evaluation, and audit
-metadata in CI; generation remains disabled until a model endpoint is
-separately approved.
+MidhHealth staff make operational decisions across a provider-payer enterprise,
+but the explanation they need may be spread across runbooks, architecture
+records, policies, incident notes, and service ownership documents. The first
+business capability is therefore **enterprise knowledge access for operational
+decision support**: help an engineer or operations analyst find the approved
+source behind an answer without turning the system into a clinical or payer
+decision maker.
+
+The current slice proves that retrieval can be tested, measured, denied, and
+explained before MidhHealth accepts a model service. It includes deterministic
+offline embeddings and extractive responses for repeatable evaluation. An
+external model endpoint, production assistant, and application integration are
+not part of the accepted boundary.
 
 ## Expected outcome
 
-A GitLab pipeline builds an ephemeral index from an allowlisted documentation
-snapshot, runs a versioned question set, and publishes retrieval relevance,
-citation resolution, latency, and refusal results. Every result links to the
-source path and commit. Queries outside the corpus return `insufficient
-approved context`.
+For a versioned set of non-sensitive documents, the source proof must answer
+three enterprise questions: did the caller receive only knowledge within the
+approved scope, can every answer be traced to the exact source revision, and
+does the workflow stop cleanly when evidence is missing? The report records
+retrieval and citation results, refusal leakage, latency, time to first token,
+stage coverage, and the corpus, provider, and retrieval revisions. Queries
+outside the approved scope return `insufficient-approved-context`.
 
 ## Platform and enterprise fit
 
 | Relationship | Detailed fit |
 | --- | --- |
-| Owning platform | **Retrieval-Augmented Generation** belongs to the Enterprise Healthcare AI Platform because that platform turns versioned AI behavior and approved knowledge/data into offline evaluation, human review, safety decisions, and controlled fallback. |
-| Enterprise consumers | The capability supports provider, payer, and enterprise-assistance workflows that must remain safe and reviewable. |
-| Enterprise outcome | Its planned result advances: Help staff locate cited, approved operational knowledge without exposing protected data or trusting uncited output. |
-| Control contribution | The design adds privacy, grounding, bias and safety evaluation, human oversight, traceability, and shutdown controls. |
-| Cross-platform handoff | Supporting platforms consume a reviewed result or evidence artifact; they do not take ownership away from the primary platform. |
-| Infrastructure boundary | Fit is achieved by reusing documented existing repositories, control planes, services, and targets—not by inventing capacity or treating planned products as available. |
+| Owning platform | Healthcare AI owns the retrieval behavior, evaluation contract, release decision, and safe fallback. It does not own the source documents or the consuming workflow. |
+| Business capability | Enterprise knowledge access and operational decision support across shared provider, payer, and platform operations. |
+| First consumers | Platform engineers and operations analysts working with approved runbooks, service standards, and incident knowledge. Clinical and claims decision support is excluded from this slice. |
+| Value hypothesis | Reduce time spent searching across repositories and reduce unsupported operational answers. The baseline and improvement target have not yet been measured, so no time-saving claim is made. |
+| Enterprise risk reduced | An answer that crosses an authorization boundary, cites the wrong revision, or appears authoritative without evidence is refused rather than passed to a workflow. |
+| Required handoffs | Knowledge owners approve content; Data Governance defines classification; AI Security defines caller scope; AI Evaluation supplies release evidence; the workflow owner decides whether the capability is useful. |
+| Infrastructure boundary | The source proof reuses the existing repository and accepted CI path. It does not create a model server, vector database, application, VM, cluster workload, cloud service, or new storage. |
 
-The platform fit is therefore based on ownership and a reusable decision, not
-on the presence of a particular tool. Enterprise fit requires evidence that the
-named outcome was observed for the bounded scope; completing documentation or
-running an isolated technology demonstration is insufficient.
+Enterprise acceptance is not “the RAG test passed.” It is a decision by the
+workflow owner that cited retrieval improves a named task at an acceptable
+quality, risk, latency, and operating cost. The current source proof establishes
+the measurement and control mechanism; it does not yet establish that business
+value.
 
 ## Trigger and actors
 
 | Item | Definition |
 | --- | --- |
-| Trigger | Merge request changing corpus policy, chunking, retrieval logic, or evaluation cases |
-| Knowledge owner | Approves documents and review/expiry metadata |
-| Retrieval engineer | Implements indexing, ranking, and citations |
-| AI safety engineer | Defines refusal, injection, leakage, and quality tests |
-| Workflow owner | Confirms usefulness for a provider, payer, or platform task |
+| Trigger | A reviewed change to corpus policy, chunking, retrieval, provider behavior, evaluation cases, or release thresholds |
+| Workflow sponsor | Names the employee task, accepts the value measure, and decides whether the capability should enter a real workflow; not yet assigned for runtime use |
+| Knowledge owner | Approves each source, classification, revision, freshness rule, and removal decision |
+| Healthcare AI owner | Owns implementation, evaluation, release restriction, suspension, and rollback of the retrieval behavior |
+| Security and data owners | Define caller scope, prohibited data, artifact handling, and exception decisions |
+| SRE or service owner | Sets runtime SLOs and accepts operational support only when a runtime service is proposed |
 
 ## Preconditions
 
@@ -74,151 +87,158 @@ running an isolated technology demonstration is insufficient.
 
 ## Scope and exclusions
 
-In scope are corpus allowlisting, document checksums, deterministic chunking,
-local lexical retrieval, citations, evaluation, injection fixtures, refusal,
-and audit metadata. LLM generation, embeddings services, vector databases,
-agents, tool execution, FHIR connections, clinical advice, claims decisions,
-new compute, and protected data are excluded.
+In scope are deterministic offline embeddings, lexical and vector retrieval,
+fusion and reranking, bounded context selection, extractive responses, stable
+citations, authorization fixtures, failure handling, cache isolation, latency
+evidence, and a machine-readable release decision. External model or embedding
+services, persistent vector databases, agents, tool execution, FHIR
+connections, clinical advice, claims decisions, new compute, and protected data
+are excluded.
 
 ## Design walkthrough
 
-For design review, walk through Retrieval-Augmented Generation by trying to follow an approved
-question and evidence source through retrieval, review and a bounded answer. The result
-MidhHealth needs is to Help staff locate cited, approved operational knowledge without exposing
-protected data or trusting uncited output. Healthcare AI Platform team owns the platform
-decision, while the consuming service or business owner still accepts the effect on its
-workflow.
+An operations analyst asks, “What evidence is required before we right-size a
+service after a cost anomaly?” The request carries the analyst's approved
+scope and an operations or finance partition. Before ranking begins, the
+retriever removes every document outside that scope. Lexical and deterministic
+vector searches run over the remaining chunks, fusion and reranking choose a
+bounded context, and the offline provider returns an extractive response. A
+citation is accepted only when its chunk belongs to the context selected for
+that request.
 
-Follow the information rather than the products: ownership and classification travel with it,
-including on rejected and replayed paths. In this page, **UC-AI-005: Healthcare Knowledge Base
-Indexing** contributes offline safety and quality decision with human-review and shutdown
-requirements; **UC-AI-011: AI Security and Access Control** contributes offline safety and
-quality decision with human-review and shutdown requirements. The first buildable boundary is
-Existing healthcare-AI GitLab project, accepted shared runner, and approved documentation
-snapshots. The design stops at this rule: No model server, vector database, VM, cluster
-workload, cloud API, or new storage is created.
+That flow is intentionally less impressive than a general assistant. Its value
+is that an architecture reviewer can explain why a source was eligible, which
+revision supported the response, where time was spent, and why another caller
+was denied. If the corpus is stale, authorization is empty, a provider fails,
+or a citation is invented, the result is a structured refusal with no leaked
+retrieval result.
 
-The walkthrough becomes useful when the happy path breaks. If a required dependency or
-verification result is unavailable, the expected response is to stop before mutation, preserve
-the evidence and return the decision to the accountable owner. The leading design threat is
-prompt, retrieved content, model output, or tool request crossing a data or authorization
-boundary; therefore a green source job, screenshot or reachable endpoint is supporting evidence,
-not acceptance by itself.
+The current buildable boundary is this offline source proof. The workflow
+sponsor still has work to do before runtime use: select a real
+employee journey, measure today's search and verification time, approve the
+knowledge set, and decide what improvement would justify operating a service.
+Until those decisions exist, UC-AI-001 remains an enterprise control and
+evaluation capability—not an employee-facing application.
 
 ## Architecture context
 
-Retrieval-Augmented Generation is evaluated inside the existing enterprise lab and the owning
-platform's current source-control and execution boundaries. The architectural
-unit is the governed outcome—**Help staff locate cited, approved operational knowledge without exposing protected data or trusting uncited output**—rather than a new product or
-environment.
+UC-AI-001 sits between governed knowledge and an eventual employee workflow.
+It is not a knowledge owner, identity provider, model platform, or application.
+Its architectural responsibility is to turn an approved question, caller
+scope, corpus revision, and retrieval policy into either cited context or an
+explainable refusal.
 
 | Context element | Architecture statement |
 | --- | --- |
-| Business and operational setting | Enterprise consumers: Provider operations, payer operations, shared digital platform, risk and compliance. The result must be explainable, repeatable, and owned. |
+| Business and operational setting | MidhHealth Integrated Care shares operational knowledge across provider, payer, and platform teams. The first slice serves platform and operations staff; regulated workflow integration remains future work. |
 | Current state | **Implemented in source locally — GitLab publication, pipeline evidence, and runtime acceptance remain pending** |
-| Desired state | A reviewed contract drives a bounded result, machine-readable evidence, and a safe stop or recovery decision. |
+| Desired state | An approved employee task consumes a governed retrieval service with measurable value, explicit decision rights, runtime SLOs, unit-cost evidence, and a tested shutdown path. |
 | Existing target boundary | Existing healthcare-AI GitLab project, accepted shared runner, and approved documentation snapshots |
 | Infrastructure constraint | No model server, vector database, VM, cluster workload, cloud API, or new storage is created |
 | Accountable platform owner | Healthcare AI Platform team; the consuming service, data, security, or workflow owner remains accountable for accepting business impact. |
 
-The page owns the contract, control logic, evidence, and recovery behavior for
-Retrieval-Augmented Generation. It does not absorb the responsibilities of the dependency use cases
-listed below.
+The current source proof owns retrieval logic and evaluation evidence only.
+The knowledge owner remains accountable for content, Security for access
+policy, and the workflow sponsor for business adoption.
 
 ## Architecture diagram
 
 ![UC-AI-001 architecture showing demand, source contracts, planned control, existing target, evidence, and recovery](../../assets/use-cases/UC-AI-001/UC-AI-001-architecture.svg)
 
-Follow the information, not the boxes. The main route keeps contract, classification, processing, and consumption visible; the orange route is where refused or replayable work waits for a human decision.
+The SVG reads from the approved question and corpus through admission, scoped
+retrieval, evidence gates, and the workflow owner. The orange branch shows the
+specific conditions that end in refusal or owner review instead of an answer.
 
 ## Dependencies and handoffs
 
-Retrieval-Augmented Generation remains accountable to its primary platform. The dependencies below
-provide explicit contracts or assurance evidence; they do not become alternate owners.
+These handoffs are part of the service contract. Each contributes different
+information; none can be replaced by a generic approval statement.
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-AI-005: Healthcare Knowledge Base Indexing](UC-AI-005-healthcare-knowledge-base-indexing.md) | offline safety and quality decision with human-review and shutdown requirements | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
-| Required upstream contract | [UC-AI-011: AI Security and Access Control](UC-AI-011-ai-security-and-access-control.md) | offline safety and quality decision with human-review and shutdown requirements | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
-| Coordinated assurance handoff | [UC-DATA-023: Data Access Governance](../data/UC-DATA-023-data-access-governance.md) | validated data result with counts, lineage, quality, and reconciliation state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
-| Coordinated assurance handoff | [UC-AI-007: AI Prompt and Response Evaluation](UC-AI-007-ai-prompt-and-response-evaluation.md) | offline safety and quality decision with human-review and shutdown requirements | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-AI-005: Healthcare Knowledge Base Indexing](UC-AI-005-healthcare-knowledge-base-indexing.md) | Corpus manifest with source owner, immutable revision, classification, checksum, freshness, exclusion, and deletion status | An unowned, changed, expired, or partly indexed corpus blocks evaluation; the prior accepted manifest remains the only eligible input. |
+| Required upstream contract | [UC-AI-011: AI Security and Access Control](UC-AI-011-ai-security-and-access-control.md) | Caller or service identity mapped to permitted scopes, metadata partitions, provider actions, and emergency revocation | Missing scope produces a refusal. A scope mismatch is a security failure and cannot be bypassed by retrieval relevance. |
+| Coordinated assurance handoff | [UC-DATA-023: Data Access Governance](../data/UC-DATA-023-data-access-governance.md) | Classification, permitted purpose, steward, retention, and evidence-handling decision for every corpus class | Unknown classification or prohibited content blocks ingestion before embedding or retrieval. |
+| Coordinated assurance handoff | [UC-AI-007: AI Prompt and Response Evaluation](UC-AI-007-ai-prompt-and-response-evaluation.md) | Versioned ordinary, missing-context, unauthorized, malformed, injection, and provider-failure cases with warning and blocking thresholds | A regression holds promotion and identifies the failed case and revision; an average score cannot waive a blocking safety case. |
 
-Before Retrieval-Augmented Generation is implemented, every handoff must resolve to an immutable
-revision and machine-readable artifact. A URL, screenshot, or verbal approval
-alone is not sufficient dependency evidence.
+The local source implementation uses deterministic fixtures in place of these
+enterprise handoffs. Before publication is called code-complete, those fixtures
+must pass protected CI. Before runtime promotion, each fixture contract must be
+replaced or explicitly approved as a versioned enterprise artifact.
 
 ## Quality attributes
 
-For Retrieval-Augmented Generation, quality is measured against the bounded enterprise outcome—not
-document length or a green job. Unapproved business thresholds remain explicit
-decisions and must not be invented.
+Retrieval quality is not the size of the index or a green pipeline. It is the
+ability to find the expected approved source, refuse an ineligible request,
+bind citations to the selected context, expose latency by stage, and help a
+workflow owner judge whether the result is worth using.
 
 | Attribute | Required measure or invariant | Decision state |
 | --- | --- | --- |
 | Functional correctness | Every required input is validated; **Help staff locate cited, approved operational knowledge without exposing protected data or trusting uncited output** is evaluated against positive, negative, missing-input, and unauthorized-scope cases. | Fixed design requirement |
-| Performance and scale | Establish a baseline for safety-case coverage, citation or decision accuracy, latency baseline, and review burden on existing capacity; the owner must approve warning and blocking thresholds before runtime promotion. | Thresholds `TBD` before implementation |
+| Performance and scale | Source gates require 100% fixture-case success, p95 total latency at or below 250 ms, and p95 TTFT at or below 100 ms on the deterministic test set. These thresholds detect source regressions; they are not production SLOs. | Source gates implemented; runtime thresholds `TBD` before runtime implementation |
 | Reliability | Missing prerequisites, stale dependencies, malformed evidence, and partial results fail closed without widening scope. | Fixed design requirement |
 | Recovery | Record the maximum acceptable interruption and recovery time before runtime use; source-only validation must remain zero-change. | Owner decision required before runtime exercise |
 | Observability | Emit use-case ID, revision, target, executor, start/end time, duration, decision, reason code, and recovery reference. | Required in the result schema |
 | Evidence retention | Assign classification, retention period, and deletion owner before storing runtime evidence. | Security/compliance decision required |
 
-Load, latency, availability, retention, RTO, and RPO values for Retrieval-Augmented Generation become
-requirements only after the named service or business owner approves them. Until
-then, the implementation gate records them as unresolved instead of quietly
-choosing defaults.
+Runtime availability, concurrency, semantic quality, unit cost, retention,
+RTO, and RPO remain unresolved until a workflow sponsor and service owner
+approve the employee journey and operating model. The deterministic source
+thresholds must never be presented as production performance evidence.
 
 ## Security and privacy architecture
 
-The Retrieval-Augmented Generation design separates source validation, privileged execution, target
-access, and evidence review. Those boundaries remain in force even when one
-engineer can access more than one system.
+The current design has no privileged runtime executor. Its meaningful trust
+boundaries are content admission, caller scope, provider access, and evidence
+publication.
 
 | Trust boundary | Allowed flow | Required control |
 | --- | --- | --- |
-| Contributor → GitLab | Reviewed source, contract, and synthetic/sanitized fixtures | Protected branch rules, peer review, secret scanning, and immutable commit identity |
-| GitLab runner → result artifact | Read-only evaluation inputs and machine-readable output | No target-changing credential; pinned tool versions; artifact checksum and expiry |
-| Approval plane → executor | Approved revision, target allowlist, mode, canary, and change reference | Separate authorization through the existing Jenkins/AWX or platform control path |
-| Executor → existing target | Minimum commands or API operations required for Retrieval-Augmented Generation | Least-privilege identity, explicit target limit, timeout, and stop condition |
-| Target → evidence store | Sanitized metadata, measurements, decision, and recovery result | Exclude credentials, tokens, private keys, kubeconfigs, packet payloads, PHI, PII, and unrelated records |
+| Knowledge source → corpus fixture | Only an approved revision and classification may enter the evaluation set | Manifest, checksum, owner, expiry, prohibited-content scan, and fail-closed classification check |
+| Caller fixture → retriever | Query, approved scopes, and metadata filters | Scope and partition filtering occurs before lexical or vector scoring; an empty scope is denied |
+| Selected context → provider | Only bounded chunks eligible for that caller | Deterministic provider in CI; optional adapter permits loopback only; no provider credential is present |
+| Provider response → result | Answer and citation identifiers | Every citation must resolve to the selected context; invented or missing citations produce a refusal |
+| Source job → evidence artifact | Sanitized revisions, decisions, timings, gates, and negative-case results | No protected prompt content, credentials, PHI, PII, or target-changing identity; artifact expires |
 
 For Retrieval-Augmented Generation, the primary threat is **prompt, retrieved content, model output, or tool request crossing a data or authorization boundary**. The mandatory response is
 synthetic/de-identified fixtures, role-aware policy, untrusted-content isolation, refusal tests, human review, and artifact redaction. Authentication and authorization mappings must name
 the existing identity source, principal or service account, permitted actions,
 credential owner, rotation path, and emergency revocation procedure before a
-runtime story can move beyond `Planned`.
+runtime service can be proposed.
 
 ## Architecture decisions and trade-offs
 
 | Decision | Selected architecture | Alternative deferred or rejected | Rationale and status |
 | --- | --- | --- | --- |
-| First implementation slice | Contract, schema, fixtures, and read-only evidence on the existing GitLab runner | Product installation or broad runtime rollout | Proves behavior without expanding infrastructure; **approved design direction** |
-| Runtime execution | Use only Existing GitLab shared runner when current inventory and change approval confirm it is available | Direct operator changes or credentials in CI | Preserves separation of duties; **conditional on implementation review** |
-| Evidence | Machine-readable result is authoritative; screenshots are optional supporting material | Screenshot-only acceptance | Enables repeatable audit and automated gates; **approved design direction** |
-| Failure handling | Fail closed, preserve bounded diagnostics, and recover only the named scope | Continue with partial or stale evidence | Prevents false success and hidden blast radius; **approved design direction** |
-| New capacity or product | Stop and raise a separate architecture decision | Silently add a VM, service, cloud dependency, or cluster add-on | Maintains the existing-lab constraint; **mandatory** |
+| First implementation slice | Installation-free deterministic evaluator on the existing GitLab runner | Start with an employee-facing assistant | Separates retrieval and policy defects from model behavior; **implemented locally** |
+| Retrieval baseline | Parallel lexical and deterministic-vector ranking with reciprocal-rank fusion and bounded reranking | Select a vector database or hosted search product first | Produces comparable evidence without creating a runtime dependency; **implemented locally** |
+| Provider boundary | Deterministic CI provider plus a loopback-only OpenAI-compatible adapter | Bind the source proof to Ollama, a hosted API, or a Kubernetes model service | Keeps model selection reversible and blocks accidental remote data transfer; **implemented in source, no model accepted** |
+| Evidence | Revision-bound JSON result with case, citation, refusal, latency, TTFT, stage, and source-revision gates | Screenshot or aggregate-score acceptance | Lets Security, SRE, and workflow owners inspect why a release passed or failed; **implemented locally** |
+| Failure handling | Refuse on missing scope/context, provider failure, prohibited classification, or invalid citation | Return partial or uncited output | Keeps a retrieval defect from becoming an apparently authoritative enterprise answer; **implemented and tested** |
+| Runtime and persistence | Require a new architecture decision before adding a model process, persistent index, API, application, or workload | Treat source completion as deployment authorization | Preserves the current lab boundary and forces an operating model before service creation; **mandatory** |
 
-### Open decisions before implementation
+### Open decisions before runtime promotion
 
 | Open decision | Decision owner | Resolution gate |
 | --- | --- | --- |
-| Exact inventory object and first canary | Platform owner plus consuming service/data owner | Must resolve before the implementation story leaves `Planned` |
+| First employee journey and canary group | Workflow sponsor plus Healthcare AI owner | Must name the users, current task, baseline, excluded decisions, and stop mechanism before runtime design |
 | Performance, scale, and reliability thresholds | Service owner and SRE | Must be recorded before a runtime acceptance run |
 | Identity-to-action authorization matrix | Platform owner and security reviewer | Must be approved before target credentials are attached |
 | Evidence classification and retention | Data/security owner | Must be approved before runtime artifacts are retained |
 
-If any selected approach changes, record the rationale beside UC-AI-001 in
-the implementation repository before code review. A documentation edit alone
-does not approve the new architecture.
+Any change to provider boundary, persistence, corpus classification, runtime
+placement, or side effects needs an explicit decision in the implementation
+repository and this page. Editing the narrative cannot authorize a model
+service or employee workflow.
 
 ## Implementation design
 
-The first Retrieval-Augmented Generation implementation is deliberately
-source-only. The files below are implemented at local commit `175a39c`; none
-provisions infrastructure. The commit is preserved in a persistent local
-checkout while publication to the existing GitLab project is blocked by the
-currently unreachable GitLab endpoint. This local commit is implementation
-evidence, not a substitute for a protected GitLab pipeline or runtime
-acceptance.
+The implemented boundary is source plus deterministic evaluation. Commit
+`175a39c` contains the files below and provisions nothing. It is preserved in a
+persistent local checkout because the GitLab endpoint is currently
+unreachable. That commit proves what was written and tested locally; it cannot
+stand in for a protected pipeline, an approved corpus, or an operated service.
 
 | Source responsibility | Implemented location |
 | --- | --- |
@@ -231,32 +251,33 @@ acceptance.
 
 ### Delivery stages
 
-1. **Contract:** add the contract, schema, owners, dependency revisions, target
-   allowlist, modes, reason codes, and open-decision values.
-2. **Source validation:** lint exact paths, validate schema compatibility, scan
-   for sensitive content, and run every fixture on the existing runner.
-3. **Read-only proof:** execute the `evaluate_retrieval_augmented_generation` offline evaluator, publish a checksummed result, and
-   prove that blocked cases cannot reach a mutating path.
-4. **Bounded execution:** only after separate approval, pass the immutable
-   revision, target, mode, canary, and change ID to Existing GitLab shared runner.
-5. **Independent verification:** measure the expected result, confirm unrelated
-   state is unchanged, run recovery or zero-change proof, and obtain owner
-   review.
+| Stage | Current state | Exit evidence |
+| --- | --- | --- |
+| Contract and source | Complete locally at `175a39c` | Contract, schema, deterministic provider, retrieval pipeline, tests, and installation-free runbook |
+| Local source proof | Complete | 14 tests and five cases pass; quality, p95 latency, TTFT, refusal-leak, and required-stage gates are enforced |
+| Authoritative publication | Blocked by INC-2026-086 | Exact commit on protected GitLab branch and successful pipeline artifact |
+| Enterprise corpus approval | Not started | Knowledge-owner manifest, classification, checksum, freshness, exclusion, and deletion evidence |
+| Employee workflow and runtime | Not designed | Sponsor, baseline, benefit target, identity, runtime SLO, cost envelope, support model, shutdown, and change record |
 
-The implementation merge request must link this page, the dependency artifacts,
-the decision values above, and the eventual pipeline/job/run identifiers. Code
-completion alone cannot promote the page to runtime verified.
+The first authoritative merge request must carry commit `175a39c` or a
+reviewable descendant, link the corpus and access decisions, and retain the
+machine-readable result. Later runtime evidence needs a different record with
+the employee journey, service target, owner, SLO, cost envelope, and shutdown
+proof.
 
 ## Code and configuration map
 
-| Repository | Planned path | Responsibility |
+| Repository | Implemented path | Responsibility |
 | --- | --- | --- |
-| `healthcare-ai-platform` | `config/approved-corpus.yml` | Repository, commit, path, owner, class, and expiry allowlist |
-| same | `src/knowledge/index.py` | Deterministic chunking and ephemeral indexing |
-| same | `src/knowledge/retrieve.py` | Ranked passages with stable citation metadata |
-| same | `evals/enterprise-knowledge.yml` | Provider, payer, platform, refusal, and injection cases |
-| same | `schemas/retrieval-evaluation.schema.json` | Machine-readable evaluation contract |
-| `enterprise-architecture-docs` | approved pages selected by policy | Initial non-sensitive corpus candidate |
+| `healthcare-ai-platform` | `contracts/uc-ai-001.yaml` | Allowed classifications, retrieval settings, source thresholds, required evidence, and safe-stop contract |
+| same | `src/healthcare_ai/rag/chunking.py` | Stable, revision-bound, structure-aware chunks and duplicate-document rejection |
+| same | `src/healthcare_ai/rag/retrieval.py` | Authorization-filtered lexical/vector search, reciprocal-rank fusion, and bounded reranking |
+| same | `src/healthcare_ai/rag/pipeline.py` | Cache isolation, context budget, provider call, citation validation, timings, and structured refusals |
+| same | `src/healthcare_ai/rag/providers.py` | Deterministic CI provider and loopback-only OpenAI-compatible adapter |
+| same | `src/healthcare_ai/rag/evaluation.py` | Case decisions, revision evidence, percentiles, and enforceable release gates |
+| same | `tests/fixtures/uc-ai-001/` and `tests/test_pipeline.py` | Synthetic corpus, positive/refusal cases, provider failures, scope isolation, classification rejection, and latency-gate failure |
+| same | `schemas/uc-ai-001-result.schema.json` | Machine-readable evidence contract |
+| same | `.gitlab/ci/uc-ai-001.yml` and `docs/runbooks/uc-ai-001.md` | Installation-free source gate, artifact path, diagnosis, and zero-change recovery |
 
 ## Jira breakdown
 

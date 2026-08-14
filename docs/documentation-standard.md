@@ -81,6 +81,36 @@ target, policy decision, independent observation and owner acceptance.
   substitute job counts, dashboard counts, document length or tool activity
   for demonstrated improvement.
 
+## Human and Enterprise Language
+
+A detailed page must sound like an accountable engineer explaining a real
+MidhHealth decision, not like a populated template. Common policy belongs in
+the cross-platform framework and should be linked rather than copied into every
+use case.
+
+Each platform or use-case narrative must make the following concrete:
+
+- the business capability or employee/application journey being improved;
+- the current pain or risk and an honest value hypothesis, including when no
+  baseline has been measured;
+- the workflow sponsor, platform owner, service owner, knowledge/data owner,
+  and the decision each one retains;
+- the exact contract received from every dependency and the domain-specific
+  consequence when it is missing or invalid;
+- the difference between implemented source, protected CI evidence, accepted
+  runtime, and demonstrated business value;
+- the actual source paths and current delivery stage rather than a stale future
+  plan;
+- the measures that will show user value, risk, reliability, cost, and
+  operational fitness without inventing targets.
+
+Avoid generic statements such as “supports enterprise outcomes,” repeated
+fail-closed paragraphs, interchangeable handoff descriptions, and catalogues of
+candidate products. Prefer a short walkthrough of a named actor, decision,
+information flow, failure, and accountable response. Standard security and
+change controls remain mandatory, but the page should describe how they apply
+to its domain rather than reproducing the same prose.
+
 ## Source of Truth
 
 `enterprise-architecture-docs` is the authoritative staff documentation

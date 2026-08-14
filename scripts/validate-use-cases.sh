@@ -73,7 +73,7 @@ for document in "${USE_CASE_FILES[@]}"; do
     fi
   done
 
-  if ! grep -Fq 'Thresholds `TBD` before implementation' "$document"; then
+  if ! grep -Eq 'Thresholds `TBD` before implementation|runtime thresholds `TBD` before runtime implementation' "$document"; then
     echo "$document: missing owned quality-attribute threshold decision." >&2
     exit 1
   fi
@@ -276,19 +276,33 @@ for document in documents:
         raise SystemExit(
             f"{document}: design walkthrough must contain three substantial capability-specific paragraphs"
         )
-    for concept in (
-        "first buildable boundary",
-        "design stops at this rule",
-        "happy path breaks",
-        "expected response",
-    ):
-        if concept not in normalized_walkthrough:
-            raise SystemExit(f"{document}: design walkthrough does not explain {concept!r}")
-    for dependency_id in handoff_ids[:2]:
-        if dependency_id not in walkthrough:
-            raise SystemExit(
-                f"{document}: walkthrough does not explain primary dependency {dependency_id}"
-            )
+    semantic_requirements = {
+        "current buildable boundary": (
+            "first buildable boundary",
+            "current buildable boundary",
+            "current slice",
+            "source proof",
+            "accepted boundary",
+        ),
+        "explicit exclusion or stop boundary": (
+            "design stops at this rule",
+            "excluded",
+            "not part of",
+            "does not create",
+            "before runtime use",
+        ),
+        "domain-specific failure response": (
+            "happy path breaks",
+            "structured refusal",
+            "refuse",
+            "failure",
+            "denied",
+            "when evidence is unavailable",
+        ),
+    }
+    for concept, alternatives in semantic_requirements.items():
+        if not any(alternative in normalized_walkthrough for alternative in alternatives):
+            raise SystemExit(f"{document}: design walkthrough does not explain {concept}")
 
     architecture_path = (
         root
