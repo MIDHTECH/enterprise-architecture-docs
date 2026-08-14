@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-DATA-007](../data/UC-DATA-007-schema-registry-and-evolution.md), [UC-DATA-008](../data/UC-DATA-008-event-contract-management.md), [UC-DATA-023](../data/UC-DATA-023-data-access-governance.md), [UC-LNX-010](../linux/UC-LNX-010-filesystem-lvm-storage-management.md) |
 | Enterprise alignment | Provider operations, payer operations, operational resilience, risk and compliance |
 | Enterprise outcome | keep enterprise transactional and operational data secure, performant, and recoverable |
-| Primary GitLab repository | `midhhealth/data-and-integration/database-reliability-platform` |
+| Primary implementation repository | `midhhealth/data-and-integration/database-reliability-platform` |
 | Jira epic | `EPIC-DB-004` — Implement Schema Migration Automation |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing PostgreSQL service, backup host, MinIO, GitLab, Jenkins, AWX, and observability |

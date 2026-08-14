@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-GOV-016](../governance/UC-GOV-016-cloud-cost-anomaly-detection.md), [UC-GOV-001](../governance/UC-GOV-001-compliance-evidence-collection.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | keep the existing lab foundation repeatable, attributable, and recoverable |
-| Primary GitLab repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
+| Primary implementation repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
 | Jira epic | `EPIC-INFRA-008` — Implement Cloud Resource Tagging Automation |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab infrastructure runner, Terraform source, AWX, and canonical inventory |

@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-RSO-009](UC-RSO-009-service-ownership.md), [UC-RSO-010](UC-RSO-010-dependency-mapping.md), [UC-DB-001](../database/UC-DB-001-backup-restore-validation.md), [UC-RSO-017](UC-RSO-017-rto-and-rpo-measurement.md) |
 | Enterprise alignment | Provider operations, payer operations, operational resilience |
 | Enterprise outcome | connect service ownership, evidence, incident response, and recovery for enterprise workflows |
-| Primary GitLab repository | `midhhealth/reliability-operations/resilience-service-operations` |
+| Primary implementation repository | `midhhealth/reliability-operations/resilience-service-operations` |
 | Jira epic | `EPIC-RSO-015` — Implement Backup and Recovery Orchestration |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab, Jenkins, AWX, observability APIs, service records, and runbooks |

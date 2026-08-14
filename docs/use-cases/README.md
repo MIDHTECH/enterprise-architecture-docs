@@ -96,6 +96,8 @@ plan without authorizing infrastructure or runtime work. Required content is:
    decisions with an owner and resolution gate;
 7. exact planned repository-relative locations for the contract,
    implementation, result schema, fixtures, CI include, and operator runbook;
+   the primary implementation project and all six paths must remain unique in
+   the [project and delivery register](../use-case-delivery-register.md);
    and
 8. staged delivery from contract and source validation through read-only proof,
    separately approved canary execution, independent verification, and

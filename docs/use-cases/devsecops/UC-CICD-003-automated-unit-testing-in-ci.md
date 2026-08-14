@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-CICD-002](UC-CICD-002-automated-build-pipeline.md), [UC-CICD-004](UC-CICD-004-code-quality-gate-integration.md), [UC-CICD-009](UC-CICD-009-pipeline-template-standardization.md), [UC-CICD-010](UC-CICD-010-secure-ci-cd-pipeline-implementation.md) |
 | Enterprise outcome | Detect code-level regressions before an artifact can enter the enterprise delivery path |
 | Primary actors | Application developer, code reviewer, delivery engineer, platform owner |
-| Primary GitLab repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
+| Primary implementation repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
 | Related capabilities | Automated build, code quality, dependency scanning, artifact management, release promotion |
 | Existing execution boundary | GitLab and an accepted tagged runner; no new test service or runner is authorized |
 | Current state | **Planned — detailed design only; no implementation or test execution is claimed** |

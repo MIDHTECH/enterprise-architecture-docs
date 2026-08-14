@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-DATA-015](../data/UC-DATA-015-data-classification.md), [UC-GOV-001](../governance/UC-GOV-001-compliance-evidence-collection.md), [UC-RSO-006](../resilience/UC-RSO-006-automated-incident-evidence-collection.md) |
 | Enterprise alignment | Operational resilience, shared digital platform |
 | Enterprise outcome | turn existing telemetry into actionable health and incident evidence for enterprise services |
-| Primary GitLab repository | `midhhealth/reliability-operations/observability-sre-platform` |
+| Primary implementation repository | `midhhealth/reliability-operations/observability-sre-platform` |
 | Jira epic | `EPIC-OBS-004` — Implement Centralized Log Management |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing Prometheus, Alertmanager, Grafana, Loki, Tempo, OpenTelemetry, Elastic, and GitLab/AWX paths |

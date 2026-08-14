@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-OBS-001](../observability/UC-OBS-001-slo-as-code.md), [UC-RSO-002](../resilience/UC-RSO-002-sli-and-slo-governance.md), [UC-RSO-003](../resilience/UC-RSO-003-error-budget-management.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, provider and payer operations |
 | Enterprise outcome | maintain trusted connectivity and service paths across the existing lab |
-| Primary GitLab repository | `midhhealth/platform-engineering/network-engineering-platform` |
+| Primary implementation repository | `midhhealth/platform-engineering/network-engineering-platform` |
 | Jira epic | `EPIC-NET-028` — Implement Network Availability Testing |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing DNS, NGINX, KVM bridges, Kubernetes networking, GitLab, Jenkins, AWX, and blackbox checks |

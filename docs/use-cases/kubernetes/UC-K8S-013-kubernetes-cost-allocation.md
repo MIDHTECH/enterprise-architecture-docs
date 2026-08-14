@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-K8S-010](UC-K8S-010-workload-right-sizing.md), [UC-GOV-016](../governance/UC-GOV-016-cloud-cost-anomaly-detection.md), [UC-INFRA-008](../infrastructure/UC-INFRA-008-cloud-resource-tagging-automation.md), [UC-OBS-013](../observability/UC-OBS-013-cloud-native-monitoring.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, risk and compliance |
 | Enterprise outcome | provide a controlled runtime for provider, payer, data, and platform workloads |
-| Primary GitLab repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
+| Primary implementation repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
 | Jira epic | `EPIC-K8S-013` — Implement Kubernetes Cost Allocation |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing four-node application cluster, jenkins-agent01, GitLab, Jenkins, and accepted storage and ingress |

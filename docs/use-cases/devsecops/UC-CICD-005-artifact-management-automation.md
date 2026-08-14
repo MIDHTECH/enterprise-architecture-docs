@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-CICD-002](UC-CICD-002-automated-build-pipeline.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-CICD-012](UC-CICD-012-container-image-vulnerability-scanning.md), [UC-K8S-011](../kubernetes/UC-K8S-011-container-registry-and-image-supply-chain-security.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | deliver reviewed changes safely to provider, payer, and shared platform services |
-| Primary GitLab repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
+| Primary implementation repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
 | Jira epic | `EPIC-CICD-005` — Implement Artifact Management Automation |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab, accepted runners, Jenkins, AWX, and Kubernetes delivery paths |

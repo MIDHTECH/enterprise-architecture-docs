@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-NET-023](../network/UC-NET-023-private-endpoint-and-private-dns.md), [UC-NET-022](../network/UC-NET-022-network-segmentation.md), [UC-GOV-004](UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-GOV-009](UC-GOV-009-dns-and-certificate-management.md) |
 | Enterprise alignment | Risk and compliance, shared digital platform, operational resilience |
 | Enterprise outcome | apply traceable controls to platform work that supports provider and payer operations |
-| Primary GitLab repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
+| Primary implementation repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
 | Jira epic | `EPIC-GOV-008` — Implement Private Endpoint Implementation |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab runners, AWX inventories, Vault boundary, repository scanners, and evidence artifacts |

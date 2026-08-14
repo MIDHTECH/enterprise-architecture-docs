@@ -9,6 +9,7 @@ Last verified: 2026-08-13
 | Canonical portfolio use case | Model Registry and Versioning |
 | Primary platform | Enterprise MLOps Model Platform |
 | Supporting use cases | [UC-DATA-014](../data/UC-DATA-014-data-lineage.md), [UC-CICD-001](../devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md), [UC-MLOPS-004](UC-MLOPS-004-model-validation-gates.md), [UC-MLOPS-011](UC-MLOPS-011-model-rollback.md) |
+| Primary implementation repository | `midhhealth/ai-and-ml-platform/mlops-model-platform` |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | Prevent an untraceable or unvalidated model artifact from entering an enterprise workflow |
 | Supporting platforms | Data engineering, healthcare AI, DevSecOps delivery, governance, observability |

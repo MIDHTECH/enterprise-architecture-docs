@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-RSO-004](../resilience/UC-RSO-004-incident-detection-and-classification.md), [UC-RSO-005](../resilience/UC-RSO-005-on-call-and-escalation-workflows.md), [UC-OBS-014](../observability/UC-OBS-014-change-to-incident-correlation.md), [UC-MLOPS-001](UC-MLOPS-001-model-registry-versioning.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | make model lifecycle evidence reproducible before any model can affect an enterprise workflow |
-| Primary GitLab repository | `midhhealth/ai-and-ml-platform/mlops-model-platform` |
+| Primary implementation repository | `midhhealth/ai-and-ml-platform/mlops-model-platform` |
 | Jira epic | `EPIC-MLOPS-015` — Implement ML Incident Response |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab shared runner, synthetic datasets, locked dependencies, and protected CI artifacts |

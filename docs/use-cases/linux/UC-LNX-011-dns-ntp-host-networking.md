@@ -8,6 +8,7 @@ Last verified: 2026-08-02
 | --- | --- |
 | Portfolio | Enterprise Linux Systems Engineering Platform |
 | Supporting use cases | [UC-NET-005](../network/UC-NET-005-authoritative-and-recursive-dns.md), [UC-NET-024](../network/UC-NET-024-certificate-and-tls-routing.md), [UC-GOV-010](../governance/UC-GOV-010-certificate-expiry-monitoring.md), [UC-INFRA-005](../infrastructure/UC-INFRA-005-server-configuration-automation-using-ansible.md) |
+| Primary implementation repository | `midhhealth/platform-engineering/linux-systems-platform` |
 | Canonical coverage target | Consistent infrastructure service configuration |
 | Delivery model | End-to-end infrastructure as code |
 | Primary roles | Linux network engineer, DNS administrator, SRE, service owner |

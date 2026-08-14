@@ -8,6 +8,7 @@ Last verified: 2026-08-13
 | --- | --- |
 | Portfolio | Enterprise DevSecOps Delivery Platform |
 | Supporting use cases | [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-CICD-007](UC-CICD-007-environment-based-release-promotion.md), [UC-OBS-008](../observability/UC-OBS-008-deployment-health-scoring.md) |
+| Primary implementation repository | `midhhealth/platform-delivery/jenkins-jobs` |
 | Jira epic | `EPIC-CICD-001` — Deliver a controlled application release to Kubernetes |
 | Primary roles | Application developer, DevOps engineer, platform engineer, SRE, security reviewer |
 | Change record | `CHG-2026-002` |

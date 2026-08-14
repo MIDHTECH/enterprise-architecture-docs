@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-DATA-007](../data/UC-DATA-007-schema-registry-and-evolution.md), [UC-DATA-014](../data/UC-DATA-014-data-lineage.md), [UC-DATA-015](../data/UC-DATA-015-data-classification.md), [UC-DATA-023](../data/UC-DATA-023-data-access-governance.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | make model lifecycle evidence reproducible before any model can affect an enterprise workflow |
-| Primary GitLab repository | `midhhealth/ai-and-ml-platform/mlops-model-platform` |
+| Primary implementation repository | `midhhealth/ai-and-ml-platform/mlops-model-platform` |
 | Jira epic | `EPIC-MLOPS-003` — Implement Feature Engineering and Feature Stores |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab shared runner, synthetic datasets, locked dependencies, and protected CI artifacts |

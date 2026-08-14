@@ -18,6 +18,7 @@ required_docs=(
   "docs/use-case-implementation-status.md"
   "docs/design-readiness-status.md"
   "docs/use-case-implementation-sequence.md"
+  "docs/use-case-delivery-register.md"
   "docs/use-case-dependency-contracts.json"
   "docs/environment-capability-status.json"
   "docs/component-architecture.md"
@@ -59,6 +60,8 @@ required_docs=(
   "scripts/validate-onboarding-interview-docs.sh"
   "scripts/validate-design-consistency.sh"
   "scripts/generate-use-case-implementation-sequence.py"
+  "scripts/generate-use-case-delivery-register.py"
+  "scripts/normalize-use-case-delivery-records.py"
   "docs/use-cases/README.md"
   "docs/use-cases/enterprise-traceability.md"
   "docs/use-cases/devsecops/README.md"
@@ -91,6 +94,8 @@ done
 
 ./scripts/validate-use-cases.sh
 ./scripts/generate-use-case-implementation-sequence.py --check
+./scripts/normalize-use-case-delivery-records.py --check
+./scripts/generate-use-case-delivery-register.py --check
 ./scripts/validate-platform-detail-pages.sh
 ./scripts/validate-onboarding-interview-docs.sh
 ./scripts/validate-application-projects.sh

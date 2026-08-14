@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-DATA-015](UC-DATA-015-data-classification.md), [UC-AI-011](../healthcare-ai/UC-AI-011-ai-security-and-access-control.md), [UC-DATA-014](UC-DATA-014-data-lineage.md) |
 | Enterprise alignment | Provider operations, payer operations, risk and compliance, operational resilience |
 | Enterprise outcome | move and validate healthcare data safely before downstream enterprise decisions use it |
-| Primary GitLab repository | `midhhealth/data-and-integration/data-engineering-platform` |
+| Primary implementation repository | `midhhealth/data-and-integration/data-engineering-platform` |
 | Jira epic | `EPIC-DATA-023` — Implement Data Access Governance |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab shared runner, synthetic fixtures, PostgreSQL where approved, and current evidence paths |

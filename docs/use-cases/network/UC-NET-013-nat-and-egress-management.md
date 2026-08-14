@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-NET-012](UC-NET-012-firewall-policy-management.md), [UC-NET-020](UC-NET-020-ingress-and-egress-controls.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, provider and payer operations |
 | Enterprise outcome | maintain trusted connectivity and service paths across the existing lab |
-| Primary GitLab repository | `midhhealth/platform-engineering/network-engineering-platform` |
+| Primary implementation repository | `midhhealth/platform-engineering/network-engineering-platform` |
 | Jira epic | `EPIC-NET-013` — Implement NAT and Egress Management |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing DNS, NGINX, KVM bridges, Kubernetes networking, GitLab, Jenkins, AWX, and blackbox checks |

@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-LNX-010](../linux/UC-LNX-010-filesystem-lvm-storage-management.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-OBS-010](../observability/UC-OBS-010-database-performance-monitoring.md), [UC-RSO-015](../resilience/UC-RSO-015-backup-and-recovery-orchestration.md) |
 | Enterprise alignment | Provider operations, payer operations, operational resilience, risk and compliance |
 | Enterprise outcome | keep enterprise transactional and operational data secure, performant, and recoverable |
-| Primary GitLab repository | `midhhealth/data-and-integration/database-reliability-platform` |
+| Primary implementation repository | `midhhealth/data-and-integration/database-reliability-platform` |
 | Jira epic | `EPIC-DB-006` — Implement Major-Version Upgrade Automation |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing PostgreSQL service, backup host, MinIO, GitLab, Jenkins, AWX, and observability |

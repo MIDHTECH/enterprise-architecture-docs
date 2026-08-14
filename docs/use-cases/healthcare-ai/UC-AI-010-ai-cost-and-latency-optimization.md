@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-AI-013](UC-AI-013-ai-observability.md), [UC-GOV-016](../governance/UC-GOV-016-cloud-cost-anomaly-detection.md), [UC-MLOPS-008](../mlops/UC-MLOPS-008-model-observability.md), [UC-DATA-015](../data/UC-DATA-015-data-classification.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | provide bounded and reviewable AI assistance without delegating regulated decisions |
-| Primary GitLab repository | `midhhealth/ai-and-ml-platform/healthcare-ai-platform` |
+| Primary implementation repository | `midhhealth/ai-and-ml-platform/healthcare-ai-platform` |
 | Jira epic | `EPIC-AI-010` — Implement AI Cost and Latency Optimization |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab shared runner, approved repository content, synthetic fixtures, and protected CI artifacts |

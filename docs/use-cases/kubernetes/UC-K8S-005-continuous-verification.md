@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-OBS-008](../observability/UC-OBS-008-deployment-health-scoring.md), [UC-OBS-002](../observability/UC-OBS-002-kubernetes-cluster-health-monitoring.md), [UC-RSO-002](../resilience/UC-RSO-002-sli-and-slo-governance.md), [UC-CICD-007](../devsecops/UC-CICD-007-environment-based-release-promotion.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, risk and compliance |
 | Enterprise outcome | provide a controlled runtime for provider, payer, data, and platform workloads |
-| Primary GitLab repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
+| Primary implementation repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
 | Jira epic | `EPIC-K8S-005` — Implement Continuous Verification |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing four-node application cluster, jenkins-agent01, GitLab, Jenkins, and accepted storage and ingress |

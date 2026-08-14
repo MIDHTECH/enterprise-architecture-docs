@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-MLOPS-009](UC-MLOPS-009-drift-detection.md), [UC-MLOPS-002](UC-MLOPS-002-ml-training-pipeline-standardization.md), [UC-MLOPS-004](UC-MLOPS-004-model-validation-gates.md), [UC-MLOPS-001](UC-MLOPS-001-model-registry-versioning.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | make model lifecycle evidence reproducible before any model can affect an enterprise workflow |
-| Primary GitLab repository | `midhhealth/ai-and-ml-platform/mlops-model-platform` |
+| Primary implementation repository | `midhhealth/ai-and-ml-platform/mlops-model-platform` |
 | Jira epic | `EPIC-MLOPS-010` — Implement Automated Retraining |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab shared runner, synthetic datasets, locked dependencies, and protected CI artifacts |

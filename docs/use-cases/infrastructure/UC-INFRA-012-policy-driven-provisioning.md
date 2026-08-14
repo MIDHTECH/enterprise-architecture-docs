@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-INFRA-004](UC-INFRA-004-terraform-plan-analyzer.md), [UC-GOV-007](../governance/UC-GOV-007-infrastructure-security-hardening.md), [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-CICD-014](../devsecops/UC-CICD-014-terraform-plan-automation.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | keep the existing lab foundation repeatable, attributable, and recoverable |
-| Primary GitLab repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
+| Primary implementation repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
 | Jira epic | `EPIC-INFRA-012` — Implement Policy-Driven Provisioning |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab infrastructure runner, Terraform source, AWX, and canonical inventory |

@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-DATA-014](../data/UC-DATA-014-data-lineage.md), [UC-DATA-015](../data/UC-DATA-015-data-classification.md), [UC-DATA-021](../data/UC-DATA-021-data-reconciliation.md), [UC-LNX-010](../linux/UC-LNX-010-filesystem-lvm-storage-management.md) |
 | Enterprise alignment | Provider operations, payer operations, operational resilience, risk and compliance |
 | Enterprise outcome | keep enterprise transactional and operational data secure, performant, and recoverable |
-| Primary GitLab repository | `midhhealth/data-and-integration/database-reliability-platform` |
+| Primary implementation repository | `midhhealth/data-and-integration/database-reliability-platform` |
 | Jira epic | `EPIC-DB-018` — Implement Data Retention and Archival |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing PostgreSQL service, backup host, MinIO, GitLab, Jenkins, AWX, and observability |

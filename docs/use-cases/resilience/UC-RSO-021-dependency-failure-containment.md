@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-RSO-010](UC-RSO-010-dependency-mapping.md), [UC-OBS-009](../observability/UC-OBS-009-api-error-rate-monitoring.md), [UC-OBS-001](../observability/UC-OBS-001-slo-as-code.md), [UC-K8S-005](../kubernetes/UC-K8S-005-continuous-verification.md), [UC-CICD-015](../devsecops/UC-CICD-015-deployment-health-scoring.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, operational resilience |
 | Enterprise outcome | Keep one slow or unavailable dependency from becoming an enterprise-wide outage |
-| Primary GitLab repository | `midhhealth/reliability-operations/resilience-service-operations` |
+| Primary implementation repository | `midhhealth/reliability-operations/resilience-service-operations` |
 | Jira epic | `EPIC-RSO-021` — Build Dependency Failure Containment |
 | Change record | Not required for source and fixture validation; required before fault injection or runtime policy changes |
 | Target | existing GitLab runner for deterministic fixtures and the existing Kubernetes application cluster for separately approved bounded exercises |

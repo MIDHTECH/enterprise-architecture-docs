@@ -9,6 +9,7 @@ Last verified: 2026-08-13
 | Canonical portfolio use case | SLO as Code |
 | Primary platform | Enterprise Observability and SRE Reliability Platform |
 | Supporting use cases | [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md), [UC-RSO-002](../resilience/UC-RSO-002-sli-and-slo-governance.md), [UC-RSO-003](../resilience/UC-RSO-003-error-budget-management.md) |
+| Primary implementation repository | `midhhealth/reliability-operations/observability-sre-platform` |
 | Enterprise alignment | Operational resilience, shared digital platform |
 | Enterprise outcome | Detect sustained risk to provider, payer, and platform services before raw symptom alerts become outages |
 | Supporting platforms | Resilience operations, DevSecOps delivery, governance |

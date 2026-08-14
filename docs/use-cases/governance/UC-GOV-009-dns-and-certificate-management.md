@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-NET-005](../network/UC-NET-005-authoritative-and-recursive-dns.md), [UC-NET-024](../network/UC-NET-024-certificate-and-tls-routing.md), [UC-GOV-010](UC-GOV-010-certificate-expiry-monitoring.md), [UC-CICD-010](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md) |
 | Enterprise alignment | Risk and compliance, shared digital platform, operational resilience |
 | Enterprise outcome | apply traceable controls to platform work that supports provider and payer operations |
-| Primary GitLab repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
+| Primary implementation repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
 | Jira epic | `EPIC-GOV-009` — Implement DNS and Certificate Management |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab runners, AWX inventories, Vault boundary, repository scanners, and evidence artifacts |

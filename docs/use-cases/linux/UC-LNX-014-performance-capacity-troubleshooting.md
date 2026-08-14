@@ -8,6 +8,7 @@ Last verified: 2026-08-02
 | --- | --- |
 | Portfolio | Enterprise Linux Systems Engineering Platform |
 | Supporting use cases | [UC-INFRA-005](../infrastructure/UC-INFRA-005-server-configuration-automation-using-ansible.md), [UC-NET-005](../network/UC-NET-005-authoritative-and-recursive-dns.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-OBS-004](../observability/UC-OBS-004-centralized-log-management.md) |
+| Primary implementation repository | `midhhealth/platform-engineering/linux-systems-platform` |
 | Canonical coverage target | CPU, memory, disk and network diagnosis |
 | Delivery model | End-to-end infrastructure as code |
 | Primary roles | Linux performance engineer, SRE, service owner, virtualization engineer |

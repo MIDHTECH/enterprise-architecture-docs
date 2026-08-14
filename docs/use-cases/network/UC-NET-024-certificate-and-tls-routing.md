@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-NET-005](UC-NET-005-authoritative-and-recursive-dns.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-GOV-010](../governance/UC-GOV-010-certificate-expiry-monitoring.md), [UC-NET-003](UC-NET-003-vlan-and-subnet-design.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, provider and payer operations |
 | Enterprise outcome | maintain trusted connectivity and service paths across the existing lab |
-| Primary GitLab repository | `midhhealth/platform-engineering/network-engineering-platform` |
+| Primary implementation repository | `midhhealth/platform-engineering/network-engineering-platform` |
 | Jira epic | `EPIC-NET-024` — Implement Certificate and TLS Routing |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing DNS, NGINX, KVM bridges, Kubernetes networking, GitLab, Jenkins, AWX, and blackbox checks |

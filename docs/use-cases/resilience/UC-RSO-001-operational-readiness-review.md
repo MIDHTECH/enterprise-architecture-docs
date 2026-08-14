@@ -9,6 +9,7 @@ Last verified: 2026-08-13
 | Canonical portfolio use case | Operational Readiness Reviews |
 | Primary platform | Enterprise Resilience and Service Operations Platform |
 | Supporting use cases | [UC-OBS-001](../observability/UC-OBS-001-slo-as-code.md), [UC-RSO-009](UC-RSO-009-service-ownership.md), [UC-RSO-010](UC-RSO-010-dependency-mapping.md), [UC-NET-028](../network/UC-NET-028-network-availability-testing.md) |
+| Primary implementation repository | `midhhealth/reliability-operations/resilience-service-operations` |
 | Enterprise alignment | Provider operations, payer operations, operational resilience |
 | Enterprise outcome | Prevent a service from being declared ready without ownership, dependencies, telemetry, recovery, and evidence |
 | Supporting platforms | Observability, DevSecOps delivery, database, network, governance |

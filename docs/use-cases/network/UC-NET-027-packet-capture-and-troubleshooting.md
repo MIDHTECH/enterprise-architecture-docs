@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-OBS-012](../observability/UC-OBS-012-synthetic-monitoring.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md), [UC-GOV-001](../governance/UC-GOV-001-compliance-evidence-collection.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, provider and payer operations |
 | Enterprise outcome | maintain trusted connectivity and service paths across the existing lab |
-| Primary GitLab repository | `midhhealth/platform-engineering/network-engineering-platform` |
+| Primary implementation repository | `midhhealth/platform-engineering/network-engineering-platform` |
 | Jira epic | `EPIC-NET-027` — Implement Packet Capture and Troubleshooting |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing DNS, NGINX, KVM bridges, Kubernetes networking, GitLab, Jenkins, AWX, and blackbox checks |

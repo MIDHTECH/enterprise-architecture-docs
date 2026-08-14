@@ -8,6 +8,7 @@ Last verified: 2026-08-02
 | --- | --- |
 | Portfolio | Enterprise Linux Systems Engineering Platform |
 | Supporting use cases | [UC-NET-012](../network/UC-NET-012-firewall-policy-management.md), [UC-NET-020](../network/UC-NET-020-ingress-and-egress-controls.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md), [UC-INFRA-005](../infrastructure/UC-INFRA-005-server-configuration-automation-using-ansible.md) |
+| Primary implementation repository | `midhhealth/platform-engineering/linux-systems-platform` |
 | Canonical coverage target | Enforced host security controls |
 | Delivery model | End-to-end infrastructure as code |
 | Primary roles | Linux security engineer, service owner, network engineer, SRE |

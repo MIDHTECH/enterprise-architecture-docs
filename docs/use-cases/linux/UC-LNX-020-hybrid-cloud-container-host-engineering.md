@@ -8,6 +8,7 @@ Last verified: 2026-08-02
 | --- | --- |
 | Portfolio | Enterprise Linux Systems Engineering Platform |
 | Supporting use cases | [UC-K8S-001](../kubernetes/UC-K8S-001-kubernetes-configuration-drift.md), [UC-NET-018](../network/UC-NET-018-kubernetes-networking.md), [UC-K8S-006](../kubernetes/UC-K8S-006-kubernetes-security-baseline-implementation.md), [UC-INFRA-005](../infrastructure/UC-INFRA-005-server-configuration-automation-using-ansible.md) |
+| Primary implementation repository | `midhhealth/platform-engineering/linux-systems-platform` |
 | Canonical coverage target | Secure Linux hosts for cloud VMs, Docker/Podman, Kubernetes and hybrid workloads |
 | Delivery model | End-to-end infrastructure as code |
 | Primary roles | Cloud platform engineer, Linux engineer, container engineer, security engineer, SRE |

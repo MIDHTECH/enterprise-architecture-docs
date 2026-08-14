@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-DATA-007](../data/UC-DATA-007-schema-registry-and-evolution.md), [UC-DATA-008](../data/UC-DATA-008-event-contract-management.md), [UC-DB-004](../database/UC-DB-004-schema-migration-automation.md), [UC-CICD-007](UC-CICD-007-environment-based-release-promotion.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, operational resilience |
 | Enterprise outcome | Let separately owned applications change independently without surprising their consumers |
-| Primary GitLab repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
+| Primary implementation repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
 | Jira epic | `EPIC-CICD-016` — Build Cross-Project Release Contract Validation |
 | Change record | Not required for fixture-only CI; required before a contract result can authorize a runtime promotion |
 | Target | existing GitLab runners and approved Jenkins promotion path; application repositories remain separately owned |

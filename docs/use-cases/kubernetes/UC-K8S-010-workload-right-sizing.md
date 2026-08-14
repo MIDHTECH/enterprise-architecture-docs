@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-OBS-002](../observability/UC-OBS-002-kubernetes-cluster-health-monitoring.md), [UC-RSO-012](../resilience/UC-RSO-012-capacity-and-saturation-testing.md), [UC-GOV-017](../governance/UC-GOV-017-resource-right-sizing-automation.md), [UC-INFRA-008](../infrastructure/UC-INFRA-008-cloud-resource-tagging-automation.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, risk and compliance |
 | Enterprise outcome | provide a controlled runtime for provider, payer, data, and platform workloads |
-| Primary GitLab repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
+| Primary implementation repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
 | Jira epic | `EPIC-K8S-010` — Implement Workload Right-Sizing |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing four-node application cluster, jenkins-agent01, GitLab, Jenkins, and accepted storage and ingress |

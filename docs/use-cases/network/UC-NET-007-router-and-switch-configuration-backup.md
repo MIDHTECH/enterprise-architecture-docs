@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-NET-008](UC-NET-008-network-configuration-automation.md), [UC-NET-009](UC-NET-009-network-configuration-drift-detection.md), [UC-RSO-015](../resilience/UC-RSO-015-backup-and-recovery-orchestration.md), [UC-GOV-001](../governance/UC-GOV-001-compliance-evidence-collection.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, provider and payer operations |
 | Enterprise outcome | maintain trusted connectivity and service paths across the existing lab |
-| Primary GitLab repository | `midhhealth/platform-engineering/network-engineering-platform` |
+| Primary implementation repository | `midhhealth/platform-engineering/network-engineering-platform` |
 | Jira epic | `EPIC-NET-007` — Implement Router and Switch Configuration Backup |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing DNS, NGINX, KVM bridges, Kubernetes networking, GitLab, Jenkins, AWX, and blackbox checks |

@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-GOV-014](UC-GOV-014-closed-loop-automation.md), [UC-RSO-019](../resilience/UC-RSO-019-awx-automated-remediation.md), [UC-OBS-015](../observability/UC-OBS-015-automated-incident-triage.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) |
 | Enterprise alignment | Risk and compliance, shared digital platform, operational resilience |
 | Enterprise outcome | apply traceable controls to platform work that supports provider and payer operations |
-| Primary GitLab repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
+| Primary implementation repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
 | Jira epic | `EPIC-GOV-015` — Implement Self-Healing Infrastructure |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab runners, AWX inventories, Vault boundary, repository scanners, and evidence artifacts |

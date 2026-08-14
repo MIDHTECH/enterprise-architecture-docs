@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-DATA-006](UC-DATA-006-workflow-orchestration.md), [UC-DATA-021](UC-DATA-021-data-reconciliation.md), [UC-DATA-014](UC-DATA-014-data-lineage.md), [UC-OBS-006](../observability/UC-OBS-006-alerting-and-on-call-notification.md) |
 | Enterprise alignment | Provider operations, payer operations, risk and compliance, operational resilience |
 | Enterprise outcome | move and validate healthcare data safely before downstream enterprise decisions use it |
-| Primary GitLab repository | `midhhealth/data-and-integration/data-engineering-platform` |
+| Primary implementation repository | `midhhealth/data-and-integration/data-engineering-platform` |
 | Jira epic | `EPIC-DATA-019` — Implement Pipeline Retry and Backfill |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab shared runner, synthetic fixtures, PostgreSQL where approved, and current evidence paths |

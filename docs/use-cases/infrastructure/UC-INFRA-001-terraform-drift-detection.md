@@ -9,6 +9,7 @@ Last verified: 2026-08-13
 | Canonical portfolio use case | Terraform Drift Detection |
 | Primary platform | Enterprise Multi-Cloud Infrastructure Platform |
 | Supporting use cases | [UC-CICD-014](../devsecops/UC-CICD-014-terraform-plan-automation.md), [UC-INFRA-009](UC-INFRA-009-terraform-state-integrity-monitoring.md), [UC-INFRA-007](UC-INFRA-007-infrastructure-change-impact-analysis.md), [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) |
+| Primary implementation repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | Detect unreviewed change before it affects provider, payer, or shared platform services |
 | Supporting platforms | DevSecOps delivery, governance, observability, resilience operations |

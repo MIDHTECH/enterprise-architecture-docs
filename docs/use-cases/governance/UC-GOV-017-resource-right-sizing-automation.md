@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-GOV-016](UC-GOV-016-cloud-cost-anomaly-detection.md), [UC-OBS-013](../observability/UC-OBS-013-cloud-native-monitoring.md), [UC-RSO-012](../resilience/UC-RSO-012-capacity-and-saturation-testing.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) |
 | Enterprise alignment | Risk and compliance, shared digital platform, operational resilience |
 | Enterprise outcome | apply traceable controls to platform work that supports provider and payer operations |
-| Primary GitLab repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
+| Primary implementation repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
 | Jira epic | `EPIC-GOV-017` — Implement Resource Right-Sizing Automation |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab runners, AWX inventories, Vault boundary, repository scanners, and evidence artifacts |

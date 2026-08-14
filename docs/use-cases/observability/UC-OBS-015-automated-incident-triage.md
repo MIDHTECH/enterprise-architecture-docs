@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-RSO-004](../resilience/UC-RSO-004-incident-detection-and-classification.md), [UC-RSO-005](../resilience/UC-RSO-005-on-call-and-escalation-workflows.md), [UC-OBS-014](UC-OBS-014-change-to-incident-correlation.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md) |
 | Enterprise alignment | Operational resilience, shared digital platform |
 | Enterprise outcome | turn existing telemetry into actionable health and incident evidence for enterprise services |
-| Primary GitLab repository | `midhhealth/reliability-operations/observability-sre-platform` |
+| Primary implementation repository | `midhhealth/reliability-operations/observability-sre-platform` |
 | Jira epic | `EPIC-OBS-015` — Implement Automated Incident Triage |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing Prometheus, Alertmanager, Grafana, Loki, Tempo, OpenTelemetry, Elastic, and GitLab/AWX paths |

@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-OBS-001](../observability/UC-OBS-001-slo-as-code.md), [UC-RSO-002](../resilience/UC-RSO-002-sli-and-slo-governance.md), [UC-RSO-003](../resilience/UC-RSO-003-error-budget-management.md), [UC-CICD-001](UC-CICD-001-end-to-end-cicd-pipeline.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | deliver reviewed changes safely to provider, payer, and shared platform services |
-| Primary GitLab repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
+| Primary implementation repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
 | Jira epic | `EPIC-CICD-015` — Implement Deployment Health Scoring |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab, accepted runners, Jenkins, AWX, and Kubernetes delivery paths |

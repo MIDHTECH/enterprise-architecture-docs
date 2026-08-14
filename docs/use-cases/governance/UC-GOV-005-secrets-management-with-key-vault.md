@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-GOV-002](UC-GOV-002-secrets-management-automation.md), [UC-GOV-004](UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-RSO-018](../resilience/UC-RSO-018-certificate-and-secret-expiry-response.md), [UC-CICD-010](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md) |
 | Enterprise alignment | Risk and compliance, shared digital platform, operational resilience |
 | Enterprise outcome | apply traceable controls to platform work that supports provider and payer operations |
-| Primary GitLab repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
+| Primary implementation repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
 | Jira epic | `EPIC-GOV-005` — Implement Secrets Management with Key Vault |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab runners, AWX inventories, Vault boundary, repository scanners, and evidence artifacts |

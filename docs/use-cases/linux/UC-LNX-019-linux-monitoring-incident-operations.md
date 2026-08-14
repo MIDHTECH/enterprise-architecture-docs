@@ -8,6 +8,7 @@ Last verified: 2026-08-02
 | --- | --- |
 | Portfolio | Enterprise Linux Systems Engineering Platform |
 | Supporting use cases | [UC-RSO-004](../resilience/UC-RSO-004-incident-detection-and-classification.md), [UC-RSO-005](../resilience/UC-RSO-005-on-call-and-escalation-workflows.md), [UC-OBS-014](../observability/UC-OBS-014-change-to-incident-correlation.md), [UC-INFRA-005](../infrastructure/UC-INFRA-005-server-configuration-automation-using-ansible.md) |
+| Primary implementation repository | `midhhealth/platform-engineering/linux-systems-platform` |
 | Canonical coverage target | Host metrics, logs, alerts, on-call triage, RCA and durable corrective actions |
 | Delivery model | End-to-end infrastructure as code |
 | Primary roles | SRE, Linux systems engineer, observability engineer, incident commander |

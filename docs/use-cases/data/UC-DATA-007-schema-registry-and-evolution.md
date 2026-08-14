@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-DATA-015](UC-DATA-015-data-classification.md), [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-DATA-008](UC-DATA-008-event-contract-management.md), [UC-DATA-023](UC-DATA-023-data-access-governance.md) |
 | Enterprise alignment | Provider operations, payer operations, risk and compliance, operational resilience |
 | Enterprise outcome | move and validate healthcare data safely before downstream enterprise decisions use it |
-| Primary GitLab repository | `midhhealth/data-and-integration/data-engineering-platform` |
+| Primary implementation repository | `midhhealth/data-and-integration/data-engineering-platform` |
 | Jira epic | `EPIC-DATA-007` — Implement Schema Registry and Evolution |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab shared runner, synthetic fixtures, PostgreSQL where approved, and current evidence paths |

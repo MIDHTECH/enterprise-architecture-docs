@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-CICD-002](UC-CICD-002-automated-build-pipeline.md), [UC-CICD-005](UC-CICD-005-artifact-management-automation.md), [UC-CICD-010](UC-CICD-010-secure-ci-cd-pipeline-implementation.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md) |
 | Enterprise outcome | Prevent maintainability, reliability, and reviewability defects from entering deployable artifacts |
 | Primary actors | Application developer, code reviewer, delivery engineer, platform owner |
-| Primary GitLab repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
+| Primary implementation repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
 | Related capabilities | Automated build, unit testing, dependency management, artifact publication, secure CI/CD |
 | Existing execution boundary | GitLab and accepted tagged runners |
 | Product constraint | `sonarqube.example.com` is provisioned-only and must not be treated as an available quality service |

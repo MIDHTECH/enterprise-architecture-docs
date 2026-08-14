@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-CICD-014](../devsecops/UC-CICD-014-terraform-plan-automation.md), [UC-INFRA-009](UC-INFRA-009-terraform-state-integrity-monitoring.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md), [UC-OBS-014](../observability/UC-OBS-014-change-to-incident-correlation.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | keep the existing lab foundation repeatable, attributable, and recoverable |
-| Primary GitLab repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
+| Primary implementation repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
 | Jira epic | `EPIC-INFRA-007` — Implement Infrastructure Change Impact Analysis |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab infrastructure runner, Terraform source, AWX, and canonical inventory |

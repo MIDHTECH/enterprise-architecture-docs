@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-CICD-005](../devsecops/UC-CICD-005-artifact-management-automation.md), [UC-CICD-012](../devsecops/UC-CICD-012-container-image-vulnerability-scanning.md), [UC-K8S-001](UC-K8S-001-kubernetes-configuration-drift.md), [UC-NET-018](../network/UC-NET-018-kubernetes-networking.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, risk and compliance |
 | Enterprise outcome | provide a controlled runtime for provider, payer, data, and platform workloads |
-| Primary GitLab repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
+| Primary implementation repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
 | Jira epic | `EPIC-K8S-011` — Implement Container Registry and Image Supply Chain Security |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing four-node application cluster, jenkins-agent01, GitLab, Jenkins, and accepted storage and ingress |

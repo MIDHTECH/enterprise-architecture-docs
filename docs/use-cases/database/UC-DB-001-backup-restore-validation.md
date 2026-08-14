@@ -9,6 +9,7 @@ Last verified: 2026-08-13
 | Canonical portfolio use case | Automated Restore Validation |
 | Primary platform | Enterprise Database Engineering and Reliability Platform |
 | Supporting use cases | [UC-RSO-015](../resilience/UC-RSO-015-backup-and-recovery-orchestration.md), [UC-LNX-010](../linux/UC-LNX-010-filesystem-lvm-storage-management.md), [UC-RSO-017](../resilience/UC-RSO-017-rto-and-rpo-measurement.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md) |
+| Primary implementation repository | `midhhealth/data-and-integration/database-reliability-platform` |
 | Enterprise alignment | Provider operations, payer operations, operational resilience |
 | Enterprise outcome | Prove that a database backup supporting enterprise workflows is usable before an incident |
 | Supporting platforms | Resilience operations, Linux systems, governance, observability |

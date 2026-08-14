@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-RSO-004](../resilience/UC-RSO-004-incident-detection-and-classification.md), [UC-RSO-005](../resilience/UC-RSO-005-on-call-and-escalation-workflows.md), [UC-OBS-014](../observability/UC-OBS-014-change-to-incident-correlation.md), [UC-DATA-015](../data/UC-DATA-015-data-classification.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | provide bounded and reviewable AI assistance without delegating regulated decisions |
-| Primary GitLab repository | `midhhealth/ai-and-ml-platform/healthcare-ai-platform` |
+| Primary implementation repository | `midhhealth/ai-and-ml-platform/healthcare-ai-platform` |
 | Jira epic | `EPIC-AI-015` — Implement AI Incident Response |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab shared runner, approved repository content, synthetic fixtures, and protected CI artifacts |

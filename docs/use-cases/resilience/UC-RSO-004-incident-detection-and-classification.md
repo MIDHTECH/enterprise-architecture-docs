@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-OBS-001](../observability/UC-OBS-001-slo-as-code.md), [UC-RSO-009](UC-RSO-009-service-ownership.md), [UC-RSO-005](UC-RSO-005-on-call-and-escalation-workflows.md), [UC-OBS-014](../observability/UC-OBS-014-change-to-incident-correlation.md) |
 | Enterprise alignment | Provider operations, payer operations, operational resilience |
 | Enterprise outcome | connect service ownership, evidence, incident response, and recovery for enterprise workflows |
-| Primary GitLab repository | `midhhealth/reliability-operations/resilience-service-operations` |
+| Primary implementation repository | `midhhealth/reliability-operations/resilience-service-operations` |
 | Jira epic | `EPIC-RSO-004` — Implement Incident Detection and Classification |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab, Jenkins, AWX, observability APIs, service records, and runbooks |

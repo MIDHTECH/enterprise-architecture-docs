@@ -8,6 +8,7 @@ Last verified: 2026-08-02
 | --- | --- |
 | Portfolio | Enterprise Linux Systems Engineering Platform |
 | Supporting use cases | [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-LNX-012](UC-LNX-012-ssh-sudo-service-accounts.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-RSO-018](../resilience/UC-RSO-018-certificate-and-secret-expiry-response.md) |
+| Primary implementation repository | `midhhealth/platform-engineering/linux-systems-platform` |
 | Canonical coverage target | LDAP, Kerberos, Active Directory, SSO, PAM and certificate-based host access |
 | Delivery model | End-to-end infrastructure as code |
 | Primary roles | Identity engineer, Linux security engineer, directory administrator, SRE |

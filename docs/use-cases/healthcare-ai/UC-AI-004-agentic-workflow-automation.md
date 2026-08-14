@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-AI-011](UC-AI-011-ai-security-and-access-control.md), [UC-GOV-013](../governance/UC-GOV-013-human-in-the-loop-remediation.md), [UC-DATA-023](../data/UC-DATA-023-data-access-governance.md), [UC-AI-009](UC-AI-009-ai-workflow-audit-logging.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | provide bounded and reviewable AI assistance without delegating regulated decisions |
-| Primary GitLab repository | `midhhealth/ai-and-ml-platform/healthcare-ai-platform` |
+| Primary implementation repository | `midhhealth/ai-and-ml-platform/healthcare-ai-platform` |
 | Jira epic | `EPIC-AI-004` — Implement Agentic Workflow Automation |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab shared runner, approved repository content, synthetic fixtures, and protected CI artifacts |

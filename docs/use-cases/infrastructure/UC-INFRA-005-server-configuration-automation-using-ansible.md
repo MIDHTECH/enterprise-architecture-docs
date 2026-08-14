@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-LNX-005](../linux/UC-LNX-005-awx-ansible-configuration-management.md), [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-CICD-009](../devsecops/UC-CICD-009-pipeline-template-standardization.md), [UC-OBS-004](../observability/UC-OBS-004-centralized-log-management.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | keep the existing lab foundation repeatable, attributable, and recoverable |
-| Primary GitLab repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
+| Primary implementation repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
 | Jira epic | `EPIC-INFRA-005` — Implement Server Configuration Automation Using Ansible |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab infrastructure runner, Terraform source, AWX, and canonical inventory |

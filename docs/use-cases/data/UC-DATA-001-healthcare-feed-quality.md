@@ -9,6 +9,7 @@ Last verified: 2026-08-13
 | Canonical portfolio use case | Data Quality Validation |
 | Primary platform | Enterprise Data Engineering and Integration Platform |
 | Supporting use cases | [UC-DATA-007](UC-DATA-007-schema-registry-and-evolution.md), [UC-DATA-015](UC-DATA-015-data-classification.md), [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-OBS-004](../observability/UC-OBS-004-centralized-log-management.md) |
+| Primary implementation repository | `midhhealth/data-and-integration/data-engineering-platform` |
 | Enterprise alignment | Provider operations, payer operations, risk and compliance |
 | Enterprise outcome | Detect late, malformed, incomplete, or duplicated healthcare feeds before downstream decisions use them |
 | Supporting platforms | Database, observability, governance, resilience operations |

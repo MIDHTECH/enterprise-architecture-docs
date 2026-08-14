@@ -9,6 +9,7 @@ Last verified: 2026-08-13
 | Canonical portfolio use case | Network Change Validation and Rollback |
 | Primary platform | Enterprise Network Engineering and Automation Platform |
 | Supporting use cases | [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md), [UC-LNX-011](../linux/UC-LNX-011-dns-ntp-host-networking.md), [UC-GOV-007](../governance/UC-GOV-007-infrastructure-security-hardening.md), [UC-OBS-012](../observability/UC-OBS-012-synthetic-monitoring.md) |
+| Primary implementation repository | `midhhealth/platform-engineering/network-engineering-platform` |
 | Enterprise alignment | Shared digital platform, operational resilience, provider and payer operations |
 | Enterprise outcome | Protect service connectivity and name resolution during changes to the existing lab |
 | Supporting platforms | Linux systems, Kubernetes, observability, resilience operations |

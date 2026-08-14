@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-NET-018](../network/UC-NET-018-kubernetes-networking.md), [UC-GOV-007](../governance/UC-GOV-007-infrastructure-security-hardening.md), [UC-K8S-001](UC-K8S-001-kubernetes-configuration-drift.md), [UC-INFRA-001](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, risk and compliance |
 | Enterprise outcome | provide a controlled runtime for provider, payer, data, and platform workloads |
-| Primary GitLab repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
+| Primary implementation repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
 | Jira epic | `EPIC-K8S-006` — Implement Kubernetes Security Baseline Implementation |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing four-node application cluster, jenkins-agent01, GitLab, Jenkins, and accepted storage and ingress |

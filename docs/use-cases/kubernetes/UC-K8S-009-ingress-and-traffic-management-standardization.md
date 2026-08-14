@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-NET-018](../network/UC-NET-018-kubernetes-networking.md), [UC-NET-019](../network/UC-NET-019-cni-policy-and-troubleshooting.md), [UC-NET-020](../network/UC-NET-020-ingress-and-egress-controls.md), [UC-NET-024](../network/UC-NET-024-certificate-and-tls-routing.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, risk and compliance |
 | Enterprise outcome | provide a controlled runtime for provider, payer, data, and platform workloads |
-| Primary GitLab repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
+| Primary implementation repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
 | Jira epic | `EPIC-K8S-009` — Implement Ingress and Traffic Management Standardization |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing four-node application cluster, jenkins-agent01, GitLab, Jenkins, and accepted storage and ingress |

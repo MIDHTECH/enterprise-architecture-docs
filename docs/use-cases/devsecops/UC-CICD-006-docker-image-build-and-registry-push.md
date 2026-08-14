@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-CICD-005](UC-CICD-005-artifact-management-automation.md), [UC-CICD-012](UC-CICD-012-container-image-vulnerability-scanning.md), [UC-K8S-011](../kubernetes/UC-K8S-011-container-registry-and-image-supply-chain-security.md), [UC-CICD-001](UC-CICD-001-end-to-end-cicd-pipeline.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | deliver reviewed changes safely to provider, payer, and shared platform services |
-| Primary GitLab repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
+| Primary implementation repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
 | Jira epic | `EPIC-CICD-006` — Implement Docker Image Build and Registry Push |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab, accepted runners, Jenkins, AWX, and Kubernetes delivery paths |

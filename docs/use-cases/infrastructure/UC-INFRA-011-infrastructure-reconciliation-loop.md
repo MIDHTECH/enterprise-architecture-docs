@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-INFRA-001](UC-INFRA-001-terraform-drift-detection.md), [UC-INFRA-009](UC-INFRA-009-terraform-state-integrity-monitoring.md), [UC-INFRA-007](UC-INFRA-007-infrastructure-change-impact-analysis.md), [UC-GOV-013](../governance/UC-GOV-013-human-in-the-loop-remediation.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | keep the existing lab foundation repeatable, attributable, and recoverable |
-| Primary GitLab repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
+| Primary implementation repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
 | Jira epic | `EPIC-INFRA-011` — Implement Infrastructure Reconciliation Loop |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab infrastructure runner, Terraform source, AWX, and canonical inventory |

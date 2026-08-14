@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-CICD-014](../devsecops/UC-CICD-014-terraform-plan-automation.md), [UC-INFRA-009](../infrastructure/UC-INFRA-009-terraform-state-integrity-monitoring.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md), [UC-MLOPS-001](UC-MLOPS-001-model-registry-versioning.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | make model lifecycle evidence reproducible before any model can affect an enterprise workflow |
-| Primary GitLab repository | `midhhealth/ai-and-ml-platform/mlops-model-platform` |
+| Primary implementation repository | `midhhealth/ai-and-ml-platform/mlops-model-platform` |
 | Jira epic | `EPIC-MLOPS-013` — Implement ML Infrastructure as Code |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab shared runner, synthetic datasets, locked dependencies, and protected CI artifacts |

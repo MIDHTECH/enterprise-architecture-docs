@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-OBS-006](../observability/UC-OBS-006-alerting-and-on-call-notification.md), [UC-OBS-007](../observability/UC-OBS-007-production-incident-troubleshooting-dashboard.md), [UC-DATA-006](UC-DATA-006-workflow-orchestration.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md) |
 | Enterprise alignment | Provider operations, payer operations, risk and compliance, operational resilience |
 | Enterprise outcome | move and validate healthcare data safely before downstream enterprise decisions use it |
-| Primary GitLab repository | `midhhealth/data-and-integration/data-engineering-platform` |
+| Primary implementation repository | `midhhealth/data-and-integration/data-engineering-platform` |
 | Jira epic | `EPIC-DATA-018` — Implement Pipeline Monitoring and Alerting |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab shared runner, synthetic fixtures, PostgreSQL where approved, and current evidence paths |

@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-OBS-001](../observability/UC-OBS-001-slo-as-code.md), [UC-OBS-004](../observability/UC-OBS-004-centralized-log-management.md), [UC-MLOPS-008](../mlops/UC-MLOPS-008-model-observability.md), [UC-AI-011](UC-AI-011-ai-security-and-access-control.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | provide bounded and reviewable AI assistance without delegating regulated decisions |
-| Primary GitLab repository | `midhhealth/ai-and-ml-platform/healthcare-ai-platform` |
+| Primary implementation repository | `midhhealth/ai-and-ml-platform/healthcare-ai-platform` |
 | Jira epic | `EPIC-AI-013` — Implement AI Observability |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab shared runner, approved repository content, synthetic fixtures, and protected CI artifacts |

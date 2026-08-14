@@ -9,6 +9,7 @@ Last verified: 2026-08-13
 | Canonical portfolio use case | Retrieval-Augmented Generation |
 | Primary platform | Enterprise Healthcare AI Platform |
 | Supporting use cases | [UC-AI-005](UC-AI-005-healthcare-knowledge-base-indexing.md), [UC-AI-011](UC-AI-011-ai-security-and-access-control.md), [UC-DATA-023](../data/UC-DATA-023-data-access-governance.md), [UC-AI-007](UC-AI-007-ai-prompt-and-response-evaluation.md) |
+| Primary implementation repository | `midhhealth/ai-and-ml-platform/healthcare-ai-platform` |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | Help staff locate cited, approved operational knowledge without exposing protected data or trusting uncited output |
 | Supporting platforms | Data engineering, governance, DevSecOps delivery, observability |

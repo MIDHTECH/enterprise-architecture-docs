@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-RSO-011](../resilience/UC-RSO-011-synthetic-monitoring.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md), [UC-OBS-001](UC-OBS-001-slo-as-code.md), [UC-NET-028](../network/UC-NET-028-network-availability-testing.md) |
 | Enterprise alignment | Operational resilience, shared digital platform |
 | Enterprise outcome | turn existing telemetry into actionable health and incident evidence for enterprise services |
-| Primary GitLab repository | `midhhealth/reliability-operations/observability-sre-platform` |
+| Primary implementation repository | `midhhealth/reliability-operations/observability-sre-platform` |
 | Jira epic | `EPIC-OBS-012` — Implement Synthetic Monitoring |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing Prometheus, Alertmanager, Grafana, Loki, Tempo, OpenTelemetry, Elastic, and GitLab/AWX paths |

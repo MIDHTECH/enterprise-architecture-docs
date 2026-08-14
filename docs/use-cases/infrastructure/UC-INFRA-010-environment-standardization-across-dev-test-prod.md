@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-INFRA-002](UC-INFRA-002-azure-infrastructure-provisioning-using-terraform.md), [UC-INFRA-003](UC-INFRA-003-aws-vpc-landing-zone-setup.md), [UC-LNX-001](../linux/UC-LNX-001-os-installation-standards.md), [UC-GOV-007](../governance/UC-GOV-007-infrastructure-security-hardening.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | keep the existing lab foundation repeatable, attributable, and recoverable |
-| Primary GitLab repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
+| Primary implementation repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
 | Jira epic | `EPIC-INFRA-010` — Implement Environment Standardization Across Dev/Test/Prod |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab infrastructure runner, Terraform source, AWX, and canonical inventory |

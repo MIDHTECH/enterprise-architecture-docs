@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-OBS-001](UC-OBS-001-slo-as-code.md), [UC-RSO-002](../resilience/UC-RSO-002-sli-and-slo-governance.md), [UC-RSO-003](../resilience/UC-RSO-003-error-budget-management.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md) |
 | Enterprise alignment | Operational resilience, shared digital platform |
 | Enterprise outcome | turn existing telemetry into actionable health and incident evidence for enterprise services |
-| Primary GitLab repository | `midhhealth/reliability-operations/observability-sre-platform` |
+| Primary implementation repository | `midhhealth/reliability-operations/observability-sre-platform` |
 | Jira epic | `EPIC-OBS-016` — Implement Burn-Rate Alerting |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing Prometheus, Alertmanager, Grafana, Loki, Tempo, OpenTelemetry, Elastic, and GitLab/AWX paths |

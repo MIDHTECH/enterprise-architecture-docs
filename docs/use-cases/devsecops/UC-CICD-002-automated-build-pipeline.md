@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-CICD-001](UC-CICD-001-end-to-end-cicd-pipeline.md), [UC-CICD-007](UC-CICD-007-environment-based-release-promotion.md), [UC-OBS-008](../observability/UC-OBS-008-deployment-health-scoring.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md) |
 | Enterprise outcome | Produce repeatable, traceable application build outputs for provider, payer, and shared-platform services |
 | Primary actors | Application developer, delivery engineer, security reviewer, platform owner |
-| Primary GitLab repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
+| Primary implementation repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
 | Related capabilities | Source control, unit testing, artifact management, image build, security scanning, release promotion |
 | Existing execution boundary | GitLab and accepted GitLab runners; Jenkins remains the deployment approval/orchestration boundary |
 | Current state | **Planned — detailed design only; no implementation or execution evidence is claimed** |

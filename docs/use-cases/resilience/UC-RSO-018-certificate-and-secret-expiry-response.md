@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-NET-005](../network/UC-NET-005-authoritative-and-recursive-dns.md), [UC-NET-024](../network/UC-NET-024-certificate-and-tls-routing.md) |
 | Enterprise alignment | Provider operations, payer operations, operational resilience |
 | Enterprise outcome | connect service ownership, evidence, incident response, and recovery for enterprise workflows |
-| Primary GitLab repository | `midhhealth/reliability-operations/resilience-service-operations` |
+| Primary implementation repository | `midhhealth/reliability-operations/resilience-service-operations` |
 | Jira epic | `EPIC-RSO-018` — Implement Certificate and Secret Expiry Response |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab, Jenkins, AWX, observability APIs, service records, and runbooks |

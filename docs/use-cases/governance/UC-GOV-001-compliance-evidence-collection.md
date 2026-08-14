@@ -9,6 +9,7 @@ Last verified: 2026-08-13
 | Canonical portfolio use case | Automated Compliance Scanning |
 | Primary platform | Enterprise Cloud Governance and Operations Automation |
 | Supporting use cases | [UC-CICD-010](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-OBS-004](../observability/UC-OBS-004-centralized-log-management.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) |
+| Primary implementation repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
 | Enterprise alignment | Risk and compliance, shared digital platform |
 | Enterprise outcome | Prove that changes supporting provider and payer workflows pass common source and host controls |
 | Supporting platforms | DevSecOps delivery, Linux systems, infrastructure, resilience operations |

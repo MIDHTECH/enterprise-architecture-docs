@@ -9,6 +9,7 @@ Last verified: 2026-08-13
 | Canonical portfolio use case | Kubernetes Configuration Drift |
 | Primary platform | Enterprise Kubernetes Platform with GitOps |
 | Supporting use cases | [UC-NET-018](../network/UC-NET-018-kubernetes-networking.md), [UC-K8S-006](UC-K8S-006-kubernetes-security-baseline-implementation.md), [UC-INFRA-001](../infrastructure/UC-INFRA-001-terraform-drift-detection.md), [UC-GOV-003](../governance/UC-GOV-003-secure-secrets-management-for-applications.md) |
+| Primary implementation repository | `midhhealth/platform-engineering/kubernetes-platform-gitops` |
 | Enterprise alignment | Shared digital platform, operational resilience, risk and compliance |
 | Enterprise outcome | Keep the existing application cluster aligned with reviewed source before it hosts additional provider or payer services |
 | Supporting platforms | DevSecOps delivery, network, observability, governance |

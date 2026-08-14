@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-LNX-006](../linux/UC-LNX-006-operating-system-patching.md), [UC-LNX-022](../linux/UC-LNX-022-vulnerability-remediation-lifecycle.md), [UC-RSO-020](../resilience/UC-RSO-020-maintenance-window-management.md), [UC-OBS-004](../observability/UC-OBS-004-centralized-log-management.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | keep the existing lab foundation repeatable, attributable, and recoverable |
-| Primary GitLab repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
+| Primary implementation repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
 | Jira epic | `EPIC-INFRA-006` — Implement Linux Server Patch Automation |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab infrastructure runner, Terraform source, AWX, and canonical inventory |

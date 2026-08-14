@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-DATA-007](../data/UC-DATA-007-schema-registry-and-evolution.md), [UC-DATA-008](../data/UC-DATA-008-event-contract-management.md), [UC-DATA-023](../data/UC-DATA-023-data-access-governance.md), [UC-DATA-015](../data/UC-DATA-015-data-classification.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | provide bounded and reviewable AI assistance without delegating regulated decisions |
-| Primary GitLab repository | `midhhealth/ai-and-ml-platform/healthcare-ai-platform` |
+| Primary implementation repository | `midhhealth/ai-and-ml-platform/healthcare-ai-platform` |
 | Jira epic | `EPIC-AI-006` — Implement FHIR-Aware AI APIs |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab shared runner, approved repository content, synthetic fixtures, and protected CI artifacts |

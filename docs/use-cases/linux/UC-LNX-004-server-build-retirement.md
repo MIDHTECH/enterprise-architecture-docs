@@ -8,6 +8,7 @@ Last verified: 2026-08-02
 | --- | --- |
 | Portfolio | Enterprise Linux Systems Engineering Platform |
 | Supporting use cases | [UC-LNX-003](UC-LNX-003-vm-provisioning-cloud-init.md), [UC-INFRA-005](../infrastructure/UC-INFRA-005-server-configuration-automation-using-ansible.md), [UC-GOV-001](../governance/UC-GOV-001-compliance-evidence-collection.md), [UC-OBS-004](../observability/UC-OBS-004-centralized-log-management.md) |
+| Primary implementation repository | `midhhealth/platform-engineering/linux-systems-platform` |
 | Canonical coverage target | Approved creation, handoff, backup and decommission workflow |
 | Delivery model | End-to-end infrastructure as code |
 | Primary roles | Linux platform lead, service owner, backup engineer, security engineer, change approver |

@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-MLOPS-001](UC-MLOPS-001-model-registry-versioning.md), [UC-MLOPS-004](UC-MLOPS-004-model-validation-gates.md), [UC-DATA-014](../data/UC-DATA-014-data-lineage.md), [UC-CICD-001](../devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | make model lifecycle evidence reproducible before any model can affect an enterprise workflow |
-| Primary GitLab repository | `midhhealth/ai-and-ml-platform/mlops-model-platform` |
+| Primary implementation repository | `midhhealth/ai-and-ml-platform/mlops-model-platform` |
 | Jira epic | `EPIC-MLOPS-011` — Implement Model Rollback |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing GitLab shared runner, synthetic datasets, locked dependencies, and protected CI artifacts |

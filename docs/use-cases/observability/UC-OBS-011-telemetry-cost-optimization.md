@@ -11,7 +11,7 @@ Last reviewed: 2026-08-13
 | Supporting use cases | [UC-GOV-016](../governance/UC-GOV-016-cloud-cost-anomaly-detection.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-DATA-017](../data/UC-DATA-017-data-retention-and-archival.md), [UC-OBS-004](UC-OBS-004-centralized-log-management.md) |
 | Enterprise alignment | Operational resilience, shared digital platform |
 | Enterprise outcome | turn existing telemetry into actionable health and incident evidence for enterprise services |
-| Primary GitLab repository | `midhhealth/reliability-operations/observability-sre-platform` |
+| Primary implementation repository | `midhhealth/reliability-operations/observability-sre-platform` |
 | Jira epic | `EPIC-OBS-011` — Implement Telemetry Cost Optimization |
 | Change record | Required before any mutating or runtime action; not required for fixture-only CI |
 | Target | existing Prometheus, Alertmanager, Grafana, Loki, Tempo, OpenTelemetry, Elastic, and GitLab/AWX paths |
