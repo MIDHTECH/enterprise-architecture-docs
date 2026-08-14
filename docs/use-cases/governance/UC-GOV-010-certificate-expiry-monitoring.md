@@ -115,12 +115,12 @@ workflow.
 
 Begin with the observation, then follow the decision and action back to a new observation; the
 loop is incomplete until the owner sees the effect. In this page, **UC-NET-005: Authoritative
-and Recursive DNS** contributes authoritative name, resolver path, and expected DNS answer;
-**UC-NET-024: Certificate and TLS Routing** contributes certificate identity, TLS route, and
-expiry state. The first buildable boundary is existing GitLab runners, AWX inventories, Vault
-boundary, repository scanners, and evidence artifacts. The design stops at this rule: Reuse the
-existing lab; do not create a new governance VM, scanner service, cloud account, identity
-platform, or automatic high-risk remediation.
+and Recursive DNS** contributes layered path decision with before/after reachability and restore
+proof; **UC-NET-024: Certificate and TLS Routing** contributes layered path decision with
+before/after reachability and restore proof. The first buildable boundary is existing GitLab
+runners, AWX inventories, Vault boundary, repository scanners, and evidence artifacts. The
+design stops at this rule: Reuse the existing lab; do not create a new governance VM, scanner
+service, cloud account, identity platform, or automatic high-risk remediation.
 
 The walkthrough becomes useful when the happy path breaks. If contract or policy is
 missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
@@ -161,10 +161,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-NET-005: Authoritative and Recursive DNS](../network/UC-NET-005-authoritative-and-recursive-dns.md) | authoritative name, resolver path, and expected DNS answer | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-NET-024: Certificate and TLS Routing](../network/UC-NET-024-certificate-and-tls-routing.md) | certificate identity, TLS route, and expiry state | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-CICD-010: Secure CI/CD Pipeline Implementation](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md) | secure pipeline baseline and protected execution boundary | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-NET-005: Authoritative and Recursive DNS](../network/UC-NET-005-authoritative-and-recursive-dns.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-NET-024: Certificate and TLS Routing](../network/UC-NET-024-certificate-and-tls-routing.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-CICD-010: Secure CI/CD Pipeline Implementation](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md) | immutable build or gate result with promotion and rollback eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Certificate Expiry Monitoring is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

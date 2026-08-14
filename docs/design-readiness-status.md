@@ -24,6 +24,7 @@ documentation change before changing platform or use-case designs.
 | Enterprise operating model | Ready | MidhHealth provider, payer, platform and governance responsibilities share one delivery and evidence model | No design blocker |
 | Twelve platform domains | Ready | Each platform has context, ownership, detailed architecture, failure behavior, implementation guidance and acceptance intent | Runtime acceptance remains a later phase |
 | 226 platform use cases | Ready for implementation planning | Every canonical use case has a detailed page, linked dependencies, an SVG, trust boundaries, planned source locations, failure handling and future evidence | Page readiness is not implementation or acceptance |
+| Cross-platform implementation order | Ready | Required build prerequisites form a validated cycle-free sequence; coordinated assurance may proceed in parallel but still gates runtime acceptance | Follow the generated implementation wave for each use case |
 | Current-versus-target platform truth | Ready | Accepted, partial, uninstalled, provisioned-only and target-only states have one vocabulary and canonical manifest | The manifest must be updated whenever lab evidence changes |
 | Application onboarding framework | Ready | Application records, reusable platform chains, applicability rules and future evidence requirements are defined | No implementation authorization |
 | Real provider application design | Blocked on inventory | The architecture reserves a care-delivery portfolio and defines its registration contract | Real application name, repository, owner, users, data class and interfaces are not supplied |
@@ -62,7 +63,9 @@ reviewer can answer all of the following from the page:
 
 Before work moves from design to lab implementation:
 
-1. the selected use case passes the design-complete gate above;
+1. the selected use case passes the design-complete gate above and its required
+   contracts appear in earlier waves of the [dependency-safe implementation
+   sequence](use-case-implementation-sequence.md);
 2. its current and target dependencies agree with the canonical capability
    manifest;
 3. the intended repository exists and the planned paths are reviewed with its

@@ -110,6 +110,14 @@ paragraph is not detailed architecture. Purpose, expected outcome, diagrams,
 dependencies, risks, and implementation responsibilities must describe the
 actual capability.
 
+Dependency relationship labels have different scheduling meaning. A
+`Required upstream contract` must publish its versioned source interface before
+the dependent use case begins its implementation wave. A `Coordinated assurance
+handoff` can be developed in parallel, but its evidence still gates runtime
+promotion and owner acceptance. The generated [implementation
+sequence](../use-case-implementation-sequence.md) must remain cycle-free; it is
+not authorization to execute any wave in the lab.
+
 ## Linux end-to-end IaC contract
 
 Every `UC-LNX-*` page is an implementation specification as well as a training

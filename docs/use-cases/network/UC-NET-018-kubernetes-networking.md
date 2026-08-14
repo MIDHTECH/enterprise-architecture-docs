@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Kubernetes Networking |
 | Primary platform | Enterprise Network Engineering and Automation Platform |
-| Supporting use cases | [UC-K8S-001](../kubernetes/UC-K8S-001-kubernetes-configuration-drift.md), [UC-K8S-006](../kubernetes/UC-K8S-006-kubernetes-security-baseline-implementation.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md), [UC-LNX-011](../linux/UC-LNX-011-dns-ntp-host-networking.md) |
+| Supporting use cases | [UC-NET-003](UC-NET-003-vlan-and-subnet-design.md), [UC-NET-012](UC-NET-012-firewall-policy-management.md), [UC-K8S-001](../kubernetes/UC-K8S-001-kubernetes-configuration-drift.md), [UC-K8S-006](../kubernetes/UC-K8S-006-kubernetes-security-baseline-implementation.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, provider and payer operations |
 | Enterprise outcome | maintain trusted connectivity and service paths across the existing lab |
 | Primary GitLab repository | `midhhealth/platform-engineering/network-engineering-platform` |
@@ -113,10 +113,10 @@ Network Engineering and Automation Platform team owns the platform decision, whi
 service or business owner still accepts the effect on its workflow.
 
 Trace one user or system request from source to destination and back; DNS, identity, policy and
-dependency failures are part of that same path. In this page, **UC-K8S-001: Kubernetes
-Configuration Drift** contributes cluster identity and desired-versus-observed state report;
-**UC-K8S-006: Kubernetes Security Baseline Implementation** contributes workload security
-baseline and policy exceptions. The first buildable boundary is existing DNS, NGINX, KVM
+dependency failures are part of that same path. In this page, **UC-NET-003: VLAN and Subnet
+Design** contributes layered path decision with before/after reachability and restore proof;
+**UC-NET-012: Firewall Policy Management** contributes layered path decision with before/after
+reachability and restore proof. The first buildable boundary is existing DNS, NGINX, KVM
 bridges, Kubernetes networking, GitLab, Jenkins, AWX, and blackbox checks. The design stops at
 this rule: Reuse the existing lab; do not create a new router, switch, firewall appliance, VM,
 IP, VLAN, CNI, load balancer, VPN, or cloud network.
@@ -160,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-K8S-001: Kubernetes Configuration Drift](../kubernetes/UC-K8S-001-kubernetes-configuration-drift.md) | cluster identity and desired-versus-observed state report | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-K8S-006: Kubernetes Security Baseline Implementation](../kubernetes/UC-K8S-006-kubernetes-security-baseline-implementation.md) | workload security baseline and policy exceptions | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-007: Infrastructure Change Impact Analysis](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) | resource-to-service impact and affected-owner list | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-LNX-011: DNS, NTP and Host Networking](../linux/UC-LNX-011-dns-ntp-host-networking.md) | host DNS, time, and network readiness evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-NET-003: VLAN and Subnet Design](UC-NET-003-vlan-and-subnet-design.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-NET-012: Firewall Policy Management](UC-NET-012-firewall-policy-management.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-K8S-001: Kubernetes Configuration Drift](../kubernetes/UC-K8S-001-kubernetes-configuration-drift.md) | cluster identity and desired-versus-observed state report | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-K8S-006: Kubernetes Security Baseline Implementation](../kubernetes/UC-K8S-006-kubernetes-security-baseline-implementation.md) | validated desired-state decision with bounded reconciliation and recovery evidence | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Kubernetes Networking is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

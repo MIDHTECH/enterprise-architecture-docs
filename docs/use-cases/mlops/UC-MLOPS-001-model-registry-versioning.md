@@ -8,7 +8,7 @@ Last verified: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Model Registry and Versioning |
 | Primary platform | Enterprise MLOps Model Platform |
-| Supporting use cases | [UC-MLOPS-004](UC-MLOPS-004-model-validation-gates.md), [UC-MLOPS-011](UC-MLOPS-011-model-rollback.md), [UC-DATA-014](../data/UC-DATA-014-data-lineage.md), [UC-CICD-001](../devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md) |
+| Supporting use cases | [UC-DATA-014](../data/UC-DATA-014-data-lineage.md), [UC-CICD-001](../devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md), [UC-MLOPS-004](UC-MLOPS-004-model-validation-gates.md), [UC-MLOPS-011](UC-MLOPS-011-model-rollback.md) |
 | Enterprise alignment | Provider operations, payer operations, shared digital platform, risk and compliance |
 | Enterprise outcome | Prevent an untraceable or unvalidated model artifact from entering an enterprise workflow |
 | Supporting platforms | Data engineering, healthcare AI, DevSecOps delivery, governance, observability |
@@ -86,12 +86,13 @@ from entering an enterprise workflow. MLOps Model Platform team owns the platfor
 while the consuming service or business owner still accepts the effect on its workflow.
 
 Follow the information rather than the products: ownership and classification travel with it,
-including on rejected and replayed paths. In this page, **UC-MLOPS-004: Model Validation Gates**
-contributes model quality/safety gate and reviewer decision; **UC-MLOPS-011: Model Rollback**
-contributes accepted model revision and rollback eligibility. The first buildable boundary is
-Existing MLOps GitLab project, accepted shared runner, and protected GitLab artifacts. The
-design stops at this rule: No MLflow, Kubeflow, model server, feature store, VM, cluster
-workload, or cloud service is created.
+including on rejected and replayed paths. In this page, **UC-DATA-014: Data Lineage**
+contributes validated data result with counts, lineage, quality, and reconciliation state;
+**UC-CICD-001: End-to-End CI/CD Pipeline Setup** contributes source-to-artifact pipeline
+provenance and stage outcome. The first buildable boundary is Existing MLOps GitLab project,
+accepted shared runner, and protected GitLab artifacts. The design stops at this rule: No
+MLflow, Kubeflow, model server, feature store, VM, cluster workload, or cloud service is
+created.
 
 The walkthrough becomes useful when the happy path breaks. If a required dependency or
 verification result is unavailable, the expected response is to stop before mutation, preserve
@@ -133,10 +134,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-MLOPS-004: Model Validation Gates](UC-MLOPS-004-model-validation-gates.md) | model quality/safety gate and reviewer decision | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-MLOPS-011: Model Rollback](UC-MLOPS-011-model-rollback.md) | accepted model revision and rollback eligibility | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-DATA-014: Data Lineage](../data/UC-DATA-014-data-lineage.md) | source-to-consumer lineage and transformation revisions | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-CICD-001: End-to-End CI/CD Pipeline Setup](../devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md) | source-to-artifact pipeline provenance and stage outcome | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-DATA-014: Data Lineage](../data/UC-DATA-014-data-lineage.md) | validated data result with counts, lineage, quality, and reconciliation state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-CICD-001: End-to-End CI/CD Pipeline Setup](../devsecops/UC-CICD-001-end-to-end-cicd-pipeline.md) | source-to-artifact pipeline provenance and stage outcome | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-MLOPS-004: Model Validation Gates](UC-MLOPS-004-model-validation-gates.md) | reproducible lifecycle decision with promotion, rollback, or retirement eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-MLOPS-011: Model Rollback](UC-MLOPS-011-model-rollback.md) | reproducible lifecycle decision with promotion, rollback, or retirement eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Model Registry and Versioning is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

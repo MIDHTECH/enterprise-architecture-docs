@@ -8,7 +8,7 @@ Last verified: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | SLO as Code |
 | Primary platform | Enterprise Observability and SRE Reliability Platform |
-| Supporting use cases | [UC-RSO-002](../resilience/UC-RSO-002-sli-and-slo-governance.md), [UC-RSO-003](../resilience/UC-RSO-003-error-budget-management.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md) |
+| Supporting use cases | [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md), [UC-RSO-002](../resilience/UC-RSO-002-sli-and-slo-governance.md), [UC-RSO-003](../resilience/UC-RSO-003-error-budget-management.md) |
 | Enterprise alignment | Operational resilience, shared digital platform |
 | Enterprise outcome | Detect sustained risk to provider, payer, and platform services before raw symptom alerts become outages |
 | Supporting platforms | Resilience operations, DevSecOps delivery, governance |
@@ -83,12 +83,12 @@ become outages. Observability and SRE team owns the platform decision, while the
 service or business owner still accepts the effect on its workflow.
 
 Begin with the observation, then follow the decision and action back to a new observation; the
-loop is incomplete until the owner sees the effect. In this page, **UC-RSO-002: SLI and SLO
-Governance** contributes approved SLI/SLO definition and review cadence; **UC-RSO-003:
-Error-Budget Management** contributes error-budget state and release decision boundary. The
-first buildable boundary is Existing Prometheus, Alertmanager, Grafana, Blackbox Exporter, and
-GitLab source. The design stops at this rule: No VM, collector, database, cluster, or monitoring
-product is created.
+loop is incomplete until the owner sees the effect. In this page, **UC-RSO-009: Service
+Ownership** contributes readiness or exercise result tied to observed service recovery;
+**UC-RSO-010: Dependency Mapping** contributes readiness or exercise result tied to observed
+service recovery. The first buildable boundary is Existing Prometheus, Alertmanager, Grafana,
+Blackbox Exporter, and GitLab source. The design stops at this rule: No VM, collector, database,
+cluster, or monitoring product is created.
 
 The walkthrough becomes useful when the happy path breaks. If a required dependency or
 verification result is unavailable, the expected response is to stop before mutation, preserve
@@ -130,10 +130,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-RSO-002: SLI and SLO Governance](../resilience/UC-RSO-002-sli-and-slo-governance.md) | approved SLI/SLO definition and review cadence | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-RSO-003: Error-Budget Management](../resilience/UC-RSO-003-error-budget-management.md) | error-budget state and release decision boundary | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-RSO-010: Dependency Mapping](../resilience/UC-RSO-010-dependency-mapping.md) | upstream/downstream service dependency and failure effect | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-RSO-010: Dependency Mapping](../resilience/UC-RSO-010-dependency-mapping.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-002: SLI and SLO Governance](../resilience/UC-RSO-002-sli-and-slo-governance.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-003: Error-Budget Management](../resilience/UC-RSO-003-error-budget-management.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before SLO as Code is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

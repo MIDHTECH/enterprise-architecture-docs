@@ -115,10 +115,10 @@ service or business owner still accepts the effect on its workflow.
 Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
 identity or evidence from an earlier one. In this page, **UC-CICD-001: End-to-End CI/CD Pipeline
 Setup** contributes source-to-artifact pipeline provenance and stage outcome; **UC-OBS-008:
-Deployment Health Scoring** contributes deployment-health score and promotion/rollback signal.
-The first buildable boundary is existing GitLab, accepted runners, Jenkins, AWX, and Kubernetes
-delivery paths. The design stops at this rule: Reuse the existing lab; do not create a new
-runner, VM, registry, cluster, or delivery product.
+Deployment Health Scoring** contributes traceable measurement or alert decision with owner and
+diagnostic context. The first buildable boundary is existing GitLab, accepted runners, Jenkins,
+AWX, and Kubernetes delivery paths. The design stops at this rule: Reuse the existing lab; do
+not create a new runner, VM, registry, cluster, or delivery product.
 
 The walkthrough becomes useful when the happy path breaks. If contract or policy is
 missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
@@ -159,10 +159,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-CICD-001: End-to-End CI/CD Pipeline Setup](UC-CICD-001-end-to-end-cicd-pipeline.md) | source-to-artifact pipeline provenance and stage outcome | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-OBS-008: Deployment Health Scoring](../observability/UC-OBS-008-deployment-health-scoring.md) | deployment-health score and promotion/rollback signal | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | approved secret reference, redaction rule, and rotation owner | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-001: Terraform Drift Detection](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) | desired/observed infrastructure identity and drift result | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-CICD-001: End-to-End CI/CD Pipeline Setup](UC-CICD-001-end-to-end-cicd-pipeline.md) | source-to-artifact pipeline provenance and stage outcome | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-OBS-008: Deployment Health Scoring](../observability/UC-OBS-008-deployment-health-scoring.md) | traceable measurement or alert decision with owner and diagnostic context | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-INFRA-001: Terraform Drift Detection](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) | desired/observed infrastructure identity and drift result | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Environment-Based Release Promotion is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

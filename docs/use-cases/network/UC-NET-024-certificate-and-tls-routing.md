@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Certificate and TLS Routing |
 | Primary platform | Enterprise Network Engineering and Automation Platform |
-| Supporting use cases | [UC-NET-005](UC-NET-005-authoritative-and-recursive-dns.md), [UC-GOV-010](../governance/UC-GOV-010-certificate-expiry-monitoring.md), [UC-NET-003](UC-NET-003-vlan-and-subnet-design.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md) |
+| Supporting use cases | [UC-NET-005](UC-NET-005-authoritative-and-recursive-dns.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-GOV-010](../governance/UC-GOV-010-certificate-expiry-monitoring.md), [UC-NET-003](UC-NET-003-vlan-and-subnet-design.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, provider and payer operations |
 | Enterprise outcome | maintain trusted connectivity and service paths across the existing lab |
 | Primary GitLab repository | `midhhealth/platform-engineering/network-engineering-platform` |
@@ -114,12 +114,12 @@ owner still accepts the effect on its workflow.
 
 Trace one user or system request from source to destination and back; DNS, identity, policy and
 dependency failures are part of that same path. In this page, **UC-NET-005: Authoritative and
-Recursive DNS** contributes authoritative name, resolver path, and expected DNS answer;
-**UC-GOV-010: Certificate Expiry Monitoring** contributes certificate-expiry evidence and
-response ownership. The first buildable boundary is existing DNS, NGINX, KVM bridges, Kubernetes
-networking, GitLab, Jenkins, AWX, and blackbox checks. The design stops at this rule: Reuse the
-existing lab; do not create a new router, switch, firewall appliance, VM, IP, VLAN, CNI, load
-balancer, VPN, or cloud network.
+Recursive DNS** contributes layered path decision with before/after reachability and restore
+proof; **UC-GOV-002: Secrets Management Automation** contributes explainable compliance or
+remediation decision with expiry and recovery state. The first buildable boundary is existing
+DNS, NGINX, KVM bridges, Kubernetes networking, GitLab, Jenkins, AWX, and blackbox checks. The
+design stops at this rule: Reuse the existing lab; do not create a new router, switch, firewall
+appliance, VM, IP, VLAN, CNI, load balancer, VPN, or cloud network.
 
 The walkthrough becomes useful when the happy path breaks. If contract or policy is
 missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
@@ -160,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-NET-005: Authoritative and Recursive DNS](UC-NET-005-authoritative-and-recursive-dns.md) | authoritative name, resolver path, and expected DNS answer | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-GOV-010: Certificate Expiry Monitoring](../governance/UC-GOV-010-certificate-expiry-monitoring.md) | certificate-expiry evidence and response ownership | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-NET-003: VLAN and Subnet Design](UC-NET-003-vlan-and-subnet-design.md) | approved address, subnet, and trust-zone intent | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-RSO-010: Dependency Mapping](../resilience/UC-RSO-010-dependency-mapping.md) | upstream/downstream service dependency and failure effect | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-NET-005: Authoritative and Recursive DNS](UC-NET-005-authoritative-and-recursive-dns.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-010: Certificate Expiry Monitoring](../governance/UC-GOV-010-certificate-expiry-monitoring.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-NET-003: VLAN and Subnet Design](UC-NET-003-vlan-and-subnet-design.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Certificate and TLS Routing is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

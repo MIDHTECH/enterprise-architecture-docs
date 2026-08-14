@@ -85,11 +85,11 @@ consuming service or business owner still accepts the effect on its workflow.
 
 Begin with the observation, then follow the decision and action back to a new observation; the
 loop is incomplete until the owner sees the effect. In this page, **UC-NET-018: Kubernetes
-Networking** contributes cluster network identity and service-path contract; **UC-K8S-006:
-Kubernetes Security Baseline Implementation** contributes workload security baseline and policy
-exceptions. The first buildable boundary is Existing four-node kubeadm cluster and
-jenkins-agent01 deployment path. The design stops at this rule: No cluster, node, VM, IP, load
-balancer, or storage system is created.
+Networking** contributes layered path decision with before/after reachability and restore proof;
+**UC-K8S-006: Kubernetes Security Baseline Implementation** contributes validated desired-state
+decision with bounded reconciliation and recovery evidence. The first buildable boundary is
+Existing four-node kubeadm cluster and jenkins-agent01 deployment path. The design stops at this
+rule: No cluster, node, VM, IP, load balancer, or storage system is created.
 
 The walkthrough becomes useful when the happy path breaks. If a required dependency or
 verification result is unavailable, the expected response is to stop before mutation, preserve
@@ -130,10 +130,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-NET-018: Kubernetes Networking](../network/UC-NET-018-kubernetes-networking.md) | cluster network identity and service-path contract | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-K8S-006: Kubernetes Security Baseline Implementation](UC-K8S-006-kubernetes-security-baseline-implementation.md) | workload security baseline and policy exceptions | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-001: Terraform Drift Detection](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) | desired/observed infrastructure identity and drift result | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-GOV-003: Secure Secrets Management for Applications](../governance/UC-GOV-003-secure-secrets-management-for-applications.md) | application secret-injection and workload identity boundary | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-NET-018: Kubernetes Networking](../network/UC-NET-018-kubernetes-networking.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-K8S-006: Kubernetes Security Baseline Implementation](UC-K8S-006-kubernetes-security-baseline-implementation.md) | validated desired-state decision with bounded reconciliation and recovery evidence | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-INFRA-001: Terraform Drift Detection](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) | desired/observed infrastructure identity and drift result | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-003: Secure Secrets Management for Applications](../governance/UC-GOV-003-secure-secrets-management-for-applications.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Kubernetes Configuration Drift is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

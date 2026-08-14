@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Secrets Management Automation |
 | Primary platform | Enterprise Cloud Governance and Operations Automation |
-| Supporting use cases | [UC-GOV-004](UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-RSO-018](../resilience/UC-RSO-018-certificate-and-secret-expiry-response.md), [UC-CICD-010](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md) |
+| Supporting use cases | [UC-GOV-004](UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-RSO-018](../resilience/UC-RSO-018-certificate-and-secret-expiry-response.md), [UC-CICD-010](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md) |
 | Enterprise alignment | Risk and compliance, shared digital platform, operational resilience |
 | Enterprise outcome | apply traceable controls to platform work that supports provider and payer operations |
 | Primary GitLab repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
@@ -114,9 +114,9 @@ consuming service or business owner still accepts the effect on its workflow.
 
 Start at the decision rather than the tool, then ask which facts justify allow, block, defer or
 escalate and who can override it. In this page, **UC-GOV-004: Cloud IAM and RBAC
-Standardization** contributes principal, role, resource, and approval policy; **UC-RSO-018:
-Certificate and Secret Expiry Response** contributes expiry incident and coordinated
-credential/certificate recovery. The first buildable boundary is existing GitLab runners, AWX
+Standardization** contributes explainable compliance or remediation decision with expiry and
+recovery state; **UC-RSO-009: Service Ownership** contributes readiness or exercise result tied
+to observed service recovery. The first buildable boundary is existing GitLab runners, AWX
 inventories, Vault boundary, repository scanners, and evidence artifacts. The design stops at
 this rule: Reuse the existing lab; do not create a new governance VM, scanner service, cloud
 account, identity platform, or automatic high-risk remediation.
@@ -160,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-GOV-004: Cloud IAM and RBAC Standardization](UC-GOV-004-cloud-iam-and-rbac-standardization.md) | principal, role, resource, and approval policy | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-RSO-018: Certificate and Secret Expiry Response](../resilience/UC-RSO-018-certificate-and-secret-expiry-response.md) | expiry incident and coordinated credential/certificate recovery | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-CICD-010: Secure CI/CD Pipeline Implementation](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md) | secure pipeline baseline and protected execution boundary | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-GOV-004: Cloud IAM and RBAC Standardization](UC-GOV-004-cloud-iam-and-rbac-standardization.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-018: Certificate and Secret Expiry Response](../resilience/UC-RSO-018-certificate-and-secret-expiry-response.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-CICD-010: Secure CI/CD Pipeline Implementation](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md) | immutable build or gate result with promotion and rollback eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Secrets Management Automation is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

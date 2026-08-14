@@ -115,11 +115,12 @@ effect on its workflow.
 
 Start at the decision rather than the tool, then ask which facts justify allow, block, defer or
 escalate and who can override it. In this page, **UC-GOV-002: Secrets Management Automation**
-contributes approved secret reference, redaction rule, and rotation owner; **UC-GOV-004: Cloud
-IAM and RBAC Standardization** contributes principal, role, resource, and approval policy. The
-first buildable boundary is existing GitLab, Jenkins, AWX, observability APIs, service records,
-and runbooks. The design stops at this rule: Reuse the existing lab; do not create a new
-service-management product, VM, monitoring stack, or unapproved disruptive exercise.
+contributes explainable compliance or remediation decision with expiry and recovery state;
+**UC-GOV-004: Cloud IAM and RBAC Standardization** contributes explainable compliance or
+remediation decision with expiry and recovery state. The first buildable boundary is existing
+GitLab, Jenkins, AWX, observability APIs, service records, and runbooks. The design stops at
+this rule: Reuse the existing lab; do not create a new service-management product, VM,
+monitoring stack, or unapproved disruptive exercise.
 
 The walkthrough becomes useful when the happy path breaks. If contract or policy is
 missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
@@ -160,10 +161,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | approved secret reference, redaction rule, and rotation owner | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | principal, role, resource, and approval policy | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-NET-005: Authoritative and Recursive DNS](../network/UC-NET-005-authoritative-and-recursive-dns.md) | authoritative name, resolver path, and expected DNS answer | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-NET-024: Certificate and TLS Routing](../network/UC-NET-024-certificate-and-tls-routing.md) | certificate identity, TLS route, and expiry state | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-NET-005: Authoritative and Recursive DNS](../network/UC-NET-005-authoritative-and-recursive-dns.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-NET-024: Certificate and TLS Routing](../network/UC-NET-024-certificate-and-tls-routing.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Certificate and Secret Expiry Response is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

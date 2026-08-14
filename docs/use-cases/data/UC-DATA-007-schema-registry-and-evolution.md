@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Schema Registry and Evolution |
 | Primary platform | Enterprise Data Engineering and Integration Platform |
-| Supporting use cases | [UC-DATA-008](UC-DATA-008-event-contract-management.md), [UC-DATA-023](UC-DATA-023-data-access-governance.md), [UC-DATA-015](UC-DATA-015-data-classification.md), [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) |
+| Supporting use cases | [UC-DATA-015](UC-DATA-015-data-classification.md), [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-DATA-008](UC-DATA-008-event-contract-management.md), [UC-DATA-023](UC-DATA-023-data-access-governance.md) |
 | Enterprise alignment | Provider operations, payer operations, risk and compliance, operational resilience |
 | Enterprise outcome | move and validate healthcare data safely before downstream enterprise decisions use it |
 | Primary GitLab repository | `midhhealth/data-and-integration/data-engineering-platform` |
@@ -113,13 +113,13 @@ Enterprise Data Engineering and Integration Platform team owns the platform deci
 consuming service or business owner still accepts the effect on its workflow.
 
 Follow the information rather than the products: ownership and classification travel with it,
-including on rejected and replayed paths. In this page, **UC-DATA-008: Event-Contract
-Management** contributes event producer/consumer contract and failure semantics; **UC-DATA-023:
-Data Access Governance** contributes dataset role, purpose-of-use, and access-review evidence.
-The first buildable boundary is existing GitLab shared runner, synthetic fixtures, PostgreSQL
-where approved, and current evidence paths. The design stops at this rule: Reuse the existing
-lab; do not create a new data platform, Kafka, Airflow, lakehouse, VM, bucket, live feed, or
-protected healthcare dataset.
+including on rejected and replayed paths. In this page, **UC-DATA-015: Data Classification**
+contributes validated data result with counts, lineage, quality, and reconciliation state;
+**UC-GOV-004: Cloud IAM and RBAC Standardization** contributes explainable compliance or
+remediation decision with expiry and recovery state. The first buildable boundary is existing
+GitLab shared runner, synthetic fixtures, PostgreSQL where approved, and current evidence paths.
+The design stops at this rule: Reuse the existing lab; do not create a new data platform, Kafka,
+Airflow, lakehouse, VM, bucket, live feed, or protected healthcare dataset.
 
 The walkthrough becomes useful when the happy path breaks. If contract or policy is
 missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
@@ -160,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-DATA-008: Event-Contract Management](UC-DATA-008-event-contract-management.md) | event producer/consumer contract and failure semantics | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-DATA-023: Data Access Governance](UC-DATA-023-data-access-governance.md) | dataset role, purpose-of-use, and access-review evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-DATA-015: Data Classification](UC-DATA-015-data-classification.md) | data classification and permitted handling rules | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | principal, role, resource, and approval policy | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-DATA-015: Data Classification](UC-DATA-015-data-classification.md) | validated data result with counts, lineage, quality, and reconciliation state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-DATA-008: Event-Contract Management](UC-DATA-008-event-contract-management.md) | validated data result with counts, lineage, quality, and reconciliation state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-DATA-023: Data Access Governance](UC-DATA-023-data-access-governance.md) | validated data result with counts, lineage, quality, and reconciliation state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Schema Registry and Evolution is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

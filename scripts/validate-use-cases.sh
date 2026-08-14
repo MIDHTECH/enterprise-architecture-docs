@@ -141,9 +141,12 @@ root = Path(sys.argv[1])
 documents = sorted((root / "docs/use-cases").glob("*/UC-*.md"))
 portfolio_text = (root / "docs/enterprise-project-portfolio-and-usecases.md").read_text()
 id_to_path = {}
-dependency_contracts = json.loads(
+dependency_contract_document = json.loads(
     (root / "docs/use-case-dependency-contracts.json").read_text()
-)["contracts"]
+)
+dependency_contracts = dependency_contract_document["contracts"]
+required_counts = dependency_contract_document.get("required_counts", {})
+required_graph = {}
 architecture_archetypes = set()
 allowed_archetypes = {
     "delivery-pipeline",
@@ -175,6 +178,12 @@ if unknown_contract_pages or unknown_contract_dependencies:
         + ", ".join(unknown_contract_pages)
         + "; dependencies: "
         + ", ".join(unknown_contract_dependencies)
+    )
+unknown_required_counts = sorted(set(required_counts) - set(dependency_contracts))
+if unknown_required_counts:
+    raise SystemExit(
+        "Required-count overrides lack dependency contracts: "
+        + ", ".join(unknown_required_counts)
     )
 
 for document in documents:
@@ -212,10 +221,19 @@ for document in documents:
         raise SystemExit(f"{document}: unbalanced fenced code blocks")
 
     handoff_section = text.split("## Dependencies and handoffs", 1)[1].split("## Quality attributes", 1)[0]
-    handoff_ids = re.findall(
-        r"\[(UC-[A-Z0-9]+-\d{3})(?::[^]]+)?\]\([^)]*\.md\)",
+    handoff_rows = re.findall(
+        r"^\| (Required upstream contract|Coordinated assurance handoff) \| "
+        r"\[(UC-[A-Z0-9]+-\d{3})(?::[^]]+)?\]\([^)]*\.md\) \|",
         handoff_section,
+        re.M,
     )
+    handoff_ids = [use_case_id for _, use_case_id in handoff_rows]
+    required_ids = [
+        use_case_id
+        for relationship, use_case_id in handoff_rows
+        if relationship == "Required upstream contract"
+    ]
+    required_graph[own_id] = required_ids
     supporting_row = re.search(r"^\| Supporting use cases \| (.+) \|$", text, re.M)
     supporting_ids = (
         re.findall(r"\[(UC-[A-Z0-9]+-\d{3})\]", supporting_row.group(1))
@@ -235,6 +253,18 @@ for document in documents:
             f"{document}: dependency order {handoff_ids} does not match the architect-reviewed contract "
             f"{dependency_contracts[own_id]}"
         )
+    if own_id in dependency_contracts:
+        required_count = required_counts.get(own_id, 2)
+        expected_relationships = [
+            "Required upstream contract" if index < required_count else "Coordinated assurance handoff"
+            for index in range(len(handoff_ids))
+        ]
+        actual_relationships = [relationship for relationship, _ in handoff_rows]
+        if actual_relationships != expected_relationships:
+            raise SystemExit(
+                f"{document}: dependency relationship semantics {actual_relationships} do not match "
+                f"the architect-reviewed contract {expected_relationships}"
+            )
 
     walkthrough_count = len(re.findall(r"^## Design walkthrough\s*$", text, re.M))
     if walkthrough_count != 1:
@@ -314,6 +344,23 @@ for document in documents:
         resolved = (document.parent / target).resolve()
         if not resolved.is_file():
             raise SystemExit(f"{document}: broken internal Markdown link: {target}")
+
+remaining = {node: set(dependencies) for node, dependencies in required_graph.items()}
+waves = []
+while remaining:
+    ready = sorted(node for node, dependencies in remaining.items() if not dependencies)
+    if not ready:
+        sample = ", ".join(sorted(remaining)[:20])
+        raise SystemExit(
+            "Required-upstream graph contains an implementation-order cycle among: " + sample
+        )
+    waves.append(ready)
+    ready_set = set(ready)
+    remaining = {
+        node: dependencies - ready_set
+        for node, dependencies in remaining.items()
+        if node not in ready_set
+    }
 
 if architecture_archetypes != allowed_archetypes:
     missing = sorted(allowed_archetypes - architecture_archetypes)

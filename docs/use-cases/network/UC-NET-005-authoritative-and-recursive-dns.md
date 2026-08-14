@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Authoritative and Recursive DNS |
 | Primary platform | Enterprise Network Engineering and Automation Platform |
-| Supporting use cases | [UC-NET-024](UC-NET-024-certificate-and-tls-routing.md), [UC-GOV-010](../governance/UC-GOV-010-certificate-expiry-monitoring.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md), [UC-LNX-011](../linux/UC-LNX-011-dns-ntp-host-networking.md) |
+| Supporting use cases | [UC-NET-003](UC-NET-003-vlan-and-subnet-design.md), [UC-LNX-011](../linux/UC-LNX-011-dns-ntp-host-networking.md), [UC-GOV-010](../governance/UC-GOV-010-certificate-expiry-monitoring.md), [UC-NET-024](UC-NET-024-certificate-and-tls-routing.md) |
 | Enterprise alignment | Shared digital platform, operational resilience, provider and payer operations |
 | Enterprise outcome | maintain trusted connectivity and service paths across the existing lab |
 | Primary GitLab repository | `midhhealth/platform-engineering/network-engineering-platform` |
@@ -113,13 +113,13 @@ Engineering and Automation Platform team owns the platform decision, while the c
 or business owner still accepts the effect on its workflow.
 
 Trace one user or system request from source to destination and back; DNS, identity, policy and
-dependency failures are part of that same path. In this page, **UC-NET-024: Certificate and TLS
-Routing** contributes certificate identity, TLS route, and expiry state; **UC-GOV-010:
-Certificate Expiry Monitoring** contributes certificate-expiry evidence and response ownership.
-The first buildable boundary is existing DNS, NGINX, KVM bridges, Kubernetes networking, GitLab,
-Jenkins, AWX, and blackbox checks. The design stops at this rule: Reuse the existing lab; do not
-create a new router, switch, firewall appliance, VM, IP, VLAN, CNI, load balancer, VPN, or cloud
-network.
+dependency failures are part of that same path. In this page, **UC-NET-003: VLAN and Subnet
+Design** contributes layered path decision with before/after reachability and restore proof;
+**UC-LNX-011: DNS, NTP and Host Networking** contributes host DNS, time, and network readiness
+evidence. The first buildable boundary is existing DNS, NGINX, KVM bridges, Kubernetes
+networking, GitLab, Jenkins, AWX, and blackbox checks. The design stops at this rule: Reuse the
+existing lab; do not create a new router, switch, firewall appliance, VM, IP, VLAN, CNI, load
+balancer, VPN, or cloud network.
 
 The walkthrough becomes useful when the happy path breaks. If contract or policy is
 missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
@@ -160,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-NET-024: Certificate and TLS Routing](UC-NET-024-certificate-and-tls-routing.md) | certificate identity, TLS route, and expiry state | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-GOV-010: Certificate Expiry Monitoring](../governance/UC-GOV-010-certificate-expiry-monitoring.md) | certificate-expiry evidence and response ownership | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-007: Infrastructure Change Impact Analysis](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) | resource-to-service impact and affected-owner list | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-LNX-011: DNS, NTP and Host Networking](../linux/UC-LNX-011-dns-ntp-host-networking.md) | host DNS, time, and network readiness evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-NET-003: VLAN and Subnet Design](UC-NET-003-vlan-and-subnet-design.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-LNX-011: DNS, NTP and Host Networking](../linux/UC-LNX-011-dns-ntp-host-networking.md) | host DNS, time, and network readiness evidence | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-010: Certificate Expiry Monitoring](../governance/UC-GOV-010-certificate-expiry-monitoring.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-NET-024: Certificate and TLS Routing](UC-NET-024-certificate-and-tls-routing.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Authoritative and Recursive DNS is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Backup and Recovery Orchestration |
 | Primary platform | Enterprise Resilience and Service Operations Platform |
-| Supporting use cases | [UC-RSO-017](UC-RSO-017-rto-and-rpo-measurement.md), [UC-DB-001](../database/UC-DB-001-backup-restore-validation.md), [UC-OBS-001](../observability/UC-OBS-001-slo-as-code.md), [UC-RSO-009](UC-RSO-009-service-ownership.md) |
+| Supporting use cases | [UC-RSO-009](UC-RSO-009-service-ownership.md), [UC-RSO-010](UC-RSO-010-dependency-mapping.md), [UC-DB-001](../database/UC-DB-001-backup-restore-validation.md), [UC-RSO-017](UC-RSO-017-rto-and-rpo-measurement.md) |
 | Enterprise alignment | Provider operations, payer operations, operational resilience |
 | Enterprise outcome | connect service ownership, evidence, incident response, and recovery for enterprise workflows |
 | Primary GitLab repository | `midhhealth/reliability-operations/resilience-service-operations` |
@@ -114,9 +114,9 @@ owns the platform decision, while the consuming service or business owner still 
 effect on its workflow.
 
 Follow the object from creation through change, operation and retirement; every transition needs
-an owner and a recoverable prior state. In this page, **UC-RSO-017: RTO and RPO Measurement**
-contributes owned RTO/RPO targets and measurement method; **UC-DB-001: Automated PostgreSQL
-Restore Validation** contributes backup provenance, isolated restore, and recovery verification.
+an owner and a recoverable prior state. In this page, **UC-RSO-009: Service Ownership**
+contributes readiness or exercise result tied to observed service recovery; **UC-RSO-010:
+Dependency Mapping** contributes readiness or exercise result tied to observed service recovery.
 The first buildable boundary is existing GitLab, Jenkins, AWX, observability APIs, service
 records, and runbooks. The design stops at this rule: Reuse the existing lab; do not create a
 new service-management product, VM, monitoring stack, or unapproved disruptive exercise.
@@ -160,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-RSO-017: RTO and RPO Measurement](UC-RSO-017-rto-and-rpo-measurement.md) | owned RTO/RPO targets and measurement method | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-DB-001: Automated PostgreSQL Restore Validation](../database/UC-DB-001-backup-restore-validation.md) | backup provenance, isolated restore, and recovery verification | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-OBS-001: SLO as Code](../observability/UC-OBS-001-slo-as-code.md) | service-level indicator, objective, and measurement window | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-RSO-009: Service Ownership](UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-RSO-010: Dependency Mapping](UC-RSO-010-dependency-mapping.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-DB-001: Automated PostgreSQL Restore Validation](../database/UC-DB-001-backup-restore-validation.md) | backup provenance, isolated restore, and recovery verification | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-017: RTO and RPO Measurement](UC-RSO-017-rto-and-rpo-measurement.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Backup and Recovery Orchestration is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

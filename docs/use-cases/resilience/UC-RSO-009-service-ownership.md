@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Service Ownership |
 | Primary platform | Enterprise Resilience and Service Operations Platform |
-| Supporting use cases | [UC-OBS-001](../observability/UC-OBS-001-slo-as-code.md), [UC-RSO-010](UC-RSO-010-dependency-mapping.md), [UC-NET-028](../network/UC-NET-028-network-availability-testing.md) |
+| Supporting use cases | [UC-GOV-001](../governance/UC-GOV-001-compliance-evidence-collection.md), [UC-RSO-010](UC-RSO-010-dependency-mapping.md), [UC-OBS-001](../observability/UC-OBS-001-slo-as-code.md), [UC-NET-028](../network/UC-NET-028-network-availability-testing.md) |
 | Enterprise alignment | Provider operations, payer operations, operational resilience |
 | Enterprise outcome | connect service ownership, evidence, incident response, and recovery for enterprise workflows |
 | Primary GitLab repository | `midhhealth/reliability-operations/resilience-service-operations` |
@@ -114,12 +114,13 @@ Platform team owns the platform decision, while the consuming service or busines
 accepts the effect on its workflow.
 
 Start at the decision rather than the tool, then ask which facts justify allow, block, defer or
-escalate and who can override it. In this page, **UC-OBS-001: SLO as Code** contributes
-service-level indicator, objective, and measurement window; **UC-RSO-010: Dependency Mapping**
-contributes upstream/downstream service dependency and failure effect. The first buildable
-boundary is existing GitLab, Jenkins, AWX, observability APIs, service records, and runbooks.
-The design stops at this rule: Reuse the existing lab; do not create a new service-management
-product, VM, monitoring stack, or unapproved disruptive exercise.
+escalate and who can override it. In this page, **UC-GOV-001: Automated Compliance Evidence
+Collection** contributes control-to-evidence mapping with ownership, exception, and retention
+metadata; **UC-RSO-010: Dependency Mapping** contributes readiness or exercise result tied to
+observed service recovery. The first buildable boundary is existing GitLab, Jenkins, AWX,
+observability APIs, service records, and runbooks. The design stops at this rule: Reuse the
+existing lab; do not create a new service-management product, VM, monitoring stack, or
+unapproved disruptive exercise.
 
 The walkthrough becomes useful when the happy path breaks. If contract or policy is
 missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
@@ -160,9 +161,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-OBS-001: SLO as Code](../observability/UC-OBS-001-slo-as-code.md) | service-level indicator, objective, and measurement window | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-RSO-010: Dependency Mapping](UC-RSO-010-dependency-mapping.md) | upstream/downstream service dependency and failure effect | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-NET-028: Network Availability Testing](../network/UC-NET-028-network-availability-testing.md) | layered service-path availability evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-GOV-001: Automated Compliance Evidence Collection](../governance/UC-GOV-001-compliance-evidence-collection.md) | control-to-evidence mapping with ownership, exception, and retention metadata | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-010: Dependency Mapping](UC-RSO-010-dependency-mapping.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-OBS-001: SLO as Code](../observability/UC-OBS-001-slo-as-code.md) | service-level indicator, objective, and measurement window | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-NET-028: Network Availability Testing](../network/UC-NET-028-network-availability-testing.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Service Ownership is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

@@ -115,7 +115,7 @@ workflow.
 
 Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
 identity or evidence from an earlier one. In this page, **UC-RSO-015: Backup and Recovery
-Orchestration** contributes backup identity, recovery orchestration, and restoration evidence;
+Orchestration** contributes readiness or exercise result tied to observed service recovery;
 **UC-DB-001: Automated PostgreSQL Restore Validation** contributes backup provenance, isolated
 restore, and recovery verification. The first buildable boundary is existing GitLab, Jenkins,
 AWX, observability APIs, service records, and runbooks. The design stops at this rule: Reuse the
@@ -161,10 +161,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-RSO-015: Backup and Recovery Orchestration](UC-RSO-015-backup-and-recovery-orchestration.md) | backup identity, recovery orchestration, and restoration evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-DB-001: Automated PostgreSQL Restore Validation](../database/UC-DB-001-backup-restore-validation.md) | backup provenance, isolated restore, and recovery verification | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-OBS-001: SLO as Code](../observability/UC-OBS-001-slo-as-code.md) | service-level indicator, objective, and measurement window | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-RSO-015: Backup and Recovery Orchestration](UC-RSO-015-backup-and-recovery-orchestration.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-DB-001: Automated PostgreSQL Restore Validation](../database/UC-DB-001-backup-restore-validation.md) | backup provenance, isolated restore, and recovery verification | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-OBS-001: SLO as Code](../observability/UC-OBS-001-slo-as-code.md) | service-level indicator, objective, and measurement window | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before RTO and RPO Measurement is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

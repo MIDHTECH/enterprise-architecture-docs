@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Terraform Plan Automation |
 | Primary platform | Enterprise DevSecOps Delivery Platform |
-| Supporting use cases | [UC-INFRA-009](../infrastructure/UC-INFRA-009-terraform-state-integrity-monitoring.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-INFRA-001](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) |
+| Supporting use cases | [UC-INFRA-009](../infrastructure/UC-INFRA-009-terraform-state-integrity-monitoring.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-INFRA-007](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md), [UC-INFRA-001](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | deliver reviewed changes safely to provider, payer, and shared platform services |
 | Primary GitLab repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
@@ -114,9 +114,9 @@ still accepts the effect on its workflow.
 
 Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
 identity or evidence from an earlier one. In this page, **UC-INFRA-009: Terraform State
-Integrity Monitoring** contributes reviewed contract and evidence required by the bounded
-workflow; **UC-INFRA-007: Infrastructure Change Impact Analysis** contributes
-resource-to-service impact and affected-owner list. The first buildable boundary is existing
+Integrity Monitoring** contributes reviewable plan or bounded reconciliation result tied to the
+accepted state; **UC-GOV-002: Secrets Management Automation** contributes explainable compliance
+or remediation decision with expiry and recovery state. The first buildable boundary is existing
 GitLab, accepted runners, Jenkins, AWX, and Kubernetes delivery paths. The design stops at this
 rule: Reuse the existing lab; do not create a new runner, VM, registry, cluster, or delivery
 product.
@@ -160,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-INFRA-009: Terraform State Integrity Monitoring](../infrastructure/UC-INFRA-009-terraform-state-integrity-monitoring.md) | reviewed contract and evidence required by the bounded workflow | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-INFRA-007: Infrastructure Change Impact Analysis](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) | resource-to-service impact and affected-owner list | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | approved secret reference, redaction rule, and rotation owner | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-001: Terraform Drift Detection](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) | desired/observed infrastructure identity and drift result | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-INFRA-009: Terraform State Integrity Monitoring](../infrastructure/UC-INFRA-009-terraform-state-integrity-monitoring.md) | reviewable plan or bounded reconciliation result tied to the accepted state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-INFRA-007: Infrastructure Change Impact Analysis](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) | reviewable plan or bounded reconciliation result tied to the accepted state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-INFRA-001: Terraform Drift Detection](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) | desired/observed infrastructure identity and drift result | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Terraform Plan Automation is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Cloud Resource Tagging Automation |
 | Primary platform | Enterprise Multi-Cloud Infrastructure Platform |
-| Supporting use cases | [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-GOV-016](../governance/UC-GOV-016-cloud-cost-anomaly-detection.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-GOV-001](../governance/UC-GOV-001-compliance-evidence-collection.md) |
+| Supporting use cases | [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-GOV-016](../governance/UC-GOV-016-cloud-cost-anomaly-detection.md), [UC-GOV-001](../governance/UC-GOV-001-compliance-evidence-collection.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | keep the existing lab foundation repeatable, attributable, and recoverable |
 | Primary GitLab repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
@@ -115,11 +115,11 @@ or business owner still accepts the effect on its workflow.
 Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
 identity or evidence from an earlier one. In this page, **UC-GOV-004: Cloud IAM and RBAC
 Standardization** contributes explainable compliance or remediation decision with expiry and
-recovery state; **UC-GOV-016: Cloud Cost Anomaly Detection** contributes explainable compliance
-or remediation decision with expiry and recovery state. The first buildable boundary is existing
-GitLab infrastructure runner, Terraform source, AWX, and canonical inventory. The design stops
-at this rule: Reuse the existing lab; do not create a new VM, physical host, IP address, cloud
-account, state backend, or infrastructure product.
+recovery state; **UC-RSO-009: Service Ownership** contributes readiness or exercise result tied
+to observed service recovery. The first buildable boundary is existing GitLab infrastructure
+runner, Terraform source, AWX, and canonical inventory. The design stops at this rule: Reuse the
+existing lab; do not create a new VM, physical host, IP address, cloud account, state backend,
+or infrastructure product.
 
 The walkthrough becomes useful when the happy path breaks. If contract or policy is
 missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
@@ -161,8 +161,8 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
 | Required upstream contract | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
-| Required upstream contract | [UC-GOV-016: Cloud Cost Anomaly Detection](../governance/UC-GOV-016-cloud-cost-anomaly-detection.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
-| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-016: Cloud Cost Anomaly Detection](../governance/UC-GOV-016-cloud-cost-anomaly-detection.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 | Coordinated assurance handoff | [UC-GOV-001: Automated Compliance Evidence Collection](../governance/UC-GOV-001-compliance-evidence-collection.md) | control-to-evidence mapping with ownership, exception, and retention metadata | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Cloud Resource Tagging Automation is implemented, every handoff must resolve to an immutable

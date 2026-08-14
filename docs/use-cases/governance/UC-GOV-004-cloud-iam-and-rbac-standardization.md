@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Cloud IAM and RBAC Standardization |
 | Primary platform | Enterprise Cloud Governance and Operations Automation |
-| Supporting use cases | [UC-DATA-023](../data/UC-DATA-023-data-access-governance.md), [UC-AI-011](../healthcare-ai/UC-AI-011-ai-security-and-access-control.md), [UC-CICD-010](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md) |
+| Supporting use cases | [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-CICD-010](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md), [UC-DATA-023](../data/UC-DATA-023-data-access-governance.md), [UC-AI-011](../healthcare-ai/UC-AI-011-ai-security-and-access-control.md) |
 | Enterprise alignment | Risk and compliance, shared digital platform, operational resilience |
 | Enterprise outcome | apply traceable controls to platform work that supports provider and payer operations |
 | Primary GitLab repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
@@ -114,13 +114,13 @@ Automation team owns the platform decision, while the consuming service or busin
 accepts the effect on its workflow.
 
 Start at the decision rather than the tool, then ask which facts justify allow, block, defer or
-escalate and who can override it. In this page, **UC-DATA-023: Data Access Governance**
-contributes dataset role, purpose-of-use, and access-review evidence; **UC-AI-011: AI Security
-and Access Control** contributes AI principal, tool/data scope, and authorization decision. The
-first buildable boundary is existing GitLab runners, AWX inventories, Vault boundary, repository
-scanners, and evidence artifacts. The design stops at this rule: Reuse the existing lab; do not
-create a new governance VM, scanner service, cloud account, identity platform, or automatic
-high-risk remediation.
+escalate and who can override it. In this page, **UC-RSO-009: Service Ownership** contributes
+readiness or exercise result tied to observed service recovery; **UC-CICD-010: Secure CI/CD
+Pipeline Implementation** contributes immutable build or gate result with promotion and rollback
+eligibility. The first buildable boundary is existing GitLab runners, AWX inventories, Vault
+boundary, repository scanners, and evidence artifacts. The design stops at this rule: Reuse the
+existing lab; do not create a new governance VM, scanner service, cloud account, identity
+platform, or automatic high-risk remediation.
 
 The walkthrough becomes useful when the happy path breaks. If contract or policy is
 missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
@@ -161,10 +161,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-DATA-023: Data Access Governance](../data/UC-DATA-023-data-access-governance.md) | dataset role, purpose-of-use, and access-review evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-AI-011: AI Security and Access Control](../healthcare-ai/UC-AI-011-ai-security-and-access-control.md) | AI principal, tool/data scope, and authorization decision | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-CICD-010: Secure CI/CD Pipeline Implementation](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md) | secure pipeline baseline and protected execution boundary | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-CICD-010: Secure CI/CD Pipeline Implementation](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md) | immutable build or gate result with promotion and rollback eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-DATA-023: Data Access Governance](../data/UC-DATA-023-data-access-governance.md) | validated data result with counts, lineage, quality, and reconciliation state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-AI-011: AI Security and Access Control](../healthcare-ai/UC-AI-011-ai-security-and-access-control.md) | offline safety and quality decision with human-review and shutdown requirements | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Cloud IAM and RBAC Standardization is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

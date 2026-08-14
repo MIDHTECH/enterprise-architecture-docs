@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Change-to-Incident Correlation |
 | Primary platform | Enterprise Observability and SRE Reliability Platform |
-| Supporting use cases | [UC-RSO-004](../resilience/UC-RSO-004-incident-detection-and-classification.md), [UC-RSO-005](../resilience/UC-RSO-005-on-call-and-escalation-workflows.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md) |
+| Supporting use cases | [UC-OBS-004](UC-OBS-004-centralized-log-management.md), [UC-RSO-010](../resilience/UC-RSO-010-dependency-mapping.md), [UC-RSO-004](../resilience/UC-RSO-004-incident-detection-and-classification.md), [UC-RSO-005](../resilience/UC-RSO-005-on-call-and-escalation-workflows.md) |
 | Enterprise alignment | Operational resilience, shared digital platform |
 | Enterprise outcome | turn existing telemetry into actionable health and incident evidence for enterprise services |
 | Primary GitLab repository | `midhhealth/reliability-operations/observability-sre-platform` |
@@ -114,13 +114,13 @@ platform decision, while the consuming service or business owner still accepts t
 workflow.
 
 Read the design as an operating timeline: detect, establish scope, choose a reversible action,
-verify recovery and preserve what the team learned. In this page, **UC-RSO-004: Incident
-Detection and Classification** contributes incident classification, severity, and escalation
-trigger; **UC-RSO-005: On-Call and Escalation Workflows** contributes on-call owner and
-escalation acknowledgement path. The first buildable boundary is existing Prometheus,
-Alertmanager, Grafana, Loki, Tempo, OpenTelemetry, Elastic, and GitLab/AWX paths. The design
-stops at this rule: Reuse the existing lab; do not create a new monitoring VM, telemetry
-backend, paging product, or unapproved data source.
+verify recovery and preserve what the team learned. In this page, **UC-OBS-004: Centralized Log
+Management** contributes traceable measurement or alert decision with owner and diagnostic
+context; **UC-RSO-010: Dependency Mapping** contributes readiness or exercise result tied to
+observed service recovery. The first buildable boundary is existing Prometheus, Alertmanager,
+Grafana, Loki, Tempo, OpenTelemetry, Elastic, and GitLab/AWX paths. The design stops at this
+rule: Reuse the existing lab; do not create a new monitoring VM, telemetry backend, paging
+product, or unapproved data source.
 
 The walkthrough becomes useful when the happy path breaks. If contract or policy is
 missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
@@ -161,10 +161,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-RSO-004: Incident Detection and Classification](../resilience/UC-RSO-004-incident-detection-and-classification.md) | incident classification, severity, and escalation trigger | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-RSO-005: On-Call and Escalation Workflows](../resilience/UC-RSO-005-on-call-and-escalation-workflows.md) | on-call owner and escalation acknowledgement path | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-RSO-010: Dependency Mapping](../resilience/UC-RSO-010-dependency-mapping.md) | upstream/downstream service dependency and failure effect | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-OBS-004: Centralized Log Management](UC-OBS-004-centralized-log-management.md) | traceable measurement or alert decision with owner and diagnostic context | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-RSO-010: Dependency Mapping](../resilience/UC-RSO-010-dependency-mapping.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-004: Incident Detection and Classification](../resilience/UC-RSO-004-incident-detection-and-classification.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-005: On-Call and Escalation Workflows](../resilience/UC-RSO-005-on-call-and-escalation-workflows.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Change-to-Incident Correlation is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

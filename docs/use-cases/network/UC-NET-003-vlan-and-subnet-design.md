@@ -114,12 +114,12 @@ service or business owner still accepts the effect on its workflow.
 
 Trace one user or system request from source to destination and back; DNS, identity, policy and
 dependency failures are part of that same path. In this page, **UC-NET-012: Firewall Policy
-Management** contributes ordered firewall intent and allowed/denied path matrix; **UC-NET-020:
-Ingress and Egress Controls** contributes ingress/egress allowlist and denied-path expectations.
-The first buildable boundary is existing DNS, NGINX, KVM bridges, Kubernetes networking, GitLab,
-Jenkins, AWX, and blackbox checks. The design stops at this rule: Reuse the existing lab; do not
-create a new router, switch, firewall appliance, VM, IP, VLAN, CNI, load balancer, VPN, or cloud
-network.
+Management** contributes layered path decision with before/after reachability and restore proof;
+**UC-NET-020: Ingress and Egress Controls** contributes layered path decision with before/after
+reachability and restore proof. The first buildable boundary is existing DNS, NGINX, KVM
+bridges, Kubernetes networking, GitLab, Jenkins, AWX, and blackbox checks. The design stops at
+this rule: Reuse the existing lab; do not create a new router, switch, firewall appliance, VM,
+IP, VLAN, CNI, load balancer, VPN, or cloud network.
 
 The walkthrough becomes useful when the happy path breaks. If contract or policy is
 missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
@@ -160,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-NET-012: Firewall Policy Management](UC-NET-012-firewall-policy-management.md) | ordered firewall intent and allowed/denied path matrix | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-NET-020: Ingress and Egress Controls](UC-NET-020-ingress-and-egress-controls.md) | ingress/egress allowlist and denied-path expectations | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-RSO-010: Dependency Mapping](../resilience/UC-RSO-010-dependency-mapping.md) | upstream/downstream service dependency and failure effect | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-007: Infrastructure Change Impact Analysis](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) | resource-to-service impact and affected-owner list | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Coordinated assurance handoff | [UC-NET-012: Firewall Policy Management](UC-NET-012-firewall-policy-management.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-NET-020: Ingress and Egress Controls](UC-NET-020-ingress-and-egress-controls.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-010: Dependency Mapping](../resilience/UC-RSO-010-dependency-mapping.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-INFRA-007: Infrastructure Change Impact Analysis](../infrastructure/UC-INFRA-007-infrastructure-change-impact-analysis.md) | reviewable plan or bounded reconciliation result tied to the accepted state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before VLAN and Subnet Design is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

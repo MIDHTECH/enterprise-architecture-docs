@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Artifact Management Automation |
 | Primary platform | Enterprise DevSecOps Delivery Platform |
-| Supporting use cases | [UC-CICD-012](UC-CICD-012-container-image-vulnerability-scanning.md), [UC-K8S-011](../kubernetes/UC-K8S-011-container-registry-and-image-supply-chain-security.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-INFRA-001](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) |
+| Supporting use cases | [UC-CICD-002](UC-CICD-002-automated-build-pipeline.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-CICD-012](UC-CICD-012-container-image-vulnerability-scanning.md), [UC-K8S-011](../kubernetes/UC-K8S-011-container-registry-and-image-supply-chain-security.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | deliver reviewed changes safely to provider, payer, and shared platform services |
 | Primary GitLab repository | `midhhealth/platform-delivery/devsecops-cicd-orchestrator` |
@@ -113,13 +113,12 @@ platform services. Enterprise DevSecOps Delivery Platform team owns the platform
 the consuming service or business owner still accepts the effect on its workflow.
 
 Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
-identity or evidence from an earlier one. In this page, **UC-CICD-012: Container Image
-Vulnerability Scanning** contributes reviewed contract and evidence required by the bounded
-workflow; **UC-K8S-011: Container Registry and Image Supply Chain Security** contributes
-reviewed contract and evidence required by the bounded workflow. The first buildable boundary is
-existing GitLab, accepted runners, Jenkins, AWX, and Kubernetes delivery paths. The design stops
-at this rule: Reuse the existing lab; do not create a new runner, VM, registry, cluster, or
-delivery product.
+identity or evidence from an earlier one. In this page, **UC-CICD-002: Automated Build
+Pipeline** contributes build result, source revision, output checksum, and provenance record;
+**UC-GOV-002: Secrets Management Automation** contributes explainable compliance or remediation
+decision with expiry and recovery state. The first buildable boundary is existing GitLab,
+accepted runners, Jenkins, AWX, and Kubernetes delivery paths. The design stops at this rule:
+Reuse the existing lab; do not create a new runner, VM, registry, cluster, or delivery product.
 
 The walkthrough becomes useful when the happy path breaks. If contract or policy is
 missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
@@ -160,10 +159,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-CICD-012: Container Image Vulnerability Scanning](UC-CICD-012-container-image-vulnerability-scanning.md) | reviewed contract and evidence required by the bounded workflow | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-K8S-011: Container Registry and Image Supply Chain Security](../kubernetes/UC-K8S-011-container-registry-and-image-supply-chain-security.md) | reviewed contract and evidence required by the bounded workflow | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | approved secret reference, redaction rule, and rotation owner | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-001: Terraform Drift Detection](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) | desired/observed infrastructure identity and drift result | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-CICD-002: Automated Build Pipeline](UC-CICD-002-automated-build-pipeline.md) | build result, source revision, output checksum, and provenance record | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-CICD-012: Container Image Vulnerability Scanning](UC-CICD-012-container-image-vulnerability-scanning.md) | immutable build or gate result with promotion and rollback eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-K8S-011: Container Registry and Image Supply Chain Security](../kubernetes/UC-K8S-011-container-registry-and-image-supply-chain-security.md) | validated desired-state decision with bounded reconciliation and recovery evidence | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Artifact Management Automation is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

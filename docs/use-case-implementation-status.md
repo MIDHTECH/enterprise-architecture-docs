@@ -4,6 +4,10 @@ The current program goal is design completion before additional lab
 implementation. See [Enterprise Design Readiness
 Status](design-readiness-status.md). This page intentionally tracks the later
 code and runtime phase separately so architecture-ready never means deployed.
+The [dependency-safe implementation
+sequence](use-case-implementation-sequence.md) orders future source work while
+this page remains authoritative for what has actually been implemented,
+runtime verified, or accepted.
 
 Last verified: 2026-08-13
 

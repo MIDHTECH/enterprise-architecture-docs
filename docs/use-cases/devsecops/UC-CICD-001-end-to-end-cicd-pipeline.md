@@ -7,7 +7,7 @@ Last verified: 2026-08-13
 | Field | Value |
 | --- | --- |
 | Portfolio | Enterprise DevSecOps Delivery Platform |
-| Supporting use cases | [UC-CICD-007](UC-CICD-007-environment-based-release-promotion.md), [UC-OBS-008](../observability/UC-OBS-008-deployment-health-scoring.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-INFRA-001](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) |
+| Supporting use cases | [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-CICD-007](UC-CICD-007-environment-based-release-promotion.md), [UC-OBS-008](../observability/UC-OBS-008-deployment-health-scoring.md) |
 | Jira epic | `EPIC-CICD-001` — Deliver a controlled application release to Kubernetes |
 | Primary roles | Application developer, DevOps engineer, platform engineer, SRE, security reviewer |
 | Change record | `CHG-2026-002` |
@@ -148,13 +148,13 @@ platform decision, while the consuming service or business owner still accepts t
 workflow.
 
 Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
-identity or evidence from an earlier one. In this page, **UC-CICD-007: Environment-Based Release
-Promotion** contributes environment promotion contract and approval evidence; **UC-OBS-008:
-Deployment Health Scoring** contributes deployment-health score and promotion/rollback signal.
-The first buildable boundary is Podinfo application mirrored into on-premises GitLab, Jenkins,
-AWX, dedicated Jenkins agent, and Kubernetes cluster. The design stops at this rule: Fit is
-achieved by reusing documented existing repositories, control planes, services, and targets—not
-by inventing capacity or treating planned products as available.
+identity or evidence from an earlier one. In this page, **UC-GOV-002: Secrets Management
+Automation** contributes explainable compliance or remediation decision with expiry and recovery
+state; **UC-RSO-009: Service Ownership** contributes readiness or exercise result tied to
+observed service recovery. The first buildable boundary is Podinfo application mirrored into
+on-premises GitLab, Jenkins, AWX, dedicated Jenkins agent, and Kubernetes cluster. The design
+stops at this rule: Fit is achieved by reusing documented existing repositories, control planes,
+services, and targets—not by inventing capacity or treating planned products as available.
 
 The walkthrough becomes useful when the happy path breaks. If a required dependency or
 verification result is unavailable, the expected response is to stop before mutation, preserve
@@ -195,10 +195,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-CICD-007: Environment-Based Release Promotion](UC-CICD-007-environment-based-release-promotion.md) | environment promotion contract and approval evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-OBS-008: Deployment Health Scoring](../observability/UC-OBS-008-deployment-health-scoring.md) | deployment-health score and promotion/rollback signal | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | approved secret reference, redaction rule, and rotation owner | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-INFRA-001: Terraform Drift Detection](../infrastructure/UC-INFRA-001-terraform-drift-detection.md) | desired/observed infrastructure identity and drift result | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-CICD-007: Environment-Based Release Promotion](UC-CICD-007-environment-based-release-promotion.md) | immutable build or gate result with promotion and rollback eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-OBS-008: Deployment Health Scoring](../observability/UC-OBS-008-deployment-health-scoring.md) | traceable measurement or alert decision with owner and diagnostic context | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before End-to-End CI/CD Pipeline Setup is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

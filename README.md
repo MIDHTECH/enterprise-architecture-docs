@@ -15,6 +15,7 @@ operators and engineers a common operating record for the platform.
 - [Advanced Use Case Comparison](docs/advanced-usecase-comparison.md)
 - [Use-Case Implementation Status](docs/use-case-implementation-status.md)
 - [Enterprise Design Readiness Status](docs/design-readiness-status.md)
+- [Dependency-Safe Use-Case Implementation Sequence](docs/use-case-implementation-sequence.md)
 - [Canonical Environment Capability Status](docs/environment-capability-status.json)
 - [On-Premises Platform Build Runbook](docs/on-prem-platform-build-runbook.md)
 - [Staff Documentation Standard](docs/documentation-standard.md)

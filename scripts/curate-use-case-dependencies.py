@@ -77,11 +77,18 @@ def link(from_page: Path, to_page: Path) -> str:
     return Path(os.path.relpath(to_page, from_page.parent)).as_posix()
 
 
-def replace_contract(page: Path, dependency_ids: list[str], pages: dict[str, Path]) -> str:
+def replace_contract(
+    page: Path,
+    dependency_ids: list[str],
+    required_count: int,
+    pages: dict[str, Path],
+) -> str:
     text = page.read_text()
     own_id = re.match(r"(UC-[A-Z0-9]+-\d{3})", page.name).group(1)
     if own_id in dependency_ids or len(dependency_ids) < 3 or len(set(dependency_ids)) != len(dependency_ids):
         raise SystemExit(f"{page}: dependency contract must contain at least three unique non-self IDs")
+    if required_count < 0 or required_count > len(dependency_ids):
+        raise SystemExit(f"{page}: invalid required dependency count {required_count}")
 
     links = []
     rows = []
@@ -92,7 +99,11 @@ def replace_contract(page: Path, dependency_ids: list[str], pages: dict[str, Pat
         title, handoff = title_and_handoff(dependency_page)
         relative = link(page, dependency_page)
         links.append(f"[{dependency_id}]({relative})")
-        relationship = "Required upstream contract" if index < 2 else "Coordinated assurance handoff"
+        relationship = (
+            "Required upstream contract"
+            if index < required_count
+            else "Coordinated assurance handoff"
+        )
         rows.append(
             f"| {relationship} | [{dependency_id}: {title}]({relative}) | {handoff} | "
             "Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |"
@@ -123,14 +134,21 @@ def main() -> None:
     parser.add_argument("--apply", action="store_true", help="write the reviewed contracts")
     args = parser.parse_args()
 
-    contracts = json.loads(CONTRACT_PATH.read_text())["contracts"]
+    contract_document = json.loads(CONTRACT_PATH.read_text())
+    contracts = contract_document["contracts"]
+    required_counts = contract_document.get("required_counts", {})
     pages = page_index()
     changes = []
     for use_case_id, dependency_ids in contracts.items():
         if use_case_id not in pages:
             raise SystemExit(f"{CONTRACT_PATH}: unknown use case {use_case_id}")
         page = pages[use_case_id]
-        new_text = replace_contract(page, dependency_ids, pages)
+        new_text = replace_contract(
+            page,
+            dependency_ids,
+            required_counts.get(use_case_id, 2),
+            pages,
+        )
         if new_text != page.read_text():
             changes.append((page, new_text))
 

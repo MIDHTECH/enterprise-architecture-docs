@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Terraform State Integrity Monitoring |
 | Primary platform | Enterprise Multi-Cloud Infrastructure Platform |
-| Supporting use cases | [UC-CICD-014](../devsecops/UC-CICD-014-terraform-plan-automation.md), [UC-INFRA-007](UC-INFRA-007-infrastructure-change-impact-analysis.md), [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-NET-003](../network/UC-NET-003-vlan-and-subnet-design.md) |
+| Supporting use cases | [UC-GOV-004](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md), [UC-RSO-009](../resilience/UC-RSO-009-service-ownership.md), [UC-CICD-014](../devsecops/UC-CICD-014-terraform-plan-automation.md), [UC-INFRA-007](UC-INFRA-007-infrastructure-change-impact-analysis.md) |
 | Enterprise alignment | Shared digital platform, risk and compliance, operational resilience |
 | Enterprise outcome | keep the existing lab foundation repeatable, attributable, and recoverable |
 | Primary GitLab repository | `midhhealth/platform-engineering/cloud-infra-automation-platform` |
@@ -113,13 +113,13 @@ Multi-Cloud Infrastructure Platform team owns the platform decision, while the c
 or business owner still accepts the effect on its workflow.
 
 Begin with the observation, then follow the decision and action back to a new observation; the
-loop is incomplete until the owner sees the effect. In this page, **UC-CICD-014: Terraform Plan
-Automation** contributes reviewed contract and evidence required by the bounded workflow;
-**UC-INFRA-007: Infrastructure Change Impact Analysis** contributes resource-to-service impact
-and affected-owner list. The first buildable boundary is existing GitLab infrastructure runner,
-Terraform source, AWX, and canonical inventory. The design stops at this rule: Reuse the
-existing lab; do not create a new VM, physical host, IP address, cloud account, state backend,
-or infrastructure product.
+loop is incomplete until the owner sees the effect. In this page, **UC-GOV-004: Cloud IAM and
+RBAC Standardization** contributes explainable compliance or remediation decision with expiry
+and recovery state; **UC-RSO-009: Service Ownership** contributes readiness or exercise result
+tied to observed service recovery. The first buildable boundary is existing GitLab
+infrastructure runner, Terraform source, AWX, and canonical inventory. The design stops at this
+rule: Reuse the existing lab; do not create a new VM, physical host, IP address, cloud account,
+state backend, or infrastructure product.
 
 The walkthrough becomes useful when the happy path breaks. If contract or policy is
 missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
@@ -160,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-CICD-014: Terraform Plan Automation](../devsecops/UC-CICD-014-terraform-plan-automation.md) | reviewed contract and evidence required by the bounded workflow | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-INFRA-007: Infrastructure Change Impact Analysis](UC-INFRA-007-infrastructure-change-impact-analysis.md) | resource-to-service impact and affected-owner list | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | principal, role, resource, and approval policy | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-NET-003: VLAN and Subnet Design](../network/UC-NET-003-vlan-and-subnet-design.md) | approved address, subnet, and trust-zone intent | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-GOV-004: Cloud IAM and RBAC Standardization](../governance/UC-GOV-004-cloud-iam-and-rbac-standardization.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-RSO-009: Service Ownership](../resilience/UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-CICD-014: Terraform Plan Automation](../devsecops/UC-CICD-014-terraform-plan-automation.md) | immutable build or gate result with promotion and rollback eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-INFRA-007: Infrastructure Change Impact Analysis](UC-INFRA-007-infrastructure-change-impact-analysis.md) | reviewable plan or bounded reconciliation result tied to the accepted state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Terraform State Integrity Monitoring is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

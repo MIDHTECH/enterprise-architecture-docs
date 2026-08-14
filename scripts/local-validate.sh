@@ -17,6 +17,8 @@ required_docs=(
   "docs/evidence/APP-PODINFO-003-release-contract-source.md"
   "docs/use-case-implementation-status.md"
   "docs/design-readiness-status.md"
+  "docs/use-case-implementation-sequence.md"
+  "docs/use-case-dependency-contracts.json"
   "docs/environment-capability-status.json"
   "docs/component-architecture.md"
   "docs/environment-details.md"
@@ -56,6 +58,7 @@ required_docs=(
   "scripts/generate-use-case-interview-bank.py"
   "scripts/validate-onboarding-interview-docs.sh"
   "scripts/validate-design-consistency.sh"
+  "scripts/generate-use-case-implementation-sequence.py"
   "docs/use-cases/README.md"
   "docs/use-cases/enterprise-traceability.md"
   "docs/use-cases/devsecops/README.md"
@@ -87,6 +90,7 @@ for path in "${required_docs[@]}"; do
 done
 
 ./scripts/validate-use-cases.sh
+./scripts/generate-use-case-implementation-sequence.py --check
 ./scripts/validate-platform-detail-pages.sh
 ./scripts/validate-onboarding-interview-docs.sh
 ./scripts/validate-application-projects.sh

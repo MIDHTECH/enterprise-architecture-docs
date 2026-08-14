@@ -8,7 +8,7 @@ Last verified: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Automated Restore Validation |
 | Primary platform | Enterprise Database Engineering and Reliability Platform |
-| Supporting use cases | [UC-RSO-015](../resilience/UC-RSO-015-backup-and-recovery-orchestration.md), [UC-RSO-017](../resilience/UC-RSO-017-rto-and-rpo-measurement.md), [UC-LNX-010](../linux/UC-LNX-010-filesystem-lvm-storage-management.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md) |
+| Supporting use cases | [UC-RSO-015](../resilience/UC-RSO-015-backup-and-recovery-orchestration.md), [UC-LNX-010](../linux/UC-LNX-010-filesystem-lvm-storage-management.md), [UC-RSO-017](../resilience/UC-RSO-017-rto-and-rpo-measurement.md), [UC-GOV-002](../governance/UC-GOV-002-secrets-management-automation.md) |
 | Enterprise alignment | Provider operations, payer operations, operational resilience |
 | Enterprise outcome | Prove that a database backup supporting enterprise workflows is usable before an incident |
 | Supporting platforms | Resilience operations, Linux systems, governance, observability |
@@ -84,11 +84,11 @@ while the consuming service or business owner still accepts the effect on its wo
 
 Follow the object from creation through change, operation and retirement; every transition needs
 an owner and a recoverable prior state. In this page, **UC-RSO-015: Backup and Recovery
-Orchestration** contributes backup identity, recovery orchestration, and restoration evidence;
-**UC-RSO-017: RTO and RPO Measurement** contributes owned RTO/RPO targets and measurement
-method. The first buildable boundary is Existing PostgreSQL 18 service, backup.example.com,
-MinIO, GitLab, Jenkins, and AWX paths. The design stops at this rule: No VM, database server,
-storage system, or product is created.
+Orchestration** contributes readiness or exercise result tied to observed service recovery;
+**UC-LNX-010: Filesystem, LVM and Storage Management** contributes filesystem capacity, mount
+identity, and recovery boundary. The first buildable boundary is Existing PostgreSQL 18 service,
+backup.example.com, MinIO, GitLab, Jenkins, and AWX paths. The design stops at this rule: No VM,
+database server, storage system, or product is created.
 
 The walkthrough becomes useful when the happy path breaks. If a required dependency or
 verification result is unavailable, the expected response is to stop before mutation, preserve
@@ -130,10 +130,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-RSO-015: Backup and Recovery Orchestration](../resilience/UC-RSO-015-backup-and-recovery-orchestration.md) | backup identity, recovery orchestration, and restoration evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-RSO-017: RTO and RPO Measurement](../resilience/UC-RSO-017-rto-and-rpo-measurement.md) | owned RTO/RPO targets and measurement method | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-LNX-010: Filesystem, LVM and Storage Management](../linux/UC-LNX-010-filesystem-lvm-storage-management.md) | filesystem capacity, mount identity, and recovery boundary | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | approved secret reference, redaction rule, and rotation owner | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-RSO-015: Backup and Recovery Orchestration](../resilience/UC-RSO-015-backup-and-recovery-orchestration.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-LNX-010: Filesystem, LVM and Storage Management](../linux/UC-LNX-010-filesystem-lvm-storage-management.md) | filesystem capacity, mount identity, and recovery boundary | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-RSO-017: RTO and RPO Measurement](../resilience/UC-RSO-017-rto-and-rpo-measurement.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-GOV-002: Secrets Management Automation](../governance/UC-GOV-002-secrets-management-automation.md) | explainable compliance or remediation decision with expiry and recovery state | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Automated PostgreSQL Restore Validation is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

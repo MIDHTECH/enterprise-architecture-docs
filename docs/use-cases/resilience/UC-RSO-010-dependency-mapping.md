@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Dependency Mapping |
 | Primary platform | Enterprise Resilience and Service Operations Platform |
-| Supporting use cases | [UC-OBS-001](../observability/UC-OBS-001-slo-as-code.md), [UC-RSO-009](UC-RSO-009-service-ownership.md), [UC-NET-028](../network/UC-NET-028-network-availability-testing.md) |
+| Supporting use cases | [UC-RSO-009](UC-RSO-009-service-ownership.md), [UC-NET-028](../network/UC-NET-028-network-availability-testing.md), [UC-OBS-001](../observability/UC-OBS-001-slo-as-code.md) |
 | Enterprise alignment | Provider operations, payer operations, operational resilience |
 | Enterprise outcome | connect service ownership, evidence, incident response, and recovery for enterprise workflows |
 | Primary GitLab repository | `midhhealth/reliability-operations/resilience-service-operations` |
@@ -114,12 +114,13 @@ platform decision, while the consuming service or business owner still accepts t
 workflow.
 
 Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
-identity or evidence from an earlier one. In this page, **UC-OBS-001: SLO as Code** contributes
-service-level indicator, objective, and measurement window; **UC-RSO-009: Service Ownership**
-contributes accountable service owner and operational tier. The first buildable boundary is
-existing GitLab, Jenkins, AWX, observability APIs, service records, and runbooks. The design
-stops at this rule: Reuse the existing lab; do not create a new service-management product, VM,
-monitoring stack, or unapproved disruptive exercise.
+identity or evidence from an earlier one. In this page, **UC-RSO-009: Service Ownership**
+contributes readiness or exercise result tied to observed service recovery; **UC-NET-028:
+Network Availability Testing** contributes layered path decision with before/after reachability
+and restore proof. The first buildable boundary is existing GitLab, Jenkins, AWX, observability
+APIs, service records, and runbooks. The design stops at this rule: Reuse the existing lab; do
+not create a new service-management product, VM, monitoring stack, or unapproved disruptive
+exercise.
 
 The walkthrough becomes useful when the happy path breaks. If contract or policy is
 missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
@@ -160,9 +161,9 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-OBS-001: SLO as Code](../observability/UC-OBS-001-slo-as-code.md) | service-level indicator, objective, and measurement window | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-RSO-009: Service Ownership](UC-RSO-009-service-ownership.md) | accountable service owner and operational tier | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-NET-028: Network Availability Testing](../network/UC-NET-028-network-availability-testing.md) | layered service-path availability evidence | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-RSO-009: Service Ownership](UC-RSO-009-service-ownership.md) | readiness or exercise result tied to observed service recovery | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-NET-028: Network Availability Testing](../network/UC-NET-028-network-availability-testing.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-OBS-001: SLO as Code](../observability/UC-OBS-001-slo-as-code.md) | service-level indicator, objective, and measurement window | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Dependency Mapping is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

@@ -8,7 +8,7 @@ Last reviewed: 2026-08-13
 | --- | --- |
 | Canonical portfolio use case | Infrastructure Security Hardening |
 | Primary platform | Enterprise Cloud Governance and Operations Automation |
-| Supporting use cases | [UC-LNX-008](../linux/UC-LNX-008-selinux-firewall-management.md), [UC-K8S-006](../kubernetes/UC-K8S-006-kubernetes-security-baseline-implementation.md), [UC-CICD-010](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md), [UC-GOV-001](UC-GOV-001-compliance-evidence-collection.md) |
+| Supporting use cases | [UC-GOV-001](UC-GOV-001-compliance-evidence-collection.md), [UC-LNX-008](../linux/UC-LNX-008-selinux-firewall-management.md), [UC-K8S-006](../kubernetes/UC-K8S-006-kubernetes-security-baseline-implementation.md), [UC-CICD-010](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md) |
 | Enterprise alignment | Risk and compliance, shared digital platform, operational resilience |
 | Enterprise outcome | apply traceable controls to platform work that supports provider and payer operations |
 | Primary GitLab repository | `midhhealth/security-governance/cloud-governance-ops-automation` |
@@ -114,10 +114,10 @@ decision, while the consuming service or business owner still accepts the effect
 workflow.
 
 Start at the decision rather than the tool, then ask which facts justify allow, block, defer or
-escalate and who can override it. In this page, **UC-LNX-008: SELinux and Firewall Management**
-contributes SELinux and firewall intended-path, denial, and rollback evidence; **UC-K8S-006:
-Kubernetes Security Baseline Implementation** contributes validated desired-state decision with
-bounded reconciliation and recovery evidence. The first buildable boundary is existing GitLab
+escalate and who can override it. In this page, **UC-GOV-001: Automated Compliance Evidence
+Collection** contributes control-to-evidence mapping with ownership, exception, and retention
+metadata; **UC-LNX-008: SELinux and Firewall Management** contributes SELinux and firewall
+intended-path, denial, and rollback evidence. The first buildable boundary is existing GitLab
 runners, AWX inventories, Vault boundary, repository scanners, and evidence artifacts. The
 design stops at this rule: Reuse the existing lab; do not create a new governance VM, scanner
 service, cloud account, identity platform, or automatic high-risk remediation.
@@ -161,10 +161,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-LNX-008: SELinux and Firewall Management](../linux/UC-LNX-008-selinux-firewall-management.md) | SELinux and firewall intended-path, denial, and rollback evidence | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
-| Required upstream contract | [UC-K8S-006: Kubernetes Security Baseline Implementation](../kubernetes/UC-K8S-006-kubernetes-security-baseline-implementation.md) | validated desired-state decision with bounded reconciliation and recovery evidence | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-GOV-001: Automated Compliance Evidence Collection](UC-GOV-001-compliance-evidence-collection.md) | control-to-evidence mapping with ownership, exception, and retention metadata | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-LNX-008: SELinux and Firewall Management](../linux/UC-LNX-008-selinux-firewall-management.md) | SELinux and firewall intended-path, denial, and rollback evidence | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-K8S-006: Kubernetes Security Baseline Implementation](../kubernetes/UC-K8S-006-kubernetes-security-baseline-implementation.md) | validated desired-state decision with bounded reconciliation and recovery evidence | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 | Coordinated assurance handoff | [UC-CICD-010: Secure CI/CD Pipeline Implementation](../devsecops/UC-CICD-010-secure-ci-cd-pipeline-implementation.md) | immutable build or gate result with promotion and rollback eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
-| Coordinated assurance handoff | [UC-GOV-001: Automated Compliance Evidence Collection](UC-GOV-001-compliance-evidence-collection.md) | control-to-evidence mapping with ownership, exception, and retention metadata | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Infrastructure Security Hardening is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval

@@ -114,12 +114,12 @@ consuming service or business owner still accepts the effect on its workflow.
 
 Read the diagram from left to right as a sequence of gates; a later stage cannot repair missing
 identity or evidence from an earlier one. In this page, **UC-CICD-005: Artifact Management
-Automation** contributes reviewed contract and evidence required by the bounded workflow;
-**UC-CICD-012: Container Image Vulnerability Scanning** contributes reviewed contract and
-evidence required by the bounded workflow. The first buildable boundary is existing four-node
-application cluster, jenkins-agent01, GitLab, Jenkins, and accepted storage and ingress. The
-design stops at this rule: Reuse the existing lab; do not create a new cluster, node, VM, IP
-address, load balancer, storage system, or unapproved add-on.
+Automation** contributes immutable build or gate result with promotion and rollback eligibility;
+**UC-CICD-012: Container Image Vulnerability Scanning** contributes immutable build or gate
+result with promotion and rollback eligibility. The first buildable boundary is existing
+four-node application cluster, jenkins-agent01, GitLab, Jenkins, and accepted storage and
+ingress. The design stops at this rule: Reuse the existing lab; do not create a new cluster,
+node, VM, IP address, load balancer, storage system, or unapproved add-on.
 
 The walkthrough becomes useful when the happy path breaks. If contract or policy is
 missing/invalid, the expected response is to Correct through reviewed source and rerun fixtures.
@@ -160,10 +160,10 @@ provide explicit contracts or assurance evidence; they do not become alternate o
 
 | Relationship | Use case | Required handoff | Failure propagation |
 | --- | --- | --- | --- |
-| Required upstream contract | [UC-CICD-005: Artifact Management Automation](../devsecops/UC-CICD-005-artifact-management-automation.md) | reviewed contract and evidence required by the bounded workflow | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Required upstream contract | [UC-CICD-012: Container Image Vulnerability Scanning](../devsecops/UC-CICD-012-container-image-vulnerability-scanning.md) | reviewed contract and evidence required by the bounded workflow | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-K8S-001: Kubernetes Configuration Drift](UC-K8S-001-kubernetes-configuration-drift.md) | cluster identity and desired-versus-observed state report | Missing, stale, or failed evidence blocks promotion or runtime action. |
-| Coordinated assurance handoff | [UC-NET-018: Kubernetes Networking](../network/UC-NET-018-kubernetes-networking.md) | cluster network identity and service-path contract | Missing, stale, or failed evidence blocks promotion or runtime action. |
+| Required upstream contract | [UC-CICD-005: Artifact Management Automation](../devsecops/UC-CICD-005-artifact-management-automation.md) | immutable build or gate result with promotion and rollback eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Required upstream contract | [UC-CICD-012: Container Image Vulnerability Scanning](../devsecops/UC-CICD-012-container-image-vulnerability-scanning.md) | immutable build or gate result with promotion and rollback eligibility | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-K8S-001: Kubernetes Configuration Drift](UC-K8S-001-kubernetes-configuration-drift.md) | cluster identity and desired-versus-observed state report | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
+| Coordinated assurance handoff | [UC-NET-018: Kubernetes Networking](../network/UC-NET-018-kubernetes-networking.md) | layered path decision with before/after reachability and restore proof | Missing, stale, or contradictory handoff stops the dependent decision and is recorded for the accountable owner. |
 
 Before Container Registry and Image Supply Chain Security is implemented, every handoff must resolve to an immutable
 revision and machine-readable artifact. A URL, screenshot, or verbal approval
