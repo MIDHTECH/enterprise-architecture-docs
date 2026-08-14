@@ -213,7 +213,7 @@ does not approve the new architecture.
 ## Implementation design
 
 The first Retrieval-Augmented Generation implementation is deliberately
-source-only. The files below are implemented at local commit `7518855`; none
+source-only. The files below are implemented at local commit `175a39c`; none
 provisions infrastructure. The commit is preserved in a persistent local
 checkout while publication to the existing GitLab project is blocked by the
 currently unreachable GitLab endpoint. This local commit is implementation
@@ -277,7 +277,7 @@ credential-bearing content is included.
 record commits, scan content, and generate a signed/checksummed manifest.
 
 **Completed work:** The source contract, deterministic fixture corpus, validation
-script, and ephemeral in-memory index path exist at local commit `7518855`.
+script, and ephemeral in-memory index path exist at local commit `175a39c`.
 The fixture corpus is test data only; no enterprise corpus approval or durable
 index is claimed.
 
@@ -306,7 +306,7 @@ index in CI, add citation verification, and expire the index artifact.
 lexical and deterministic-vector retrieval, parallel scoring, reciprocal-rank
 fusion, bounded reranking, access filtering before scoring, context budgeting,
 and citation validation are implemented and covered by local tests at commit
-`7518855`.
+`175a39c`.
 
 **Validation and rollback:** Run deterministic unit tests and compare repeated
 results. Revert ranking changes that reduce the accepted baseline.
@@ -354,7 +354,7 @@ change. Block promotion and restore the prior accepted revision on regression.
 | Measure | Expected | Current |
 | --- | --- | --- |
 | Corpus | Approved, immutable, non-sensitive snapshot | Deterministic fixtures exist; enterprise corpus not approved |
-| Retrieval | Stable cited passages and refusal | Implemented and locally tested against fixtures at `7518855`; protected CI pending |
+| Retrieval | Stable cited passages and refusal | Implemented and locally tested against fixtures at `175a39c`; protected CI pending |
 | Runtime/model | None required for first acceptance | No runtime claimed |
 
 ## Acceptance decision

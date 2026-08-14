@@ -6,7 +6,7 @@ Status: Source implemented and validated locally; GitLab publication and runtime
 
 ## What was built
 
-Commit `7518855` (a reviewed descendant of the initial `03e9d1f` commit)
+Commit `175a39c` (a reviewed descendant of the initial `03e9d1f` commit)
 implements the deterministic, source-only RAG performance and reliability
 slice in the existing
 `midhhealth/ai-and-ml-platform/healthcare-ai-platform` project layout. The
@@ -54,7 +54,8 @@ Observed source evidence:
 - the passing report contains all required stage names, zero refusal leaks,
   the fixture corpus/retrieval/provider revisions, and three source revisions;
 - no source-validation step requires package installation or outbound network
-  access.
+  access; commit `175a39c` removes the editable-install instruction from the
+  operator runbook so the documented path matches CI.
 
 The benchmark latency values are deterministic local-fixture measurements.
 They are not production capacity, service-level, model-quality, or cost

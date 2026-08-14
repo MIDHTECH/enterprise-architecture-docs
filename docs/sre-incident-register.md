@@ -2913,7 +2913,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   attempts. A read-only SSH diagnostic resolved `gitlab.example.com` to
   `192.168.1.101` but timed out on TCP port 2222. A bounded HTTP request to the
   same host also timed out.
-- Impact: Commit `7518855`, containing the deterministic UC-AI-001 source-only
+- Impact: Commit `175a39c`, containing the deterministic UC-AI-001 source-only
   implementation and descending from the initial `03e9d1f` commit, cannot yet
   be published to the authoritative GitLab
   project. Protected GitLab CI evidence is unavailable. No runtime service or

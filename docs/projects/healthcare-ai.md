@@ -60,7 +60,7 @@ Clinical or payer decisions remain with authorized people and systems.
 ![Healthcare AI platform architecture](../assets/project-11-healthcare-ai-architecture.svg)
 
 The first UC-AI-001 source slice is implemented and locally tested at commit
-`7518855`; publication to the authoritative GitLab project and protected CI
+`175a39c`; publication to the authoritative GitLab project and protected CI
 evidence remain pending. No production AI runtime is accepted. The planned Mac
 Studio can support local development and evaluation after its
 capacity and handling rules are confirmed; it is not a repository, a clinical
