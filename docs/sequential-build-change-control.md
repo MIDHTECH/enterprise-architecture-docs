@@ -22,13 +22,13 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | None |
-| Component | None |
-| State | Idle after successful closure of `CHG-2026-013` |
-| Blocker | None |
-| Permitted work | Read-only audits and design of the next single queued component. |
-| Prohibited work | Any infrastructure mutation until the next bounded change is reviewed and recorded here. |
-| Exit criteria | Not applicable while the queue is idle. |
+| Change ID | `CHG-2026-014` |
+| Component | Recover the existing Harbor 2.15.0 Compose stack by pinning its local syslog client to the IPv4 loopback listener |
+| State | Design and source review after read-only diagnosis of `INC-2026-087` |
+| Blocker | None. The failure is bounded to `localhost` resolving to IPv6 while `harbor-log` publishes only IPv4 loopback. |
+| Permitted work | Add reviewed Harbor-only preflight, recovery, and validation automation; pass GitLab review/CI; run it through Jenkins and AWX; prove convergence and runtime health. |
+| Prohibited work | Direct container start, direct Compose edit, Harbor reinstall/upgrade, secret/certificate/data change, port/firewall/NGINX/DNS/VM/bridge/Kubernetes/AWX execution-plane/shared-proxy change, or any other component. |
+| Exit criteria | Reviewed source and CI; ten Harbor containers running; native HTTPS and `/api/v2.0/health` successful; IPv4 loopback logging pin retained; zero-change validation and second APPLY; incident and evidence published. |
 
 `CHG-2026-012` begins only after merge request !38 published the operator's
 cancelled `CHG-2026-011` closure and returned the queue to idle. A fresh audit
@@ -61,6 +61,15 @@ build 6/job 984. Receptor is active with zero restarts; systemd owns
 instance 3 is Ready with capacity 76 only in `lab-infrastructure`.
 `INC-2026-088` is resolved and `CHG-2026-013` is closed. Harbor incident
 `INC-2026-087` remains queued and was not changed in this component.
+
+`CHG-2026-014` begins only after the CHG-2026-013 closure merge and canonical
+pipeline 705 passed. A fresh read-only audit found Jenkins and AWX idle and no
+Harbor package, Compose, or Ansible mutator. Nine Harbor containers remain
+stopped with exit code 128; `harbor-log` alone is healthy. Every stopped
+container is configured to send syslog to `tcp://localhost:1514`, which
+resolves to `[::1]`, while the log container publishes only
+`127.0.0.1:1514`. The exact bounded design is in
+[CHG-2026-014](change-records/CHG-2026-014-harbor-syslog-loopback-recovery.md).
 
 `CHG-2026-011` begins after CHG-2026-010 closeout and a fresh conflict audit.
 The operator-directed Enterprise Kubernetes Platform with GitOps goal places
