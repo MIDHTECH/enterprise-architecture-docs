@@ -119,7 +119,7 @@ facts; they do not erase the original observation.
 | INC-2026-085 | 2026-08-08 | SEV-3 | Open | infra01-to-infra03 build-execution path | Pre-DEPLOY loss recurred; infra01 uplink has repeated carrier drops and is the bounded first physical canary |
 | INC-2026-086 | 2026-08-18 | SEV-2 | Resolved | infra02 libvirt bridge | Jenkins/AWX restored all 14 live taps; validation and convergence passed with all guests reachable |
 | INC-2026-087 | 2026-08-18 | SEV-3 | Open | Harbor runtime | Nine Harbor containers are stopped because the Docker syslog driver selects IPv6 loopback while `harbor-log` publishes only IPv4 |
-| INC-2026-088 | 2026-08-18 | SEV-3 | Open | AWX execution node | Receptor is in an auto-restart loop and AWX reports the reachable execution instance unavailable at capacity zero |
+| INC-2026-088 | 2026-08-18 | SEV-3 | Resolved | AWX execution node | CHG-2026-013 made systemd recreate `/run/receptor`; Receptor and AWX instance 3 are healthy and converged |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1492,7 +1492,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-07-29
 - Severity: SEV-2
-- Status: Open
+- Status: Resolved
 - Component: `infra01.example.com`, NetworkManager bridge `lab-br0`, libvirt
   autostart guests, and guest network initialization
 - Detection/symptom: After infra01 completed a full host reboot, all 17
@@ -2980,15 +2980,21 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   Exporter listeners are present, but `receptor.service` exits every five
   seconds; AWX reports the instance unavailable with capacity zero.
 - Impact: AWX work remains restricted to the controller execution group.
-- Cause: Not yet established. The restart counter predates bridge restoration,
-  so connectivity recovery alone did not resolve the process failure.
-- Resolution: Pending a separately reviewed AWX execution-plane component.
-- Validation: Require active Receptor, controller state Ready, restored
-  capacity, bounded canary execution, and zero-change convergence.
-- Prevention/follow-up: Diagnose configuration and mesh identity through the
-  existing AWX execution-plane automation; do not replace the node ad hoc.
-- Corrective automation: No direct service restart or configuration mutation
-  is authorized while this incident is only queued.
+- Cause: The Receptor control socket is under volatile `/run/receptor`, but the
+  systemd unit did not declare `RuntimeDirectory`; after reboot the absent
+  parent directory caused every control-socket bind to fail.
+- Resolution: `CHG-2026-013` added `RuntimeDirectory=receptor` and
+  `RuntimeDirectoryMode=0750` to canonical `ansible-awx` automation and applied
+  it through Jenkins and AWX.
+- Validation: Receptor is active with `NRestarts=0`; `/run/receptor` is owned
+  by `awx:awx` mode `0750`; the socket exists; instance 3 is Ready, enabled,
+  capacity 76, and only in `lab-infrastructure`; CANARY job 982 ran on that
+  node; VALIDATE 980 and convergence APPLY 984 reported zero changes.
+- Prevention/follow-up: Source validation now requires both runtime-directory
+  directives and validates ownership and mode on the execution node.
+- Corrective automation: Canonical revision
+  `ff34b69f697c4a1deebdd38720b081cc3d3ec0d1`; Jenkins builds 2-6 and AWX
+  jobs 976/978/980/982/984 provide the controlled acceptance record.
 
 ## New Incident Template
 

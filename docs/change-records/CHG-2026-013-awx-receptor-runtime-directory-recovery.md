@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-013` |
 | Type | Controlled service recovery |
-| State | Design and source review |
+| State | Closed successfully |
 | Risk | Low |
 | Impact | AWX execution instance 3 is unavailable at capacity zero |
 | Owner | Platform Engineering |
@@ -83,7 +83,28 @@ Do not delete or replace the node, certificates, AWX objects, or runtime.
 
 | Field | Value |
 | --- | --- |
-| Close code | Pending |
-| Closed date | Pending |
-| Implementation result | Pending |
-| Validation evidence | Pending |
+| Close code | Successful |
+| Closed date | 2026-08-18 |
+| Implementation result | Canonical `ansible-awx` revision `ff34b69f697c4a1deebdd38720b081cc3d3ec0d1` adds the two reviewed systemd runtime-directory directives. Receptor is active with `NRestarts=0`; `/run/receptor` is `awx:awx` mode `0750`; and its Unix control socket is present. |
+| Validation evidence | Jenkins PLAN 2/AWX 976, APPLY 3/AWX 978, VALIDATE 4/AWX 980, CANARY 5/AWX 982 on `awx-execution.example.com`, and convergence APPLY 6/AWX 984 all succeeded. VALIDATE and convergence reported `changed={}` and no failures. Instance 3 is Ready, enabled, capacity 76, and belongs only to `lab-infrastructure`. |
+
+## Publication evidence
+
+- Documentation design merge request !42 passed pipelines 694 and 695 and
+  merged as `abff4d2`.
+- `ansible-awx` merge request !9 passed pipelines 696 and 697 and merged as
+  `ff34b69f697c4a1deebdd38720b081cc3d3ec0d1`.
+- Jenkins shared-library merge requests !13 and !14 passed pipelines
+  698/699 and 702/703. The second revision corrected only the typed AWX polling
+  endpoint after build 1 failed safely during project-update observation; no
+  host job or mutation was launched by that failed build.
+- Jenkins-jobs merge request !9 passed pipelines 700 and 701. Seed build 71
+  generated the reviewed `projects/recover-awx-execution` job after approval
+  of only its exact Job DSL script.
+- The final controlled convergence job returned `ok=52`, `changed={}`,
+  `failures={}`, and `dark={}` for `awx-execution.example.com`.
+
+The existing hostname boundary remains unchanged: NGINX listens on TCP 443,
+while Receptor's backend listener remains loopback-only on `127.0.0.1:27199`.
+No certificate, secret, firewall, execution-environment, AWX object, package,
+VM, bridge, Kubernetes, Harbor, DNS, or shared-proxy setting changed.
