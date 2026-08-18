@@ -6,11 +6,11 @@
 | --- | --- |
 | Number | `CHG-2026-012` |
 | Type | Emergency service restoration through normal reviewed controls |
-| State | Blocked at mutation-disabled PLAN |
+| State | Closed; bridge recovery accepted |
 | Risk | Moderate |
-| Impact | High: 14 infra02 guests and two application-cluster workers are network-isolated |
+| Impact | Restored: 14 infra02 guests and two application-cluster workers are reachable |
 | Owner | Platform Engineering |
-| Scheduled start | After an approved AWX credential can perform noninteractive privilege escalation on infra02 |
+| Scheduled start | 2026-08-18; completed through Jenkins and AWX |
 
 ## Purpose
 
@@ -158,34 +158,51 @@ The component is accepted only when:
 8. a second confirmed APPLY reports `changed=0`, followed by reviewed evidence
    and canonical repository publication.
 
-## Runtime attempt and blocker
+## Implementation and validation result
 
-GitLab branch pipeline 682 and canonical-main pipeline 683 passed the
-source-compatibility correction. Jenkins seed build 69 succeeded. Immediately
-before PLAN, GitLab had zero active pipelines, Jenkins had an empty queue and
-zero busy executors, AWX had zero active unified jobs, the hypervisors retained
-17/14/4 running domains with no mutator, and `br0` still contained only
-`enp0s25`.
+The first four Jenkins PLAN attempts failed safely before bridge mutation and
+supplied the evidence used to correct the reviewed source. AWX job 922 exposed
+Ubuntu 26.04 `sudo-rs` prompt incompatibility, job 930 exposed unreliable tap
+derivation from formatted `domiflist` output, and job 938 exposed GNU
+`readlink -f` behavior on an absent master link. Merge requests !6, !7, and !8
+corrected those issues; GitLab pipelines 686 through 690 passed, and the
+accepted code uses `/usr/bin/sudo.ws`, live domain XML, and a non-canonicalizing
+master-link read. No failed attempt changed bridge or guest state.
 
-Jenkins PLAN build 1 launched AWX job 914. The first bounded assertion passed,
-then the first read-only root command failed before returning module data:
-credential 1 authenticated as `midhtechadmin`, but `sudo -n` reported that
-interactive authentication is required. AWX credentials 1 and 4 configure an
-SSH key and `sudo` method but no become password. Direct root SSH is disabled.
-The job recorded no successful mutating task, and no tap, bridge, domain,
-NetworkManager, or guest state changed.
+Jenkins PLAN build 5 and AWX job 946 then passed. Check mode predicted only
+attachment of the exact unique set `vnet0` through `vnet13` to `br0`. A fresh
+idle gate found no active AWX or infra02 mutator, 14 running domains, and only
+the physical port on the bridge. Confirmed Jenkins APPLY build 6 launched AWX
+job 954, which completed successfully and attached the missing live taps.
 
-The change remains blocked. Resume only after a separately reviewed control-
-plane correction provides an approved AWX machine credential that can perform
-noninteractive privilege escalation on `infra02.example.com`. Direct `ip link`,
-workstation Ansible, credential extraction, and an ad hoc sudoers change remain
-prohibited.
+Independent acceptance found `br0` at `192.168.1.169/24` with its canonical
+default route, exactly `enp0s25` plus `vnet0` through `vnet13`, and all 15 ports
+forwarding. All 14 domains remained running and autostart-enabled, and all 14
+canonical guest addresses `.121` through `.131` and `.133` through `.135`
+answered the bounded hypervisor probe. Kubernetes returned all four nodes
+Ready with no non-running pods.
+
+Jenkins VALIDATE build 7 and AWX job 962 passed 23 checks with `changed={}`.
+After another idle gate, Jenkins APPLY build 8 and AWX job 970 passed with
+`changed={}` and reported no tap to attach. This is the required convergence
+evidence.
+
+The post-network service audit also separated two application failures from
+the bridge incident. Harbor has nine containers stopped since 2026-08-15
+because its Docker syslog driver resolves `localhost:1514` to IPv6 while the
+healthy logging container publishes only IPv4. The AWX execution node is
+reachable but Receptor is in a pre-existing restart loop and remains capacity
+zero. They are recorded as `INC-2026-087` and `INC-2026-088`; the rollback rule
+requires retaining the restored bridge and handling each as a separate,
+reviewed component. Primary systemd units for PostgreSQL, both Kubernetes
+workers, Grafana, Loki, Tempo, OpenTelemetry Collector, Elasticsearch02/03,
+and Logstash are active.
 
 ## Closure
 
 | Field | Value |
 | --- | --- |
-| Close code | Pending |
-| Closed date | Pending |
-| Implementation result | Pending |
-| Validation evidence | Pending |
+| Close code | Successful bridge restoration; two unrelated application follow-ups opened |
+| Closed date | 2026-08-18 |
+| Implementation result | Jenkins build 6 / AWX job 954 restored all 14 live tap memberships |
+| Validation evidence | Jenkins builds 7 and 8; AWX jobs 962 and 970; 15/15 ports forwarding, 14/14 domains running/autostarted/reachable, Kubernetes 4/4 Ready |
