@@ -117,6 +117,7 @@ facts; they do not erase the original observation.
 | INC-2026-083 | 2026-08-08 | SEV-4 | Resolved | Jenkins Kubernetes storage prerequisites | The generated pipeline used an unavailable `timestamps()` option and failed safely before AWX launch |
 | INC-2026-084 | 2026-08-08 | SEV-4 | Resolved | Jenkins Longhorn acceptance evidence | Groovy string interpolation corrupted two kubectl newline templates after the initial runtime became healthy |
 | INC-2026-085 | 2026-08-08 | SEV-3 | Open | infra01-to-infra03 build-execution path | Pre-DEPLOY loss recurred; infra01 uplink has repeated carrier drops and is the bounded first physical canary |
+| INC-2026-086 | 2026-08-18 | SEV-2 | Open | infra02 libvirt bridge | All 14 running guests lost live `br0` tap membership, isolating the service fleet and two Kubernetes workers |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2901,6 +2902,46 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   [infra01 uplink canary](change-records/CHG-2026-011-infra01-uplink-canary.md),
   [infra01 Phase A result](evidence/CHG-2026-011-infra01-uplink-phase-a-result.md),
   [Velop shared-node diagnostic](change-records/CHG-2026-011-velop-shared-node-diagnostic.md),
+  [Sequential Build and Change Control](sequential-build-change-control.md)
+
+## INC-2026-086: infra02 Guests Detached From br0
+
+- Date: 2026-08-18
+- Severity: SEV-2
+- Status: Open
+- Component: `infra02.example.com`, `br0`, 14 live libvirt tap interfaces,
+  hosted services, and Kubernetes worker02/worker03
+- Detection/symptom: The host and all 14 domains were running, but direct SSH,
+  HTTP, and ICMP to every guest timed out. `bridge link show` reported only
+  physical interface `enp0s25` as a `br0` port even though `vnet0` through
+  `vnet13` existed.
+- Impact: Every infra02-hosted installed service became unavailable from the
+  LAN; worker02 and worker03 became NotReady; existing ingress, Headlamp,
+  Longhorn, and storage-acceptance pods entered Pending or Unknown states.
+- Timeline: A fleet service audit followed a host-availability check. QEMU
+  Guest Agent returned all 14 canonical guest addresses, proving that guest
+  addressing remained intact. Hypervisor-side probes then failed to every
+  address, and inspection proved that no guest tap had a bridge master.
+- Cause: The immediate cause is loss of live tap-to-`br0` membership. The event
+  that detached the taps is not yet proven. No evidence supports deleted
+  domains, guest address loss, or service uninstallation.
+- Contributing factors: The current bridge state does not self-heal live tap
+  membership after the detach event. The earlier `VLP01` shared-node history
+  complicates external reachability, but it does not explain why the local
+  bridge reports no tap ports.
+- Resolution: Pending reviewed `CHG-2026-012` live membership recovery.
+- Validation: Require the physical port plus 14 derived taps forwarding,
+  14/14 guest reachability, 14/14 running/autostart domains, four Ready
+  Kubernetes nodes, installed-service readiness, and zero-change VALIDATE and
+  idempotence APPLY.
+- Prevention/follow-up: Add exact live bridge-membership verification to
+  hypervisor acceptance and preserve a controlled, host-limited recovery path.
+  Investigate the detach trigger separately after service restoration.
+- Corrective automation: `CHG-2026-012` adds PLAN/APPLY/VALIDATE through
+  reviewed GitLab source, Jenkins, and AWX. No direct workstation or manual
+  host correction is authorized.
+- Evidence/related runbook:
+  [CHG-2026-012](change-records/CHG-2026-012-infra02-bridge-port-recovery.md),
   [Sequential Build and Change Control](sequential-build-change-control.md)
 
 ## New Incident Template
