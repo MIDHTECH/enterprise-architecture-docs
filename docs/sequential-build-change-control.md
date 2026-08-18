@@ -22,13 +22,13 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `CHG-2026-012` |
-| Component | Restore the 14 live libvirt guest tap interfaces on `infra02.example.com` to their already-defined `br0` bridge without changing NetworkManager, STP, the physical uplink, domain definitions, or guest state |
-| State | Blocked at mutation-disabled PLAN. Reviewed source and canonical CI passed, Jenkins seed build 69 succeeded, and the fresh idle gate passed. Jenkins PLAN build 1/AWX job 914 authenticated to infra02 but failed on the first read-only root command because noninteractive sudo is unavailable. No bridge or guest mutation occurred. |
-| Blocker | Approved AWX machine credentials 1 and 4 contain the SSH key and sudo method but no become password; infra02 requires interactive sudo and rejects direct root SSH. Resume only through a separately reviewed control-plane credential or privilege-escalation correction. Direct host recovery remains prohibited. |
-| Permitted work | Review and validate the exact `CHG-2026-012` source; create only the PLAN/APPLY/VALIDATE control path; run read-only audits; after accepted PLAN and a fresh idle gate, attach only the 14 tap devices derived from the exact running-domain set to `br0`; validate and rerun APPLY for idempotence. |
-| Prohibited work | NetworkManager connection activation or restart; bridge recreation; STP, physical NIC, cable, Velop, DHCP, DNS, firewall, route, VM power, domain XML, Kubernetes, Helm, application, package, or product configuration changes; direct workstation Ansible; direct `ip link` correction outside the Jenkins-to-AWX path; Argo CD PLAN/DEPLOY; Artifactory/SonarQube/Splunk work. |
-| Exit criteria | Reviewed source and CI pass; PLAN predicts only the 14 missing tap memberships; APPLY and rollback guard complete through Jenkins/AWX; `br0` has `enp0s25` plus all 14 expected taps forwarding; 14/14 guests are reachable and remain running/autostarted; Kubernetes returns four Ready nodes and recovers its existing workloads; installed infra02 services recover; VALIDATE and a second APPLY report zero changes; incident, acceptance evidence, and canonical publication complete. |
+| Change ID | None |
+| Component | None; `CHG-2026-012` is complete |
+| State | Idle after accepted infra02 bridge recovery. Jenkins builds 5-8 and AWX jobs 946, 954, 962, and 970 passed PLAN, APPLY, mutation-disabled VALIDATE, and zero-change convergence. |
+| Blocker | None for the bridge. `INC-2026-087` Harbor and `INC-2026-088` AWX execution are separate queued application components and do not authorize direct repair. |
+| Permitted work | Read-only audits and design of the next single reviewed component. |
+| Prohibited work | Any unreviewed direct host, application, NGINX, DNS, package, VM, Kubernetes, Harbor, AWX execution, or shared-proxy mutation. |
+| Exit criteria | Already met for `CHG-2026-012`: exact bridge membership, 15 forwarding ports, 14/14 guests running/autostarted/reachable, Kubernetes 4/4 Ready, zero-change VALIDATE and convergence APPLY, incident evidence, and canonical publication. |
 
 `CHG-2026-012` begins only after merge request !38 published the operator's
 cancelled `CHG-2026-011` closure and returned the queue to idle. A fresh audit
@@ -38,6 +38,14 @@ AWX returned HTTP 200 with its task deployment 1/1 Available, Jenkins returned
 HTTP 200 with no durable-task process, and all hypervisors retained 17/14/4
 running domains. The exact bounded design is in
 [CHG-2026-012](change-records/CHG-2026-012-infra02-bridge-port-recovery.md).
+
+The controlled recovery subsequently passed Jenkins PLAN build 5/AWX job 946,
+APPLY build 6/job 954, mutation-disabled VALIDATE build 7/job 962, and the
+zero-change APPLY build 8/job 970. `br0` now contains `enp0s25` and all 14
+derived taps forwarding; all 14 domains are running, autostarted, and reachable,
+and Kubernetes is 4/4 Ready with no non-running pods. The application audit
+opened `INC-2026-087` for Harbor and `INC-2026-088` for the AWX execution node;
+neither is part of the closed bridge component.
 
 `CHG-2026-011` begins after CHG-2026-010 closeout and a fresh conflict audit.
 The operator-directed Enterprise Kubernetes Platform with GitOps goal places

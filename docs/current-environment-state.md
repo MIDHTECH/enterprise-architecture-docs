@@ -1,6 +1,6 @@
 # Current Environment State
 
-Last verified: 2026-08-13
+Last verified: 2026-08-18
 
 The canonical machine-readable classification for architecture-sensitive
 capabilities is
@@ -37,22 +37,22 @@ persistent-storage changes completed through 2026-08-08:
 | Layer | Verified state |
 | --- | --- |
 | `infra01.example.com` | Ubuntu 26.04 LTS host reachable after a full reboot; KVM/libvirt, `br0`, and 17/17 autostart domains are up with expected IPv4 addresses; STP is disabled and canary recovery passed |
-| `infra02.example.com` | Ubuntu 26.04 LTS, `br0` active, 14/14 domains running, and no active change process |
+| `infra02.example.com` | Ubuntu 26.04 LTS; `br0` has its physical port plus all 14 guest taps forwarding; 14/14 domains are running, autostarted, and reachable after CHG-2026-012 |
 | `infra03.example.com` | Ubuntu 26.04 LTS, `br0` active, four build-execution domains running with autostart |
-| Virtual machines | 35 domains in the latest accepted inventory: 17 on infra01, 14 on infra02, and 4 on infra03; all domains are running and all infra01 guests recovered expected IPv4 addresses |
+| Virtual machines | 35 domains in the latest accepted inventory: 17 on infra01, 14 on infra02, and 4 on infra03; all domains are running, and all infra02 guests answered their canonical-address acceptance probes |
 | Product roles | At least 23 runtime roles directly verified; Harbor is installed; Vault 2.0.3 is active, unsealed, and accepted through NGINX; Keycloak still awaits revalidation |
 | Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready; ClusterIP-only ingress-nginx and worker-only Longhorn 1.12.0 V1 accepted |
 | AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
-| AWX execution plane | AWX 24.6.1 instance 3 on `awx-execution.example.com` is Ready at capacity 76 only in `lab-infrastructure`; NGINX exposes hostname TCP 443 and Receptor remains loopback-only on 27199 |
+| AWX execution plane | AWX 24.6.1 instance 3 on `awx-execution.example.com` is reachable but Receptor is restarting and the controller reports capacity 0; tracked by INC-2026-088 |
 | AWX inventories | 50 records across nine populated inventories plus the empty Demo inventory; 39 distinct names. Purpose-specific delivery inventories remain isolated, and `awx-execution-plane` contains only the execution node and canary localhost. |
 | Git repositories | AWX inventory, Kubernetes ingress, Longhorn storage automation/design, and cloud-infrastructure corrections are published; private application project `midhhealth/applications/podinfo` retains upstream history and has protected `main` at `81e02a9825bb4adbb353ebe23c62e26740f7550c`; its latest pipeline was canceled when work returned to documentation-only scope |
 
 The directly verified provisioned-only product VMs include `governance`,
 `backup`, `artifactory`, `sonarqube`, and `splunk`.
-PostgreSQL 18 is active on `postgres.example.com`. Harbor 2.15.0 is active on
-`harbor.example.com`: all ten Harbor, registry, database, Redis, portal,
-job-service, and Trivy containers are healthy, the health API is healthy, and
-native HTTPS returns 200. Vault 2.0.3 is active on
+PostgreSQL 18 is active on `postgres.example.com`. Harbor 2.15.0 remains
+installed on `harbor.example.com`, but only `harbor-log` is running; nine
+containers are stopped by the IPv6/IPv4 syslog-listener mismatch tracked in
+INC-2026-087. Vault 2.0.3 is active on
 `vault.example.com`, reports `initialized=true`, `sealed=false`, and
 `standby=false`, and is reachable through `vault.apps.example.com`. Keycloak
 still requires separate revalidation before its older installation claim

@@ -117,7 +117,9 @@ facts; they do not erase the original observation.
 | INC-2026-083 | 2026-08-08 | SEV-4 | Resolved | Jenkins Kubernetes storage prerequisites | The generated pipeline used an unavailable `timestamps()` option and failed safely before AWX launch |
 | INC-2026-084 | 2026-08-08 | SEV-4 | Resolved | Jenkins Longhorn acceptance evidence | Groovy string interpolation corrupted two kubectl newline templates after the initial runtime became healthy |
 | INC-2026-085 | 2026-08-08 | SEV-3 | Open | infra01-to-infra03 build-execution path | Pre-DEPLOY loss recurred; infra01 uplink has repeated carrier drops and is the bounded first physical canary |
-| INC-2026-086 | 2026-08-18 | SEV-2 | Open | infra02 libvirt bridge | All 14 running guests lost live `br0` tap membership, isolating the service fleet and two Kubernetes workers |
+| INC-2026-086 | 2026-08-18 | SEV-2 | Resolved | infra02 libvirt bridge | Jenkins/AWX restored all 14 live taps; validation and convergence passed with all guests reachable |
+| INC-2026-087 | 2026-08-18 | SEV-3 | Open | Harbor runtime | Nine Harbor containers are stopped because the Docker syslog driver selects IPv6 loopback while `harbor-log` publishes only IPv4 |
+| INC-2026-088 | 2026-08-18 | SEV-3 | Open | AWX execution node | Receptor is in an auto-restart loop and AWX reports the reachable execution instance unavailable at capacity zero |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2908,7 +2910,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-08-18
 - Severity: SEV-2
-- Status: Open
+- Status: Resolved
 - Component: `infra02.example.com`, `br0`, 14 live libvirt tap interfaces,
   hosted services, and Kubernetes worker02/worker03
 - Detection/symptom: The host and all 14 domains were running, but direct SSH,
@@ -2929,23 +2931,64 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   membership after the detach event. The earlier `VLP01` shared-node history
   complicates external reachability, but it does not explain why the local
   bridge reports no tap ports.
-- Resolution: Reviewed recovery source and CI passed, but Jenkins PLAN build 1
-  and AWX job 914 failed safely before any bridge mutation because the approved
-  machine credential cannot perform noninteractive sudo on infra02.
-- Validation: Require the physical port plus 14 derived taps forwarding,
-  14/14 guest reachability, 14/14 running/autostart domains, four Ready
-  Kubernetes nodes, installed-service readiness, and zero-change VALIDATE and
-  idempotence APPLY.
+- Resolution: Jenkins PLAN build 5/AWX job 946 predicted only the exact missing
+  tap set. Confirmed APPLY build 6/job 954 attached the 14 taps. VALIDATE build
+  7/job 962 and convergence APPLY build 8/job 970 passed with `changed={}`.
+- Validation: `br0` retained its canonical address and route with `enp0s25`
+  plus `vnet0` through `vnet13`; all 15 ports were forwarding, all 14 domains
+  remained running and autostarted, every canonical guest address answered,
+  and Kubernetes returned four Ready nodes with no non-running pods.
 - Prevention/follow-up: Add exact live bridge-membership verification to
   hypervisor acceptance and preserve a controlled, host-limited recovery path.
   Investigate the detach trigger separately after service restoration.
-- Corrective automation: `CHG-2026-012` adds PLAN/APPLY/VALIDATE through
-  reviewed GitLab source, Jenkins, and AWX. No direct workstation or manual
-  host correction is authorized. Resume requires a reviewed AWX privilege-
-  escalation credential correction; direct root SSH is disabled.
+- Corrective automation: `CHG-2026-012` delivered PLAN/APPLY/VALIDATE through
+  reviewed GitLab source, Jenkins, and AWX. The recovery also added the
+  Ubuntu-26.04-compatible `sudo.ws` become path and exact live-XML tap
+  derivation. No direct workstation or manual host correction was used.
 - Evidence/related runbook:
   [CHG-2026-012](change-records/CHG-2026-012-infra02-bridge-port-recovery.md),
   [Sequential Build and Change Control](sequential-build-change-control.md)
+
+## INC-2026-087: Harbor Containers Blocked by Syslog Loopback Mismatch
+
+- Date: 2026-08-18
+- Severity: SEV-3
+- Status: Open
+- Component: `harbor.example.com`, Docker Compose Harbor runtime
+- Detection/symptom: The post-bridge service audit found only `harbor-log`
+  running. The other nine containers exited with Docker error 128.
+- Impact: Native Harbor HTTPS and its health API refuse connections.
+- Cause: The containers' syslog logging driver connects to `[::1]:1514`, while
+  the healthy `harbor-log` container publishes only `127.0.0.1:1514`.
+- Timeline: Container finish timestamps are 2026-08-15, three days before the
+  CHG-2026-012 bridge recovery, so this is not a bridge-apply regression.
+- Resolution: Pending a separately reviewed Harbor component.
+- Validation: Require all ten containers healthy, native HTTPS and health API
+  success, and zero-change controlled convergence.
+- Prevention/follow-up: Pin the logging endpoint to the matching loopback
+  family or publish the approved dual-stack listener through reviewed source.
+- Corrective automation: Direct `docker start` or Compose recovery is not
+  authorized while this incident is only queued.
+
+## INC-2026-088: AWX Execution Receptor Restart Loop
+
+- Date: 2026-08-18
+- Severity: SEV-3
+- Status: Open
+- Component: `awx-execution.example.com`, Receptor, AWX instance 3
+- Detection/symptom: The guest is reachable and its local NGINX and Node
+  Exporter listeners are present, but `receptor.service` exits every five
+  seconds; AWX reports the instance unavailable with capacity zero.
+- Impact: AWX work remains restricted to the controller execution group.
+- Cause: Not yet established. The restart counter predates bridge restoration,
+  so connectivity recovery alone did not resolve the process failure.
+- Resolution: Pending a separately reviewed AWX execution-plane component.
+- Validation: Require active Receptor, controller state Ready, restored
+  capacity, bounded canary execution, and zero-change convergence.
+- Prevention/follow-up: Diagnose configuration and mesh identity through the
+  existing AWX execution-plane automation; do not replace the node ad hoc.
+- Corrective automation: No direct service restart or configuration mutation
+  is authorized while this incident is only queued.
 
 ## New Incident Template
 
