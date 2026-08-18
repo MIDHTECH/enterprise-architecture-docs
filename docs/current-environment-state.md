@@ -49,10 +49,10 @@ persistent-storage changes completed through 2026-08-08:
 
 The directly verified provisioned-only product VMs include `governance`,
 `backup`, `artifactory`, `sonarqube`, and `splunk`.
-PostgreSQL 18 is active on `postgres.example.com`. Harbor 2.15.0 remains
-installed on `harbor.example.com`, but only `harbor-log` is running; nine
-containers are stopped by the IPv6/IPv4 syslog-listener mismatch tracked in
-INC-2026-087. Vault 2.0.3 is active on
+PostgreSQL 18 is active on `postgres.example.com`. Harbor 2.15.0 is healthy on
+`harbor.example.com`: all ten containers are healthy, native HTTPS returns
+200, and the health API reports `healthy` after CHG-2026-014. Its nine local
+syslog clients and listener remain IPv4 loopback-only. Vault 2.0.3 is active on
 `vault.example.com`, reports `initialized=true`, `sealed=false`, and
 `standby=false`, and is reachable through `vault.apps.example.com`. Keycloak
 still requires separate revalidation before its older installation claim

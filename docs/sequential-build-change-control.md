@@ -22,13 +22,13 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `CHG-2026-014` |
-| Component | Recover the existing Harbor 2.15.0 Compose stack by pinning its local syslog client to the IPv4 loopback listener |
-| State | Design and source review after read-only diagnosis of `INC-2026-087` |
-| Blocker | None. The failure is bounded to `localhost` resolving to IPv6 while `harbor-log` publishes only IPv4 loopback. |
-| Permitted work | Add reviewed Harbor-only preflight, recovery, and validation automation; pass GitLab review/CI; run it through Jenkins and AWX; prove convergence and runtime health. |
-| Prohibited work | Direct container start, direct Compose edit, Harbor reinstall/upgrade, secret/certificate/data change, port/firewall/NGINX/DNS/VM/bridge/Kubernetes/AWX execution-plane/shared-proxy change, or any other component. |
-| Exit criteria | Reviewed source and CI; ten Harbor containers running; native HTTPS and `/api/v2.0/health` successful; IPv4 loopback logging pin retained; zero-change validation and second APPLY; incident and evidence published. |
+| Change ID | None |
+| Component | None |
+| State | Idle after successful closure of `CHG-2026-014` |
+| Blocker | None |
+| Permitted work | Read-only audits and design of the next single queued component. |
+| Prohibited work | Any infrastructure mutation until the next bounded change is reviewed and recorded here. |
+| Exit criteria | Not applicable while the queue is idle. |
 
 `CHG-2026-012` begins only after merge request !38 published the operator's
 cancelled `CHG-2026-011` closure and returned the queue to idle. A fresh audit
@@ -70,6 +70,14 @@ container is configured to send syslog to `tcp://localhost:1514`, which
 resolves to `[::1]`, while the log container publishes only
 `127.0.0.1:1514`. The exact bounded design is in
 [CHG-2026-014](change-records/CHG-2026-014-harbor-syslog-loopback-recovery.md).
+
+The reviewed recovery subsequently passed Jenkins preflight build 4/AWX job
+994, APPLY build 5/job 1004, mutation-disabled VALIDATE build 6/job 1014,
+and zero-change APPLY build 7/job 1024. All ten Harbor containers are healthy,
+native HTTPS returns 200, and `/api/v2.0/health` reports `healthy`. Compose has
+nine `tcp://127.0.0.1:1514` targets and no legacy `localhost` target; the
+listener remains bound only to `127.0.0.1:1514`. `INC-2026-087` is resolved,
+`CHG-2026-014` is closed, and the sequential queue is idle.
 
 `CHG-2026-011` begins after CHG-2026-010 closeout and a fresh conflict audit.
 The operator-directed Enterprise Kubernetes Platform with GitOps goal places

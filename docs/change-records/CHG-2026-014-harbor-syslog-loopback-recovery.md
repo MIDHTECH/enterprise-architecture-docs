@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-014` |
 | Type | Controlled service recovery |
-| State | Design and source review |
+| State | Closed successfully |
 | Risk | Medium |
 | Impact | Native Harbor HTTPS and registry API are unavailable |
 | Owner | Platform Engineering |
@@ -78,7 +78,33 @@ new listener.
 
 | Field | Value |
 | --- | --- |
-| Close code | Pending |
-| Closed date | Pending |
-| Implementation result | Pending |
-| Validation evidence | Pending |
+| Close code | Successful |
+| Closed date | 2026-08-18 |
+| Implementation result | Canonical `linux-systems-platform` revision `9f03c345af201fa25b4475e905947feebda680e6` retained a fixed rollback copy, replaced the nine exact local syslog targets with IPv4 loopback, and reconciled the existing Compose project without reinstalling or upgrading Harbor. |
+| Validation evidence | Jenkins preflight 4/AWX 994, APPLY 5/AWX 1004, VALIDATE 6/AWX 1014, and convergence APPLY 7/AWX 1024 succeeded. VALIDATE and convergence reported `changed={}` with no failures. All ten containers are healthy, native HTTPS returns 200, and `/api/v2.0/health` reports `healthy`. |
+
+## Publication and control evidence
+
+- Design merge request !44 passed documentation pipelines 706 and 707 and
+  merged as `39df4770864a3335ac3d856ada569ecb52cad5e3`.
+- `linux-systems-platform` merge request !2 passed branch pipeline 710 and
+  canonical-main pipeline 712 and merged as
+  `9f03c345af201fa25b4475e905947feebda680e6`.
+- Jenkins shared-library merge request !15 passed pipelines 708 and 711 and
+  merged as `50918735436d6af07f5c1786d35fb307e07a10b0`.
+- Jenkins-jobs merge requests !10 and !11 passed pipelines 709/713 and
+  714/715. Their canonical revisions added the reviewed playbook choices and
+  bound the generic AWX job to the existing `kubernetes-deployer` agent.
+  Seed builds 73 and 75 succeeded after approval of only their exact DSL.
+- Jenkins build 1 was aborted while waiting on the intentionally restricted
+  agent. Builds 2 and 3 failed safely during AWX source sync before a host job
+  because the repository lacked the matching AWX read-only deploy-key
+  association. Existing deploy key 6 was enabled read-only for project 25;
+  the unrelated Jenkins key association was removed. No Harbor mutation
+  occurred in those failed attempts.
+
+The accepted runtime contains exactly ten healthy Harbor containers. The
+Compose file has zero `tcp://localhost:1514` targets and nine
+`tcp://127.0.0.1:1514` targets. TCP 1514 remains IPv4 loopback-only. Harbor
+data, credentials, certificates, hostname, frontend ports, firewall, NGINX,
+DNS, VM, and shared proxy were not changed.
