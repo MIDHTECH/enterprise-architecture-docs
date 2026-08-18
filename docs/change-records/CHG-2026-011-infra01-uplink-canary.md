@@ -5,7 +5,10 @@
 Correct the physical path now supported by carrier evidence: infra01's
 `enp0s25` uplink, which hosts the Kubernetes control-plane VM behind `br0`.
 This supersedes the earlier infra03-first cable canary. It remains a bounded
-network prerequisite inside active CHG-2026-011, not a new platform component.
+network prerequisite inside CHG-2026-011, not a new platform component.
+
+`CHG-2026-011` was cancelled by operator on 2026-08-09. This canary record is
+retained as historical evidence only and does not authorize further execution.
 
 ## Target selection evidence
 
@@ -197,3 +200,5 @@ at the same second on infra02, including multiple Aug 8 events and the Aug 9
 infra03 recorded no physical link event in the same inspected interval. This
 supersedes a second infra01-only physical canary. Continue only with the
 [Velop shared-node diagnostic](CHG-2026-011-velop-shared-node-diagnostic.md).
+After the same-day operator cancellation of `CHG-2026-011`, even that
+diagnostic remained historical evidence rather than an open execution stage.

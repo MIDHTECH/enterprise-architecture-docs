@@ -22,13 +22,13 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `CHG-2026-011` |
-| Component | Private Argo CD GitOps bootstrap on the existing application cluster, including failed-source recovery, pinned Helm delivery, least-privilege GitLab repository access, an isolated reconciliation canary, rollback, and evidence |
-| State | Blocked after infra01 uplink Phase A failed its immediate zero-loss window and rolled back successfully. A same-port replacement cable preserved 800/800 ICMP and 720/720 DNS checks but app01 missed one of 240 service/API checks: one Kubernetes `/readyz` request. The original cable/port state is restored and healthy. The approved Phase B is non-executable because both Ethernet ports on the identified upstream node are occupied by infra01 and infra02. The read-only shared-node diagnostic is the only open stage. |
-| Blocker | The exact one-request failure mechanism remains unproven. A complete timestamp comparison found all 16 infra02 carrier-down events correlated with infra01: 14 in the exact same second and two within two seconds. After excluding three deliberate Phase A/rollback cable actions, 16 of 18 spontaneous infra01 events correlated; infra03 recorded no physical event. Both occupied ports terminate on one Linksys Velop `VLP01`, proving a dominant shared failure boundary and moving the primary investigation to the node, power/internal switching, or mesh/backhaul path. The evidence does not yet select a safe correction. Transient login or readiness success is not acceptance. |
-| Permitted work | Execute only the read-only evidence stage in the [Velop shared-node diagnostic](change-records/CHG-2026-011-velop-shared-node-diagnostic.md): label both occupied host connections, identify the node role, power path and infra03 attachment, and collect available uptime/restart/firmware/backhaul evidence without secrets. The unauthenticated local desktop page has been exhausted and exposed only its historical `Waiting...` overlay; use the supported Linksys application and onsite observation, not label credentials or undocumented payloads. Preserve all cables, settings, VMs and the healthy cluster. Do not run Argo CD PLAN/DEPLOY until a correction is selected, separately reviewed, executed and accepted. |
+| Change ID | `None` |
+| Component | Queue idle. `CHG-2026-011` was cancelled before acceptance and no replacement change is open. |
+| State | No active implementation change. On 2026-08-09 the operator cancelled `CHG-2026-011` after the infra01 same-port cable canary failed its immediate zero-loss gate, the original cable/port state was restored healthy, and later evidence proved a dominant shared failure boundary at Linksys Velop `VLP01`. |
+| Blocker | No queue-control blocker exists because no successor change is open. The underlying shared-node instability remains unresolved: infra01 and infra02 carrier events correlated on the same two-port `VLP01`, and no reviewed correction has been selected or accepted. |
+| Permitted work | Documentation and other read-only inspection only. Any future correction on this path must start as a new reviewed change with a fresh conflict audit, explicit scope, rollback, and acceptance evidence. Do not run Argo CD PLAN/DEPLOY under the cancelled `CHG-2026-011` boundary. |
 | Prohibited work | Direct workstation Helm or `kubectl apply`; GitLab CI deployment; public Argo CD exposure; human/write-capable repository credentials; default-project or wildcard destinations; Argo ownership of ingress, Longhorn, Headlamp, application workloads, policy, secrets, backup, autoscaling, or another component; Artifactory/SonarQube work. |
-| Exit criteria | Exact source and PLAN accepted; Argo CD 3.4.6/chart 10.2.2 healthy and private; repository access proven read-only; restricted AppProject/root canary Synced and Healthy; drift self-heals; convergence, rollback, and restore pass; negative ownership/exposure checks, incidents, evidence, and canonical publication complete. |
+| Exit criteria | Open and review a successor change before any further implementation on this path. Reuse the retained `CHG-2026-011` evidence only as historical input, not as live execution authority. |
 
 `CHG-2026-011` begins after CHG-2026-010 closeout and a fresh conflict audit.
 The operator-directed Enterprise Kubernetes Platform with GitOps goal places
@@ -124,6 +124,16 @@ credential. It had no authenticated session and remained behind the historical
 backhaul, port, or power evidence. The desktop path is exhausted; remaining
 evidence must come from the supported Linksys application and onsite physical
 inspection without secret-bearing label content.
+
+On 2026-08-09 the operator first placed `CHG-2026-011` on hold while the
+shared-node blocker remained unresolved. A fresh read-only pause audit at that
+time found Jenkins with an empty queue and no recent build markers, the
+application cluster with four Ready nodes and zero active Jobs or non-running
+pods, and no conflicting mutator activity on infra01, infra02, or infra03.
+Later the same day, the operator cancelled `CHG-2026-011`. The queue is
+therefore idle again, but the retained evidence still shows an unresolved
+shared failure boundary and does not authorize any resumed implementation on
+this path without a new reviewed change.
 
 `CHG-2026-010` closed successfully on 2026-08-08. Canonical source is
 `ansible-kubernetes` `93d4973a`, `jenkins-jobs` `c9bf66ff`, and

@@ -2880,8 +2880,10 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   infra01-only events were the deliberate Phase A/rollback cable actions,
   leaving two spontaneous infra01-only events. The dominant investigation
   boundary is now the shared Velop node, its power/internal Ethernet switching,
-  or mesh/backhaul behavior. Only a secret-safe read-only node diagnostic is
-  open.
+  or mesh/backhaul behavior. The operator later cancelled `CHG-2026-011` on
+  2026-08-09 before that diagnostic was completed, so the retained evidence is
+  historical input to any future successor change rather than an open
+  implementation path.
 - Validation: STP, VM, bridge-port, canonical address/route, control-plane,
   four-Ready-node, and Longhorn/ingress/Headlamp checks passed. A complete
   four-guest window passed both ICMP sizes, DNS, and service/API probes, but a
