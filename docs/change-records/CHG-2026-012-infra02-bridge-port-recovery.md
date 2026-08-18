@@ -6,11 +6,11 @@
 | --- | --- |
 | Number | `CHG-2026-012` |
 | Type | Emergency service restoration through normal reviewed controls |
-| State | Design and source review |
+| State | Blocked at mutation-disabled PLAN |
 | Risk | Moderate |
 | Impact | High: 14 infra02 guests and two application-cluster workers are network-isolated |
 | Owner | Platform Engineering |
-| Scheduled start | After reviewed source, passing CI, and accepted PLAN |
+| Scheduled start | After an approved AWX credential can perform noninteractive privilege escalation on infra02 |
 
 ## Purpose
 
@@ -47,6 +47,11 @@ The 2026-08-18 service audit found:
 The failure is local to live bridge membership. It is not evidence that the 14
 guest operating systems, addresses, domain definitions, disks, or services
 were removed.
+
+Three persistent interfaces use libvirt network `lab-bridge`, so `domiflist`
+shows that network name. Their live XML resolves `lab-bridge` to Linux bridge
+`br0`; the other 11 interfaces name `br0` directly. Reviewed automation now
+derives the live tap from `domiflist` and verifies the resolved live XML bridge.
 
 ## Exact scope
 
@@ -152,6 +157,29 @@ The component is accepted only when:
 7. VALIDATE reports zero changes; and
 8. a second confirmed APPLY reports `changed=0`, followed by reviewed evidence
    and canonical repository publication.
+
+## Runtime attempt and blocker
+
+GitLab branch pipeline 682 and canonical-main pipeline 683 passed the
+source-compatibility correction. Jenkins seed build 69 succeeded. Immediately
+before PLAN, GitLab had zero active pipelines, Jenkins had an empty queue and
+zero busy executors, AWX had zero active unified jobs, the hypervisors retained
+17/14/4 running domains with no mutator, and `br0` still contained only
+`enp0s25`.
+
+Jenkins PLAN build 1 launched AWX job 914. The first bounded assertion passed,
+then the first read-only root command failed before returning module data:
+credential 1 authenticated as `midhtechadmin`, but `sudo -n` reported that
+interactive authentication is required. AWX credentials 1 and 4 configure an
+SSH key and `sudo` method but no become password. Direct root SSH is disabled.
+The job recorded no successful mutating task, and no tap, bridge, domain,
+NetworkManager, or guest state changed.
+
+The change remains blocked. Resume only after a separately reviewed control-
+plane correction provides an approved AWX machine credential that can perform
+noninteractive privilege escalation on `infra02.example.com`. Direct `ip link`,
+workstation Ansible, credential extraction, and an ad hoc sudoers change remain
+prohibited.
 
 ## Closure
 

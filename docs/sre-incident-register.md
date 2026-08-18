@@ -2929,7 +2929,9 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   membership after the detach event. The earlier `VLP01` shared-node history
   complicates external reachability, but it does not explain why the local
   bridge reports no tap ports.
-- Resolution: Pending reviewed `CHG-2026-012` live membership recovery.
+- Resolution: Reviewed recovery source and CI passed, but Jenkins PLAN build 1
+  and AWX job 914 failed safely before any bridge mutation because the approved
+  machine credential cannot perform noninteractive sudo on infra02.
 - Validation: Require the physical port plus 14 derived taps forwarding,
   14/14 guest reachability, 14/14 running/autostart domains, four Ready
   Kubernetes nodes, installed-service readiness, and zero-change VALIDATE and
@@ -2939,7 +2941,8 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   Investigate the detach trigger separately after service restoration.
 - Corrective automation: `CHG-2026-012` adds PLAN/APPLY/VALIDATE through
   reviewed GitLab source, Jenkins, and AWX. No direct workstation or manual
-  host correction is authorized.
+  host correction is authorized. Resume requires a reviewed AWX privilege-
+  escalation credential correction; direct root SSH is disabled.
 - Evidence/related runbook:
   [CHG-2026-012](change-records/CHG-2026-012-infra02-bridge-port-recovery.md),
   [Sequential Build and Change Control](sequential-build-change-control.md)
