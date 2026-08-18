@@ -1,6 +1,6 @@
 # Sequential Build and Change Control
 
-Last verified: 2026-08-09
+Last verified: 2026-08-18
 
 ## Operating rule
 
@@ -22,13 +22,22 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `None` |
-| Component | Queue idle. `CHG-2026-011` was cancelled before acceptance and no replacement change is open. |
-| State | No active implementation change. On 2026-08-09 the operator cancelled `CHG-2026-011` after the infra01 same-port cable canary failed its immediate zero-loss gate, the original cable/port state was restored healthy, and later evidence proved a dominant shared failure boundary at Linksys Velop `VLP01`. |
-| Blocker | No queue-control blocker exists because no successor change is open. The underlying shared-node instability remains unresolved: infra01 and infra02 carrier events correlated on the same two-port `VLP01`, and no reviewed correction has been selected or accepted. |
-| Permitted work | Documentation and other read-only inspection only. Any future correction on this path must start as a new reviewed change with a fresh conflict audit, explicit scope, rollback, and acceptance evidence. Do not run Argo CD PLAN/DEPLOY under the cancelled `CHG-2026-011` boundary. |
-| Prohibited work | Direct workstation Helm or `kubectl apply`; GitLab CI deployment; public Argo CD exposure; human/write-capable repository credentials; default-project or wildcard destinations; Argo ownership of ingress, Longhorn, Headlamp, application workloads, policy, secrets, backup, autoscaling, or another component; Artifactory/SonarQube work. |
-| Exit criteria | Open and review a successor change before any further implementation on this path. Reuse the retained `CHG-2026-011` evidence only as historical input, not as live execution authority. |
+| Change ID | `CHG-2026-012` |
+| Component | Restore the 14 live libvirt guest tap interfaces on `infra02.example.com` to their already-defined `br0` bridge without changing NetworkManager, STP, the physical uplink, domain definitions, or guest state |
+| State | Source design and review. Runtime inspection proved that all 14 domains are running with correct guest-agent IPv4 addresses, but every `vnet` tap is detached from `br0`; the bridge contains only `enp0s25`. No runtime correction is authorized until documentation, cloud-infrastructure source, Jenkins shared-library source, and Jenkins job source pass review and CI, followed by a mutation-disabled PLAN. |
+| Blocker | GitLab, Jenkins, and AWX recovered after the infra01-hosted control-plane startup. The remaining gate is accepted source and a fresh idle-control-plane audit immediately before PLAN/APPLY. The unresolved `VLP01` shared-node history remains monitored but is outside this live bridge-membership correction. |
+| Permitted work | Review and validate the exact `CHG-2026-012` source; create only the PLAN/APPLY/VALIDATE control path; run read-only audits; after accepted PLAN and a fresh idle gate, attach only the 14 tap devices derived from the exact running-domain set to `br0`; validate and rerun APPLY for idempotence. |
+| Prohibited work | NetworkManager connection activation or restart; bridge recreation; STP, physical NIC, cable, Velop, DHCP, DNS, firewall, route, VM power, domain XML, Kubernetes, Helm, application, package, or product configuration changes; direct workstation Ansible; direct `ip link` correction outside the Jenkins-to-AWX path; Argo CD PLAN/DEPLOY; Artifactory/SonarQube/Splunk work. |
+| Exit criteria | Reviewed source and CI pass; PLAN predicts only the 14 missing tap memberships; APPLY and rollback guard complete through Jenkins/AWX; `br0` has `enp0s25` plus all 14 expected taps forwarding; 14/14 guests are reachable and remain running/autostarted; Kubernetes returns four Ready nodes and recovers its existing workloads; installed infra02 services recover; VALIDATE and a second APPLY report zero changes; incident, acceptance evidence, and canonical publication complete. |
+
+`CHG-2026-012` begins only after merge request !38 published the operator's
+cancelled `CHG-2026-011` closure and returned the queue to idle. A fresh audit
+found no Git, Ansible, Terraform, package, libvirt, Helm, or kubectl mutator on
+infra01, infra02, or infra03. GitLab completed its documented extended startup,
+AWX returned HTTP 200 with its task deployment 1/1 Available, Jenkins returned
+HTTP 200 with no durable-task process, and all hypervisors retained 17/14/4
+running domains. The exact bounded design is in
+[CHG-2026-012](change-records/CHG-2026-012-infra02-bridge-port-recovery.md).
 
 `CHG-2026-011` begins after CHG-2026-010 closeout and a fresh conflict audit.
 The operator-directed Enterprise Kubernetes Platform with GitOps goal places
