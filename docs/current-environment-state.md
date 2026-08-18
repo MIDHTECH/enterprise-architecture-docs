@@ -43,7 +43,7 @@ persistent-storage changes completed through 2026-08-08:
 | Product roles | At least 23 runtime roles directly verified; Harbor is installed; Vault 2.0.3 is active, unsealed, and accepted through NGINX; Keycloak still awaits revalidation |
 | Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready; ClusterIP-only ingress-nginx and worker-only Longhorn 1.12.0 V1 accepted |
 | AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
-| AWX execution plane | AWX 24.6.1 instance 3 on `awx-execution.example.com` is reachable but Receptor is restarting and the controller reports capacity 0; tracked by INC-2026-088 |
+| AWX execution plane | AWX 24.6.1 instance 3 on `awx-execution.example.com` is Ready, enabled, and reports capacity 76 only in `lab-infrastructure`; Receptor is active with zero restarts after CHG-2026-013 |
 | AWX inventories | 50 records across nine populated inventories plus the empty Demo inventory; 39 distinct names. Purpose-specific delivery inventories remain isolated, and `awx-execution-plane` contains only the execution node and canary localhost. |
 | Git repositories | AWX inventory, Kubernetes ingress, Longhorn storage automation/design, and cloud-infrastructure corrections are published; private application project `midhhealth/applications/podinfo` retains upstream history and has protected `main` at `81e02a9825bb4adbb353ebe23c62e26740f7550c`; its latest pipeline was canceled when work returned to documentation-only scope |
 

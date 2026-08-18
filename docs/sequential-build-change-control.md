@@ -22,13 +22,13 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `CHG-2026-013` |
-| Component | Restore the existing Receptor service on `awx-execution.example.com` by making systemd recreate its volatile `/run/receptor` directory |
-| State | Design and source review after read-only diagnosis of INC-2026-088 |
-| Blocker | None. The bridge is accepted, the guest is reachable, and the failure is bounded to the absent runtime directory. |
-| Permitted work | Add only the reviewed `RuntimeDirectory=receptor` and mode to the Receptor unit template; pass GitLab review/CI; run PLAN/APPLY/VALIDATE/convergence through Jenkins and controller-side AWX execution. |
-| Prohibited work | Direct service restart or unit edit; certificate, secret, port, NGINX, firewall, package-version, execution-environment, AWX-object, Harbor, DNS, VM, bridge, Kubernetes, or shared-proxy changes. |
-| Exit criteria | Reviewed source and CI; Receptor active without restart growth; AWX instance 3 Ready with nonzero capacity only in `lab-infrastructure`; canary passes on instance 3; hostname-only boundary retained; zero-change VALIDATE and APPLY; incident and evidence published. |
+| Change ID | None |
+| Component | None |
+| State | Idle after successful closure of `CHG-2026-013` |
+| Blocker | None |
+| Permitted work | Read-only audits and design of the next single queued component. |
+| Prohibited work | Any infrastructure mutation until the next bounded change is reviewed and recorded here. |
+| Exit criteria | Not applicable while the queue is idle. |
 
 `CHG-2026-012` begins only after merge request !38 published the operator's
 cancelled `CHG-2026-011` closure and returned the queue to idle. A fresh audit
@@ -52,6 +52,15 @@ diagnosis found the reachable AWX execution guest restarting Receptor every
 five seconds because `/run/receptor` is absent while its systemd unit does not
 declare a runtime directory. The exact bounded design is in
 [CHG-2026-013](change-records/CHG-2026-013-awx-receptor-runtime-directory-recovery.md).
+
+The reviewed correction subsequently passed canonical source and CI, Jenkins
+PLAN build 2/AWX job 976, APPLY build 3/job 978, mutation-disabled VALIDATE
+build 4/job 980, execution-node CANARY build 5/job 982, and zero-change APPLY
+build 6/job 984. Receptor is active with zero restarts; systemd owns
+`/run/receptor` as `awx:awx` mode `0750`; the control socket exists; and AWX
+instance 3 is Ready with capacity 76 only in `lab-infrastructure`.
+`INC-2026-088` is resolved and `CHG-2026-013` is closed. Harbor incident
+`INC-2026-087` remains queued and was not changed in this component.
 
 `CHG-2026-011` begins after CHG-2026-010 closeout and a fresh conflict audit.
 The operator-directed Enterprise Kubernetes Platform with GitOps goal places
