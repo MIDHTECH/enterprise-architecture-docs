@@ -118,7 +118,7 @@ facts; they do not erase the original observation.
 | INC-2026-084 | 2026-08-08 | SEV-4 | Resolved | Jenkins Longhorn acceptance evidence | Groovy string interpolation corrupted two kubectl newline templates after the initial runtime became healthy |
 | INC-2026-085 | 2026-08-08 | SEV-3 | Open | infra01-to-infra03 build-execution path | Pre-DEPLOY loss recurred; infra01 uplink has repeated carrier drops and is the bounded first physical canary |
 | INC-2026-086 | 2026-08-18 | SEV-2 | Resolved | infra02 libvirt bridge | Jenkins/AWX restored all 14 live taps; validation and convergence passed with all guests reachable |
-| INC-2026-087 | 2026-08-18 | SEV-3 | Open | Harbor runtime | Nine Harbor containers are stopped because the Docker syslog driver selects IPv6 loopback while `harbor-log` publishes only IPv4 |
+| INC-2026-087 | 2026-08-18 | SEV-3 | Resolved | Harbor runtime | CHG-2026-014 pinned local syslog to IPv4 loopback; all ten containers and the native health API are healthy |
 | INC-2026-088 | 2026-08-18 | SEV-3 | Resolved | AWX execution node | CHG-2026-013 made systemd recreate `/run/receptor`; Receptor and AWX instance 3 are healthy and converged |
 
 ## INC-2026-001: Automated USB Imaging Blocked
@@ -2953,7 +2953,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-08-18
 - Severity: SEV-3
-- Status: Open
+- Status: Resolved
 - Component: `harbor.example.com`, Docker Compose Harbor runtime
 - Detection/symptom: The post-bridge service audit found only `harbor-log`
   running. The other nine containers exited with Docker error 128.
@@ -2962,19 +2962,23 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   the healthy `harbor-log` container publishes only `127.0.0.1:1514`.
 - Timeline: Container finish timestamps are 2026-08-15, three days before the
   CHG-2026-012 bridge recovery, so this is not a bridge-apply regression.
-- Resolution: Pending a separately reviewed Harbor component.
-- Validation: Require all ten containers healthy, native HTTPS and health API
-  success, and zero-change controlled convergence.
-- Prevention/follow-up: Pin the logging endpoint to the matching loopback
-  family or publish the approved dual-stack listener through reviewed source.
-- Corrective automation: Direct `docker start` or Compose recovery is not
-  authorized while this incident is only queued.
+- Resolution: `CHG-2026-014` changed only the nine generated Compose syslog
+  targets from `tcp://localhost:1514` to `tcp://127.0.0.1:1514` and reconciled
+  the existing stack through Jenkins and AWX.
+- Validation: All ten containers are healthy; native HTTPS returns 200; the
+  health API reports `healthy`; TCP 1514 is IPv4 loopback-only; AWX validation
+  1014 and convergence APPLY 1024 reported zero changes and no failures.
+- Prevention/follow-up: Canonical automation asserts the exact endpoint count,
+  listener boundary, container count, log health, and native health API.
+- Corrective automation: `linux-systems-platform`
+  `9f03c345af201fa25b4475e905947feebda680e6`; Jenkins builds 4-7 and AWX jobs
+  994/1004/1014/1024 provide the controlled acceptance record.
 
 ## INC-2026-088: AWX Execution Receptor Restart Loop
 
 - Date: 2026-08-18
 - Severity: SEV-3
-- Status: Open
+- Status: Resolved
 - Component: `awx-execution.example.com`, Receptor, AWX instance 3
 - Detection/symptom: The guest is reachable and its local NGINX and Node
   Exporter listeners are present, but `receptor.service` exits every five
