@@ -22,13 +22,13 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | None |
-| Component | None; `CHG-2026-012` is complete |
-| State | Idle after accepted infra02 bridge recovery. Jenkins builds 5-8 and AWX jobs 946, 954, 962, and 970 passed PLAN, APPLY, mutation-disabled VALIDATE, and zero-change convergence. |
-| Blocker | None for the bridge. `INC-2026-087` Harbor and `INC-2026-088` AWX execution are separate queued application components and do not authorize direct repair. |
-| Permitted work | Read-only audits and design of the next single reviewed component. |
-| Prohibited work | Any unreviewed direct host, application, NGINX, DNS, package, VM, Kubernetes, Harbor, AWX execution, or shared-proxy mutation. |
-| Exit criteria | Already met for `CHG-2026-012`: exact bridge membership, 15 forwarding ports, 14/14 guests running/autostarted/reachable, Kubernetes 4/4 Ready, zero-change VALIDATE and convergence APPLY, incident evidence, and canonical publication. |
+| Change ID | `CHG-2026-013` |
+| Component | Restore the existing Receptor service on `awx-execution.example.com` by making systemd recreate its volatile `/run/receptor` directory |
+| State | Design and source review after read-only diagnosis of INC-2026-088 |
+| Blocker | None. The bridge is accepted, the guest is reachable, and the failure is bounded to the absent runtime directory. |
+| Permitted work | Add only the reviewed `RuntimeDirectory=receptor` and mode to the Receptor unit template; pass GitLab review/CI; run PLAN/APPLY/VALIDATE/convergence through Jenkins and controller-side AWX execution. |
+| Prohibited work | Direct service restart or unit edit; certificate, secret, port, NGINX, firewall, package-version, execution-environment, AWX-object, Harbor, DNS, VM, bridge, Kubernetes, or shared-proxy changes. |
+| Exit criteria | Reviewed source and CI; Receptor active without restart growth; AWX instance 3 Ready with nonzero capacity only in `lab-infrastructure`; canary passes on instance 3; hostname-only boundary retained; zero-change VALIDATE and APPLY; incident and evidence published. |
 
 `CHG-2026-012` begins only after merge request !38 published the operator's
 cancelled `CHG-2026-011` closure and returned the queue to idle. A fresh audit
@@ -46,6 +46,12 @@ derived taps forwarding; all 14 domains are running, autostarted, and reachable,
 and Kubernetes is 4/4 Ready with no non-running pods. The application audit
 opened `INC-2026-087` for Harbor and `INC-2026-088` for the AWX execution node;
 neither is part of the closed bridge component.
+
+`CHG-2026-013` begins after canonical publication of CHG-2026-012. Read-only
+diagnosis found the reachable AWX execution guest restarting Receptor every
+five seconds because `/run/receptor` is absent while its systemd unit does not
+declare a runtime directory. The exact bounded design is in
+[CHG-2026-013](change-records/CHG-2026-013-awx-receptor-runtime-directory-recovery.md).
 
 `CHG-2026-011` begins after CHG-2026-010 closeout and a fresh conflict audit.
 The operator-directed Enterprise Kubernetes Platform with GitOps goal places
