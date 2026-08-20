@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-016` |
 | Type | Controlled service recovery |
-| State | Design recorded; implementation pending |
+| State | Implementation merged; runtime recovery blocked before mutation |
 | Risk | High because recovery material is sensitive and Vault backs secret workflows |
 | Impact | Restore the initialized single-node Vault service from sealed HTTP 503 to active HTTP 200 |
 | Owner | Platform Engineering |
@@ -16,16 +16,25 @@
 The canonical frontend is reachable, but `/v1/sys/health` reports
 `initialized=true`, `sealed=true`, `standby=true`, Vault 2.0.3, and HTTP 503.
 This matches the single-node Community/Shamir restart behavior recorded in
-`INC-2026-048`. The existing root-only initialization artifact on the Vault VM
-is the only approved recovery source for this lab. Its path and contents are
-not documentation data and must never be printed, copied to a controller,
-uploaded to AWX, or committed.
+`INC-2026-048`. The root-only initialization artifact previously documented as
+the only approved recovery source is no longer present on the Vault VM. Its
+former path and its contents are not documentation data and must never be
+printed, copied to a controller, uploaded to AWX, or committed.
 
 The source audit found no existing reviewed unseal playbook. Direct workstation
 unseal is prohibited. The correction therefore adds a bounded Jenkins/AWX
 workflow that reads the recovery artifact only on the Vault VM, suppresses all
 secret-bearing task output, submits the existing threshold locally, and proves
 the resulting health state.
+
+The reviewed controls are merged. Jenkins build 15 launched the
+mutation-disabled preflight as AWX job 1096. It failed safely at `Require
+exactly one root-only recovery artifact`; no unseal request was submitted. A
+privileged metadata-only candidate search and a bounded path-only signature
+search found no recovery artifact on the VM. Vault remains initialized,
+sealed, standby, and HTTP 503 both directly and through its canonical local
+frontend. Runtime recovery is blocked under `INC-2026-090` until the existing
+artifact is restored from an approved custody or backup source.
 
 ## Exact scope and sequence
 
