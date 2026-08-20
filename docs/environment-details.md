@@ -70,8 +70,9 @@ Application endpoints use local NGINX on the product VM and the canonical
 `<product>.example.com` name. The standalone VM at `192.168.1.114` is retained
 only for controlled rollback: its DNS record is absent, NGINX is disabled and
 inactive, its HTTP/HTTPS firewall services are closed, and it has no product
-server blocks. Internal TLS is partially adopted rather than globally
-installed: Harbor has accepted native HTTPS, while most verified user-facing
+server blocks. Internal TLS is
+partially adopted rather than globally installed: Harbor has accepted native
+HTTPS, while most verified user-facing
 routes below still use HTTP.
 
 | Endpoint | Function | Current state |
