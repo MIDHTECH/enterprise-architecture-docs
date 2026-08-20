@@ -22,13 +22,13 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | None |
-| Component | None |
-| State | Idle after successful closure of `CHG-2026-014` |
+| Change ID | `CHG-2026-015` |
+| Component | Retirement of the shared `.apps.example.com` HTTP compatibility edge |
+| State | Design recorded; implementation awaiting source review and controlled deployment |
 | Blocker | None |
-| Permitted work | Read-only audits and design of the next single queued component. |
-| Prohibited work | Any infrastructure mutation until the next bounded change is reviewed and recorded here. |
-| Exit criteria | Not applicable while the queue is idle. |
+| Permitted work | Review, CI, and sequential AWX deployment of service-local HTTP frontends; canonical endpoint validation; removal of all `.apps.example.com` DNS records and shared routes; disabling the standalone NGINX service only after the final gate. |
+| Prohibited work | Direct package installation, direct service reconfiguration, VM deletion, product installation or upgrade, unrelated component work, and removal of canonical DNS records. |
+| Exit criteria | All legacy names return NXDOMAIN; the shared proxy has no product routes and is disabled; accepted canonical endpoints remain healthy; repeat APPLY is idempotent; evidence, incidents, environment pages, and repositories are published. |
 
 `CHG-2026-012` begins only after merge request !38 published the operator's
 cancelled `CHG-2026-011` closure and returned the queue to idle. A fresh audit
@@ -78,6 +78,16 @@ native HTTPS returns 200, and `/api/v2.0/health` reports `healthy`. Compose has
 nine `tcp://127.0.0.1:1514` targets and no legacy `localhost` target; the
 listener remains bound only to `127.0.0.1:1514`. `INC-2026-087` is resolved,
 `CHG-2026-014` is closed, and the sequential queue is idle.
+
+`CHG-2026-015` begins only after CHG-2026-014 closure and a fresh conflict
+audit. Jenkins is active with an empty queue and no mutating durable task; AWX
+has zero active unified jobs; and infra01, infra02, and infra03 have no active
+Git, Ansible, Terraform, package, VM-provisioning, or Kubernetes mutator. The
+authoritative zone still publishes 15 `.apps.example.com` records to
+`192.168.1.114`; the shared NGINX configuration retains 16 product routes,
+including an obsolete AWX route whose DNS record was already retired. The
+exact bounded cutover and rollback are in
+[CHG-2026-015](change-records/CHG-2026-015-retire-apps-compatibility-edge.md).
 
 `CHG-2026-011` begins after CHG-2026-010 closeout and a fresh conflict audit.
 The operator-directed Enterprise Kubernetes Platform with GitOps goal places
