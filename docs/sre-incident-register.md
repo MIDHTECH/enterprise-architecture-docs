@@ -120,7 +120,7 @@ facts; they do not erase the original observation.
 | INC-2026-086 | 2026-08-18 | SEV-2 | Resolved | infra02 libvirt bridge | Jenkins/AWX restored all 14 live taps; validation and convergence passed with all guests reachable |
 | INC-2026-087 | 2026-08-18 | SEV-3 | Resolved | Harbor runtime | CHG-2026-014 pinned local syslog to IPv4 loopback; all ten containers and the native health API are healthy |
 | INC-2026-088 | 2026-08-18 | SEV-3 | Resolved | AWX execution node | CHG-2026-013 made systemd recreate `/run/receptor`; Receptor and AWX instance 3 are healthy and converged |
-| INC-2026-089 | 2026-08-20 | SEV-3 | Open | Lab control-plane reachability | GitLab and Jenkins became simultaneously unreachable after CHG-2026-015 runtime acceptance; publication remains gated |
+| INC-2026-089 | 2026-08-20 | SEV-3 | Open | infra01/infra02 shared network path | Gateway and infra03 remain reachable while both shared-node hypervisors and their control-plane VMs have no LAN reachability; publication remains gated |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2393,14 +2393,18 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Detection/symptom: After Jenkins build 14 and AWX job 1086 had completed
   successfully, the administration workstation received connection timeouts
   from both `gitlab.example.com` and `jenkins.example.com`. The in-app browser
-  independently displayed `ERR_TIMED_OUT` for Jenkins.
+  independently displayed `ERR_TIMED_OUT` for Jenkins. A resumed audit found
+  the gateway and infra03 reachable with complete ARP entries, while infra01,
+  infra02, DNS, GitLab, Jenkins, and AWX had no ICMP response; infra01/infra02
+  and the service VMs had incomplete ARP entries.
 - Impact: The corrected CHG-2026-015 documentation commit is complete and
   passes the full local validator, but it cannot be pushed, reviewed, merged,
   or validated on protected main while GitLab is unreachable. No new
   infrastructure mutation is authorized or attempted.
-- Cause: Not yet established. The simultaneous control-plane timeouts are
-  consistent with a lab network-path recurrence but do not prove a specific
-  VM, service, switch, cable, or shared-node fault.
+- Cause: Not yet established. The evidence bounds the failure away from the
+  administration workstation's gateway and the independent infra03 path and
+  toward the shared infra01/infra02 network boundary. It does not prove a
+  specific Velop node, power source, backhaul, port, cable, NIC, or host fault.
 - Containment: Keep the sequential queue closed, retain the validated commit
   locally, and do not bypass GitLab/Jenkins/AWX with direct deployment or
   manual repository publication.
