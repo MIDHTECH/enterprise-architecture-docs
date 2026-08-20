@@ -121,6 +121,7 @@ facts; they do not erase the original observation.
 | INC-2026-087 | 2026-08-18 | SEV-3 | Resolved | Harbor runtime | CHG-2026-014 pinned local syslog to IPv4 loopback; all ten containers and the native health API are healthy |
 | INC-2026-088 | 2026-08-18 | SEV-3 | Resolved | AWX execution node | CHG-2026-013 made systemd recreate `/run/receptor`; Receptor and AWX instance 3 are healthy and converged |
 | INC-2026-089 | 2026-08-20 | SEV-3 | Resolved | infra01/infra02 shared network path | Gateway and infra03 remained reachable during a bounded outage of both shared-node hypervisors; all three hypervisors and control planes recovered without mutation |
+| INC-2026-090 | 2026-08-20 | SEV-3 | Open | Vault recovery-material custody | Reviewed preflight stopped before mutation because the previously documented root-only Shamir initialization artifact is absent |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2417,6 +2418,44 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Corrective automation: None while the failure boundary is unproven.
 - Evidence/related change:
   [CHG-2026-015](change-records/CHG-2026-015-retire-apps-compatibility-edge.md)
+
+## INC-2026-090: Vault Recovery Artifact Is Absent
+
+- Date: 2026-08-20
+- Severity: SEV-3
+- Status: Open
+- Component: `vault.example.com`, Shamir recovery-material custody
+- Detection/symptom: Jenkins build 15 launched the reviewed mutation-disabled
+  preflight as AWX job 1096. The job failed at `Require exactly one root-only
+  recovery artifact` before any unseal request was submitted.
+- Impact: Vault remains initialized, sealed, standby, and HTTP 503. Dependent
+  secret workflows remain unavailable, and CHG-2026-016 cannot enter its
+  recovery mutation or acceptance stages.
+- Cause: The root-only initialization artifact documented after
+  `INC-2026-048` is not present on the Vault VM. The time and mechanism of its
+  loss are not yet established.
+- Contributing factors: The lab has no accepted external recovery-key custody
+  or restoration procedure. Earlier documentation treated the local artifact
+  as present without a fresh metadata-only existence check.
+- Containment: The reviewed automation stopped safely. Do not reinitialize
+  Vault, inspect shell history for key values, paste keys into a terminal or
+  UI, or bypass Jenkins/AWX. Preserve the existing Vault data unchanged.
+- Validation: A privileged metadata-only search found no allowed candidate in
+  `/root` or `/etc/vault.d`. A bounded path-only signature search across
+  `/root`, `/etc`, `/opt`, `/var`, and `/home` found no initialization
+  material. Direct and canonical health both return HTTP 503 with
+  `initialized=true`, `sealed=true`, and `standby=true`.
+- Resolution: Pending restoration of the existing initialization artifact
+  from an approved custody or backup source to a root-owned mode `0400`/`0600`
+  file on the Vault VM without exposing its contents.
+- Prevention/follow-up: Define and test external recovery-key custody,
+  restoration, and periodic existence validation without moving key material
+  into source control, Jenkins, AWX, logs, or documentation.
+- Corrective automation: The merged CHG-2026-016 preflight is the fail-closed
+  control that detected the missing artifact; no runtime correction is
+  possible without the existing threshold material.
+- Evidence/related change:
+  [CHG-2026-016](change-records/CHG-2026-016-vault-shamir-unseal-recovery.md)
 
 ## INC-2026-074: Python 3.9 Conditional Dependencies Were Missing Hashes
 

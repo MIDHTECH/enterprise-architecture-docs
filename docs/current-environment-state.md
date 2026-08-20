@@ -40,7 +40,7 @@ persistent-storage changes completed through 2026-08-08:
 | `infra02.example.com` | Ubuntu 26.04 LTS; `br0` has its physical port plus all 14 guest taps forwarding; 14/14 domains are running, autostarted, and reachable after CHG-2026-012 |
 | `infra03.example.com` | Ubuntu 26.04 LTS, `br0` active, four build-execution domains running with autostart |
 | Virtual machines | 35 domains in the latest accepted inventory: 17 on infra01, 14 on infra02, and 4 on infra03; all domains are running, and all infra02 guests answered their canonical-address acceptance probes |
-| Product roles | At least 23 runtime roles directly verified; Harbor is installed; Vault 2.0.3 is active, unsealed, and accepted through NGINX; Keycloak still awaits revalidation |
+| Product roles | At least 23 runtime roles directly verified; Harbor is installed; Vault 2.0.3 is initialized but sealed and blocked on recovery-material custody; Keycloak still awaits revalidation |
 | Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready; ClusterIP-only ingress-nginx and worker-only Longhorn 1.12.0 V1 accepted |
 | AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
 | AWX execution plane | AWX 24.6.1 instance 3 on `awx-execution.example.com` is Ready, enabled, and reports capacity 76 only in `lab-infrastructure`; Receptor is active with zero restarts after CHG-2026-013 |
@@ -246,7 +246,7 @@ ingress changes completed through 2026-08-03:
 | Tempo trace pipeline | AWX job 381 found and retrieved trace `f819ea257b72ff3a7fd5998e807b3430`, then correlated it to the Loki event | Accepted for the bounded correlated workload |
 | Management applications | GitLab, AWX, Prometheus, Grafana, Kibana, and the Headlamp NGINX route returned HTTP responses; Jenkins returned the expected authenticated HTTP 403 | Available |
 | Headlamp name resolution | Authoritative serial `2026080302` returns `headlamp.example.com -> 192.168.1.108`; the legacy `.apps` name is NXDOMAIN; canonical HTTP returns 200 | Accepted through AWX jobs 760 and 782 and CHG-2026-009 |
-| Vault secrets service | Vault 2.0.3 reports initialized, unsealed, active, and HTTP 200 through the verified NGINX TLS upstream; NGINX convergence job 421 reported `changed=0`, `unreachable=0`, and `failed=0` | Accepted through AWX jobs 417 and 421 |
+| Vault secrets service | Vault 2.0.3 reports initialized, sealed, standby, and HTTP 503 directly and through its canonical local frontend; Jenkins build 15/AWX job 1096 stopped before mutation because the approved recovery artifact is absent | Blocked under CHG-2026-016 and INC-2026-090 |
 | AWX inventory boundaries | Product VMs are canonical in `production`; infra01/02/03 are isolated in `cloud-infra-production`; the four Kubernetes records remain a deliberate cluster RBAC boundary | Accepted through sync job 425 and DNS/NGINX jobs 433, 438, 443, and 448 |
 | AWX execution boundary | Instance 3 is Ready only in `lab-infrastructure`; canaries ran on `awx-execution.example.com`; NGINX TCP 443 is reachable and direct Receptor TCP 27199 is not | Accepted through jobs 741-749 and CHG-2026-008 |
 

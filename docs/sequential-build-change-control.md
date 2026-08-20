@@ -24,8 +24,8 @@ boundary; firewalld must admit only the documented NGINX frontend.
 | --- | --- |
 | Change ID | `CHG-2026-016` |
 | Component | Single-node Vault Shamir unseal recovery |
-| State | Design and recovery controls under review; runtime mutation has not started |
-| Blocker | Authenticated Jenkins queue and AWX active-job state must be rechecked immediately before launch. |
+| State | Reviewed controls are merged; secret-safe preflight failed before mutation because the approved recovery artifact is absent |
+| Blocker | Restore the existing Shamir initialization artifact from approved custody or backup to a root-owned mode `0400`/`0600` file on the Vault VM without exposing its contents. No accepted recovery source is currently available. |
 | Permitted work | Review, CI, secret-safe preflight, Jenkins/AWX unseal recovery using the existing root-only initialization artifact, health validation, idempotence, evidence, and documentation. |
 | Prohibited work | Printing, copying, uploading, or committing recovery material; workstation unseal; reinitialization; key rotation; auto-unseal design; product upgrade; secret-engine changes; VM/service restart; unrelated component work. |
 | Exit criteria | Vault reports initialized, unsealed, active, and HTTP 200 through the canonical local frontend; no recovery material appears in output; repeated recovery is zero-change; source, incident evidence, and documentation are merged with protected-main CI passing. |
@@ -38,6 +38,16 @@ on infra01, infra02, or infra03. GitLab, Jenkins, and AWX each return HTTP 200.
 Vault reports `initialized=true`, `sealed=true`, `standby=true`, and HTTP 503.
 The exact bounded design is in
 [CHG-2026-016](change-records/CHG-2026-016-vault-shamir-unseal-recovery.md).
+
+The reviewed implementation is merged on all protected main branches. Jenkins
+build 15 launched AWX job 1096 for the mutation-disabled preflight. Job 1096
+failed at `Require exactly one root-only recovery artifact`; no unseal request
+was submitted. A privileged metadata-only search found no candidate in
+`/root` or `/etc/vault.d`, and a bounded path-only signature search across
+`/root`, `/etc`, `/opt`, `/var`, and `/home` found no initialization material.
+Direct and canonical health still report initialized, sealed, standby, and
+HTTP 503. The queue remains closed under `INC-2026-090` until the existing
+artifact is restored from approved custody or backup.
 
 `CHG-2026-015` closed after reviewed source, protected-main CI, controlled
 Jenkins/AWX deployment, mutation-disabled validation, zero-change convergence,
