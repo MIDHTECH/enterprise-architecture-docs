@@ -36,8 +36,8 @@ generated lock file and never mix stack versions during an upgrade.
 - Elasticsearch transport `9300/tcp`: cluster nodes only.
 - Elasticsearch HTTPS `9200/tcp`: Kibana, Logstash, AWX, and approved
   administrators only.
-- Kibana `5601/tcp`: NGINX and the approved management network; users browse
-  `http://kibana.apps.example.com` until internal TLS is deployed.
+- Kibana `5601/tcp`: product-local NGINX and the approved management network;
+  users browse `http://kibana.example.com` until internal TLS is deployed.
 - Logstash Beats input `5044/tcp`: approved senders only.
 - Filebeat-to-Logstash traffic uses TLS with full certificate verification
   against the managed Elastic CA.

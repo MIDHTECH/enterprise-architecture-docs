@@ -1,6 +1,6 @@
 # Current Environment State
 
-Last verified: 2026-08-18
+Last verified: 2026-08-20
 
 The canonical machine-readable classification for architecture-sensitive
 capabilities is
@@ -52,11 +52,11 @@ The directly verified provisioned-only product VMs include `governance`,
 PostgreSQL 18 is active on `postgres.example.com`. Harbor 2.15.0 is healthy on
 `harbor.example.com`: all ten containers are healthy, native HTTPS returns
 200, and the health API reports `healthy` after CHG-2026-014. Its nine local
-syslog clients and listener remain IPv4 loopback-only. Vault 2.0.3 is active on
-`vault.example.com`, reports `initialized=true`, `sealed=false`, and
-`standby=false`, and is reachable through `vault.apps.example.com`. Keycloak
-still requires separate revalidation before its older installation claim
-becomes canonical.
+syslog clients and listener remain IPv4 loopback-only. Vault 2.0.3 has a
+reachable local frontend at `vault.example.com`; its latest health probe
+returned HTTP 503 for sealed/standby state, so unsealed operation is not
+claimed by this page. Keycloak still requires separate revalidation before
+its older installation claim becomes canonical.
 
 Four infra03 guests were provisioned at `.136–.139`:
 `gitlab-runner-app01`, `gitlab-runner-infra01`, `jenkins-agent01`, and
@@ -117,34 +117,26 @@ must be labeled separately. See INC-2026-045.
 
 ## Application access
 
-The access tier is migrating sequentially from the shared non-HA
-`nginx.example.com` VM to NGINX running on each product VM. AWX is the first
-accepted migration: `awx.example.com` resolves directly to `192.168.1.103`,
-local NGINX forwards port 80 to NodePort `32000`, and
-`awx.apps.example.com` has been removed. AWX jobs 485/492 and DNS jobs
-502/514 prove first convergence and zero-change idempotence.
+CHG-2026-015 completed the access-tier migration to NGINX on each installed
+product VM. Canonical DNS now points directly to each product VM. GitLab,
+Jenkins, AWX, Headlamp, Prometheus, Alertmanager, Grafana, MinIO, Loki, Tempo,
+OpenTelemetry HTTP, Kibana, Vault, and Harbor all use their canonical product
+names. Headlamp reaches the private ingress-nginx ClusterIP through
+worker01-local NGINX; its application components remain ClusterIP-only.
 
-`nginx.example.com` remains online temporarily for GitLab, Prometheus,
-Alertmanager, Grafana, MinIO, Loki, Tempo, OpenTelemetry HTTP, Kibana, and
-Vault. It must not be retired until each consumer is migrated and accepted in
-a separate sequential change. Headlamp is no longer a shared-proxy consumer:
-`headlamp.example.com -> 192.168.1.108` reaches worker01-local NGINX on TCP 80,
-and both Headlamp and ingress-nginx are ClusterIP-only. Vault uses HTTPS with the
-version-controlled backend certificate as its trust anchor. Source-restricted
-firewalld rules allow only
-approved lab-LAN consumers to reach Loki and Tempo and allow the Kubernetes
-pod CIDR to reach the OpenTelemetry receivers.
+The former compatibility namespace and the standalone shared-proxy hostname
+have no authoritative A or CNAME answers. The retained `.114` rollback VM has
+no product server blocks, NGINX is disabled and inactive, and HTTP/HTTPS are
+absent from its public firewall policy. Alertmanager now listens on
+`127.0.0.1:9093`; the inspected Prometheus, Grafana, and Vault backend ports
+are also absent from the public firewall policy.
 
-The target convention uses canonical `<product>.example.com` names for both
-service identity and user access. Services not yet migrated continue to use
-their existing `*.apps.example.com` URL; for example,
-`gitlab.apps.example.com` still redirects through the shared proxy.
-
-Artifactory, SonarQube, and Splunk remain provisioned-only. Harbor is healthy
-on its native HTTPS endpoint, but its application route remains listed as
-unavailable by NGINX and requires separate acceptance. Keycloak must still be
-revalidated after infra01 recovery. See
-[Standalone NGINX Reverse-Proxy Installation](product-installation-nginx.md).
+Artifactory, SonarQube, and Splunk remain provisioned-only and have no active
+user URL. Harbor is healthy at `https://harbor.example.com`. Keycloak still
+requires revalidation. Vault's local frontend is reachable, but the latest
+health response is HTTP 503 for sealed/standby state and requires separate
+Vault operations follow-up. See
+[Retired Shared NGINX Compatibility Edge](product-installation-nginx.md).
 
 ## Hybrid capacity plan
 

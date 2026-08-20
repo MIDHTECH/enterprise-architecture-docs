@@ -120,6 +120,7 @@ facts; they do not erase the original observation.
 | INC-2026-086 | 2026-08-18 | SEV-2 | Resolved | infra02 libvirt bridge | Jenkins/AWX restored all 14 live taps; validation and convergence passed with all guests reachable |
 | INC-2026-087 | 2026-08-18 | SEV-3 | Resolved | Harbor runtime | CHG-2026-014 pinned local syslog to IPv4 loopback; all ten containers and the native health API are healthy |
 | INC-2026-088 | 2026-08-18 | SEV-3 | Resolved | AWX execution node | CHG-2026-013 made systemd recreate `/run/receptor`; Receptor and AWX instance 3 are healthy and converged |
+| INC-2026-089 | 2026-08-20 | SEV-3 | Resolved | infra01/infra02 shared network path | Gateway and infra03 remained reachable during a bounded outage of both shared-node hypervisors; all three hypervisors and control planes recovered without mutation |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2382,6 +2383,40 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Corrective automation: None; this was a transient transport event.
 - Evidence/related runbook:
   [AWX Execution Plane Acceptance](evidence/CHG-2026-008-awx-execution-plane-acceptance.md)
+
+## INC-2026-089: GitLab and Jenkins Became Simultaneously Unreachable
+
+- Date: 2026-08-20
+- Severity: SEV-3
+- Status: Resolved
+- Component: Lab network path to GitLab and Jenkins
+- Detection/symptom: After Jenkins build 14 and AWX job 1086 had completed
+  successfully, the administration workstation received connection timeouts
+  from both `gitlab.example.com` and `jenkins.example.com`. The in-app browser
+  independently displayed `ERR_TIMED_OUT` for Jenkins. A resumed audit found
+  the gateway and infra03 reachable with complete ARP entries, while infra01,
+  infra02, DNS, GitLab, Jenkins, and AWX had no ICMP response; infra01/infra02
+  and the service VMs had incomplete ARP entries.
+- Impact: The corrected CHG-2026-015 documentation commit is complete and
+  passes the full local validator, but it cannot be pushed, reviewed, merged,
+  or validated on protected main while GitLab is unreachable. No new
+  infrastructure mutation is authorized or attempted.
+- Cause: Not yet established. The evidence bounds the failure away from the
+  administration workstation's gateway and the independent infra03 path and
+  toward the shared infra01/infra02 network boundary. It does not prove a
+  specific Velop node, power source, backhaul, port, cable, NIC, or host fault.
+- Containment: Keep the sequential queue closed, retain the validated commit
+  locally, and do not bypass GitLab/Jenkins/AWX with direct deployment or
+  manual repository publication.
+- Resolution: Reachability recovered without infrastructure mutation. All
+  three hypervisors answered a new probe, and canonical GitLab, Jenkins, and
+  AWX endpoints each returned HTTP 200. The documentation publication gate was
+  reopened only after those checks passed.
+- Validation: The gateway and all three hypervisors were reachable; GitLab,
+  Jenkins, and AWX returned HTTP 200 from the administration workstation.
+- Corrective automation: None while the failure boundary is unproven.
+- Evidence/related change:
+  [CHG-2026-015](change-records/CHG-2026-015-retire-apps-compatibility-edge.md)
 
 ## INC-2026-074: Python 3.9 Conditional Dependencies Were Missing Hashes
 

@@ -118,11 +118,11 @@ The project synchronizes
 with the existing GitLab SCM credential. Foundation inventory source 24
 imports `ansible/inventory/foundation.yml` and contains only infra01, infra02,
 and infra03. The dedicated `awx-inventory` repository supplies the canonical
-product groups in inventory 2. Both templates use inventory 2 and the existing
+product groups in inventory 2. Templates use inventory 2 and the existing
 managed-host machine credential. The DNS template runs only
-`ansible/playbooks/dns.yml`; the NGINX template runs only
-`ansible/playbooks/nginx-reverse-proxy.yml`, uses the same credential, and has
-a fixed `nginx.example.com` limit.
+`ansible/playbooks/dns.yml`. Product-local NGINX and edge-retirement playbooks
+must use an explicit reviewed inventory; no template may target a shared proxy
+as a general application frontend.
 
 Before launching the template:
 

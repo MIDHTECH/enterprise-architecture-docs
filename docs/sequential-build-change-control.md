@@ -1,6 +1,6 @@
 # Sequential Build and Change Control
 
-Last verified: 2026-08-18
+Last verified: 2026-08-20
 
 ## Operating rule
 
@@ -22,13 +22,25 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `CHG-2026-015` |
-| Component | Retirement of the shared `.apps.example.com` HTTP compatibility edge |
-| State | Design recorded; implementation awaiting source review and controlled deployment |
+| Change ID | `None` |
+| Component | Queue idle. `CHG-2026-015` is closed. |
+| State | The shared HTTP compatibility edge is retired. Accepted services use canonical names and product-local frontends; the retained rollback VM has no active NGINX service or frontend firewall exposure. |
 | Blocker | None |
-| Permitted work | Review, CI, and sequential AWX deployment of service-local HTTP frontends; canonical endpoint validation; removal of all `.apps.example.com` DNS records and shared routes; disabling the standalone NGINX service only after the final gate. |
-| Prohibited work | Direct package installation, direct service reconfiguration, VM deletion, product installation or upgrade, unrelated component work, and removal of canonical DNS records. |
-| Exit criteria | All legacy names return NXDOMAIN; the shared proxy has no product routes and is disabled; accepted canonical endpoints remain healthy; repeat APPLY is idempotent; evidence, incidents, environment pages, and repositories are published. |
+| Permitted work | Documentation and read-only inspection. A new implementation requires a separately reviewed change and fresh conflict audit. |
+| Prohibited work | Unreviewed infrastructure mutation, direct package installation, direct service reconfiguration, VM deletion, product installation or upgrade, and removal of canonical DNS records. |
+| Exit criteria | Open and review the next bounded change before any implementation. Vault sealed/standby health is a separate follow-up and is not authorized under the closed edge-retirement change. |
+
+`CHG-2026-015` closed after reviewed source, protected-main CI, controlled
+Jenkins/AWX deployment, mutation-disabled validation, zero-change convergence,
+independent runtime acceptance, and documentation publication. Jenkins build
+11/AWX job 1056 completed the cutover; build 13/job 1076 passed validation;
+build 14/job 1086 reported zero changes and zero failures on all 11 hosts. The
+authoritative server returns no A or CNAME answer for the retired compatibility
+names or shared-proxy hostname. Canonical endpoints remain in DNS, local
+frontends answer with expected product statuses, and the retained `.114`
+rollback VM has NGINX disabled/inactive with no frontend firewall services.
+Vault's reachable frontend currently reports sealed/standby HTTP 503 and needs
+a separately reviewed operations change before unsealed health can be claimed.
 
 `CHG-2026-012` begins only after merge request !38 published the operator's
 cancelled `CHG-2026-011` closure and returned the queue to idle. A fresh audit
