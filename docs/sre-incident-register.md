@@ -120,6 +120,7 @@ facts; they do not erase the original observation.
 | INC-2026-086 | 2026-08-18 | SEV-2 | Resolved | infra02 libvirt bridge | Jenkins/AWX restored all 14 live taps; validation and convergence passed with all guests reachable |
 | INC-2026-087 | 2026-08-18 | SEV-3 | Resolved | Harbor runtime | CHG-2026-014 pinned local syslog to IPv4 loopback; all ten containers and the native health API are healthy |
 | INC-2026-088 | 2026-08-18 | SEV-3 | Resolved | AWX execution node | CHG-2026-013 made systemd recreate `/run/receptor`; Receptor and AWX instance 3 are healthy and converged |
+| INC-2026-089 | 2026-08-20 | SEV-3 | Open | Lab control-plane reachability | GitLab and Jenkins became simultaneously unreachable after CHG-2026-015 runtime acceptance; publication remains gated |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2382,6 +2383,33 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Corrective automation: None; this was a transient transport event.
 - Evidence/related runbook:
   [AWX Execution Plane Acceptance](evidence/CHG-2026-008-awx-execution-plane-acceptance.md)
+
+## INC-2026-089: GitLab and Jenkins Became Simultaneously Unreachable
+
+- Date: 2026-08-20
+- Severity: SEV-3
+- Status: Open
+- Component: Lab network path to GitLab and Jenkins
+- Detection/symptom: After Jenkins build 14 and AWX job 1086 had completed
+  successfully, the administration workstation received connection timeouts
+  from both `gitlab.example.com` and `jenkins.example.com`. The in-app browser
+  independently displayed `ERR_TIMED_OUT` for Jenkins.
+- Impact: The corrected CHG-2026-015 documentation commit is complete and
+  passes the full local validator, but it cannot be pushed, reviewed, merged,
+  or validated on protected main while GitLab is unreachable. No new
+  infrastructure mutation is authorized or attempted.
+- Cause: Not yet established. The simultaneous control-plane timeouts are
+  consistent with a lab network-path recurrence but do not prove a specific
+  VM, service, switch, cable, or shared-node fault.
+- Containment: Keep the sequential queue closed, retain the validated commit
+  locally, and do not bypass GitLab/Jenkins/AWX with direct deployment or
+  manual repository publication.
+- Resolution: Pending recovery of canonical GitLab and Jenkins reachability.
+- Validation required: HTTP responses from both control planes, successful
+  branch CI, reviewed merge, and successful protected-main CI.
+- Corrective automation: None while the failure boundary is unproven.
+- Evidence/related change:
+  [CHG-2026-015](change-records/CHG-2026-015-retire-apps-compatibility-edge.md)
 
 ## INC-2026-074: Python 3.9 Conditional Dependencies Were Missing Hashes
 

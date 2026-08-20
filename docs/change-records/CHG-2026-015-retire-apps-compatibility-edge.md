@@ -105,6 +105,13 @@ list. No runtime correction was required. Merge request !12 added the empty
 default; pipelines 730 and 731 passed, producing canonical main revision
 `eea40a7588e9959364abf22b69b700203bc1a4d6`.
 
+Documentation pipeline 732 then failed because the current Vault health
+downgrade had not yet been propagated into the generated implementation
+sequence and the design-consistency expected-state map. The generated file and
+validator contract were corrected together; the complete local documentation
+validator passed with the same Python generation used by CI. This source-only
+correction did not alter runtime state.
+
 Jenkins build 13/AWX job 1076 passed mutation-disabled validation with zero
 changes and zero failures on all 11 hosts. Jenkins build 14/AWX job 1086 then
 passed the required convergence APPLY with zero changes and zero failures on
