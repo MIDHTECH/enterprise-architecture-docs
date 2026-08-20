@@ -22,13 +22,22 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `None` |
-| Component | Queue idle. `CHG-2026-015` is closed. |
-| State | The shared HTTP compatibility edge is retired. Accepted services use canonical names and product-local frontends; the retained rollback VM has no active NGINX service or frontend firewall exposure. |
-| Blocker | None |
-| Permitted work | Documentation and read-only inspection. A new implementation requires a separately reviewed change and fresh conflict audit. |
-| Prohibited work | Unreviewed infrastructure mutation, direct package installation, direct service reconfiguration, VM deletion, product installation or upgrade, and removal of canonical DNS records. |
-| Exit criteria | Open and review the next bounded change before any implementation. Vault sealed/standby health is a separate follow-up and is not authorized under the closed edge-retirement change. |
+| Change ID | `CHG-2026-016` |
+| Component | Single-node Vault Shamir unseal recovery |
+| State | Design and recovery controls under review; runtime mutation has not started |
+| Blocker | Authenticated Jenkins queue and AWX active-job state must be rechecked immediately before launch. |
+| Permitted work | Review, CI, secret-safe preflight, Jenkins/AWX unseal recovery using the existing root-only initialization artifact, health validation, idempotence, evidence, and documentation. |
+| Prohibited work | Printing, copying, uploading, or committing recovery material; workstation unseal; reinitialization; key rotation; auto-unseal design; product upgrade; secret-engine changes; VM/service restart; unrelated component work. |
+| Exit criteria | Vault reports initialized, unsealed, active, and HTTP 200 through the canonical local frontend; no recovery material appears in output; repeated recovery is zero-change; source, incident evidence, and documentation are merged with protected-main CI passing. |
+
+`CHG-2026-016` begins after CHG-2026-015 closure and recovery from
+`INC-2026-089`. A fresh read-only audit found zero running or pending pipelines
+in the infrastructure repositories, all 17/14/4 hypervisor domains running,
+and no Git, Ansible, Terraform, package, VM-provisioning, or Kubernetes mutator
+on infra01, infra02, or infra03. GitLab, Jenkins, and AWX each return HTTP 200.
+Vault reports `initialized=true`, `sealed=true`, `standby=true`, and HTTP 503.
+The exact bounded design is in
+[CHG-2026-016](change-records/CHG-2026-016-vault-shamir-unseal-recovery.md).
 
 `CHG-2026-015` closed after reviewed source, protected-main CI, controlled
 Jenkins/AWX deployment, mutation-disabled validation, zero-change convergence,
