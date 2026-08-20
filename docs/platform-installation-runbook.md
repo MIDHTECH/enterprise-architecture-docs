@@ -87,7 +87,7 @@ change record.
 Build in this order:
 
 1. `dns.example.com`
-2. `nginx.example.com` at `192.168.1.114`
+2. product-local NGINX on each installed HTTP service VM
 3. `vault.example.com`
 4. `keycloak.example.com`
 5. `minio.example.com`
@@ -96,7 +96,8 @@ Build in this order:
 
 Validate DNS forward and reverse records, PostgreSQL connectivity, certificate
 trust, secret retrieval, object storage, and a sample restore before proceeding.
-Follow `product-installation-nginx.md` for proxy health and DNS publication.
+Follow `product-installation-nginx.md` for the product-local frontend boundary
+and the retired shared-edge rollback contract.
 
 Where the inventory selects Docker Compose, install Docker Engine and the
 Compose plugin only on that product VM. Store the project at

@@ -16,15 +16,14 @@ As of 2026-07-27, the Rocky Linux 9.8 VM and DNS records exist, but Splunk is
 
 ## Network and Access
 
-- User interface `8000/tcp`: NGINX only; users browse
-  `https://splunk.apps.example.com`.
+- User interface `8000/tcp`: future product-local NGINX only; the eventual user
+  URL is `https://splunk.example.com` after installation and acceptance.
 - Management API `8089/tcp`: AWX and approved administrators only.
 - Receiving `9997/tcp` and HTTP Event Collector `8088/tcp`: open only to
   approved senders when configured.
 - SSH remains management-only.
 
-Until Splunk is installed, the friendly URL returning `502 Bad Gateway` is
-expected.
+Until Splunk is installed, no user URL is published or accepted.
 
 ## AWX Implementation Sequence
 
@@ -60,4 +59,3 @@ Official references:
 
 - [Splunk Enterprise download and current release](https://www.splunk.com/en_us/download/splunk-enterprise.html)
 - [Splunk Enterprise 10.4 release notes](https://help.splunk.com/en/splunk-enterprise/release-notes-and-updates/release-notes/10.4/whats-new/welcome-to-splunk-enterprise-10.4)
-

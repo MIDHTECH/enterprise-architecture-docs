@@ -1,6 +1,6 @@
 # Canonical VM Inventory
 
-Last verified: 2026-08-02
+Last verified: 2026-08-20
 
 This document is the source of truth for Rocky Linux 9 virtual machines in the
 MidhHealth enterprise platform environment. The physical hypervisors run Ubuntu
@@ -11,9 +11,10 @@ MidhHealth enterprise platform environment. The physical hypervisors run Ubuntu
 - A standalone product uses its product name: `gitlab.example.com`.
 - Numeric suffixes are used only for members of a cluster:
   `k8s-worker01.example.com`.
-- The lab does not implement HA. Products not yet migrated use
-  `*.apps.example.com` through the standalone `nginx.example.com` VM; accepted
-  product-local routes such as Jenkins and AWX use canonical product names.
+- The lab does not implement HA. Installed HTTP products use canonical product
+  names through product-local or product-embedded frontends. The former shared
+  reverse-proxy VM is retained only as a disabled rollback asset and has no DNS
+  record or active frontend service.
 - The libvirt domain name, operating-system hostname, DNS record, monitoring
   target, and configuration-management inventory name must match.
 - `example.com` is an internal split-DNS training zone. Public certificates
@@ -83,7 +84,7 @@ rebuild.
 | `governance.example.com` | infra01 | `192.168.1.111` | `52:54:00:01:01:11` |
 | `minio.example.com` | infra01 | `192.168.1.112` | `52:54:00:01:01:12` |
 | `backup.example.com` | infra01 | `192.168.1.113` | `52:54:00:01:01:13` |
-| `nginx.example.com` | infra01 | `192.168.1.114` | `52:54:00:01:01:14` |
+| `nginx.example.com` | infra01 | `192.168.1.114` | `52:54:00:01:01:14` (retained libvirt identity; DNS retired) |
 | `elasticsearch01.example.com` | infra01 | `192.168.1.116` | `52:54:00:01:01:16` |
 | `kibana.example.com` | infra01 | `192.168.1.117` | `52:54:00:01:01:17` |
 | `splunk.example.com` | infra01 | `192.168.1.118` | `52:54:00:01:01:18` |
@@ -123,7 +124,7 @@ rebuild.
 | `governance.example.com` | Policy, evidence, and remediation runner | 2 | 4 GB | 40 GB | 50 GB |
 | `minio.example.com` | S3-compatible backup/object storage | 4 | 8 GB | 40 GB | 500 GB |
 | `backup.example.com` | Restic/Borg and database backup automation | 4 | 8 GB | 40 GB | 500 GB |
-| `nginx.example.com` | Standalone NGINX reverse proxy | 2 | 2 GB | 30 GB | 20 GB |
+| `nginx.example.com` | Disabled shared-edge rollback VM | 2 | 2 GB | 30 GB | 20 GB |
 | `elasticsearch01.example.com` | Elasticsearch cluster node 1 | 4 | 4 GB | 40 GB | 150 GB |
 | `kibana.example.com` | Kibana log analysis and visualization | 2 | 4 GB | 40 GB | 40 GB |
 | `splunk.example.com` | Standalone Splunk Enterprise platform | 4 | 8 GB | 50 GB | 150 GB |
@@ -249,7 +250,7 @@ inventory.
 | `governance.example.com` | Python virtual environment and systemd timers, or a versioned runner container |
 | `minio.example.com` | Native MinIO systemd unit using `/data/minio` |
 | `backup.example.com` | Native systemd timers and backup tooling |
-| `nginx.example.com` | Native NGINX package managed by Ansible |
+| `nginx.example.com` | Retained NGINX package; service disabled and inactive |
 | `elasticsearch01.example.com`–`elasticsearch03.example.com` | Native Elastic packages configured as one secured three-node cluster |
 | `kibana.example.com` | Native Elastic package managed by Ansible |
 | `logstash.example.com` | Native Elastic package managed by Ansible |
