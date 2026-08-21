@@ -1,6 +1,6 @@
 # Current Environment State
 
-Last verified: 2026-08-20
+Last verified: 2026-08-21
 
 The canonical machine-readable classification for architecture-sensitive
 capabilities is
@@ -40,7 +40,7 @@ persistent-storage changes completed through 2026-08-08:
 | `infra02.example.com` | Ubuntu 26.04 LTS; `br0` has its physical port plus all 14 guest taps forwarding; 14/14 domains are running, autostarted, and reachable after CHG-2026-012 |
 | `infra03.example.com` | Ubuntu 26.04 LTS, `br0` active, four build-execution domains running with autostart |
 | Virtual machines | 35 domains in the latest accepted inventory: 17 on infra01, 14 on infra02, and 4 on infra03; all domains are running, and all infra02 guests answered their canonical-address acceptance probes |
-| Product roles | At least 23 runtime roles directly verified; Harbor is installed; Vault 2.0.3 is initialized but sealed and blocked on recovery-material custody; Keycloak still awaits revalidation |
+| Product roles | At least 23 runtime roles directly verified; Harbor is installed; Vault 2.0.3 is initialized, unsealed, active, and accepted through CHG-2026-016; Keycloak still awaits revalidation |
 | Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready; ClusterIP-only ingress-nginx and worker-only Longhorn 1.12.0 V1 accepted |
 | AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
 | AWX execution plane | AWX 24.6.1 instance 3 on `awx-execution.example.com` is Ready, enabled, and reports capacity 76 only in `lab-infrastructure`; Receptor is active with zero restarts after CHG-2026-013 |
@@ -52,10 +52,9 @@ The directly verified provisioned-only product VMs include `governance`,
 PostgreSQL 18 is active on `postgres.example.com`. Harbor 2.15.0 is healthy on
 `harbor.example.com`: all ten containers are healthy, native HTTPS returns
 200, and the health API reports `healthy` after CHG-2026-014. Its nine local
-syslog clients and listener remain IPv4 loopback-only. Vault 2.0.3 has a
-reachable local frontend at `vault.example.com`; its latest health probe
-returned HTTP 503 for sealed/standby state, so unsealed operation is not
-claimed by this page. Keycloak still requires separate revalidation before
+syslog clients and listener remain IPv4 loopback-only. Vault 2.0.3 is
+initialized, unsealed, and active; backend and product-local NGINX health both
+return HTTP 200 after CHG-2026-016. Keycloak still requires separate revalidation before
 its older installation claim becomes canonical.
 
 Four infra03 guests were provisioned at `.136–.139`:
@@ -133,9 +132,8 @@ are also absent from the public firewall policy.
 
 Artifactory, SonarQube, and Splunk remain provisioned-only and have no active
 user URL. Harbor is healthy at `https://harbor.example.com`. Keycloak still
-requires revalidation. Vault's local frontend is reachable, but the latest
-health response is HTTP 503 for sealed/standby state and requires separate
-Vault operations follow-up. See
+requires revalidation. Vault is accepted at `http://vault.example.com`; its
+local frontend returns HTTP 200 for initialized, unsealed, active health. See
 [Retired Shared NGINX Compatibility Edge](product-installation-nginx.md).
 
 ## Hybrid capacity plan
@@ -246,7 +244,7 @@ ingress changes completed through 2026-08-03:
 | Tempo trace pipeline | AWX job 381 found and retrieved trace `f819ea257b72ff3a7fd5998e807b3430`, then correlated it to the Loki event | Accepted for the bounded correlated workload |
 | Management applications | GitLab, AWX, Prometheus, Grafana, Kibana, and the Headlamp NGINX route returned HTTP responses; Jenkins returned the expected authenticated HTTP 403 | Available |
 | Headlamp name resolution | Authoritative serial `2026080302` returns `headlamp.example.com -> 192.168.1.108`; the legacy `.apps` name is NXDOMAIN; canonical HTTP returns 200 | Accepted through AWX jobs 760 and 782 and CHG-2026-009 |
-| Vault secrets service | Vault 2.0.3 reports initialized, sealed, standby, and HTTP 503 directly and through its canonical local frontend; Jenkins build 15/AWX job 1096 stopped before mutation because the approved recovery artifact is absent | Blocked under CHG-2026-016 and INC-2026-090 |
+| Vault secrets service | Vault 2.0.3 reports initialized, unsealed, active, and HTTP 200 directly and through its canonical local frontend; builds 21-24/jobs 1156-1186 accepted preflight, recovery, validation, and zero-change convergence | Accepted under CHG-2026-016; INC-2026-090 resolved |
 | AWX inventory boundaries | Product VMs are canonical in `production`; infra01/02/03 are isolated in `cloud-infra-production`; the four Kubernetes records remain a deliberate cluster RBAC boundary | Accepted through sync job 425 and DNS/NGINX jobs 433, 438, 443, and 448 |
 | AWX execution boundary | Instance 3 is Ready only in `lab-infrastructure`; canaries ran on `awx-execution.example.com`; NGINX TCP 443 is reachable and direct Receptor TCP 27199 is not | Accepted through jobs 741-749 and CHG-2026-008 |
 

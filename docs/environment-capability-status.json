@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_verified": "2026-08-20",
+  "last_verified": "2026-08-21",
   "purpose": "Canonical machine-readable status for capabilities whose presence affects architecture claims. This file records documentation truth; it does not authorize implementation or lab changes.",
   "status_vocabulary": {
     "accepted": "Installed or configured on the named boundary and supported by current acceptance evidence.",
@@ -19,10 +19,10 @@
       "design_rule": "Documentation may describe Harbor as installed and healthy only at harbor.example.com."
     },
     "vault": {
-      "product_status": "installed-not-accepted",
-      "accepted_boundary": "The product-local frontend at vault.example.com is reachable.",
-      "unaccepted_boundary": "The latest /v1/sys/health probe returned HTTP 503 for sealed/standby state; unsealed operation is not currently accepted.",
-      "design_rule": "Application secret delivery remains a separate design and acceptance concern; Vault presence does not imply healthy unsealed operation or External Secrets Operator."
+      "product_status": "accepted",
+      "accepted_boundary": "Vault 2.0.3 is initialized, unsealed, active, and HTTP 200 through its backend and product-local frontend at vault.example.com; controlled recovery and zero-change convergence passed.",
+      "unaccepted_boundary": "External recovery-key custody, auto-unseal, and application secret delivery remain separate designs.",
+      "design_rule": "Describe Vault runtime as accepted only at vault.example.com; do not infer External Secrets Operator or application secret-delivery acceptance."
     },
     "keycloak": {
       "product_status": "requires-revalidation",

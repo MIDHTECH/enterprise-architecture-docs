@@ -1,6 +1,6 @@
 # Environment Details
 
-Last verified: 2026-08-20
+Last verified: 2026-08-21
 
 Capability state in this page is governed by the canonical
 [`environment-capability-status.json`](environment-capability-status.json).
@@ -90,7 +90,7 @@ routes below still use HTTP.
 | `http://otel.example.com` | OpenTelemetry HTTP receiver through product-local NGINX | Active; root HTTP 404 is the expected receiver behavior |
 | `http://kibana.example.com` | Elastic dashboards and search through product-local NGINX | Active; root HTTP 302 is expected |
 | `https://harbor.example.com` | OCI images and Helm OCI | Harbor 2.15.0 installed and healthy; native HTTPS accepted |
-| `http://vault.example.com` | Secrets through product-local NGINX | Frontend reachable; `/v1/sys/health` returned HTTP 503 for the current sealed/standby state, which requires separate Vault operations follow-up |
+| `http://vault.example.com` | Secrets through product-local NGINX | Active and accepted; `/v1/sys/health` returns HTTP 200 for initialized, unsealed, active Vault 2.0.3 |
 | `keycloak.example.com` | SSO/OIDC management identity | No accepted user URL; older product-presence claim requires revalidation |
 | `artifactory.example.com` | Build-artifact management identity | Product not installed; no active user URL |
 | `sonarqube.example.com` | Code-quality management identity | Product not installed; no active user URL |
