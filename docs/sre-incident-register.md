@@ -121,7 +121,7 @@ facts; they do not erase the original observation.
 | INC-2026-087 | 2026-08-18 | SEV-3 | Resolved | Harbor runtime | CHG-2026-014 pinned local syslog to IPv4 loopback; all ten containers and the native health API are healthy |
 | INC-2026-088 | 2026-08-18 | SEV-3 | Resolved | AWX execution node | CHG-2026-013 made systemd recreate `/run/receptor`; Receptor and AWX instance 3 are healthy and converged |
 | INC-2026-089 | 2026-08-20 | SEV-3 | Resolved | infra01/infra02 shared network path | Gateway and infra03 remained reachable during a bounded outage of both shared-node hypervisors; all three hypervisors and control planes recovered without mutation |
-| INC-2026-090 | 2026-08-20 | SEV-3 | Open | Vault recovery-material custody | Reviewed preflight stopped before mutation because the previously documented root-only Shamir initialization artifact is absent |
+| INC-2026-090 | 2026-08-20 | SEV-3 | Resolved | Vault recovery discovery and parsing | Reviewed fail-closed preflights exposed an incomplete artifact allowlist and JSON compatibility defects; corrected automation recovered Vault without exposing key material |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -2419,41 +2419,46 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Evidence/related change:
   [CHG-2026-015](change-records/CHG-2026-015-retire-apps-compatibility-edge.md)
 
-## INC-2026-090: Vault Recovery Artifact Is Absent
+## INC-2026-090: Vault Recovery Discovery and Parsing Blocked
 
 - Date: 2026-08-20
 - Severity: SEV-3
-- Status: Open
+- Status: Resolved
 - Component: `vault.example.com`, Shamir recovery-material custody
 - Detection/symptom: Jenkins build 15 launched the reviewed mutation-disabled
   preflight as AWX job 1096. The job failed at `Require exactly one root-only
   recovery artifact` before any unseal request was submitted.
-- Impact: Vault remains initialized, sealed, standby, and HTTP 503. Dependent
-  secret workflows remain unavailable, and CHG-2026-016 cannot enter its
-  recovery mutation or acceptance stages.
-- Cause: The root-only initialization artifact documented after
-  `INC-2026-048` is not present on the Vault VM. The time and mechanism of its
-  loss are not yet established.
-- Contributing factors: The lab has no accepted external recovery-key custody
-  or restoration procedure. Earlier documentation treated the local artifact
-  as present without a fresh metadata-only existence check.
+- Impact: Vault remained initialized, sealed, standby, and HTTP 503 while
+  fail-closed discovery and parser corrections were reviewed. No unseal
+  request was submitted during the failed interval.
+- Cause: The initial discovery allowlist omitted `/data/vault/recovery`, so the
+  existing root-only artifact was incorrectly classified as absent. Later
+  preflights also exposed JSON detection, direct field-access, and Ansible
+  native mapping compatibility defects.
+- Contributing factors: The recovery path and JSON normalization behavior had
+  syntax checks but no execution regression covering both strings and native
+  mappings. External recovery-key custody remains an unaccepted future design.
 - Containment: The reviewed automation stopped safely. Do not reinitialize
   Vault, inspect shell history for key values, paste keys into a terminal or
   UI, or bypass Jenkins/AWX. Preserve the existing Vault data unchanged.
-- Validation: A privileged metadata-only search found no allowed candidate in
-  `/root` or `/etc/vault.d`. A bounded path-only signature search across
-  `/root`, `/etc`, `/opt`, `/var`, and `/home` found no initialization
-  material. Direct and canonical health both return HTTP 503 with
-  `initialized=true`, `sealed=true`, and `standby=true`.
-- Resolution: Pending restoration of the existing initialization artifact
-  from an approved custody or backup source to a root-owned mode `0400`/`0600`
-  file on the Vault VM without exposing its contents.
+- Validation: Metadata-only inspection verified one `root:root` mode `0600`
+  initialization artifact under `/data/vault/recovery`, five shares, and
+  threshold three. Builds 15-20/jobs 1096-1146 failed before key submission.
+  Build 21/job 1156 passed preflight; build 22/job 1166 recovered Vault;
+  build 23/job 1176 validated it; and build 24/job 1186 returned
+  `changed={}` with no failures. Backend and canonical health both return HTTP
+  200 with initialized, unsealed, active state.
+- Resolution: Merge requests !14-!19 corrected bounded discovery and JSON
+  normalization. Final source revision `a2334115` passed protected-main
+  pipeline 757, including the dummy-data parser execution. Controlled
+  Jenkins/AWX recovery then completed without exposing recovery material.
 - Prevention/follow-up: Define and test external recovery-key custody,
   restoration, and periodic existence validation without moving key material
   into source control, Jenkins, AWX, logs, or documentation.
-- Corrective automation: The merged CHG-2026-016 preflight is the fail-closed
-  control that detected the missing artifact; no runtime correction is
-  possible without the existing threshold material.
+- Corrective automation: Bounded discovery includes the approved recovery
+  directory; JSON normalization accepts native mappings or parses strings;
+  CI executes a dummy-data regression; all secret-bearing tasks retain
+  `no_log: true`.
 - Evidence/related change:
   [CHG-2026-016](change-records/CHG-2026-016-vault-shamir-unseal-recovery.md)
 

@@ -1,6 +1,6 @@
 # Sequential Build and Change Control
 
-Last verified: 2026-08-20
+Last verified: 2026-08-21
 
 ## Operating rule
 
@@ -22,13 +22,13 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `CHG-2026-016` |
-| Component | Single-node Vault Shamir unseal recovery |
-| State | Reviewed controls are merged; secret-safe preflight failed before mutation because the approved recovery artifact is absent |
-| Blocker | Restore the existing Shamir initialization artifact from approved custody or backup to a root-owned mode `0400`/`0600` file on the Vault VM without exposing its contents. No accepted recovery source is currently available. |
-| Permitted work | Review, CI, secret-safe preflight, Jenkins/AWX unseal recovery using the existing root-only initialization artifact, health validation, idempotence, evidence, and documentation. |
-| Prohibited work | Printing, copying, uploading, or committing recovery material; workstation unseal; reinitialization; key rotation; auto-unseal design; product upgrade; secret-engine changes; VM/service restart; unrelated component work. |
-| Exit criteria | Vault reports initialized, unsealed, active, and HTTP 200 through the canonical local frontend; no recovery material appears in output; repeated recovery is zero-change; source, incident evidence, and documentation are merged with protected-main CI passing. |
+| Change ID | `None` |
+| Component | Queue idle. `CHG-2026-016` is accepted and closed. |
+| State | Vault Shamir recovery passed reviewed source, protected-main CI, controlled Jenkins/AWX recovery, validation, and zero-change convergence. |
+| Blocker | None for the closed component. External recovery-key custody and auto-unseal remain future separately reviewed designs. |
+| Permitted work | Documentation and read-only inspection. A new component requires a fresh reviewed change and conflict audit. |
+| Prohibited work | Printing, copying, uploading, or committing recovery material; workstation unseal; reinitialization; unreviewed key rotation; or unrelated implementation without a new change boundary. |
+| Exit criteria | Met: Vault is initialized, unsealed, active, and HTTP 200 through backend and canonical local frontend; no recovery material appeared in output; repeated recovery changed zero resources; source and runtime acceptance are published. |
 
 `CHG-2026-016` begins after CHG-2026-015 closure and recovery from
 `INC-2026-089`. A fresh read-only audit found zero running or pending pipelines
@@ -39,15 +39,22 @@ Vault reports `initialized=true`, `sealed=true`, `standby=true`, and HTTP 503.
 The exact bounded design is in
 [CHG-2026-016](change-records/CHG-2026-016-vault-shamir-unseal-recovery.md).
 
-The reviewed implementation is merged on all protected main branches. Jenkins
-build 15 launched AWX job 1096 for the mutation-disabled preflight. Job 1096
-failed at `Require exactly one root-only recovery artifact`; no unseal request
-was submitted. A privileged metadata-only search found no candidate in
-`/root` or `/etc/vault.d`, and a bounded path-only signature search across
-`/root`, `/etc`, `/opt`, `/var`, and `/home` found no initialization material.
-Direct and canonical health still report initialized, sealed, standby, and
-HTTP 503. The queue remains closed under `INC-2026-090` until the existing
-artifact is restored from approved custody or backup.
+The initial artifact-absence conclusion was incorrect because the discovery
+allowlist omitted `/data/vault/recovery`. The existing root-owned mode `0600`
+`initialization.json` remained there with five shares and threshold three;
+only counts and metadata were inspected. Subsequent fail-closed preflights
+exposed JSON detection, field-access, and Ansible native-type compatibility
+defects without submitting a key. Merge requests !14 through !19 corrected
+the bounded discovery/parser path; final protected-main pipeline 757 passed,
+including a non-secret parser regression.
+
+Jenkins build 21/AWX job 1156 passed preflight; build 22/job 1166 performed the
+controlled unseal; build 23/job 1176 passed mutation-disabled validation; and
+build 24/job 1186 repeated recovery with `changed={}`, no failures, four OK,
+and 13 skipped tasks. Independent backend and product-local NGINX probes both
+returned HTTP 200 with `initialized=true`, `sealed=false`, and
+`standby=false`; Vault and NGINX are active. No recovery value appeared in
+output. `INC-2026-090` is resolved and `CHG-2026-016` is closed.
 
 `CHG-2026-015` closed after reviewed source, protected-main CI, controlled
 Jenkins/AWX deployment, mutation-disabled validation, zero-change convergence,

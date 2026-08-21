@@ -6,20 +6,19 @@
 | --- | --- |
 | Number | `CHG-2026-016` |
 | Type | Controlled service recovery |
-| State | Implementation merged; runtime recovery blocked before mutation |
+| State | Accepted and closed |
 | Risk | High because recovery material is sensitive and Vault backs secret workflows |
 | Impact | Restore the initialized single-node Vault service from sealed HTTP 503 to active HTTP 200 |
 | Owner | Platform Engineering |
 
 ## Current evidence
 
-The canonical frontend is reachable, but `/v1/sys/health` reports
+The canonical frontend was reachable while `/v1/sys/health` reported
 `initialized=true`, `sealed=true`, `standby=true`, Vault 2.0.3, and HTTP 503.
-This matches the single-node Community/Shamir restart behavior recorded in
-`INC-2026-048`. The root-only initialization artifact previously documented as
-the only approved recovery source is no longer present on the Vault VM. Its
-former path and its contents are not documentation data and must never be
-printed, copied to a controller, uploaded to AWX, or committed.
+This matched the single-node Community/Shamir restart behavior recorded in
+`INC-2026-048`. The root-only initialization artifact remained on the Vault VM
+at the bounded recovery path. Its contents are not documentation data and must
+never be printed, copied to a controller, uploaded to AWX, or committed.
 
 The source audit found no existing reviewed unseal playbook. Direct workstation
 unseal is prohibited. The correction therefore adds a bounded Jenkins/AWX
@@ -27,14 +26,22 @@ workflow that reads the recovery artifact only on the Vault VM, suppresses all
 secret-bearing task output, submits the existing threshold locally, and proves
 the resulting health state.
 
-The reviewed controls are merged. Jenkins build 15 launched the
-mutation-disabled preflight as AWX job 1096. It failed safely at `Require
-exactly one root-only recovery artifact`; no unseal request was submitted. A
-privileged metadata-only candidate search and a bounded path-only signature
-search found no recovery artifact on the VM. Vault remains initialized,
-sealed, standby, and HTTP 503 both directly and through its canonical local
-frontend. Runtime recovery is blocked under `INC-2026-090` until the existing
-artifact is restored from an approved custody or backup source.
+The reviewed controls and parser corrections are merged. The initial
+artifact-absence conclusion was caused by a discovery allowlist that omitted
+`/data/vault/recovery`; the existing `initialization.json` was later verified
+there as `root:root`, mode `0600`, with five shares and threshold three. No
+share value was read into evidence. Jenkins builds 15-20 and AWX jobs
+1096-1146 failed closed during discovery or parsing, before key submission.
+Merge requests !14-!19 corrected discovery and JSON compatibility, and final
+protected-main pipeline 757 passed with a non-secret regression for native
+mapping and JSON-string inputs.
+
+Jenkins build 21/AWX job 1156 passed preflight. Build 22/job 1166 submitted
+exactly the existing threshold locally under `no_log` and succeeded. Build
+23/job 1176 passed validation, and build 24/job 1186 proved zero-change
+convergence. Backend and canonical product-local NGINX health both return HTTP
+200 with `initialized=true`, `sealed=false`, and `standby=false`; Vault and
+NGINX are active. `INC-2026-090` is resolved.
 
 ## Exact scope and sequence
 
@@ -88,6 +95,10 @@ artifact is restored from an approved custody or backup source.
    artifact.
 6. Validation passes without mutation, and the second recovery APPLY reports
    zero changes.
+
+All acceptance conditions were met on 2026-08-21. Detailed counters and
+revision evidence are retained in
+[CHG-2026-016 acceptance](../evidence/CHG-2026-016-vault-shamir-unseal-recovery-acceptance.md).
 
 ## Failure and rollback
 

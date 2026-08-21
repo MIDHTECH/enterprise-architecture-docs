@@ -17,7 +17,7 @@ manifest = json.loads(manifest_path.read_text())
 
 expected = {
     "harbor": "accepted",
-    "vault": "installed-not-accepted",
+    "vault": "accepted",
     "keycloak": "requires-revalidation",
     "artifactory": "provisioned-only",
     "sonarqube": "provisioned-only",
