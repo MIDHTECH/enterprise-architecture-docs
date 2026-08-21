@@ -1,6 +1,6 @@
 # Dependency-Safe Use-Case Implementation Sequence
 
-Last generated from design contracts: 2026-08-20
+Last generated from design contracts: 2026-08-21
 
 ## Purpose and boundary
 
@@ -348,7 +348,6 @@ requires these boundaries:
 
 | Capability | Current status | Sequence rule |
 | --- | --- | --- |
-| `vault` | `installed-not-accepted` | Application secret delivery remains a separate design and acceptance concern; Vault presence does not imply healthy unsealed operation or External Secrets Operator. |
 | `keycloak` | `requires-revalidation` | Describe Keycloak and OIDC integration as planned or conditional until revalidation is accepted. |
 | `artifactory` | `provisioned-only` | Do not claim artifact publication or product operation. |
 | `sonarqube` | `provisioned-only` | Do not claim a live quality-gate service. |
