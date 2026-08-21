@@ -73,7 +73,7 @@ The local commit is not yet authoritative GitLab evidence. On 2026-08-14,
 `gitlab.example.com` resolved to `192.168.1.101`, but SSH port 2222 and HTTP
 connections timed out from the administration workstation. The branch has no
 upstream and no remote ref is claimed. The failure is recorded as
-[INC-2026-086](../sre-incident-register.md#inc-2026-086-gitlab-endpoint-unreachable-during-healthcare-ai-source-publication).
+[INC-2026-091](../sre-incident-register.md#inc-2026-091-gitlab-endpoint-blocked-healthcare-ai-source-publication).
 
 ## Promotion gate
 

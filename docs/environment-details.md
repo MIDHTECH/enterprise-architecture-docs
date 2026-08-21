@@ -1,6 +1,6 @@
 # Environment Details
 
-Last verified: 2026-08-13
+Last verified: 2026-08-21
 
 Capability state in this page is governed by the canonical
 [`environment-capability-status.json`](environment-capability-status.json).
@@ -66,35 +66,38 @@ for every environment:
 
 ## Core Endpoints
 
-Application endpoints are migrating one product at a time to local NGINX on
-the product VM and the canonical `<product>.example.com` name. AWX, Jenkins,
-and Headlamp are accepted on this model. The standalone `nginx.example.com` VM at
-`192.168.1.114` temporarily serves products not yet migrated. Internal TLS is
+Application endpoints use local NGINX on the product VM and the canonical
+`<product>.example.com` name. The standalone VM at `192.168.1.114` is retained
+only for controlled rollback: its DNS record is absent, NGINX is disabled and
+inactive, its HTTP/HTTPS firewall services are closed, and it has no product
+server blocks. Internal TLS is
 partially adopted rather than globally installed: Harbor has accepted native
-HTTPS and Vault has its documented HTTPS path, while most verified user-facing
+HTTPS, while most verified user-facing
 routes below still use HTTP.
 
 | Endpoint | Function | Current state |
 | --- | --- | --- |
-| `http://gitlab.apps.example.com` | Source control and merge requests | Active |
+| `http://gitlab.example.com` | Source control and merge requests through the product-local frontend | Active and accepted |
 | `http://jenkins.example.com` | CI pipelines through service-local NGINX to backend port `8080` | Active and accepted; `.apps` DNS and shared route retired |
 | `http://awx.example.com` | Automation controller through service-local NGINX to backend port `32000` | Active and accepted; `.apps` record retired |
 | `http://headlamp.example.com` | Kubernetes dashboard through worker01-local NGINX to the private ingress-nginx ClusterIP | Active and accepted; `.apps` DNS, shared route, and NodePort retired |
-| `http://grafana.apps.example.com` | Dashboards | Active |
-| `http://prometheus.apps.example.com` | Metrics | Active |
-| `http://alertmanager.apps.example.com` | Alerts | Active |
-| `http://minio.apps.example.com` | S3-compatible API | Active; console port is not configured |
-| `http://loki.apps.example.com` | Loki HTTP API | Active |
-| `http://tempo.apps.example.com` | Tempo HTTP API | Active |
-| `http://otel.apps.example.com` | OpenTelemetry HTTP receiver | Active |
-| `http://kibana.apps.example.com` | Elastic dashboards and search | Active |
+| `http://grafana.example.com` | Dashboards through product-local NGINX | Active; `/api/health` returned HTTP 200 |
+| `http://prometheus.example.com` | Metrics through product-local NGINX | Active; `/-/ready` returned HTTP 200 |
+| `http://alertmanager.example.com` | Alerts through product-local NGINX | Active; `/-/ready` returned HTTP 200 and backend listens on loopback |
+| `http://minio.example.com` | S3-compatible API through product-local NGINX | Active; live-health returned HTTP 200; console is not configured |
+| `http://loki.example.com` | Loki HTTP API through product-local NGINX | Active; `/ready` returned HTTP 200 |
+| `http://tempo.example.com` | Tempo HTTP API through product-local NGINX | Active; `/ready` returned HTTP 200 |
+| `http://otel.example.com` | OpenTelemetry HTTP receiver through product-local NGINX | Active; root HTTP 404 is the expected receiver behavior |
+| `http://kibana.example.com` | Elastic dashboards and search through product-local NGINX | Active; root HTTP 302 is expected |
 | `https://harbor.example.com` | OCI images and Helm OCI | Harbor 2.15.0 installed and healthy; native HTTPS accepted |
-| `http://harbor.apps.example.com` | Legacy shared-proxy Harbor route | Unavailable and not accepted; do not confuse route state with product state |
-| `http://artifactory.apps.example.com` | Build artifacts | Intentional 503; product not installed |
-| `http://sonarqube.apps.example.com` | Code quality | Intentional 503; product not installed |
-| `http://vault.apps.example.com` | Secrets | Active; UI root redirects and `/v1/sys/health` returns HTTP 200 while unsealed |
-| `http://keycloak.apps.example.com` | SSO/OIDC | Route unavailable; older product-presence claim requires revalidation before it becomes canonical |
-| `http://splunk.apps.example.com` | Splunk search and administration | Intentional 503; product not installed |
+| `http://vault.example.com` | Secrets through product-local NGINX | Active and accepted; `/v1/sys/health` returns HTTP 200 for initialized, unsealed, active Vault 2.0.3 |
+| `keycloak.example.com` | SSO/OIDC management identity | No accepted user URL; older product-presence claim requires revalidation |
+| `artifactory.example.com` | Build-artifact management identity | Product not installed; no active user URL |
+| `sonarqube.example.com` | Code-quality management identity | Product not installed; no active user URL |
+| `splunk.example.com` | Splunk management identity | Product not installed; no active user URL |
+
+All former compatibility names below the retired application subdomain, plus
+the shared-proxy hostname itself, return no authoritative A or CNAME answer.
 
 PostgreSQL, DNS, SSH, Kubernetes control-plane ports,
 OpenTelemetry gRPC, and other non-HTTP protocols are not forced through this

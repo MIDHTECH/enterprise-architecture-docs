@@ -255,7 +255,7 @@ stand in for a protected pipeline, an approved corpus, or an operated service.
 | --- | --- | --- |
 | Contract and source | Complete locally at `175a39c` | Contract, schema, deterministic provider, retrieval pipeline, tests, and installation-free runbook |
 | Local source proof | Complete | 14 tests and five cases pass; quality, p95 latency, TTFT, refusal-leak, and required-stage gates are enforced |
-| Authoritative publication | Blocked by INC-2026-086 | Exact commit on protected GitLab branch and successful pipeline artifact |
+| Authoritative publication | Blocked by INC-2026-091 | Exact commit on protected GitLab branch and successful pipeline artifact |
 | Enterprise corpus approval | Not started | Knowledge-owner manifest, classification, checksum, freshness, exclusion, and deletion evidence |
 | Employee workflow and runtime | Not designed | Sponsor, baseline, benefit target, identity, runtime SLO, cost envelope, support model, shutdown, and change record |
 

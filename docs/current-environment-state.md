@@ -1,6 +1,6 @@
 # Current Environment State
 
-Last verified: 2026-08-13
+Last verified: 2026-08-21
 
 The canonical machine-readable classification for architecture-sensitive
 capabilities is
@@ -37,26 +37,25 @@ persistent-storage changes completed through 2026-08-08:
 | Layer | Verified state |
 | --- | --- |
 | `infra01.example.com` | Ubuntu 26.04 LTS host reachable after a full reboot; KVM/libvirt, `br0`, and 17/17 autostart domains are up with expected IPv4 addresses; STP is disabled and canary recovery passed |
-| `infra02.example.com` | Ubuntu 26.04 LTS, `br0` active, 14/14 domains running, and no active change process |
+| `infra02.example.com` | Ubuntu 26.04 LTS; `br0` has its physical port plus all 14 guest taps forwarding; 14/14 domains are running, autostarted, and reachable after CHG-2026-012 |
 | `infra03.example.com` | Ubuntu 26.04 LTS, `br0` active, four build-execution domains running with autostart |
-| Virtual machines | 35 domains in the latest accepted inventory: 17 on infra01, 14 on infra02, and 4 on infra03; all domains are running and all infra01 guests recovered expected IPv4 addresses |
-| Product roles | At least 23 runtime roles directly verified; Harbor is installed; Vault 2.0.3 is active, unsealed, and accepted through NGINX; Keycloak still awaits revalidation |
+| Virtual machines | 35 domains in the latest accepted inventory: 17 on infra01, 14 on infra02, and 4 on infra03; all domains are running, and all infra02 guests answered their canonical-address acceptance probes |
+| Product roles | At least 23 runtime roles directly verified; Harbor is installed; Vault 2.0.3 is initialized, unsealed, active, and accepted through CHG-2026-016; Keycloak still awaits revalidation |
 | Application Kubernetes | kubeadm 1.34.10 on `k8s-control` and three workers; 4/4 nodes Ready; ClusterIP-only ingress-nginx and worker-only Longhorn 1.12.0 V1 accepted |
 | AWX platform Kubernetes | Independent k3s 1.36.2 runtime on `awx.example.com`; one AWX node Ready |
-| AWX execution plane | AWX 24.6.1 instance 3 on `awx-execution.example.com` is Ready at capacity 76 only in `lab-infrastructure`; NGINX exposes hostname TCP 443 and Receptor remains loopback-only on 27199 |
+| AWX execution plane | AWX 24.6.1 instance 3 on `awx-execution.example.com` is Ready, enabled, and reports capacity 76 only in `lab-infrastructure`; Receptor is active with zero restarts after CHG-2026-013 |
 | AWX inventories | 50 records across nine populated inventories plus the empty Demo inventory; 39 distinct names. Purpose-specific delivery inventories remain isolated, and `awx-execution-plane` contains only the execution node and canary localhost. |
 | Git repositories | AWX inventory, Kubernetes ingress, Longhorn storage automation/design, and cloud-infrastructure corrections are published; private application project `midhhealth/applications/podinfo` retains upstream history and has protected `main` at `81e02a9825bb4adbb353ebe23c62e26740f7550c`; its latest pipeline was canceled when work returned to documentation-only scope |
 
 The directly verified provisioned-only product VMs include `governance`,
 `backup`, `artifactory`, `sonarqube`, and `splunk`.
-PostgreSQL 18 is active on `postgres.example.com`. Harbor 2.15.0 is active on
-`harbor.example.com`: all ten Harbor, registry, database, Redis, portal,
-job-service, and Trivy containers are healthy, the health API is healthy, and
-native HTTPS returns 200. Vault 2.0.3 is active on
-`vault.example.com`, reports `initialized=true`, `sealed=false`, and
-`standby=false`, and is reachable through `vault.apps.example.com`. Keycloak
-still requires separate revalidation before its older installation claim
-becomes canonical.
+PostgreSQL 18 is active on `postgres.example.com`. Harbor 2.15.0 is healthy on
+`harbor.example.com`: all ten containers are healthy, native HTTPS returns
+200, and the health API reports `healthy` after CHG-2026-014. Its nine local
+syslog clients and listener remain IPv4 loopback-only. Vault 2.0.3 is
+initialized, unsealed, and active; backend and product-local NGINX health both
+return HTTP 200 after CHG-2026-016. Keycloak still requires separate revalidation before
+its older installation claim becomes canonical.
 
 Four infra03 guests were provisioned at `.136–.139`:
 `gitlab-runner-app01`, `gitlab-runner-infra01`, `jenkins-agent01`, and
@@ -117,34 +116,25 @@ must be labeled separately. See INC-2026-045.
 
 ## Application access
 
-The access tier is migrating sequentially from the shared non-HA
-`nginx.example.com` VM to NGINX running on each product VM. AWX is the first
-accepted migration: `awx.example.com` resolves directly to `192.168.1.103`,
-local NGINX forwards port 80 to NodePort `32000`, and
-`awx.apps.example.com` has been removed. AWX jobs 485/492 and DNS jobs
-502/514 prove first convergence and zero-change idempotence.
+CHG-2026-015 completed the access-tier migration to NGINX on each installed
+product VM. Canonical DNS now points directly to each product VM. GitLab,
+Jenkins, AWX, Headlamp, Prometheus, Alertmanager, Grafana, MinIO, Loki, Tempo,
+OpenTelemetry HTTP, Kibana, Vault, and Harbor all use their canonical product
+names. Headlamp reaches the private ingress-nginx ClusterIP through
+worker01-local NGINX; its application components remain ClusterIP-only.
 
-`nginx.example.com` remains online temporarily for GitLab, Prometheus,
-Alertmanager, Grafana, MinIO, Loki, Tempo, OpenTelemetry HTTP, Kibana, and
-Vault. It must not be retired until each consumer is migrated and accepted in
-a separate sequential change. Headlamp is no longer a shared-proxy consumer:
-`headlamp.example.com -> 192.168.1.108` reaches worker01-local NGINX on TCP 80,
-and both Headlamp and ingress-nginx are ClusterIP-only. Vault uses HTTPS with the
-version-controlled backend certificate as its trust anchor. Source-restricted
-firewalld rules allow only
-approved lab-LAN consumers to reach Loki and Tempo and allow the Kubernetes
-pod CIDR to reach the OpenTelemetry receivers.
+The former compatibility namespace and the standalone shared-proxy hostname
+have no authoritative A or CNAME answers. The retained `.114` rollback VM has
+no product server blocks, NGINX is disabled and inactive, and HTTP/HTTPS are
+absent from its public firewall policy. Alertmanager now listens on
+`127.0.0.1:9093`; the inspected Prometheus, Grafana, and Vault backend ports
+are also absent from the public firewall policy.
 
-The target convention uses canonical `<product>.example.com` names for both
-service identity and user access. Services not yet migrated continue to use
-their existing `*.apps.example.com` URL; for example,
-`gitlab.apps.example.com` still redirects through the shared proxy.
-
-Artifactory, SonarQube, and Splunk remain provisioned-only. Harbor is healthy
-on its native HTTPS endpoint, but its application route remains listed as
-unavailable by NGINX and requires separate acceptance. Keycloak must still be
-revalidated after infra01 recovery. See
-[Standalone NGINX Reverse-Proxy Installation](product-installation-nginx.md).
+Artifactory, SonarQube, and Splunk remain provisioned-only and have no active
+user URL. Harbor is healthy at `https://harbor.example.com`. Keycloak still
+requires revalidation. Vault is accepted at `http://vault.example.com`; its
+local frontend returns HTTP 200 for initialized, unsealed, active health. See
+[Retired Shared NGINX Compatibility Edge](product-installation-nginx.md).
 
 ## Hybrid capacity plan
 
@@ -218,7 +208,7 @@ was unreachable from the administration workstation on 2026-08-14. The commit
 is therefore not yet published, no GitLab pipeline is claimed, and no model,
 vector database, service, workload, or production runtime has been installed.
 See [ART-AI-001](evidence/ART-AI-001-source-implementation.md) and
-[INC-2026-086](sre-incident-register.md#inc-2026-086-gitlab-endpoint-unreachable-during-healthcare-ai-source-publication).
+[INC-2026-091](sre-incident-register.md#inc-2026-091-gitlab-endpoint-blocked-healthcare-ai-source-publication).
 
 ## Observability hosts
 
@@ -263,7 +253,7 @@ ingress changes completed through 2026-08-03:
 | Tempo trace pipeline | AWX job 381 found and retrieved trace `f819ea257b72ff3a7fd5998e807b3430`, then correlated it to the Loki event | Accepted for the bounded correlated workload |
 | Management applications | GitLab, AWX, Prometheus, Grafana, Kibana, and the Headlamp NGINX route returned HTTP responses; Jenkins returned the expected authenticated HTTP 403 | Available |
 | Headlamp name resolution | Authoritative serial `2026080302` returns `headlamp.example.com -> 192.168.1.108`; the legacy `.apps` name is NXDOMAIN; canonical HTTP returns 200 | Accepted through AWX jobs 760 and 782 and CHG-2026-009 |
-| Vault secrets service | Vault 2.0.3 reports initialized, unsealed, active, and HTTP 200 through the verified NGINX TLS upstream; NGINX convergence job 421 reported `changed=0`, `unreachable=0`, and `failed=0` | Accepted through AWX jobs 417 and 421 |
+| Vault secrets service | Vault 2.0.3 reports initialized, unsealed, active, and HTTP 200 directly and through its canonical local frontend; builds 21-24/jobs 1156-1186 accepted preflight, recovery, validation, and zero-change convergence | Accepted under CHG-2026-016; INC-2026-090 resolved |
 | AWX inventory boundaries | Product VMs are canonical in `production`; infra01/02/03 are isolated in `cloud-infra-production`; the four Kubernetes records remain a deliberate cluster RBAC boundary | Accepted through sync job 425 and DNS/NGINX jobs 433, 438, 443, and 448 |
 | AWX execution boundary | Instance 3 is Ready only in `lab-infrastructure`; canaries ran on `awx-execution.example.com`; NGINX TCP 443 is reachable and direct Receptor TCP 27199 is not | Accepted through jobs 741-749 and CHG-2026-008 |
 

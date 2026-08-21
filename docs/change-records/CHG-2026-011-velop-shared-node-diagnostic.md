@@ -7,6 +7,10 @@ selecting another network correction. This is a read-only diagnostic stage
 inside the active Argo CD prerequisite. It supersedes the unavailable
 same-node port move in the infra01 uplink canary.
 
+`CHG-2026-011` was cancelled by operator on 2026-08-09 before this diagnostic
+stage was completed. The content below is retained as historical evidence and
+decision support for any future successor change.
+
 ## Evidence and current conclusion
 
 The operator identified the upstream device as a two-port Linksys Velop
@@ -55,9 +59,10 @@ with zero selected NIC errors and no later readable link event. infra02
 reported `carrier_changes=304`, zero CRC/alignment/carrier/timeout errors, and
 a large cumulative missed-receive count that is not assigned as a cause.
 
-## Open read-only stage
+## Historical open read-only stage
 
-Only the following evidence collection is open:
+At the time of cancellation, only the following evidence collection remained
+open:
 
 1. Photograph the Ethernet-port side of the identified `VLP01` without the
    secret-bearing underside label. Mark which occupied port/cable serves
@@ -92,10 +97,10 @@ setup credentials, guess a router password, or invoke undocumented JNAP
 actions. The supported Linksys application and onsite connection/power
 inspection remain the required sources for the open evidence items.
 
-## Decision gate
+## Historical decision gate
 
-The diagnostic must assign one of these outcomes before an execution design is
-opened:
+Before cancellation, the diagnostic had to assign one of these outcomes before
+an execution design could be opened:
 
 - **Power path:** shared-node power interruption or an unsafe adapter/connector
   is supported by evidence. Prepare a bounded power-path correction with both
@@ -120,7 +125,8 @@ and explain how it removes, rather than hides, the shared failure boundary.
 
 ## Prohibited actions
 
-Until a decision outcome and execution design are reviewed, do not:
+Until a successor change reviews a decision outcome and execution design, do
+not:
 
 - disconnect or swap infra01 or infra02;
 - unplug, reseat, restart, reset, factory-default, update, or replace a Velop
@@ -131,9 +137,10 @@ Until a decision outcome and execution design are reviewed, do not:
 - run an Argo CD recovery PLAN or DEPLOY; or
 - use label credentials, recovery keys, or undocumented router payloads.
 
-## Diagnostic acceptance
+## Historical diagnostic acceptance
 
-This stage is accepted only when:
+Before the parent change was cancelled, this stage would have been accepted
+only when:
 
 1. both occupied ports, both host cables, the node role, the node power path,
    and infra03's mesh attachment are identified;
@@ -146,3 +153,4 @@ This stage is accepted only when:
 6. the sequential gate is updated and reviewed before physical execution.
 
 Diagnostic acceptance does not accept the transport path or open Argo CD.
+After cancellation, this diagnostic no longer represents an open stage.

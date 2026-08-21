@@ -1,6 +1,6 @@
 # Sequential Build and Change Control
 
-Last verified: 2026-08-09
+Last verified: 2026-08-21
 
 ## Operating rule
 
@@ -22,13 +22,110 @@ boundary; firewalld must admit only the documented NGINX frontend.
 
 | Field | Current value |
 | --- | --- |
-| Change ID | `CHG-2026-011` |
-| Component | Private Argo CD GitOps bootstrap on the existing application cluster, including failed-source recovery, pinned Helm delivery, least-privilege GitLab repository access, an isolated reconciliation canary, rollback, and evidence |
-| State | Blocked after infra01 uplink Phase A failed its immediate zero-loss window and rolled back successfully. A same-port replacement cable preserved 800/800 ICMP and 720/720 DNS checks but app01 missed one of 240 service/API checks: one Kubernetes `/readyz` request. The original cable/port state is restored and healthy. The approved Phase B is non-executable because both Ethernet ports on the identified upstream node are occupied by infra01 and infra02. The read-only shared-node diagnostic is the only open stage. |
-| Blocker | The exact one-request failure mechanism remains unproven. A complete timestamp comparison found all 16 infra02 carrier-down events correlated with infra01: 14 in the exact same second and two within two seconds. After excluding three deliberate Phase A/rollback cable actions, 16 of 18 spontaneous infra01 events correlated; infra03 recorded no physical event. Both occupied ports terminate on one Linksys Velop `VLP01`, proving a dominant shared failure boundary and moving the primary investigation to the node, power/internal switching, or mesh/backhaul path. The evidence does not yet select a safe correction. Transient login or readiness success is not acceptance. |
-| Permitted work | Execute only the read-only evidence stage in the [Velop shared-node diagnostic](change-records/CHG-2026-011-velop-shared-node-diagnostic.md): label both occupied host connections, identify the node role, power path and infra03 attachment, and collect available uptime/restart/firmware/backhaul evidence without secrets. The unauthenticated local desktop page has been exhausted and exposed only its historical `Waiting...` overlay; use the supported Linksys application and onsite observation, not label credentials or undocumented payloads. Preserve all cables, settings, VMs and the healthy cluster. Do not run Argo CD PLAN/DEPLOY until a correction is selected, separately reviewed, executed and accepted. |
-| Prohibited work | Direct workstation Helm or `kubectl apply`; GitLab CI deployment; public Argo CD exposure; human/write-capable repository credentials; default-project or wildcard destinations; Argo ownership of ingress, Longhorn, Headlamp, application workloads, policy, secrets, backup, autoscaling, or another component; Artifactory/SonarQube work. |
-| Exit criteria | Exact source and PLAN accepted; Argo CD 3.4.6/chart 10.2.2 healthy and private; repository access proven read-only; restricted AppProject/root canary Synced and Healthy; drift self-heals; convergence, rollback, and restore pass; negative ownership/exposure checks, incidents, evidence, and canonical publication complete. |
+| Change ID | `None` |
+| Component | Queue idle. `CHG-2026-016` is accepted and closed. |
+| State | Vault Shamir recovery passed reviewed source, protected-main CI, controlled Jenkins/AWX recovery, validation, and zero-change convergence. |
+| Blocker | None for the closed component. External recovery-key custody and auto-unseal remain future separately reviewed designs. |
+| Permitted work | Documentation and read-only inspection. A new component requires a fresh reviewed change and conflict audit. |
+| Prohibited work | Printing, copying, uploading, or committing recovery material; workstation unseal; reinitialization; unreviewed key rotation; or unrelated implementation without a new change boundary. |
+| Exit criteria | Met: Vault is initialized, unsealed, active, and HTTP 200 through backend and canonical local frontend; no recovery material appeared in output; repeated recovery changed zero resources; source and runtime acceptance are published. |
+
+`CHG-2026-016` begins after CHG-2026-015 closure and recovery from
+`INC-2026-089`. A fresh read-only audit found zero running or pending pipelines
+in the infrastructure repositories, all 17/14/4 hypervisor domains running,
+and no Git, Ansible, Terraform, package, VM-provisioning, or Kubernetes mutator
+on infra01, infra02, or infra03. GitLab, Jenkins, and AWX each return HTTP 200.
+Vault reports `initialized=true`, `sealed=true`, `standby=true`, and HTTP 503.
+The exact bounded design is in
+[CHG-2026-016](change-records/CHG-2026-016-vault-shamir-unseal-recovery.md).
+
+The initial artifact-absence conclusion was incorrect because the discovery
+allowlist omitted `/data/vault/recovery`. The existing root-owned mode `0600`
+`initialization.json` remained there with five shares and threshold three;
+only counts and metadata were inspected. Subsequent fail-closed preflights
+exposed JSON detection, field-access, and Ansible native-type compatibility
+defects without submitting a key. Merge requests !14 through !19 corrected
+the bounded discovery/parser path; final protected-main pipeline 757 passed,
+including a non-secret parser regression.
+
+Jenkins build 21/AWX job 1156 passed preflight; build 22/job 1166 performed the
+controlled unseal; build 23/job 1176 passed mutation-disabled validation; and
+build 24/job 1186 repeated recovery with `changed={}`, no failures, four OK,
+and 13 skipped tasks. Independent backend and product-local NGINX probes both
+returned HTTP 200 with `initialized=true`, `sealed=false`, and
+`standby=false`; Vault and NGINX are active. No recovery value appeared in
+output. `INC-2026-090` is resolved and `CHG-2026-016` is closed.
+
+`CHG-2026-015` closed after reviewed source, protected-main CI, controlled
+Jenkins/AWX deployment, mutation-disabled validation, zero-change convergence,
+independent runtime acceptance, and documentation publication. Jenkins build
+11/AWX job 1056 completed the cutover; build 13/job 1076 passed validation;
+build 14/job 1086 reported zero changes and zero failures on all 11 hosts. The
+authoritative server returns no A or CNAME answer for the retired compatibility
+names or shared-proxy hostname. Canonical endpoints remain in DNS, local
+frontends answer with expected product statuses, and the retained `.114`
+rollback VM has NGINX disabled/inactive with no frontend firewall services.
+Vault's reachable frontend currently reports sealed/standby HTTP 503 and needs
+a separately reviewed operations change before unsealed health can be claimed.
+
+`CHG-2026-012` begins only after merge request !38 published the operator's
+cancelled `CHG-2026-011` closure and returned the queue to idle. A fresh audit
+found no Git, Ansible, Terraform, package, libvirt, Helm, or kubectl mutator on
+infra01, infra02, or infra03. GitLab completed its documented extended startup,
+AWX returned HTTP 200 with its task deployment 1/1 Available, Jenkins returned
+HTTP 200 with no durable-task process, and all hypervisors retained 17/14/4
+running domains. The exact bounded design is in
+[CHG-2026-012](change-records/CHG-2026-012-infra02-bridge-port-recovery.md).
+
+The controlled recovery subsequently passed Jenkins PLAN build 5/AWX job 946,
+APPLY build 6/job 954, mutation-disabled VALIDATE build 7/job 962, and the
+zero-change APPLY build 8/job 970. `br0` now contains `enp0s25` and all 14
+derived taps forwarding; all 14 domains are running, autostarted, and reachable,
+and Kubernetes is 4/4 Ready with no non-running pods. The application audit
+opened `INC-2026-087` for Harbor and `INC-2026-088` for the AWX execution node;
+neither is part of the closed bridge component.
+
+`CHG-2026-013` begins after canonical publication of CHG-2026-012. Read-only
+diagnosis found the reachable AWX execution guest restarting Receptor every
+five seconds because `/run/receptor` is absent while its systemd unit does not
+declare a runtime directory. The exact bounded design is in
+[CHG-2026-013](change-records/CHG-2026-013-awx-receptor-runtime-directory-recovery.md).
+
+The reviewed correction subsequently passed canonical source and CI, Jenkins
+PLAN build 2/AWX job 976, APPLY build 3/job 978, mutation-disabled VALIDATE
+build 4/job 980, execution-node CANARY build 5/job 982, and zero-change APPLY
+build 6/job 984. Receptor is active with zero restarts; systemd owns
+`/run/receptor` as `awx:awx` mode `0750`; the control socket exists; and AWX
+instance 3 is Ready with capacity 76 only in `lab-infrastructure`.
+`INC-2026-088` is resolved and `CHG-2026-013` is closed. Harbor incident
+`INC-2026-087` remains queued and was not changed in this component.
+
+`CHG-2026-014` begins only after the CHG-2026-013 closure merge and canonical
+pipeline 705 passed. A fresh read-only audit found Jenkins and AWX idle and no
+Harbor package, Compose, or Ansible mutator. Nine Harbor containers remain
+stopped with exit code 128; `harbor-log` alone is healthy. Every stopped
+container is configured to send syslog to `tcp://localhost:1514`, which
+resolves to `[::1]`, while the log container publishes only
+`127.0.0.1:1514`. The exact bounded design is in
+[CHG-2026-014](change-records/CHG-2026-014-harbor-syslog-loopback-recovery.md).
+
+The reviewed recovery subsequently passed Jenkins preflight build 4/AWX job
+994, APPLY build 5/job 1004, mutation-disabled VALIDATE build 6/job 1014,
+and zero-change APPLY build 7/job 1024. All ten Harbor containers are healthy,
+native HTTPS returns 200, and `/api/v2.0/health` reports `healthy`. Compose has
+nine `tcp://127.0.0.1:1514` targets and no legacy `localhost` target; the
+listener remains bound only to `127.0.0.1:1514`. `INC-2026-087` is resolved,
+`CHG-2026-014` is closed, and the sequential queue is idle.
+
+`CHG-2026-015` begins only after CHG-2026-014 closure and a fresh conflict
+audit. Jenkins is active with an empty queue and no mutating durable task; AWX
+has zero active unified jobs; and infra01, infra02, and infra03 have no active
+Git, Ansible, Terraform, package, VM-provisioning, or Kubernetes mutator. The
+authoritative zone still publishes 15 `.apps.example.com` records to
+`192.168.1.114`; the shared NGINX configuration retains 16 product routes,
+including an obsolete AWX route whose DNS record was already retired. The
+exact bounded cutover and rollback are in
+[CHG-2026-015](change-records/CHG-2026-015-retire-apps-compatibility-edge.md).
 
 `CHG-2026-011` begins after CHG-2026-010 closeout and a fresh conflict audit.
 The operator-directed Enterprise Kubernetes Platform with GitOps goal places
@@ -124,6 +221,16 @@ credential. It had no authenticated session and remained behind the historical
 backhaul, port, or power evidence. The desktop path is exhausted; remaining
 evidence must come from the supported Linksys application and onsite physical
 inspection without secret-bearing label content.
+
+On 2026-08-09 the operator first placed `CHG-2026-011` on hold while the
+shared-node blocker remained unresolved. A fresh read-only pause audit at that
+time found Jenkins with an empty queue and no recent build markers, the
+application cluster with four Ready nodes and zero active Jobs or non-running
+pods, and no conflicting mutator activity on infra01, infra02, or infra03.
+Later the same day, the operator cancelled `CHG-2026-011`. The queue is
+therefore idle again, but the retained evidence still shows an unresolved
+shared failure boundary and does not authorize any resumed implementation on
+this path without a new reviewed change.
 
 `CHG-2026-010` closed successfully on 2026-08-08. Canonical source is
 `ansible-kubernetes` `93d4973a`, `jenkins-jobs` `c9bf66ff`, and

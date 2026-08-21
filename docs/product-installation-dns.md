@@ -14,7 +14,7 @@ product and AWX the second.
 
 ## Current Status
 
-As of 2026-08-03, BIND is installed, enabled, and active. Forward, reverse,
+As of 2026-08-20, BIND is installed, enabled, and active. Forward, reverse,
 UDP, TCP, and recursive lookups pass, and the Ansible role has converged with
 `changed=0`, `failed=0`, and `unreachable=0`.
 
@@ -22,10 +22,11 @@ The managed query and recursion ACL includes both `192.168.1.0/24` and the
 Kubernetes pod CIDR `10.244.0.0/16`. CoreDNS forwards `example.com` only to
 `192.168.1.106`; all other names use the normal node upstreams.
 
-Zone serial `2026080302` includes the physical hosts, all 35 VMs, reverse
-records, remaining approved `*.apps.example.com` service names at `.114`, and
-the canonical `headlamp.example.com -> 192.168.1.108` record. The retired
-`headlamp.apps.example.com` record is absent and returns NXDOMAIN.
+The managed zone includes the physical hosts, all 35 VMs, reverse records, and
+the canonical product records. CHG-2026-015 removed the compatibility service
+records and the shared-proxy management record. Authoritative queries return
+no A or CNAME answer for those retired names while canonical product records
+retain their exact service-VM addresses.
 
 Headlamp DNS was initially reconciled through AWX project 23, inventory 4,
 inventory source 24, and DNS-only job template 25. Deployment job 398
@@ -259,6 +260,9 @@ dscacheutil -q host -a name nginx.example.com
 dscacheutil -q host -a name gitlab.apps.example.com
 ```
 
+The first two canonical queries must return product-VM addresses. The last two
+are retirement assertions and must return no address.
+
 Command-line tools such as `dig` and `nslookup` may query the default resolver
 directly and are not authoritative tests of macOS supplemental resolver
 routing.
@@ -295,9 +299,9 @@ nslookup www.redhat.com
 ```
 
 Expected results include `192.168.1.101` for GitLab and `192.168.1.103` for
-AWX. `nginx.example.com` and the application service names return
-`192.168.1.114`. Confirm the client received `192.168.1.106` as its DNS
-server.
+AWX. Canonical application names return their product-VM addresses; the
+retired shared-proxy name returns no A or CNAME answer. Confirm the client
+received `192.168.1.106` as its DNS server.
 
 ## Change Control
 

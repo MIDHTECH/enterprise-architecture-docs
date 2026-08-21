@@ -6,7 +6,7 @@
 | --- | --- |
 | Number | `CHG-2026-011` |
 | Type | Normal |
-| State | Runtime prerequisite recovery |
+| State | Cancelled by operator on 2026-08-09 |
 | Risk | Moderate |
 | Impact | Low |
 | Priority | High |
@@ -244,6 +244,14 @@ switching, or mesh/backhaul path. Only the
 [Velop shared-node diagnostic](CHG-2026-011-velop-shared-node-diagnostic.md) is
 open; it does not authorize a node, cable, router or cluster change.
 
+On 2026-08-09 the operator first directed that `CHG-2026-011` be placed on
+hold while this shared-node blocker remained unresolved. Later the same day,
+the operator cancelled the change. No Argo CD PLAN or DEPLOY, no additional
+runtime correction, and no queue advance are authorized under this record. Any
+future work on this path must start as a new reviewed change with a fresh
+conflict audit and an explicit decision on how to address the shared-node
+failure boundary.
+
 ## Acceptance criteria
 
 1. Argo CD reports version 3.4.6 from chart 10.2.2 and all controller, server,
@@ -287,7 +295,7 @@ state.
 
 | Field | Value |
 | --- | --- |
-| Close code | Pending |
-| Closed date | Pending |
-| Implementation result | Pending |
-| Validation evidence | Pending |
+| Close code | Cancelled |
+| Closed date | 2026-08-09 |
+| Implementation result | No accepted Argo CD deployment was completed. Reviewed source, recurrence, canary, rollback, and shared-node diagnostic evidence were retained; the original cable/port state remained restored and healthy when the operator cancelled the change. |
+| Validation evidence | [infra03 prerequisite result](../evidence/CHG-2026-011-infra03-network-prerequisite-result.md), [infra01 Phase A result](../evidence/CHG-2026-011-infra01-uplink-phase-a-result.md), [infra01 uplink canary](CHG-2026-011-infra01-uplink-canary.md), [Velop shared-node diagnostic](CHG-2026-011-velop-shared-node-diagnostic.md), [Sequential Build and Change Control](../sequential-build-change-control.md) |

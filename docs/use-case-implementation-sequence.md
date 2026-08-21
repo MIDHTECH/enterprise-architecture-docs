@@ -1,6 +1,6 @@
 # Dependency-Safe Use-Case Implementation Sequence
 
-Last generated from design contracts: 2026-08-13
+Last generated from design contracts: 2026-08-21
 
 ## Purpose and boundary
 

@@ -117,7 +117,12 @@ facts; they do not erase the original observation.
 | INC-2026-083 | 2026-08-08 | SEV-4 | Resolved | Jenkins Kubernetes storage prerequisites | The generated pipeline used an unavailable `timestamps()` option and failed safely before AWX launch |
 | INC-2026-084 | 2026-08-08 | SEV-4 | Resolved | Jenkins Longhorn acceptance evidence | Groovy string interpolation corrupted two kubectl newline templates after the initial runtime became healthy |
 | INC-2026-085 | 2026-08-08 | SEV-3 | Open | infra01-to-infra03 build-execution path | Pre-DEPLOY loss recurred; infra01 uplink has repeated carrier drops and is the bounded first physical canary |
-| INC-2026-086 | 2026-08-14 | SEV-3 | Open | GitLab source-control endpoint | Healthcare AI source publication is blocked because SSH and HTTP connections time out |
+| INC-2026-086 | 2026-08-18 | SEV-2 | Resolved | infra02 libvirt bridge | Jenkins/AWX restored all 14 live taps; validation and convergence passed with all guests reachable |
+| INC-2026-087 | 2026-08-18 | SEV-3 | Resolved | Harbor runtime | CHG-2026-014 pinned local syslog to IPv4 loopback; all ten containers and the native health API are healthy |
+| INC-2026-088 | 2026-08-18 | SEV-3 | Resolved | AWX execution node | CHG-2026-013 made systemd recreate `/run/receptor`; Receptor and AWX instance 3 are healthy and converged |
+| INC-2026-089 | 2026-08-20 | SEV-3 | Resolved | infra01/infra02 shared network path | Gateway and infra03 remained reachable during a bounded outage of both shared-node hypervisors; all three hypervisors and control planes recovered without mutation |
+| INC-2026-090 | 2026-08-20 | SEV-3 | Resolved | Vault recovery discovery and parsing | Reviewed fail-closed preflights exposed an incomplete artifact allowlist and JSON compatibility defects; corrected automation recovered Vault without exposing key material |
+| INC-2026-091 | 2026-08-14 | SEV-3 | Open | Healthcare AI GitLab publication | UC-AI-001 source is preserved locally; authoritative repository publication and protected CI remain pending |
 
 ## INC-2026-001: Automated USB Imaging Blocked
 
@@ -1490,7 +1495,7 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 
 - Date: 2026-07-29
 - Severity: SEV-2
-- Status: Open
+- Status: Resolved
 - Component: `infra01.example.com`, NetworkManager bridge `lab-br0`, libvirt
   autostart guests, and guest network initialization
 - Detection/symptom: After infra01 completed a full host reboot, all 17
@@ -2381,6 +2386,83 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
 - Evidence/related runbook:
   [AWX Execution Plane Acceptance](evidence/CHG-2026-008-awx-execution-plane-acceptance.md)
 
+## INC-2026-089: GitLab and Jenkins Became Simultaneously Unreachable
+
+- Date: 2026-08-20
+- Severity: SEV-3
+- Status: Resolved
+- Component: Lab network path to GitLab and Jenkins
+- Detection/symptom: After Jenkins build 14 and AWX job 1086 had completed
+  successfully, the administration workstation received connection timeouts
+  from both `gitlab.example.com` and `jenkins.example.com`. The in-app browser
+  independently displayed `ERR_TIMED_OUT` for Jenkins. A resumed audit found
+  the gateway and infra03 reachable with complete ARP entries, while infra01,
+  infra02, DNS, GitLab, Jenkins, and AWX had no ICMP response; infra01/infra02
+  and the service VMs had incomplete ARP entries.
+- Impact: The corrected CHG-2026-015 documentation commit is complete and
+  passes the full local validator, but it cannot be pushed, reviewed, merged,
+  or validated on protected main while GitLab is unreachable. No new
+  infrastructure mutation is authorized or attempted.
+- Cause: Not yet established. The evidence bounds the failure away from the
+  administration workstation's gateway and the independent infra03 path and
+  toward the shared infra01/infra02 network boundary. It does not prove a
+  specific Velop node, power source, backhaul, port, cable, NIC, or host fault.
+- Containment: Keep the sequential queue closed, retain the validated commit
+  locally, and do not bypass GitLab/Jenkins/AWX with direct deployment or
+  manual repository publication.
+- Resolution: Reachability recovered without infrastructure mutation. All
+  three hypervisors answered a new probe, and canonical GitLab, Jenkins, and
+  AWX endpoints each returned HTTP 200. The documentation publication gate was
+  reopened only after those checks passed.
+- Validation: The gateway and all three hypervisors were reachable; GitLab,
+  Jenkins, and AWX returned HTTP 200 from the administration workstation.
+- Corrective automation: None while the failure boundary is unproven.
+- Evidence/related change:
+  [CHG-2026-015](change-records/CHG-2026-015-retire-apps-compatibility-edge.md)
+
+## INC-2026-090: Vault Recovery Discovery and Parsing Blocked
+
+- Date: 2026-08-20
+- Severity: SEV-3
+- Status: Resolved
+- Component: `vault.example.com`, Shamir recovery-material custody
+- Detection/symptom: Jenkins build 15 launched the reviewed mutation-disabled
+  preflight as AWX job 1096. The job failed at `Require exactly one root-only
+  recovery artifact` before any unseal request was submitted.
+- Impact: Vault remained initialized, sealed, standby, and HTTP 503 while
+  fail-closed discovery and parser corrections were reviewed. No unseal
+  request was submitted during the failed interval.
+- Cause: The initial discovery allowlist omitted `/data/vault/recovery`, so the
+  existing root-only artifact was incorrectly classified as absent. Later
+  preflights also exposed JSON detection, direct field-access, and Ansible
+  native mapping compatibility defects.
+- Contributing factors: The recovery path and JSON normalization behavior had
+  syntax checks but no execution regression covering both strings and native
+  mappings. External recovery-key custody remains an unaccepted future design.
+- Containment: The reviewed automation stopped safely. Do not reinitialize
+  Vault, inspect shell history for key values, paste keys into a terminal or
+  UI, or bypass Jenkins/AWX. Preserve the existing Vault data unchanged.
+- Validation: Metadata-only inspection verified one `root:root` mode `0600`
+  initialization artifact under `/data/vault/recovery`, five shares, and
+  threshold three. Builds 15-20/jobs 1096-1146 failed before key submission.
+  Build 21/job 1156 passed preflight; build 22/job 1166 recovered Vault;
+  build 23/job 1176 validated it; and build 24/job 1186 returned
+  `changed={}` with no failures. Backend and canonical health both return HTTP
+  200 with initialized, unsealed, active state.
+- Resolution: Merge requests !14-!19 corrected bounded discovery and JSON
+  normalization. Final source revision `a2334115` passed protected-main
+  pipeline 757, including the dummy-data parser execution. Controlled
+  Jenkins/AWX recovery then completed without exposing recovery material.
+- Prevention/follow-up: Define and test external recovery-key custody,
+  restoration, and periodic existence validation without moving key material
+  into source control, Jenkins, AWX, logs, or documentation.
+- Corrective automation: Bounded discovery includes the approved recovery
+  directory; JSON normalization accepts native mappings or parses strings;
+  CI executes a dummy-data regression; all secret-bearing tasks retain
+  `no_log: true`.
+- Evidence/related change:
+  [CHG-2026-016](change-records/CHG-2026-016-vault-shamir-unseal-recovery.md)
+
 ## INC-2026-074: Python 3.9 Conditional Dependencies Were Missing Hashes
 
 - Date: 2026-08-02
@@ -2881,8 +2963,10 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   infra01-only events were the deliberate Phase A/rollback cable actions,
   leaving two spontaneous infra01-only events. The dominant investigation
   boundary is now the shared Velop node, its power/internal Ethernet switching,
-  or mesh/backhaul behavior. Only a secret-safe read-only node diagnostic is
-  open.
+  or mesh/backhaul behavior. The operator later cancelled `CHG-2026-011` on
+  2026-08-09 before that diagnostic was completed, so the retained evidence is
+  historical input to any future successor change rather than an open
+  implementation path.
 - Validation: STP, VM, bridge-port, canonical address/route, control-plane,
   four-Ready-node, and Longhorn/ingress/Headlamp checks passed. A complete
   four-guest window passed both ICMP sizes, DNS, and service/API probes, but a
@@ -2902,48 +2986,137 @@ Gateway reachability, SSH, libvirt, and the `lab-images` pool passed.
   [Velop shared-node diagnostic](change-records/CHG-2026-011-velop-shared-node-diagnostic.md),
   [Sequential Build and Change Control](sequential-build-change-control.md)
 
-## INC-2026-086: GitLab Endpoint Unreachable During Healthcare AI Source Publication
+## INC-2026-086: infra02 Guests Detached From br0
+
+- Date: 2026-08-18
+- Severity: SEV-2
+- Status: Resolved
+- Component: `infra02.example.com`, `br0`, 14 live libvirt tap interfaces,
+  hosted services, and Kubernetes worker02/worker03
+- Detection/symptom: The host and all 14 domains were running, but direct SSH,
+  HTTP, and ICMP to every guest timed out. `bridge link show` reported only
+  physical interface `enp0s25` as a `br0` port even though `vnet0` through
+  `vnet13` existed.
+- Impact: Every infra02-hosted installed service became unavailable from the
+  LAN; worker02 and worker03 became NotReady; existing ingress, Headlamp,
+  Longhorn, and storage-acceptance pods entered Pending or Unknown states.
+- Timeline: A fleet service audit followed a host-availability check. QEMU
+  Guest Agent returned all 14 canonical guest addresses, proving that guest
+  addressing remained intact. Hypervisor-side probes then failed to every
+  address, and inspection proved that no guest tap had a bridge master.
+- Cause: The immediate cause is loss of live tap-to-`br0` membership. The event
+  that detached the taps is not yet proven. No evidence supports deleted
+  domains, guest address loss, or service uninstallation.
+- Contributing factors: The current bridge state does not self-heal live tap
+  membership after the detach event. The earlier `VLP01` shared-node history
+  complicates external reachability, but it does not explain why the local
+  bridge reports no tap ports.
+- Resolution: Jenkins PLAN build 5/AWX job 946 predicted only the exact missing
+  tap set. Confirmed APPLY build 6/job 954 attached the 14 taps. VALIDATE build
+  7/job 962 and convergence APPLY build 8/job 970 passed with `changed={}`.
+- Validation: `br0` retained its canonical address and route with `enp0s25`
+  plus `vnet0` through `vnet13`; all 15 ports were forwarding, all 14 domains
+  remained running and autostarted, every canonical guest address answered,
+  and Kubernetes returned four Ready nodes with no non-running pods.
+- Prevention/follow-up: Add exact live bridge-membership verification to
+  hypervisor acceptance and preserve a controlled, host-limited recovery path.
+  Investigate the detach trigger separately after service restoration.
+- Corrective automation: `CHG-2026-012` delivered PLAN/APPLY/VALIDATE through
+  reviewed GitLab source, Jenkins, and AWX. The recovery also added the
+  Ubuntu-26.04-compatible `sudo.ws` become path and exact live-XML tap
+  derivation. No direct workstation or manual host correction was used.
+- Evidence/related runbook:
+  [CHG-2026-012](change-records/CHG-2026-012-infra02-bridge-port-recovery.md),
+  [Sequential Build and Change Control](sequential-build-change-control.md)
+
+## INC-2026-087: Harbor Containers Blocked by Syslog Loopback Mismatch
+
+- Date: 2026-08-18
+- Severity: SEV-3
+- Status: Resolved
+- Component: `harbor.example.com`, Docker Compose Harbor runtime
+- Detection/symptom: The post-bridge service audit found only `harbor-log`
+  running. The other nine containers exited with Docker error 128.
+- Impact: Native Harbor HTTPS and its health API refuse connections.
+- Cause: The containers' syslog logging driver connects to `[::1]:1514`, while
+  the healthy `harbor-log` container publishes only `127.0.0.1:1514`.
+- Timeline: Container finish timestamps are 2026-08-15, three days before the
+  CHG-2026-012 bridge recovery, so this is not a bridge-apply regression.
+- Resolution: `CHG-2026-014` changed only the nine generated Compose syslog
+  targets from `tcp://localhost:1514` to `tcp://127.0.0.1:1514` and reconciled
+  the existing stack through Jenkins and AWX.
+- Validation: All ten containers are healthy; native HTTPS returns 200; the
+  health API reports `healthy`; TCP 1514 is IPv4 loopback-only; AWX validation
+  1014 and convergence APPLY 1024 reported zero changes and no failures.
+- Prevention/follow-up: Canonical automation asserts the exact endpoint count,
+  listener boundary, container count, log health, and native health API.
+- Corrective automation: `linux-systems-platform`
+  `9f03c345af201fa25b4475e905947feebda680e6`; Jenkins builds 4-7 and AWX jobs
+  994/1004/1014/1024 provide the controlled acceptance record.
+
+## INC-2026-088: AWX Execution Receptor Restart Loop
+
+- Date: 2026-08-18
+- Severity: SEV-3
+- Status: Resolved
+- Component: `awx-execution.example.com`, Receptor, AWX instance 3
+- Detection/symptom: The guest is reachable and its local NGINX and Node
+  Exporter listeners are present, but `receptor.service` exits every five
+  seconds; AWX reports the instance unavailable with capacity zero.
+- Impact: AWX work remains restricted to the controller execution group.
+- Cause: The Receptor control socket is under volatile `/run/receptor`, but the
+  systemd unit did not declare `RuntimeDirectory`; after reboot the absent
+  parent directory caused every control-socket bind to fail.
+- Resolution: `CHG-2026-013` added `RuntimeDirectory=receptor` and
+  `RuntimeDirectoryMode=0750` to canonical `ansible-awx` automation and applied
+  it through Jenkins and AWX.
+- Validation: Receptor is active with `NRestarts=0`; `/run/receptor` is owned
+  by `awx:awx` mode `0750`; the socket exists; instance 3 is Ready, enabled,
+  capacity 76, and only in `lab-infrastructure`; CANARY job 982 ran on that
+  node; VALIDATE 980 and convergence APPLY 984 reported zero changes.
+- Prevention/follow-up: Source validation now requires both runtime-directory
+  directives and validates ownership and mode on the execution node.
+- Corrective automation: Canonical revision
+  `ff34b69f697c4a1deebdd38720b081cc3d3ec0d1`; Jenkins builds 2-6 and AWX
+  jobs 976/978/980/982/984 provide the controlled acceptance record.
+
+## INC-2026-091: GitLab Endpoint Blocked Healthcare AI Source Publication
 
 - Date: 2026-08-14
 - Severity: SEV-3
 - Status: Open
-- Component: `gitlab.example.com` source-control endpoint and the existing
+- Component: `gitlab.example.com` and the existing
   `midhhealth/ai-and-ml-platform/healthcare-ai-platform` project
 - Detection/symptom: The new local `main` commit had no upstream after push
-  attempts. A read-only SSH diagnostic resolved `gitlab.example.com` to
-  `192.168.1.101` but timed out on TCP port 2222. A bounded HTTP request to the
-  same host also timed out.
+  attempts. SSH to TCP 2222 and bounded HTTP requests timed out from the
+  administration workstation.
 - Impact: Commit `175a39c`, containing the deterministic UC-AI-001 source-only
-  implementation and descending from the initial `03e9d1f` commit, cannot yet
-  be published to the authoritative GitLab
-  project. Protected GitLab CI evidence is unavailable. No runtime service or
+  implementation, is preserved locally but is not yet authoritative GitLab
+  source. Protected GitLab CI evidence is unavailable. No runtime service or
   deployed application is affected.
 - Timeline: The implementation and local validation completed first. The
-  target GitLab repository was confirmed to exist and be empty before the
-  endpoint stopped responding. Publication attempts did not establish an
-  upstream branch or remote ref. The committed checkout was copied to the
-  persistent local path `/Users/krishna/workspace.codex/healthcare-ai-platform`
-  to protect the work while connectivity is unavailable.
-- Cause: Unconfirmed. Both configured SSH and HTTP paths were unreachable from
-  the administration workstation; available evidence does not distinguish a
-  GitLab host outage from a network-path failure.
-- Contributing factors: The target repository has no prior branch, so there is
-  no remote copy of the first commit. GitHub does not contain a confirmed
+  project was confirmed to exist and be empty before the endpoint stopped
+  responding. Publication attempts did not establish an upstream branch or
+  remote ref. The clean checkout was preserved at
+  `/Users/krishna/workspace.codex/healthcare-ai-platform`. On 2026-08-21,
+  GitLab SSH connectivity succeeded for the enterprise-documentation sync;
+  healthcare-AI publication has not yet been retried or accepted.
+- Cause: Unconfirmed. The original evidence did not distinguish a GitLab host
+  outage from a network-path failure.
+- Contributing factors: The target repository had no prior branch, so there
+  was no remote copy of the first commit. GitHub does not contain a confirmed
   healthcare-AI mirror.
-- Resolution: Pending. Repeated blind publication attempts were stopped. The
-  clean local commit and passing source tests are preserved without changing
-  GitLab, lab infrastructure, or runtime state.
+- Resolution: Pending. The source remains preserved without creating an
+  alternate repository, infrastructure target, or runtime service.
 - Validation: Local contract validation passes, all 14 unit/integration tests
-  pass, and all five deterministic benchmark cases pass. `git branch -vv` has
-  no upstream and a read-only remote query returned no branch before the
-  endpoint timed out; publication is therefore not claimed.
-- Prevention/follow-up: Restore or confirm GitLab reachability, query the
-  remote before mutation, push the exact local commit, observe the protected
-  source pipeline, and append the immutable remote commit and pipeline ID to
-  ART-AI-001. Do not promote UC-AI-001 to runtime verified from local evidence.
-- Corrective automation: None. Endpoint recovery is outside this source-only
-  change; automated retries must remain bounded and must not create alternate
-  infrastructure.
+  pass, and all five deterministic benchmark cases pass. Publication and
+  protected pipeline evidence are still not claimed.
+- Prevention/follow-up: Confirm the healthcare-AI remote, compare its refs,
+  publish the exact preserved commit or a reviewed descendant, observe the
+  protected source pipeline, and append the immutable remote commit and
+  pipeline ID to ART-AI-001.
+- Corrective automation: None. Publication retries must remain bounded and
+  must not create alternate infrastructure.
 - Evidence/related runbook:
   [ART-AI-001 source implementation evidence](evidence/ART-AI-001-source-implementation.md),
   [UC-AI-001 detailed design](use-cases/healthcare-ai/UC-AI-001-retrieval-augmented-generation.md)

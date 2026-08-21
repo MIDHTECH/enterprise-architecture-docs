@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "last_verified": "2026-08-13",
+  "last_verified": "2026-08-21",
   "purpose": "Canonical machine-readable status for capabilities whose presence affects architecture claims. This file records documentation truth; it does not authorize implementation or lab changes.",
   "status_vocabulary": {
     "accepted": "Installed or configured on the named boundary and supported by current acceptance evidence.",
@@ -15,13 +15,14 @@
     "harbor": {
       "product_status": "accepted",
       "accepted_boundary": "Harbor 2.15.0 on harbor.example.com; ten product containers healthy; native HTTPS and health API return successful results.",
-      "unaccepted_boundary": "The legacy harbor.apps.example.com shared-NGINX application route remains unavailable and requires separate acceptance.",
-      "design_rule": "Documentation may describe Harbor as installed and healthy only when it names the native endpoint. It must not claim the shared application route is accepted."
+      "unaccepted_boundary": "None on the accepted native endpoint; the retired shared compatibility route is absent.",
+      "design_rule": "Documentation may describe Harbor as installed and healthy only at harbor.example.com."
     },
     "vault": {
       "product_status": "accepted",
-      "accepted_boundary": "Vault 2.0.3 is active, initialized, unsealed and reachable through vault.apps.example.com.",
-      "design_rule": "Application secret delivery remains a separate design and acceptance concern; Vault presence does not imply External Secrets Operator."
+      "accepted_boundary": "Vault 2.0.3 is initialized, unsealed, active, and HTTP 200 through its backend and product-local frontend at vault.example.com; controlled recovery and zero-change convergence passed.",
+      "unaccepted_boundary": "External recovery-key custody, auto-unseal, and application secret delivery remain separate designs.",
+      "design_rule": "Describe Vault runtime as accepted only at vault.example.com; do not infer External Secrets Operator or application secret-delivery acceptance."
     },
     "keycloak": {
       "product_status": "requires-revalidation",
